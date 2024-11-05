@@ -1,8 +1,7 @@
 package entity;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+
 import screen.Screen;
 import engine.Cooldown;
 import engine.Core;
@@ -63,6 +62,7 @@ public class EnemyShipSet {
             enemyCounter++;
             this.logger.info(enemyCounter + " Enemy Created!");
         }
+        cleanup();
 
         double movement_X;
         double movement_Y;
@@ -134,6 +134,17 @@ public class EnemyShipSet {
         }
     }
 
+    public void cleanup() {
+        //제거할 적 개체를 저장
+        Set <EnemyShip> toRemove = new HashSet<>();
+
+        for (EnemyShip enemy : enemies) {
+            if (enemy.isDestroyed()) {
+                toRemove.add(enemy);
+            }
+        }
+        enemies.removeAll(toRemove);
+    }
     //현재 화면 상에 생성되어 있는 적의 수를 반환합니다.
     public int getEnemyCount() { return enemies.size(); }
 
