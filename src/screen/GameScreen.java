@@ -236,8 +236,8 @@ public class GameScreen extends Screen {
 		manageCollisions();
 		cleanBullets();
 		draw();
-
-		if ((this.enemyShipFormation.isEmpty() || this.lives == 0)
+		// 현재 진행된 시간이 라운드에서 정한 시간과 같으면 클리어로 판단 후 라운드 종료
+		if ((levelTime == this.gameSettings.getRoundTime() || this.lives == 0)
 				&& !this.levelFinished) {
 			this.levelFinished = true;
 			this.screenFinishedCooldown.reset();
