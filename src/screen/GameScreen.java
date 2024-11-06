@@ -282,7 +282,7 @@ public class GameScreen extends Screen {
 		}
 
 		// 현재 levelTime 그리기
-		drawManager.drawTime(this, levelTime);
+		drawManager.drawTime(this, this.gameSettings.getRoundTime() - levelTime);
 
 		drawManager.completeDrawing(this);
 	}
