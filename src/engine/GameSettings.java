@@ -16,6 +16,8 @@ public class GameSettings {
 	private int baseSpeed;
 	/** Frequency of enemy shootings, +/- 30%. */
 	private int shootingFrecuency;
+	/** 적 생성 주기 시간 */
+	private int enemySpawnInterval;
 
 	/**
 	 * Constructor.
@@ -30,11 +32,12 @@ public class GameSettings {
 	 *            Frecuency of enemy shootings, +/- 30%.
 	 */
 	public GameSettings(final int formationWidth, final int formationHeight,
-			final int baseSpeed, final int shootingFrecuency) {
+			final int baseSpeed, final int shootingFrecuency, final int enemySpawnInterval) {
 		this.formationWidth = formationWidth;
 		this.formationHeight = formationHeight;
 		this.baseSpeed = baseSpeed;
 		this.shootingFrecuency = shootingFrecuency;
+		this.enemySpawnInterval = enemySpawnInterval;
 	}
 
 	/**
@@ -65,4 +68,8 @@ public class GameSettings {
 		return shootingFrecuency;
 	}
 
+	/**
+	 * @return the enemySpawnInterval
+	 */
+	public final int getEnemySpawnInterval() { return enemySpawnInterval; }
 }

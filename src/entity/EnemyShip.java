@@ -29,6 +29,9 @@ public class EnemyShip extends Entity {
 	private boolean isDestroyed;
 	/** Values of the ship, in points, when destroyed. */
 	private int pointValue;
+	// 플레이어를 지속적으로 추적하는데 필요한 변수
+	private double remainingMovementX = 0;
+	private double remainingMovementY = 0;
 
 	/**
 	 * Constructor, establishes the ship's properties.
@@ -96,9 +99,19 @@ public class EnemyShip extends Entity {
 	 * @param distanceY
 	 *            Distance to move in the Y axis.
 	 */
-	public final void move(final int distanceX, final int distanceY) {
-		this.positionX += distanceX;
-		this.positionY += distanceY;
+	// 이동 잔량을 남기어 최소 단위인 1 이상만큼이 누적되면 누적된 정수만큼 이동후 이동 잔량에서 뺄셈.
+	public final void move(final double distanceX, final double distanceY) {
+		this.remainingMovementX += distanceX;
+		this.remainingMovementY += distanceY;
+
+		int intMoveX = (int) remainingMovementX;
+		int intMoveY = (int) remainingMovementY;
+
+		remainingMovementX -= intMoveX;
+		remainingMovementY -= intMoveY;
+
+		this.positionX += intMoveX;
+		this.positionY += intMoveY;
 	}
 
 	/**
@@ -148,5 +161,11 @@ public class EnemyShip extends Entity {
 	 */
 	public final boolean isDestroyed() {
 		return this.isDestroyed;
+	}
+
+	// 적 함선의 위치 Setter
+	public void setPosition(int positionX, int positionY) {
+		this.positionX = positionX;
+		this.positionY = positionY;
 	}
 }
