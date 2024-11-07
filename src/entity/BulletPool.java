@@ -30,12 +30,15 @@ public final class BulletPool {
 	 * @param positionY
 	 *            Requested position of the bullet in the Y axis.
 	 * @param speed
-	 *            Requested speed of the bullet, positive or negative depending
-	 *            on direction - positive is down.
+	 *            Requested speed of the bullet.
+	 * @param Direction
+	 * 			  설정할 총알의 방향.
+	 * @param classify
+	 * 			  설정할 총할의 진영.
 	 * @return Requested bullet.
 	 */
 	public static Bullet getBullet(final int positionX,
-			final int positionY, final int speed) {
+			final int positionY, final int speed, String Direction, String classify) {
 		Bullet bullet;
 		if (!pool.isEmpty()) {
 			bullet = pool.iterator().next();
@@ -44,8 +47,10 @@ public final class BulletPool {
 			bullet.setPositionY(positionY);
 			bullet.setSpeed(speed);
 			bullet.setSprite();
+			bullet.setDirection(Direction);
+			bullet.setClassify(classify);
 		} else {
-			bullet = new Bullet(positionX, positionY, speed);
+			bullet = new Bullet(positionX, positionY, speed, Direction, classify);
 			bullet.setPositionX(positionX - bullet.getWidth() / 2);
 		}
 		return bullet;

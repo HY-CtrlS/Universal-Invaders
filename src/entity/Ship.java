@@ -22,8 +22,7 @@ public class Ship extends Entity {
 	/** Movement of the ship for each unit of time. */
 	private static final int SPEED = 2;
 	/** 함선이 바라보고 있는 뱡향 */
-	private static String Direction;
-	
+	private static String Direction = "UP";
 	/** Minimum time between shots. */
 	private Cooldown shootingCooldown;
 	/** Time spent inactive between hits. */
@@ -93,7 +92,7 @@ public class Ship extends Entity {
 		if (this.shootingCooldown.checkFinished()) {
 			this.shootingCooldown.reset();
 			bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-					positionY, BULLET_SPEED, Direction));
+					positionY, BULLET_SPEED, Direction, "SHIP"));
 			return true;
 		}
 		return false;

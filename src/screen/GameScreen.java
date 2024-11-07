@@ -307,7 +307,7 @@ public class GameScreen extends Screen {
 	private void manageCollisions() {
 		Set<Bullet> recyclable = new HashSet<Bullet>();
 		for (Bullet bullet : this.bullets)
-			if (bullet.getSpeed() > 0) {
+			if (bullet.getClassify() == 1) {
 				if (checkCollision(bullet, this.ship) && !this.levelFinished) {
 					if (!this.ship.isDestroyed()) {
 						recyclable.add(bullet);
