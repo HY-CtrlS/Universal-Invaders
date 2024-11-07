@@ -22,7 +22,7 @@ public class Ship extends Entity {
 	/** Movement of the ship for each unit of time. */
 	private static final int SPEED = 2;
 	/** 함선이 바라보고 있는 뱡향 */
-	private static String Direction = "UP";
+	private static String direction = "UP";
 	/** Minimum time between shots. */
 	private Cooldown shootingCooldown;
 	/** Time spent inactive between hits. */
@@ -35,16 +35,16 @@ public class Ship extends Entity {
 	 *            Initial position of the ship in the X axis.
 	 * @param positionY
 	 *            Initial position of the ship in the Y axis.
-	 * @param Direction
+	 * @param direction
 	 * 			  함선의 초기 방향.
 	 */
-	public Ship(final int positionX, final int positionY, String Direction) {
+	public Ship(final int positionX, final int positionY, String direction) {
 		super(positionX, positionY, 13 * 2, 8 * 2, Color.GREEN);
 
 		this.spriteType = SpriteType.Ship;
 		this.shootingCooldown = Core.getCooldown(SHOOTING_INTERVAL);
 		this.destructionCooldown = Core.getCooldown(1000);
-		this.Direction = Direction;
+		this.direction = direction;
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class Ship extends Entity {
 	 * reached.
 	 */
 	public final void moveRight() {
-		this.Direction = "RIGHT";
+		this.direction = "RIGHT";
 		this.positionX += SPEED;
 	}
 
@@ -61,7 +61,7 @@ public class Ship extends Entity {
 	 * reached.
 	 */
 	public final void moveLeft() {
-		this.Direction = "LEFT";
+		this.direction = "LEFT";
 		this.positionX -= SPEED;
 	}
 
@@ -69,7 +69,7 @@ public class Ship extends Entity {
 	 * Moves the ship speed units up, or until the top screen border is reached.
 	 */
 	public final void moveUp() {
-		this.Direction = "UP";
+		this.direction = "UP";
 		this.positionY -= SPEED;
 	}
 
@@ -77,7 +77,7 @@ public class Ship extends Entity {
 	 * Moves the ship speed units down, or until the bottom screen border is reached.
 	 */
 	public final void moveDown() {
-		this.Direction = "DOWN";
+		this.direction = "DOWN";
 		this.positionY += SPEED;
 	}
 
@@ -92,7 +92,7 @@ public class Ship extends Entity {
 		if (this.shootingCooldown.checkFinished()) {
 			this.shootingCooldown.reset();
 			bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-					positionY, BULLET_SPEED, Direction, "SHIP"));
+					positionY, BULLET_SPEED, direction, "SHIP"));
 			return true;
 		}
 		return false;
@@ -139,7 +139,7 @@ public class Ship extends Entity {
 	 * @return 함선의 방향.
 	 */
 	public String getDirection() {
-		return Direction;
+		return direction;
 	}
 
 	/**

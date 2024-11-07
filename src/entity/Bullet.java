@@ -17,7 +17,7 @@ public class Bullet extends Entity {
 	 */
 	private int speed;
 	// 총알의 뱡향
-	private String Direction;
+	private String direction;
 	// 아군 또는 적 함선이 발사한 총알을 구분하는 식별자
 	private int classify;
 
@@ -30,16 +30,16 @@ public class Bullet extends Entity {
 	 *            Initial position of the bullet in the Y axis.
 	 * @param speed
 	 *            Speed of the bullet.
-	 * @param Direction
+	 * @param direction
 	 * 			  총알의 방향.
 	 * @param classify
 	 * 			  총알의 진영.
 	 */
-	public Bullet(final int positionX, final int positionY, final int speed, String Direction, String classify) {
+	public Bullet(final int positionX, final int positionY, final int speed, String direction, String classify) {
 		super(positionX, positionY, 3 * 2, 5 * 2, Color.WHITE);
 
 		this.classify = classify.equals("ENEMY") ? 1 : 0; // 아군 SHIP : 0, 적군 ENEMY : 1
-		this.Direction = Direction;
+		this.direction = direction;
 		this.speed = speed;
 		setSprite();
 	}
@@ -58,7 +58,7 @@ public class Bullet extends Entity {
 	 * Updates the bullet's position.
 	 */
 	public final void update() {
-		switch (Direction) {
+		switch (direction) {
 			case "UP" :
 				this.positionY -= this.speed;
 				break;
@@ -96,11 +96,11 @@ public class Bullet extends Entity {
 	/**
 	 * 총알의 방향을 설정하는 Setter.
 	 *
-	 * @param Direction
+	 * @param direction
 	 *            총알의 새로운 방향.
 	 */
-	public final void setDirection(String Direction) {
-		this.Direction = Direction;
+	public final void setDirection(String direction) {
+		this.direction = direction;
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class Bullet extends Entity {
 	 * @return 총알의 방향.
 	 */
 	public String getDirection() {
-		return this.Direction;
+		return this.direction;
 	}
 
 	/**
