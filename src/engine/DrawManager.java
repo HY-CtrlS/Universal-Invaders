@@ -253,11 +253,30 @@ public final class DrawManager {
 	 */
 	public void drawLives(final Screen screen, final int lives) {
 		backBufferGraphics.setFont(fontRegular);
+
+		int barX = 10; // 체력 바의 X 좌표
+		int barY = 10; // 체력 바의 Y 좌표
+		int barWidth = 200; // 체력 바의 최대 너비
+		int barHeight = 20; // 체력 바의 높이
+		int maxLives = 100; // 최대 체력
+
+		// 체력 바의 테두리 그리기
+		backBufferGraphics.setColor(Color.GRAY);
+		backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
+
+		// 현재 체력에 따른 바의 너비 계산
+		int healthWidth = (int)((double) lives / maxLives * barWidth);
+
+		// 체력 바 채우기
+		backBufferGraphics.setColor(Color.RED); // 체력 바의 색상
+		backBufferGraphics.fillRect(barX + 1, barY + 1, healthWidth - 1, barHeight - 1);
+
+		// 체력 수치 표시
 		backBufferGraphics.setColor(Color.WHITE);
-		backBufferGraphics.drawString(Integer.toString(lives), 20, 25);
-		Ship dummyShip = new Ship(0, 0, "UP");
-		for (int i = 0; i < lives; i++)
-			drawEntity(dummyShip, 40 + 35 * i, 10);
+		String hpText = + lives + "/" + maxLives;
+		int textX = barX + (barWidth - fontRegularMetrics.stringWidth(hpText)) / 2;
+		int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2) + fontRegularMetrics.getAscent();
+		backBufferGraphics.drawString(hpText, textX, textY);
 	}
 
 	/**

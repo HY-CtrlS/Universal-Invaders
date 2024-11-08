@@ -30,7 +30,7 @@ public final class Core {
 	private static final int FPS = 60;
 
 	/** Max lives. */
-	private static final int MAX_LIVES = 3;
+	private static final int MAX_LIVES = 100;
 	/** Levels between extra life. */
 	private static final int EXTRA_LIFE_FREQUENCY = 3;
 	/** Total number of levels. */
