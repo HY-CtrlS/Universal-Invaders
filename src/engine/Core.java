@@ -30,7 +30,7 @@ public final class Core {
 	private static final int FPS = 60;
 
 	/** Max lives. */
-	private static final int MAX_LIVES = 3;
+	private static final int MAX_LIVES = 100;
 	/** Levels between extra life. */
 	private static final int EXTRA_LIFE_FREQUENCY = 3;
 	/** Total number of levels. */
@@ -38,25 +38,25 @@ public final class Core {
 	
 	/** Difficulty settings for level 1. */
 	private static final GameSettings SETTINGS_LEVEL_1 =
-			new GameSettings(5, 4, 60, 2000, 30);
+			new GameSettings(5, 4, 60, 2000, 500, 30);
 	/** Difficulty settings for level 2. */
 	private static final GameSettings SETTINGS_LEVEL_2 =
-			new GameSettings(5, 5, 50, 2000, 35);
+			new GameSettings(5, 5, 50, 2000, 1000, 35);
 	/** Difficulty settings for level 3. */
 	private static final GameSettings SETTINGS_LEVEL_3 =
-			new GameSettings(6, 5, 40, 1500, 40);
+			new GameSettings(6, 5, 40, 1500, 1000, 40);
 	/** Difficulty settings for level 4. */
 	private static final GameSettings SETTINGS_LEVEL_4 =
-			new GameSettings(6, 6, 30, 1500, 45);
+			new GameSettings(6, 6, 30, 1500, 1000, 45);
 	/** Difficulty settings for level 5. */
 	private static final GameSettings SETTINGS_LEVEL_5 =
-			new GameSettings(7, 6, 20, 1000, 50);
+			new GameSettings(7, 6, 20, 1000, 1, 50);
 	/** Difficulty settings for level 6. */
 	private static final GameSettings SETTINGS_LEVEL_6 =
-			new GameSettings(7, 7, 10, 1000, 55);
+			new GameSettings(7, 7, 10, 1000, 1, 55);
 	/** Difficulty settings for level 7. */
 	private static final GameSettings SETTINGS_LEVEL_7 =
-			new GameSettings(8, 7, 2, 500, 60);
+			new GameSettings(8, 7, 2, 500, 1, 60);
 	
 	/** Frame to draw the screen on. */
 	private static Frame frame;

@@ -16,6 +16,8 @@ public class GameSettings {
 	private int baseSpeed;
 	/** Frequency of enemy shootings, +/- 30%. */
 	private int shootingFrecuency;
+	/** 적 생성 주기 시간 */
+	private int enemySpawnInterval;
 	/** 한 라운드의 주어진 시간. */
 	private int roundTime;
 
@@ -32,11 +34,12 @@ public class GameSettings {
 	 *            Frecuency of enemy shootings, +/- 30%.
 	 */
 	public GameSettings(final int formationWidth, final int formationHeight,
-			final int baseSpeed, final int shootingFrecuency, final int roundTime) {
+			final int baseSpeed, final int shootingFrecuency, final int enemySpawnInterval, final int roundTime) {
 		this.formationWidth = formationWidth;
 		this.formationHeight = formationHeight;
 		this.baseSpeed = baseSpeed;
 		this.shootingFrecuency = shootingFrecuency;
+		this.enemySpawnInterval = enemySpawnInterval;
 		this.roundTime = roundTime;
 	}
 
@@ -69,6 +72,11 @@ public class GameSettings {
 	}
 
 	/**
+	 * @return the enemySpawnInterval
+	 */
+	public final int getEnemySpawnInterval() { return enemySpawnInterval; }
+
+    /**
 	 * @라운드의 정해진 시간 반환
 	 */
 	public final int getRoundTime() { return roundTime; }

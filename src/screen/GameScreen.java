@@ -8,12 +8,8 @@ import engine.Cooldown;
 import engine.Core;
 import engine.GameSettings;
 import engine.GameState;
-import entity.Bullet;
-import entity.BulletPool;
-import entity.EnemyShip;
-import entity.EnemyShipFormation;
-import entity.Entity;
-import entity.Ship;
+import entity.*;
+
 
 /**
  * Implements the game screen, where the action happens.
@@ -43,7 +39,9 @@ public class GameScreen extends Screen {
 	/** Current difficulty level number. */
 	private int level;
 	/** Formation of enemy ships. */
-	private EnemyShipFormation enemyShipFormation;
+	private EnemyShipSet enemyShipSet;
+	/** 적을 갖고 있는 set */
+	private Set<EnemyShip> enemis;
 	/** Player's ship. */
 	private Ship ship;
 	/** Bonus enemy ship that appears sometimes. */
@@ -115,9 +113,11 @@ public class GameScreen extends Screen {
 	public final void initialize() {
 		super.initialize();
 
-		this.ship = new Ship(this.width / 2, this.height - 30);
-		enemyShipFormation = new EnemyShipFormation(this.gameSettings, this.ship);
-		enemyShipFormation.attach(this);
+		this.ship = new Ship(this.width / 2, this.height / 2);
+		enemyShipSet = new EnemyShipSet(this.gameSettings, this.ship);
+		enemyShipSet.attach(this);
+
+		this.enemis = enemyShipSet.getEnemies();
 		// Appears each 10-30 seconds.
 		this.enemyShipSpecialCooldown = Core.getVariableCooldown(
 				BONUS_SHIP_INTERVAL, BONUS_SHIP_VARIANCE);
@@ -147,7 +147,7 @@ public class GameScreen extends Screen {
 	public final int run() {
 		super.run();
 
-		this.score += LIFE_SCORE * (this.lives - 1);
+		this.score += LIFE_SCORE * (this.lives - 20);
 		this.logger.info("Screen cleared with a score of " + this.score);
 
 		return this.returnCode;
@@ -203,29 +203,27 @@ public class GameScreen extends Screen {
 						this.bulletsShot++;
 			}
 
-			if (this.enemyShipSpecial != null) {
-				if (!this.enemyShipSpecial.isDestroyed())
-					this.enemyShipSpecial.move(2, 0);
-				else if (this.enemyShipSpecialExplosionCooldown.checkFinished())
-					this.enemyShipSpecial = null;
+			//if (this.enemyShipSpecial != null) {
+			//	if (!this.enemyShipSpecial.isDestroyed())
+			//		this.enemyShipSpecial.move(2, 0);
+				//else if (this.enemyShipSpecialExplosionCooldown.checkFinished())
+				//	this.enemyShipSpecial = null;
 
-			}
-			if (this.enemyShipSpecial == null
-					&& this.enemyShipSpecialCooldown.checkFinished()) {
-				this.enemyShipSpecial = new EnemyShip();
-				this.enemyShipSpecialCooldown.reset();
-				this.logger.info("A special ship appears");
-			}
-			if (this.enemyShipSpecial != null
-					&& this.enemyShipSpecial.getPositionX() > this.width) {
-				this.enemyShipSpecial = null;
-				this.logger.info("The special ship has escaped");
-			}
+			//}
+			//if (this.enemyShipSpecial == null
+			//		&& this.enemyShipSpecialCooldown.checkFinished()) {
+			//	this.enemyShipSpecial = new EnemyShip();
+			//	this.enemyShipSpecialCooldown.reset();
+			//	this.logger.info("A special ship appears");
+		//	}
+		//	if (this.enemyShipSpecial != null
+			//		&& this.enemyShipSpecial.getPositionX() > this.width) {
+			//	this.enemyShipSpecial = null;
+		//		this.logger.info("The special ship has escaped");
+			//}
 
 			this.ship.update();
-			this.enemyShipFormation.update();
-			this.enemyShipFormation.shoot(this.bullets);
-
+            this.enemyShipSet.update();
 			// 1초마다 levelTime 1씩 증가
 			if (this.clockCooldown.checkFinished()) {
 				this.levelTime += 1;
@@ -261,7 +259,7 @@ public class GameScreen extends Screen {
 					this.enemyShipSpecial.getPositionX(),
 					this.enemyShipSpecial.getPositionY());
 
-		enemyShipFormation.draw();
+		enemyShipSet.draw();
 
 		for (Bullet bullet : this.bullets)
 			drawManager.drawEntity(bullet, bullet.getPositionX(),
@@ -313,18 +311,18 @@ public class GameScreen extends Screen {
 					if (!this.ship.isDestroyed()) {
 						recyclable.add(bullet);
 						this.ship.destroy();
-						this.lives--;
+						this.lives --;
 						this.logger.info("Hit on player ship, " + this.lives
 								+ " lives remaining.");
 					}
 				}
 			} else {
-				for (EnemyShip enemyShip : this.enemyShipFormation)
+				for (EnemyShip enemyShip : enemis)
 					if (!enemyShip.isDestroyed()
 							&& checkCollision(bullet, enemyShip)) {
 						this.score += enemyShip.getPointValue();
 						this.shipsDestroyed++;
-						this.enemyShipFormation.destroy(enemyShip);
+						this.enemyShipSet.destroy(enemyShip);
 						recyclable.add(bullet);
 					}
 				if (this.enemyShipSpecial != null
@@ -339,12 +337,12 @@ public class GameScreen extends Screen {
 			}
 		this.bullets.removeAll(recyclable);
 		BulletPool.recycle(recyclable);
-		for (EnemyShip enemyShip : this.enemyShipFormation) {
+		for (EnemyShip enemyShip : enemis) {
 			if (checkCollision(this.ship, enemyShip)) {
 				if (!this.ship.isDestroyed() && !enemyShip.isDestroyed()) {
-					this.enemyShipFormation.destroy(enemyShip);
+					this.enemyShipSet.destroy(enemyShip);
 					this.ship.destroy();
-					this.lives--;
+					this.lives -= 20;
 					this.logger.info("Hit on player ship, " + this.lives
 							+ " lives remaining.");
 				}
