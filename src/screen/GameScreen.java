@@ -113,7 +113,7 @@ public class GameScreen extends Screen {
 	public final void initialize() {
 		super.initialize();
 
-		this.ship = new Ship(this.width / 2, this.height / 2);
+		this.ship = new Ship(this.width / 2, this.height / 2, "UP");
 		enemyShipSet = new EnemyShipSet(this.gameSettings, this.ship);
 		enemyShipSet.attach(this);
 
@@ -306,7 +306,7 @@ public class GameScreen extends Screen {
 	private void manageCollisions() {
 		Set<Bullet> recyclable = new HashSet<Bullet>();
 		for (Bullet bullet : this.bullets)
-			if (bullet.getSpeed() > 0) {
+			if (bullet.getClassify() == 1) {
 				if (checkCollision(bullet, this.ship) && !this.levelFinished) {
 					if (!this.ship.isDestroyed()) {
 						recyclable.add(bullet);
