@@ -250,4 +250,13 @@ public final class Core {
 			final int variance) {
 		return new Cooldown(milliseconds, variance);
 	}
+
+	/**
+	 * Controls access to the status manager.
+	 *
+	 * @return Application status manager.
+	 */
+	public static StatusManager getStatusManager() {
+		return StatusManager.getInstance();
+	}
 }
