@@ -78,6 +78,14 @@ public final class DrawManager {
 		Explosion
 	};
 
+	/** 방향 표시를 위한 열거형 */
+	public static enum Direction {
+		Up,
+		Down,
+		Left,
+		Right
+	}
+
 	/**
 	 * Private constructor.
 	 */
@@ -194,6 +202,44 @@ public final class DrawManager {
 				if (image[i][j])
 					backBufferGraphics.drawRect(positionX + i * 2, positionY
 							+ j * 2, 1, 1);
+	}
+
+	public void drawEntity(final Entity entity, final int positionX,
+						   final int positionY, Direction direction) {
+		boolean[][] image = spriteMap.get(entity.getSpriteType());
+
+		backBufferGraphics.setColor(entity.getColor());
+
+		switch (direction) {
+			case Up:
+				for (int i = 0; i < image.length; i++)
+					for (int j = 0; j < image[i].length; j++)
+						if (image[i][j])
+							backBufferGraphics.drawRect(positionX + i * 2, positionY
+									+ j * 2, 1, 1);
+				break;
+			case Down:
+				for (int i = image.length - 1; i >= 0; i--)
+					for (int j = image[i].length - 1; j >= 0; j--)
+						if (image[image.length - 1 - i][image[i].length - 1 - j])
+							backBufferGraphics.drawRect(positionX + i * 2, positionY
+									+ j * 2, 1, 1);
+				break;
+			case Left:
+				for (int i = 0; i < image[0].length; i++)
+					for (int j = 0; j < image.length; j++)
+						if (image[j][i])
+							backBufferGraphics.drawRect(positionX + i * 2, positionY
+									+ j * 2, 1, 1);
+				break;
+			case Right:
+				for (int i = image[0].length - 1; i >= 0; i--)
+					for (int j = image.length - 1; j >= 0; j--)
+						if (image[image.length - 1 - j][image[0].length - 1 - i])
+							backBufferGraphics.drawRect(positionX + i * 2, positionY
+									+ j * 2, 1, 1);
+				break;
+		}
 	}
 
 	/**
