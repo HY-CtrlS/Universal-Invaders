@@ -234,13 +234,12 @@ public class GameScreen extends Screen {
 		manageCollisions();
 		cleanBullets();
 		draw();
-
-		// 사용안해서 삭제 게임 클리어 조건
-		//if ((this.enemyShipSet.isEmpty() || this.lives == 0)
-		//		&& !this.levelFinished) {
-		//	this.levelFinished = true;
-		//	this.screenFinishedCooldown.reset();
-		//}
+		// 현재 진행된 시간이 라운드에서 정한 시간과 같으면 클리어로 판단 후 라운드 종료
+		if ((levelTime == this.gameSettings.getRoundTime() || this.lives == 0)
+				&& !this.levelFinished) {
+			this.levelFinished = true;
+			this.screenFinishedCooldown.reset();
+		}
 
 		if (this.levelFinished && this.screenFinishedCooldown.checkFinished())
 			this.isRunning = false;
@@ -281,7 +280,7 @@ public class GameScreen extends Screen {
 		}
 
 		// 현재 levelTime 그리기
-		drawManager.drawTime(this, levelTime);
+		drawManager.drawTime(this, this.gameSettings.getRoundTime() - levelTime);
 
 		drawManager.completeDrawing(this);
 	}
