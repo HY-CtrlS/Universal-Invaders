@@ -147,7 +147,7 @@ public class GameScreen extends Screen {
 	public final int run() {
 		super.run();
 
-		this.score += LIFE_SCORE * (this.lives - 1);
+		this.score += LIFE_SCORE * (this.lives - 20);
 		this.logger.info("Screen cleared with a score of " + this.score);
 
 		return this.returnCode;
@@ -312,7 +312,7 @@ public class GameScreen extends Screen {
 					if (!this.ship.isDestroyed()) {
 						recyclable.add(bullet);
 						this.ship.destroy();
-						this.lives--;
+						this.lives --;
 						this.logger.info("Hit on player ship, " + this.lives
 								+ " lives remaining.");
 					}
@@ -343,7 +343,7 @@ public class GameScreen extends Screen {
 				if (!this.ship.isDestroyed() && !enemyShip.isDestroyed()) {
 					this.enemyShipSet.destroy(enemyShip);
 					this.ship.destroy();
-					this.lives--;
+					this.lives -= 20;
 					this.logger.info("Hit on player ship, " + this.lives
 							+ " lives remaining.");
 				}
