@@ -22,7 +22,7 @@ public class Ship extends Entity {
 	/** Movement of the ship for each unit of time. */
 	private static final int SPEED = 2;
 	/** 함선이 바라보고 있는 뱡향 */
-	private static String direction = "UP";
+	private static String direction;
 	/** Minimum time between shots. */
 	private Cooldown shootingCooldown;
 	/** Time spent inactive between hits. */
