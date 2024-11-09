@@ -630,7 +630,7 @@ public final class DrawManager {
 		else
 			backBufferGraphics.setColor(Color.WHITE);
 		// 첫 아이템 그리기
-		drawItemBox((screen.getWidth() / 4) - 50, 250);
+		drawItemBox((screen.getWidth() / 4) - 50, screen.getHeight() / 3);
 		//drawItem(0, (screen.getWidth() / 4), 350)
 
 		// 두번째 아이템 선택여부
@@ -639,7 +639,7 @@ public final class DrawManager {
 		else
 			backBufferGraphics.setColor(Color.WHITE);
 		// 두 번째 아이템 그리기
-		drawItemBox((screen.getWidth() * 2 / 4) - 50, 250);
+		drawItemBox((screen.getWidth() * 2 / 4) - 50, screen.getHeight() / 3);
 		//drawItem(1, (screen.getWidth() * 2 / 4), 350)
 
 		// 세번째 아이템 선택여부
@@ -648,7 +648,7 @@ public final class DrawManager {
 		else
 			backBufferGraphics.setColor(Color.WHITE);
 		//세 번째 아이템 그리기
-		drawItemBox((screen.getWidth() * 3) / 4 - 50, 250);
+		drawItemBox((screen.getWidth() * 3) / 4 - 50, screen.getHeight() / 3);
 		//drawItem(2, (screen.getWidth() * 3 / 4), 350)
 
 	}
