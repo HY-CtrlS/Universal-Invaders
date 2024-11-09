@@ -38,7 +38,7 @@ public class ItemSelectedScreen extends Screen {
 
     // 화면 가동 메소드
     public final int run() {
-        run();
+        super.run();
 
         return 0;
     }
