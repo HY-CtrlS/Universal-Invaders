@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 
 import screen.Screen;
 import entity.Entity;
-import entity.Ship;
 
 /**
  * Manages screen drawing.
@@ -80,10 +79,10 @@ public final class DrawManager {
 
 	/** 방향 표시를 위한 열거형 */
 	public static enum Direction {
-		Up,
-		Down,
-		Left,
-		Right
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT
 	}
 
 	/**
@@ -211,28 +210,28 @@ public final class DrawManager {
 		backBufferGraphics.setColor(entity.getColor());
 
 		switch (direction) {
-			case Up:
+			case UP:
 				for (int i = 0; i < image.length; i++)
 					for (int j = 0; j < image[i].length; j++)
 						if (image[i][j])
 							backBufferGraphics.drawRect(positionX + i * 2, positionY
 									+ j * 2, 1, 1);
 				break;
-			case Down:
+			case DOWN:
 				for (int i = image.length - 1; i >= 0; i--)
 					for (int j = image[i].length - 1; j >= 0; j--)
 						if (image[image.length - 1 - i][image[i].length - 1 - j])
 							backBufferGraphics.drawRect(positionX + i * 2, positionY
 									+ j * 2, 1, 1);
 				break;
-			case Left:
+			case LEFT:
 				for (int i = 0; i < image[0].length; i++)
 					for (int j = 0; j < image.length; j++)
 						if (image[j][i])
 							backBufferGraphics.drawRect(positionX + i * 2, positionY
 									+ j * 2, 1, 1);
 				break;
-			case Right:
+			case RIGHT:
 				for (int i = image[0].length - 1; i >= 0; i--)
 					for (int j = image.length - 1; j >= 0; j--)
 						if (image[image.length - 1 - j][image[0].length - 1 - i])
