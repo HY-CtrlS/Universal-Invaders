@@ -6,6 +6,7 @@ import java.util.Set;
 import engine.Cooldown;
 import engine.Core;
 import engine.DrawManager.SpriteType;
+import engine.StatusManager;
 
 /**
  * Implements a ship, to be controlled by the player.
@@ -16,11 +17,11 @@ import engine.DrawManager.SpriteType;
 public class Ship extends Entity {
 
 	/** Time between shots. */
-	private static final int SHOOTING_INTERVAL = 750;
+	private int shootingInterval;
 	/** Speed of the bullets shot by the ship. */
-	private static final int BULLET_SPEED = 6;
+	private int bulletSpeed;
 	/** Movement of the ship for each unit of time. */
-	private static final int SPEED = 2;
+	private int speed;
 	/** 함선이 바라보고 있는 뱡향 */
 	private static String direction;
 	/** Minimum time between shots. */
@@ -42,8 +43,15 @@ public class Ship extends Entity {
 		super(positionX, positionY, 13 * 2, 8 * 2, Color.GREEN);
 
 		this.spriteType = SpriteType.Ship;
-		this.shootingCooldown = Core.getCooldown(SHOOTING_INTERVAL);
+
+		StatusManager statusManager = StatusManager.getInstance();
+		this.shootingInterval = statusManager.getShootingInterval();
+		this.bulletSpeed = statusManager.getBulletSpeed();
+		this.speed = statusManager.getSpeed();
+
+		this.shootingCooldown = Core.getCooldown(this.shootingInterval);
 		this.destructionCooldown = Core.getCooldown(1000);
+
 		this.direction = direction;
 	}
 
@@ -53,7 +61,7 @@ public class Ship extends Entity {
 	 */
 	public final void moveRight() {
 		this.direction = "RIGHT";
-		this.positionX += SPEED;
+		this.positionX += this.speed;
 	}
 
 	/**
@@ -62,7 +70,7 @@ public class Ship extends Entity {
 	 */
 	public final void moveLeft() {
 		this.direction = "LEFT";
-		this.positionX -= SPEED;
+		this.positionX -= this.speed;
 	}
 
 	/**
@@ -70,7 +78,7 @@ public class Ship extends Entity {
 	 */
 	public final void moveUp() {
 		this.direction = "UP";
-		this.positionY -= SPEED;
+		this.positionY -= this.speed;
 	}
 
 	/**
@@ -78,7 +86,7 @@ public class Ship extends Entity {
 	 */
 	public final void moveDown() {
 		this.direction = "DOWN";
-		this.positionY += SPEED;
+		this.positionY += this.speed;
 	}
 
 	/**
@@ -92,7 +100,7 @@ public class Ship extends Entity {
 		if (this.shootingCooldown.checkFinished()) {
 			this.shootingCooldown.reset();
 			bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-					positionY, BULLET_SPEED, direction, "SHIP"));
+					positionY, this.bulletSpeed, direction, "SHIP"));
 			return true;
 		}
 		return false;
@@ -130,7 +138,7 @@ public class Ship extends Entity {
 	 * @return Speed of the ship.
 	 */
 	public final int getSpeed() {
-		return SPEED;
+		return this.speed;
 	}
 
 	/**

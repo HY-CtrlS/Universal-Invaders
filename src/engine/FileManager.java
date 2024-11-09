@@ -268,4 +268,109 @@ public final class FileManager {
 				bufferedWriter.close();
 		}
 	}
+
+	private ShipStatus loadDefaultShipStatus() throws IOException {
+
+		ShipStatus shipStatus;
+		InputStream inputStream = null;
+		BufferedReader bufferedReader = null;
+
+		try {
+			inputStream = FileManager.class.getClassLoader()
+					.getResourceAsStream("status");
+			bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+			int shootingInterval = Integer.parseInt(bufferedReader.readLine());
+			int bulletSpeed = Integer.parseInt(bufferedReader.readLine());
+			int speed = Integer.parseInt(bufferedReader.readLine());
+			int maxLives = Integer.parseInt(bufferedReader.readLine());
+
+			shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, maxLives);
+
+		} finally {
+			if (inputStream != null)
+				inputStream.close();
+		}
+
+		return shipStatus;
+	}
+
+	public ShipStatus loadShipStatus() throws IOException {
+
+		ShipStatus shipStatus;
+		InputStream inputStream = null;
+		BufferedReader bufferedReader = null;
+
+		try {
+			String jarPath = FileManager.class.getProtectionDomain()
+					.getCodeSource().getLocation().getPath();
+			jarPath = URLDecoder.decode(jarPath, "UTF-8");
+
+			String scoresPath = new File(jarPath).getParent();
+			scoresPath += File.separator;
+			scoresPath += "status";
+
+			File scoresFile = new File(scoresPath);
+			inputStream = new FileInputStream(scoresFile);
+			bufferedReader = new BufferedReader(new InputStreamReader(
+					inputStream, Charset.forName("UTF-8")));
+
+			logger.info("Loading user ship status.");
+
+			int shootingInterval = Integer.parseInt(bufferedReader.readLine());
+			int bulletSpeed = Integer.parseInt(bufferedReader.readLine());
+			int speed = Integer.parseInt(bufferedReader.readLine());
+			int maxLives = Integer.parseInt(bufferedReader.readLine());
+
+			shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, maxLives);
+
+		} catch (FileNotFoundException e) {
+			// loads default if there's no user scores.
+			logger.info("Loading default ship status.");
+			shipStatus = loadDefaultShipStatus();
+		} finally {
+			if (bufferedReader != null)
+				bufferedReader.close();
+		}
+
+		return shipStatus;
+	}
+
+	public void saveShipStatus(final ShipStatus shipStatus)
+			throws IOException {
+		OutputStream outputStream = null;
+		BufferedWriter bufferedWriter = null;
+
+		try {
+			String jarPath = FileManager.class.getProtectionDomain()
+					.getCodeSource().getLocation().getPath();
+			jarPath = URLDecoder.decode(jarPath, "UTF-8");
+
+			String scoresPath = new File(jarPath).getParent();
+			scoresPath += File.separator;
+			scoresPath += "status";
+
+			File scoresFile = new File(scoresPath);
+
+			if (!scoresFile.exists())
+				scoresFile.createNewFile();
+
+			outputStream = new FileOutputStream(scoresFile);
+			bufferedWriter = new BufferedWriter(new OutputStreamWriter(
+					outputStream, Charset.forName("UTF-8")));
+
+			logger.info("Saving user ship status.");
+			bufferedWriter.write(String.valueOf(shipStatus.getShootingInterval()));
+			bufferedWriter.newLine();
+			bufferedWriter.write(String.valueOf(shipStatus.getBulletSpeed()));
+			bufferedWriter.newLine();
+			bufferedWriter.write(String.valueOf(shipStatus.getSpeed()));
+			bufferedWriter.newLine();
+			bufferedWriter.write(String.valueOf(shipStatus.getMaxLives()));
+
+		} finally {
+			if (bufferedWriter != null)
+				bufferedWriter.close();
+		}
+	}
 }

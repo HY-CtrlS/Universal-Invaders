@@ -29,8 +29,6 @@ public final class Core {
 	/** Max fps of current screen. */
 	private static final int FPS = 60;
 
-	/** Max lives. */
-	private static final int MAX_LIVES = 100;
 	/** Levels between extra life. */
 	private static final int EXTRA_LIFE_FREQUENCY = 3;
 	/** Total number of levels. */
@@ -116,7 +114,7 @@ public final class Core {
 
 		int returnCode = 1;
 		do {
-			gameState = new GameState(1, 0, MAX_LIVES, 0, 0);
+			gameState = new GameState(1, 0, getStatusManager().getMaxLives(), 0, 0);
 
 			switch (returnCode) {
 			case 1:
@@ -133,7 +131,7 @@ public final class Core {
 					// One extra live every few levels.
 					boolean bonusLife = gameState.getLevel()
 							% EXTRA_LIFE_FREQUENCY == 0
-							&& gameState.getLivesRemaining() < MAX_LIVES;
+							&& gameState.getLivesRemaining() < getStatusManager().getMaxLives();
 					
 					currentScreen = new GameScreen(gameState,
 							gameSettings.get(gameState.getLevel() - 1),
@@ -249,5 +247,14 @@ public final class Core {
 	public static Cooldown getVariableCooldown(final int milliseconds,
 			final int variance) {
 		return new Cooldown(milliseconds, variance);
+	}
+
+	/**
+	 * Controls access to the status manager.
+	 *
+	 * @return Application status manager.
+	 */
+	public static StatusManager getStatusManager() {
+		return StatusManager.getInstance();
 	}
 }
