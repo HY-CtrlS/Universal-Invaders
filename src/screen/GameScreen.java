@@ -167,41 +167,40 @@ public class GameScreen extends Screen {
 
 		if (this.inputDelay.checkFinished() && !this.levelFinished) {
 
-			if (!this.ship.isDestroyed()) {
-				boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT)
-						|| inputManager.isKeyDown(KeyEvent.VK_D);
-				boolean moveLeft = inputManager.isKeyDown(KeyEvent.VK_LEFT)
-						|| inputManager.isKeyDown(KeyEvent.VK_A);
-				boolean moveUp = inputManager.isKeyDown(KeyEvent.VK_UP)
-						|| inputManager.isKeyDown(KeyEvent.VK_W);
-				boolean moveDown = inputManager.isKeyDown(KeyEvent.VK_DOWN)
-						|| inputManager.isKeyDown(KeyEvent.VK_S);
+			boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT)
+					|| inputManager.isKeyDown(KeyEvent.VK_D);
+			boolean moveLeft = inputManager.isKeyDown(KeyEvent.VK_LEFT)
+					|| inputManager.isKeyDown(KeyEvent.VK_A);
+			boolean moveUp = inputManager.isKeyDown(KeyEvent.VK_UP)
+					|| inputManager.isKeyDown(KeyEvent.VK_W);
+			boolean moveDown = inputManager.isKeyDown(KeyEvent.VK_DOWN)
+					|| inputManager.isKeyDown(KeyEvent.VK_S);
 
-				boolean isRightBorder = this.ship.getPositionX()
-						+ this.ship.getWidth() + this.ship.getSpeed() > this.width - 1;
-				boolean isLeftBorder = this.ship.getPositionX()
-						- this.ship.getSpeed() < 1;
-				boolean isTopBorder = this.ship.getPositionY()
-						- this.ship.getSpeed() < 1 + SEPARATION_LINE_HEIGHT;
-				boolean isBottomBorder = this.ship.getPositionY()
-						+ this.ship.getHeight() + this.ship.getSpeed() > this.height - 1;
+			boolean isRightBorder = this.ship.getPositionX()
+					+ this.ship.getWidth() + this.ship.getSpeed() > this.width - 1;
+			boolean isLeftBorder = this.ship.getPositionX()
+					- this.ship.getSpeed() < 1;
+			boolean isTopBorder = this.ship.getPositionY()
+					- this.ship.getSpeed() < 1 + SEPARATION_LINE_HEIGHT;
+			boolean isBottomBorder = this.ship.getPositionY()
+					+ this.ship.getHeight() + this.ship.getSpeed() > this.height - 1;
 
-				if (moveRight && !isRightBorder) {
-					this.ship.moveRight();
-				}
-				if (moveLeft && !isLeftBorder) {
-					this.ship.moveLeft();
-				}
-				if (moveUp && !isTopBorder) {
-					this.ship.moveUp();
-				}
-				if (moveDown && !isBottomBorder) {
-					this.ship.moveDown();
-				}
-				if (inputManager.isKeyDown(KeyEvent.VK_SPACE))
-					if (this.ship.shoot(this.bullets))
-						this.bulletsShot++;
+			if (moveRight && !isRightBorder) {
+				this.ship.moveRight();
 			}
+			if (moveLeft && !isLeftBorder) {
+				this.ship.moveLeft();
+			}
+			if (moveUp && !isTopBorder) {
+				this.ship.moveUp();
+			}
+			if (moveDown && !isBottomBorder) {
+				this.ship.moveDown();
+			}
+			if (inputManager.isKeyDown(KeyEvent.VK_SPACE))
+				if (this.ship.shoot(this.bullets))
+					this.bulletsShot++;
+
 
 			//if (this.enemyShipSpecial != null) {
 			//	if (!this.enemyShipSpecial.isDestroyed())
@@ -235,7 +234,7 @@ public class GameScreen extends Screen {
 		cleanBullets();
 		draw();
 		// 현재 진행된 시간이 라운드에서 정한 시간과 같으면 클리어로 판단 후 라운드 종료
-		if ((levelTime == this.gameSettings.getRoundTime() || this.lives == 0)
+		if ((levelTime == this.gameSettings.getRoundTime() || this.lives <= 0)
 				&& !this.levelFinished) {
 			this.levelFinished = true;
 			this.screenFinishedCooldown.reset();
@@ -339,7 +338,7 @@ public class GameScreen extends Screen {
 		BulletPool.recycle(recyclable);
 		for (EnemyShip enemyShip : enemis) {
 			if (checkCollision(this.ship, enemyShip)) {
-				if (!this.ship.isDestroyed() && !enemyShip.isDestroyed()) {
+				if (!this.ship.isDestroyed() && !enemyShip.isDestroyed() && !levelFinished) {
 					this.enemyShipSet.destroy(enemyShip);
 					this.ship.destroy();
 					this.lives -= 20;
