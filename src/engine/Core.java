@@ -8,11 +8,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import screen.GameScreen;
-import screen.HighScoreScreen;
-import screen.ScoreScreen;
-import screen.Screen;
-import screen.TitleScreen;
+import screen.*;
 
 /**
  * Implements core game logic.
@@ -141,8 +137,17 @@ public final class Core {
 					frame.setScreen(currentScreen);
 					LOGGER.info("Closing game screen.");
 
+					// 현재 플레이한 게임의 정보를 gameState에 저장
 					gameState = ((GameScreen) currentScreen).getGameState();
 
+					// 아이템 선택화면으로 이동
+					// 아직 HP가 남아있거나 방금 깬 레벨이 마지막 레벨이 아닌 경우
+					if (gameState.getLivesRemaining() > 0 && gameState.getLevel() + 1 <= NUM_LEVELS) {
+						LOGGER.info("Starting " + WIDTH + "X" + HEIGHT + " ItemSelectingScreen at " + FPS + " fps.");
+						currentScreen = new ItemSelectedScreen(gameState, width, height, FPS);
+						frame.setScreen(currentScreen);
+						LOGGER.info("Closing Item Selecting Screen.");
+					}
 					gameState = new GameState(gameState.getLevel() + 1,
 							gameState.getScore(),
 							gameState.getLivesRemaining(),

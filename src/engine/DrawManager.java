@@ -601,4 +601,61 @@ public final class DrawManager {
 
 		backBufferGraphics.drawString(timeString, xPosition, yPosition);
 	}
+
+	public void drawItemBox(final int position_X, final int position_Y) {
+		backBufferGraphics.drawRect(position_X, position_Y, 100, 100);
+	}
+
+	public void drawItemSelectingTitle(final Screen screen, final GameState gameState) {
+		String titleString = "Level  " + gameState.getLevel() + "  Clear!!";
+		String instructionsString1 =
+				"Select your Item with A + D / arrows";
+		String instructionsString2 =
+				"Press spacebar If you done.";
+		// 아이템 선택 지시 문구 표시
+		backBufferGraphics.setColor(Color.GRAY);
+		drawCenteredRegularString(screen, instructionsString1,
+				100);
+		drawCenteredRegularString(screen, instructionsString2, screen.getHeight() - 50);
+		// 레벨 클리어 문구 표시
+		backBufferGraphics.setColor(Color.GREEN);
+		drawCenteredBigString(screen, titleString, 50);
+
+	}
+
+	public void drawSelectedItem(final Screen screen, final List<Integer> itemList, final int selectedItem) {
+		// 첫 아이템 선택여부
+		if (selectedItem == 0)
+			backBufferGraphics.setColor(Color.GREEN);
+		else
+			backBufferGraphics.setColor(Color.WHITE);
+		// 첫 아이템 그리기
+		drawItemBox((screen.getWidth() / 4) - 50, screen.getHeight() / 3);
+		//drawItem(0, (screen.getWidth() / 4), 350)
+
+		// 두번째 아이템 선택여부
+		if (selectedItem == 1)
+			backBufferGraphics.setColor(Color.GREEN);
+		else
+			backBufferGraphics.setColor(Color.WHITE);
+		// 두 번째 아이템 그리기
+		drawItemBox((screen.getWidth() * 2 / 4) - 50, screen.getHeight() / 3);
+		//drawItem(1, (screen.getWidth() * 2 / 4), 350)
+
+		// 세번째 아이템 선택여부
+		if (selectedItem == 2)
+			backBufferGraphics.setColor(Color.GREEN);
+		else
+			backBufferGraphics.setColor(Color.WHITE);
+		//세 번째 아이템 그리기
+		drawItemBox((screen.getWidth() * 3) / 4 - 50, screen.getHeight() / 3);
+		//drawItem(2, (screen.getWidth() * 3 / 4), 350)
+
+	}
+
+	// 각 아이템을 그리는 메소드
+	public void drawItem(final int item, final int position_X, final int position_Y){
+		// drawEntity로 해당 Item 스프라이트를 그림
+		// drawString 으로 해당 Item에 대한 설명 및 정보를 화면 아래 부분에 추가
+	}
 }
