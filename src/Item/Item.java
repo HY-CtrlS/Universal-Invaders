@@ -11,6 +11,8 @@ public interface Item {
     // 아이템의 이름을 반환하는 추상 메소드
     String getItemName();
     // 아이템의 레벨을 반환하는 추상 메소드
+    String getLevel();
+    // 아이템의 레벨을 반환하는 추상 메소드
     int getItemLevel();
     // 해당 아이템을 소유했는지에 대한 정보 setter
     void setOwned(final boolean owned);
