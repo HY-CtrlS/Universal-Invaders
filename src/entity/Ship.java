@@ -44,7 +44,7 @@ public class Ship extends Entity {
 
 		this.spriteType = SpriteType.Ship;
 
-		StatusManager statusManager = StatusManager.getInstance();
+		StatusManager statusManager = Core.getStatusManager();
 		this.shootingInterval = statusManager.getShootingInterval();
 		this.bulletSpeed = statusManager.getBulletSpeed();
 		this.speed = statusManager.getSpeed();
