@@ -1,6 +1,7 @@
 package screen;
 
 import engine.Cooldown;
+import engine.Core;
 import java.awt.event.KeyEvent;
 
 public class PauseScreen extends Screen {
@@ -11,7 +12,9 @@ public class PauseScreen extends Screen {
 
     public PauseScreen(final int width, final int height, final int fps) {
         super(width, height, fps);
-
+        
+        this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
+        this.selectionCooldown.reset();
         this.returnCode = 1;
     }
 

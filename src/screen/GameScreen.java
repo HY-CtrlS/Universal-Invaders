@@ -198,8 +198,7 @@ public class GameScreen extends Screen {
             }
             if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
                 Screen pause = new PauseScreen(getWidth(), getHeight(), fps);
-                int check = pause.run();
-                
+                pause.run();
             }
 
             //if (this.enemyShipSpecial != null) {
