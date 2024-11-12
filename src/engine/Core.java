@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import screen.*;
+import Item.*;
 
 /**
  * Implements core game logic.
@@ -65,6 +66,8 @@ public final class Core {
 	private static Handler fileHandler;
 	/** Logger handler for printing to console. */
 	private static ConsoleHandler consoleHandler;
+	// 아이템 리스트 객체 생성
+	private static ItemList items = new ItemList();
 
 
 	/**
@@ -119,8 +122,13 @@ public final class Core {
 				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 						+ " title screen at " + FPS + " fps.");
 				returnCode = frame.setScreen(currentScreen);
-				// StatusManage r의 status 객체를 res/status 의 값으로 초기화
-				if (returnCode == 2) getStatusManager().resetDefaultStatus();
+				// 게임 시작 시 StatusManage r의 status 객체를 res/status 의 값으로 초기화
+
+				if (returnCode == 2) {
+					getStatusManager().resetDefaultStatus();
+					// 게임 시작 시 초기 아이템 리스트 생성
+					items.initializedItems();
+				}
 				LOGGER.info("Closing title screen.");
 				break;
 			case 2:
@@ -146,7 +154,7 @@ public final class Core {
 					// 아직 HP가 남아있거나 방금 깬 레벨이 마지막 레벨이 아닌 경우
 					if (gameState.getLivesRemaining() > 0 && gameState.getLevel() + 1 <= NUM_LEVELS) {
 						LOGGER.info("Starting " + WIDTH + "X" + HEIGHT + " ItemSelectingScreen at " + FPS + " fps.");
-						currentScreen = new ItemSelectedScreen(gameState, width, height, FPS);
+						currentScreen = new ItemSelectedScreen(gameState, items.getSelectedItemList(), width, height, FPS);
 						frame.setScreen(currentScreen);
 						LOGGER.info("Closing Item Selecting Screen.");
 					}

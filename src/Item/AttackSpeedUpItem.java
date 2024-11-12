@@ -4,7 +4,9 @@ import engine.DrawManager.SpriteType;
 import engine.Core;
 
 import engine.StatusManager;
-import javax.swing.text.html.HTMLDocument;
+import java.awt.Color;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class AttackSpeedUpItem implements Item {
     // 공속증가 아이템의 최대 레벨
@@ -12,18 +14,23 @@ public class AttackSpeedUpItem implements Item {
     // 공속증가 아이템의 현재 레벨
     private int level = 0;
     // 공속증가 아이템의 스프라이트 타입
-    private SpriteType spriteType;
+    private SpriteType spriteType = SpriteType.AttackSpeedUpItem;
     // 현재 아이템을 보유중인지에 대한 변수
     private boolean isowned = false;
     // 현재 아이템이 최대 레벨인지에 대한 변수
-    private boolean isMaxLevel = false;
     // Status 싱글톤 객체를 위한 변수
     private StatusManager status;
+    // Logger
+    private Logger logger;
+    // 아이템의 색깔
+    private Color color;
 
     // 공속증가 아이템 객체 생성자
     public AttackSpeedUpItem(final int level) {
+        logger = Core.getLogger();
         this.level = level;
         status = Core.getStatusManager();
+        this.color = Color.BLUE;
     }
 
     @Override
@@ -42,13 +49,8 @@ public class AttackSpeedUpItem implements Item {
     }
 
     @Override
-    public String getLevel() {
-        return Integer.toString(level);
-    }
-
-    @Override
-    public int getItemLevel() {
-        return level;
+    public int getLevel() {
+            return level;
     }
 
     @Override
@@ -73,17 +75,31 @@ public class AttackSpeedUpItem implements Item {
 
     @Override
     public void activateItem() {
-        status.setShootingInterval(status.getShootingInterval() - 100);
+        if (level < MAX_LEVEL) {
+            status.setShootingInterval(status.getShootingInterval() - 100);
+            this.logger.info("AttackSpeed Up!! + 1");
+            increaseLevel();
+            this.logger.info("AttackSpeed Level : " + getLevel());
+        }
     }
 
     @Override
     public boolean isMaxLevel() {
-        isMaxLevel = (this.level == MAX_LEVEL);
-        return isMaxLevel;
+        return (this.level == MAX_LEVEL);
     }
 
     @Override
     public void increaseLevel() {
         if (this.level < MAX_LEVEL) {this.level++;}
+    }
+
+    @Override
+    public Color getColor() {
+        return color;
+    }
+
+    @Override
+    public int getMaxLevel() {
+        return MAX_LEVEL;
     }
 }
