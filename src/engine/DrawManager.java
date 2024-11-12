@@ -39,9 +39,9 @@ public final class DrawManager {
 	private static Graphics backBufferGraphics;
 	/** Buffer image. */
 	private static BufferedImage backBuffer;
-	/** Normal sized font. */
+	/** Normal-sized font. */
 	private static Font fontRegular;
-	/** Normal sized font properties. */
+	/** Normal-sized font properties. */
 	private static FontMetrics fontRegularMetrics;
 	/** Big sized font. */
 	private static Font fontBig;
@@ -52,7 +52,7 @@ public final class DrawManager {
 	private static Map<SpriteType, boolean[][]> spriteMap;
 
 	/** Sprite types. */
-	public static enum SpriteType {
+	public enum SpriteType {
 		/** Player ship. */
 		Ship,
 		/** Destroyed player ship. */
@@ -77,14 +77,6 @@ public final class DrawManager {
 		EnemyShipSpecial,
 		/** Destroyed enemy ship. */
 		Explosion
-	};
-
-	/** 방향 표시를 위한 열거형 */
-	public static enum Direction {
-		UP,
-		DOWN,
-		LEFT,
-		RIGHT
 	}
 
 	/**
@@ -96,7 +88,7 @@ public final class DrawManager {
 		logger.info("Started loading resources.");
 
 		try {
-			spriteMap = new LinkedHashMap<SpriteType, boolean[][]>();
+			spriteMap = new LinkedHashMap<>();
 
 			spriteMap.put(SpriteType.Ship, new boolean[13][8]);
 			spriteMap.put(SpriteType.ShipDestroyed, new boolean[13][8]);
@@ -131,7 +123,7 @@ public final class DrawManager {
 	 * 
 	 * @return Shared instance of DrawManager.
 	 */
-	protected static DrawManager getInstance() {
+	public static DrawManager getInstance() {
 		if (instance == null)
 			instance = new DrawManager();
 		return instance;
@@ -148,7 +140,7 @@ public final class DrawManager {
 	}
 
 	/**
-	 * First part of the drawing process. Initialices buffers, draws the
+	 * First part of the drawing process. Initializes buffers, draws the
 	 * background and prepares the images.
 	 * 
 	 * @param screen
@@ -184,7 +176,7 @@ public final class DrawManager {
 	}
 
 	/**
-	 * Draws an entity, using the apropiate image.
+	 * Draws an entity, using the appropriate image.
 	 * 
 	 * @param entity
 	 *            Entity to be drawn.
@@ -239,7 +231,7 @@ public final class DrawManager {
 	}
 
 	public void drawEntity(final Entity entity, final int positionX,
-						   final int positionY, Direction direction) {
+						   final int positionY, Entity.Direction direction) {
 		boolean[][] image = spriteMap.get(entity.getSpriteType());
 
 		backBufferGraphics.setColor(entity.getColor());
@@ -277,7 +269,7 @@ public final class DrawManager {
 	}
 
 	/**
-	 * For debugging purpouses, draws the canvas borders.
+	 * For debugging purposes, draws the canvas borders.
 	 * 
 	 * @param screen
 	 *            Screen to draw in.
@@ -294,7 +286,7 @@ public final class DrawManager {
 	}
 
 	/**
-	 * For debugging purpouses, draws a grid over the canvas.
+	 * For debugging purposes, draws a grid over the canvas.
 	 * 
 	 * @param screen
 	 *            Screen to draw in.
@@ -353,7 +345,7 @@ public final class DrawManager {
 
 		// 체력 수치 표시
 		backBufferGraphics.setColor(Color.WHITE);
-		String hpText = + lives + "/" + maxLives;
+		String hpText = lives + "/" + maxLives;
 		int textX = barX + (barWidth - fontRegularMetrics.stringWidth(hpText)) / 2;
 		int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2) + fontRegularMetrics.getAscent();
 		backBufferGraphics.drawString(hpText, textX, textY);
@@ -575,7 +567,7 @@ public final class DrawManager {
 			final List<Score> highScores) {
 		backBufferGraphics.setColor(Color.WHITE);
 		int i = 0;
-		String scoreString = "";
+		String scoreString;
 
 		for (Score score : highScores) {
 			scoreString = String.format("%s        %04d", score.getName(),

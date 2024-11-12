@@ -48,6 +48,14 @@ public class Entity {
 		this.color = color;
 	}
 
+	/** 방향 표시를 위한 열거형 */
+	public static enum Direction {
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT
+	}
+
 	/**
 	 * Getter for the color of the entity.
 	 * 
