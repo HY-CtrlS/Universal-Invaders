@@ -1,6 +1,7 @@
 package engine;
 
 public class ShipStatus {
+
     private int shootingInterval;
     private int bulletSpeed;
     private int speed;
