@@ -101,7 +101,8 @@ public class EnemyShipSet {
         do {
             spawnX = random.nextInt(screen.getWidth());
             spawnY = random.nextInt(screen.getHeight());
-        } while (Math.hypot(spawnX - ship.getPositionX(), spawnY - ship.getPositionY()) < minDistance);
+        } while (Math.hypot(spawnX - ship.getPositionX(), spawnY - ship.getPositionY())
+            < minDistance);
 
         // 적 생성
         EnemyShip newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1);
@@ -136,7 +137,7 @@ public class EnemyShipSet {
 
     public void cleanup() {
         //제거할 적 개체를 저장
-        Set <EnemyShip> toRemove = new HashSet<>();
+        Set<EnemyShip> toRemove = new HashSet<>();
 
         for (EnemyShip enemy : enemies) {
             if (enemy.isDestroyed()) {
@@ -145,7 +146,10 @@ public class EnemyShipSet {
         }
         enemies.removeAll(toRemove);
     }
+
     //현재 화면 상에 생성되어 있는 적의 수를 반환합니다.
-    public int getEnemyCount() { return enemies.size(); }
+    public int getEnemyCount() {
+        return enemies.size();
+    }
 
 }

@@ -23,7 +23,8 @@ public class ItemSelectedScreen extends Screen {
     private GameState gameState;
 
     // 생성자 - 아이템셋, width, height, fps 받아옴
-    public ItemSelectedScreen (final GameState gameState, final int width, final int height, final int fps) {
+    public ItemSelectedScreen(final GameState gameState, final int width, final int height,
+        final int fps) {
         super(width, height, fps);
 
         //아이템 리스트 - 예시용(1번, 2번, 3번 아이템)
@@ -42,28 +43,31 @@ public class ItemSelectedScreen extends Screen {
 
         return 0;
     }
+
     // 화면 업데이트 메소드
     protected final void update() {
         super.update();
 
         draw();
         if (this.selectionCooldown.checkFinished()
-                && this.inputDelay.checkFinished()) {
+            && this.inputDelay.checkFinished()) {
             if (inputManager.isKeyDown(KeyEvent.VK_A)
-                    || inputManager.isKeyDown(KeyEvent.VK_LEFT)) {
+                || inputManager.isKeyDown(KeyEvent.VK_LEFT)) {
                 previousMenuItem();
                 this.selectionCooldown.reset();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_D)
-                    || inputManager.isKeyDown(KeyEvent.VK_RIGHT)) {
+                || inputManager.isKeyDown(KeyEvent.VK_RIGHT)) {
                 nextMenuItem();
                 this.selectionCooldown.reset();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE))
-                // 해당 아이템 효과 적용 코드 추가
-                // Code Content...
+            // 해당 아이템 효과 적용 코드 추가
+            // Code Content...
 
+            {
                 this.isRunning = false;
+            }
         }
     }
 
@@ -71,20 +75,22 @@ public class ItemSelectedScreen extends Screen {
      * Shifts the focus to the next menu item.
      */
     private void nextMenuItem() {
-        if (this.selectedItem == 2)
+        if (this.selectedItem == 2) {
             this.selectedItem = 0;
-        else
+        } else {
             this.selectedItem++;
+        }
     }
 
     /**
      * Shifts the focus to the previous menu item.
      */
     private void previousMenuItem() {
-        if (this.selectedItem == 0)
+        if (this.selectedItem == 0) {
             this.selectedItem = 2;
-        else
+        } else {
             this.selectedItem--;
+        }
     }
 
 
