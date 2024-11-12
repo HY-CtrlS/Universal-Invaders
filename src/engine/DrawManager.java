@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import entity.Bullet;
-import entity.Ship;
 import screen.Screen;
 import entity.Entity;
 
@@ -186,55 +184,11 @@ public final class DrawManager {
 	 *            Coordinates for the upper side of the image.
 	 */
 	public void drawEntity(final Entity entity, final int positionX,
-			final int positionY) {
+						   final int positionY) {
 		boolean[][] image = spriteMap.get(entity.getSpriteType());
 
 		backBufferGraphics.setColor(entity.getColor());
-
-		String dir;
-		if (entity instanceof Ship ship) {
-			dir = ship.getDirection();
-		} else if (entity instanceof Bullet bullet) {
-			dir = bullet.getDirection();
-		} else { dir = "UP"; }
-
-		switch (dir) {
-			case "UP":
-				for (int i = 0; i < image.length; i++)
-					for (int j = 0; j < image[i].length; j++)
-						if (image[i][j])
-							backBufferGraphics.drawRect(positionX + i * 2, positionY
-									+ j * 2, 1, 1);
-				break;
-			case "DOWN":
-				for (int i = image.length - 1; i >= 0; i--)
-					for (int j = image[i].length - 1; j >= 0; j--)
-						if (image[image.length - 1 - i][image[i].length - 1 - j])
-							backBufferGraphics.drawRect(positionX + i * 2, positionY
-									+ j * 2, 1, 1);
-				break;
-			case "LEFT":
-				for (int i = 0; i < image[0].length; i++)
-					for (int j = 0; j < image.length; j++)
-						if (image[j][i])
-							backBufferGraphics.drawRect(positionX + i * 2, positionY
-									+ j * 2, 1, 1);
-				break;
-			case "RIGHT":
-				for (int i = image[0].length - 1; i >= 0; i--)
-					for (int j = image.length - 1; j >= 0; j--)
-						if (image[image.length - 1 - j][image[0].length - 1 - i])
-							backBufferGraphics.drawRect(positionX + i * 2, positionY
-									+ j * 2, 1, 1);
-				break;
-		}
-	}
-
-	public void drawEntity(final Entity entity, final int positionX,
-						   final int positionY, Entity.Direction direction) {
-		boolean[][] image = spriteMap.get(entity.getSpriteType());
-
-		backBufferGraphics.setColor(entity.getColor());
+		Entity.Direction direction = entity.getDirection();
 
 		switch (direction) {
 			case UP:

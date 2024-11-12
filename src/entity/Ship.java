@@ -22,7 +22,7 @@ public class Ship extends Entity {
 	/** Movement of the ship for each unit of time. */
 	private static final int SPEED = 2;
 	/** 함선이 바라보고 있는 뱡향 */
-	private static String direction;
+	private Direction direction;
 	/** Minimum time between shots. */
 	private Cooldown shootingCooldown;
 	/** Time spent inactive between hits. */
@@ -38,8 +38,8 @@ public class Ship extends Entity {
 	 * @param direction
 	 * 			  함선의 초기 방향.
 	 */
-	public Ship(final int positionX, final int positionY, String direction) {
-		super(positionX, positionY, 13 * 2, 8 * 2, Color.GREEN);
+	public Ship(final int positionX, final int positionY, final Direction direction) {
+		super(positionX, positionY, 13 * 2, 8 * 2, Color.GREEN, direction);
 
 		this.spriteType = SpriteType.Ship;
 		this.shootingCooldown = Core.getCooldown(SHOOTING_INTERVAL);
@@ -52,7 +52,7 @@ public class Ship extends Entity {
 	 * reached.
 	 */
 	public final void moveRight() {
-		this.direction = "RIGHT";
+		this.direction = Direction.RIGHT;
 		this.positionX += SPEED;
 	}
 
@@ -61,7 +61,7 @@ public class Ship extends Entity {
 	 * reached.
 	 */
 	public final void moveLeft() {
-		this.direction = "LEFT";
+		this.direction = Direction.LEFT;
 		this.positionX -= SPEED;
 	}
 
@@ -69,7 +69,7 @@ public class Ship extends Entity {
 	 * Moves the ship speed units up, or until the top screen border is reached.
 	 */
 	public final void moveUp() {
-		this.direction = "UP";
+		this.direction = Direction.UP;
 		this.positionY -= SPEED;
 	}
 
@@ -77,7 +77,7 @@ public class Ship extends Entity {
 	 * Moves the ship speed units down, or until the bottom screen border is reached.
 	 */
 	public final void moveDown() {
-		this.direction = "DOWN";
+		this.direction = Direction.DOWN;
 		this.positionY += SPEED;
 	}
 
@@ -138,7 +138,7 @@ public class Ship extends Entity {
 	 *
 	 * @return 함선의 방향.
 	 */
-	public String getDirection() {
+	public Direction getDirection() {
 		return direction;
 	}
 

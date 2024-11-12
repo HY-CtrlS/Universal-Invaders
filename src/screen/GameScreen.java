@@ -113,7 +113,7 @@ public class GameScreen extends Screen {
 	public final void initialize() {
 		super.initialize();
 
-		this.ship = new Ship(this.width / 2, this.height / 2, "UP");
+		this.ship = new Ship(this.width / 2, this.height / 2, Entity.Direction.UP);
 		enemyShipSet = new EnemyShipSet(this.gameSettings, this.ship);
 		enemyShipSet.attach(this);
 

@@ -38,7 +38,7 @@ public final class BulletPool {
 	 * @return Requested bullet.
 	 */
 	public static Bullet getBullet(final int positionX,
-			final int positionY, final int speed, String direction, String classify) {
+			final int positionY, final int speed, Entity.Direction direction, String classify) {
 		Bullet bullet;
 		if (!pool.isEmpty()) {
 			bullet = pool.iterator().next();
