@@ -320,7 +320,9 @@ public class GameScreen extends Screen {
 						&& checkCollision(bullet, enemyShip)) {
 						this.score += enemyShip.getPointValue();
 						this.shipsDestroyed++;
-						this.enemyShipSet.destroy(enemyShip);
+						this.enemyShipSet.destroy(enemyShip, bullet.getDamage());
+                        this.logger.info("BULLET DAMAGE, " + bullet.getDamage()
+                                );
 						recyclable.add(bullet);
 					}
 				}
@@ -340,7 +342,7 @@ public class GameScreen extends Screen {
         for (EnemyShip enemyShip : enemis) {
             if (checkCollision(this.ship, enemyShip)) {
                 if (!this.ship.isDestroyed() && !enemyShip.isDestroyed() && !levelFinished) {
-                    this.enemyShipSet.destroy(enemyShip);
+                    this.enemyShipSet.destroy(enemyShip, this.ship.getBaseDamage());
                     this.ship.destroy();
                     this.lives -= 20;
                     this.logger.info("Hit on player ship, " + this.lives

@@ -30,6 +30,8 @@ public class EnemyShipSet {
     private double X_speed = 1.0;
     // 적 함선의 Y 방향 속도
     private double Y_speed = 1.0;
+
+    private int base_life = 1;
     // 적 함선 끼리의 최소 거리
     private final int MIN_DISTANCE = 5;
     // 로그 출력기
@@ -105,7 +107,7 @@ public class EnemyShipSet {
             < minDistance);
 
         // 적 생성
-        EnemyShip newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1);
+        EnemyShip newEnemy = new EnemyShip(spawnX, spawnY, base_life, SpriteType.EnemyShipA1);
         // 생성된 적 객체를 Set에 추가
         enemies.add(newEnemy);
     }
@@ -127,10 +129,10 @@ public class EnemyShipSet {
         return enemies;
     }
 
-    public void destroy(EnemyShip enemyShip) {
+    public void destroy(EnemyShip enemyShip, int damage) {
         for (EnemyShip enemy : enemies) {
             if (enemy.equals(enemyShip)) {
-                enemy.destroy();
+                enemy.damage(damage);
             }
         }
     }

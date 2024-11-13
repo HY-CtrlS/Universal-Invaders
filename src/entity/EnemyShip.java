@@ -12,7 +12,8 @@ import engine.DrawManager.SpriteType;
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
  */
 public class EnemyShip extends Entity {
-
+    private int maxLives;
+    private int baseDamage;
     /** Point value of a type A enemy. */
     private static final int A_TYPE_POINTS = 10;
     /** Point value of a type B enemy. */
@@ -21,6 +22,8 @@ public class EnemyShip extends Entity {
     private static final int C_TYPE_POINTS = 30;
     /** Point value of a bonus enemy. */
     private static final int BONUS_TYPE_POINTS = 100;
+
+
 
     /** Cooldown between sprite changes. */
     private Cooldown animationCooldown;
@@ -39,12 +42,13 @@ public class EnemyShip extends Entity {
      * @param positionY  Initial position of the ship in the Y axis.
      * @param spriteType Sprite type, image corresponding to the ship.
      */
-    public EnemyShip(final int positionX, final int positionY,
+    public EnemyShip(final int positionX, final int positionY, int maxLives,
         final SpriteType spriteType) {
         super(positionX, positionY, 12 * 2, 8 * 2, Color.WHITE);
 
         this.spriteType = spriteType;
         this.animationCooldown = Core.getCooldown(500);
+        this.maxLives = maxLives;
         this.isDestroyed = false;
 
         switch (this.spriteType) {
@@ -139,13 +143,21 @@ public class EnemyShip extends Entity {
             }
         }
     }
-
+    public final void damage(int damage){
+        this.maxLives -= damage;
+        if (this.maxLives <= 0){
+            destroy();
+        }
+    }
     /**
      * Destroys the ship, causing an explosion.
      */
     public final void destroy() {
+
+
         this.isDestroyed = true;
         this.spriteType = SpriteType.Explosion;
+
     }
 
     /**

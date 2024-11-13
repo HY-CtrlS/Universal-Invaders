@@ -47,6 +47,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
     private static final int DESCENT_DISTANCE = 20;
     /** Minimum speed allowed. */
     private static final int MINIMUM_SPEED = 10;
+    private static final int BASE_LIFE = 1;
 
     /** DrawManager instance. */
     private DrawManager drawManager;
@@ -153,7 +154,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
                 column.add(new EnemyShip((SEPARATION_DISTANCE
                     * this.enemyShips.indexOf(column))
                     + positionX, (SEPARATION_DISTANCE * i)
-                    + positionY, spriteType));
+                    + positionY, this.BASE_LIFE, spriteType));
                 this.shipCount++;
             }
         }
@@ -314,7 +315,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
             bullets.add(BulletPool.getBullet(shooter.getPositionX()
-                + shooter.width / 2, shooter.getPositionY(), BULLET_SPEED, null, "ENEMY"));
+                + shooter.width / 2, shooter.getPositionY(), BULLET_SPEED, 1, "Down", "ENEMY"));
         }
     }
 

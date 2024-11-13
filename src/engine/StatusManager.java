@@ -15,7 +15,7 @@ public class StatusManager {
             status = FileManager.getInstance().loadShipStatus();
         } catch (IOException e) {
             logger.warning("Failed to load status. Using default values.");
-            status = new ShipStatus(750, -6, 2, 100);
+            status = new ShipStatus(750, -6, 2, 1, 100);
         }
     }
 
@@ -50,6 +50,11 @@ public class StatusManager {
         status.setSpeed(speed);
     }
 
+    public int getBaseDamage() {return status.getBaseDamage();}
+
+    public void setBaseDamage(int baseDamage) {status.setBaseDamage(baseDamage);}
+
+
     public int getMaxLives() {
         return status.getMaxLives();
     }
@@ -58,6 +63,7 @@ public class StatusManager {
         status.setMaxLives(maxLives);
     }
 
+
     private void saveStatus() {
         try {
             FileManager.getInstance().saveShipStatus(status);
@@ -65,4 +71,6 @@ public class StatusManager {
             logger.warning("Failed to save status.");
         }
     }
+
+
 }
