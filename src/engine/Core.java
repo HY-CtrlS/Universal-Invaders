@@ -120,16 +120,13 @@ public final class Core {
                     LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
                         + " title screen at " + FPS + " fps.");
                     returnCode = frame.setScreen(currentScreen);
-                    // 게임 시작 시 StatusManage r의 status 객체를 res/status 의 값으로 초기화
-
-                    if (returnCode == 2) {
-                        getStatusManager().resetDefaultStatus();
-                        // 게임 시작 시 초기 아이템 리스트 생성
-                        items.initializedItems();
-                    }
                     LOGGER.info("Closing title screen.");
                     break;
                 case 2:
+                    // 게임 시작 시 StatusManager의 status 객체를 res/status 의 값으로 초기화
+                    getStatusManager().resetDefaultStatus();
+                    // 게임 시작 시 초기 아이템 리스트 생성
+                    items.initializedItems();
                     // Game & score.
                     do {
                         // One extra live every few levels.

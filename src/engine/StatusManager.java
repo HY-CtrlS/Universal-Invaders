@@ -66,7 +66,7 @@ public class StatusManager {
             status = FileManager.getInstance().loadShipStatus();
         } catch (IOException e) {
             logger.warning("Failed to load status. Using default values.");
-            status = new ShipStatus(750, -6, 2, 100);
+            status = new ShipStatus(750, 6, 2, 100);
         }
     }
 }

@@ -32,15 +32,17 @@ public class ItemList {
             }
         }
         Set<Item> tempItemList = new HashSet<>();
+
         // 나올 수 있는 아이템의 개수가 3개를 초과하는 경우에만 무작위 선정
         if (items.size() > 3) {
             // 아이템을 중복을 허용하지 않고 3개를 선택할 때까지 반복(Set이므로 중복은 허용되지 않음)
-            while (tempItemList.size() < 3 && !items.isEmpty()) {
+            while (tempItemList.size() < 3) {
                 // items 아이템 개수에 맞는 범위에서 인덱스 랜덤 선정
                 int randomIndex = random.nextInt(items.size());
                 tempItemList.add(items.get(randomIndex));
             }
         } else {
+            // 아이템이 3개 미만인 경우에는 무작위 선정하지 않고 그대로 반환
             return items;
         }
         return new ArrayList<>(tempItemList);

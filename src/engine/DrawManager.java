@@ -603,7 +603,7 @@ public final class DrawManager {
     public void drawSelectedItem(final Screen screen, final List<Item> itemList,
         final int selectedItem) {
         if (itemList.size() < 3) {
-            String alarmString = "Only  " + itemList.size() + "  items remaining!!";
+            String alarmString = "Only  " + itemList.size() + "  items left you can upgrade!!";
             drawCenteredRegularString(screen, alarmString,
                 150);
         }
