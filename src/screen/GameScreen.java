@@ -94,9 +94,9 @@ public class GameScreen extends Screen {
         this.level = gameState.getLevel();
         this.score = gameState.getScore();
         this.hp = gameState.getHp();
-		if (this.bonusLife) {
-			this.hp++;
-		}
+        if (this.bonusLife) {
+            this.hp++;
+        }
         this.bulletsShot = gameState.getBulletsShot();
         this.shipsDestroyed = gameState.getShipsDestroyed();
     }
@@ -108,7 +108,7 @@ public class GameScreen extends Screen {
         super.initialize();
 
         this.ship = new Ship(this.width / 2, this.height / 2, "UP");
-        enemyShipSet = new EnemyShipSet(this.gameSettings, this.ship);
+        enemyShipSet = new EnemyShipSet(this.gameSettings, this.level, this.ship);
         enemyShipSet.attach(this);
 
         this.enemis = enemyShipSet.getEnemies();
@@ -191,11 +191,11 @@ public class GameScreen extends Screen {
             if (moveDown && !isBottomBorder) {
                 this.ship.moveDown();
             }
-			if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-				if (this.ship.shoot(this.bullets)) {
-					this.bulletsShot++;
-				}
-			}
+            if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
+                if (this.ship.shoot(this.bullets)) {
+                    this.bulletsShot++;
+                }
+            }
 
             //if (this.enemyShipSpecial != null) {
             //	if (!this.enemyShipSpecial.isDestroyed())
@@ -235,9 +235,9 @@ public class GameScreen extends Screen {
             this.screenFinishedCooldown.reset();
         }
 
-		if (this.levelFinished && this.screenFinishedCooldown.checkFinished()) {
-			this.isRunning = false;
-		}
+        if (this.levelFinished && this.screenFinishedCooldown.checkFinished()) {
+            this.isRunning = false;
+        }
 
     }
 
@@ -249,18 +249,18 @@ public class GameScreen extends Screen {
 
         drawManager.drawEntity(this.ship, this.ship.getPositionX(),
             this.ship.getPositionY());
-		if (this.enemyShipSpecial != null) {
-			drawManager.drawEntity(this.enemyShipSpecial,
-				this.enemyShipSpecial.getPositionX(),
-				this.enemyShipSpecial.getPositionY());
-		}
+        if (this.enemyShipSpecial != null) {
+            drawManager.drawEntity(this.enemyShipSpecial,
+                this.enemyShipSpecial.getPositionX(),
+                this.enemyShipSpecial.getPositionY());
+        }
 
         enemyShipSet.draw();
 
-		for (Bullet bullet : this.bullets) {
-			drawManager.drawEntity(bullet, bullet.getPositionX(),
-				bullet.getPositionY());
-		}
+        for (Bullet bullet : this.bullets) {
+            drawManager.drawEntity(bullet, bullet.getPositionX(),
+                bullet.getPositionY());
+        }
 
         // Interface.
         drawManager.drawScore(this, this.score);
@@ -289,10 +289,10 @@ public class GameScreen extends Screen {
         Set<Bullet> recyclable = new HashSet<Bullet>();
         for (Bullet bullet : this.bullets) {
             bullet.update();
-			if (bullet.getPositionY() < SEPARATION_LINE_HEIGHT
-				|| bullet.getPositionY() > this.height) {
-				recyclable.add(bullet);
-			}
+            if (bullet.getPositionY() < SEPARATION_LINE_HEIGHT
+                || bullet.getPositionY() > this.height) {
+                recyclable.add(bullet);
+            }
         }
         this.bullets.removeAll(recyclable);
         BulletPool.recycle(recyclable);
@@ -303,34 +303,33 @@ public class GameScreen extends Screen {
      */
     private void manageCollisions() {
         Set<Bullet> recyclable = new HashSet<Bullet>();
-		for (Bullet bullet : this.bullets) {
+        for (Bullet bullet : this.bullets) {
             // 적 총알인 경우 실행되는 부분 ( 현재는 적 총알이 나오는 곳이 없음 )
-			if (bullet.getClassify() == 1) {
-				if (checkCollision(bullet, this.ship) && !this.levelFinished) {
-					if (!this.ship.isDestroyed()) {
-						recyclable.add(bullet);
-						this.ship.destroy();
-						this.hp--;
-						this.logger.info("Hit on player ship, " + this.hp
-							+ " reamining.");
-					}
-				}
-			} else { //아군 총알인 경우 실행되는 부분
-				for (EnemyShip enemyShip : enemis) {
-					if (!enemyShip.isDestroyed()
-						&& checkCollision(bullet, enemyShip)) {
-						this.score += enemyShip.getPointValue();
-						this.shipsDestroyed++;
-						this.enemyShipSet.damage_Enemy(enemyShip, bullet.getDamage());
-                        this.logger.info("BULLET DAMAGE, " + bullet.getDamage()
-                                );
-						recyclable.add(bullet);
-					}
-				}
-			}
-		}
+            if (bullet.getClassify() == 1) {
+                if (checkCollision(bullet, this.ship) && !this.levelFinished) {
+                    if (!this.ship.isDestroyed()) {
+                        recyclable.add(bullet);
+                        this.ship.destroy();
+                        this.hp--;
+                        this.logger.info("Hit on player ship, " + this.hp
+                            + " reamining.");
+                    }
+                }
+            } else { //아군 총알인 경우 실행되는 부분
+                for (EnemyShip enemyShip : enemis) {
+                    if (!enemyShip.isDestroyed()
+                        && checkCollision(bullet, enemyShip)) {
+                        this.score += enemyShip.getPointValue();
+                        this.shipsDestroyed++;
+                        this.enemyShipSet.damage_Enemy(enemyShip, bullet.getDamage());
+                        recyclable.add(bullet);
+                    }
+                }
+            }
+        }
         this.bullets.removeAll(recyclable);
         BulletPool.recycle(recyclable);
+        // 적과 아군 함선의 충돌 체크
         for (EnemyShip enemyShip : enemis) {
             if (checkCollision(this.ship, enemyShip)) {
                 if (!this.ship.isDestroyed() && !enemyShip.isDestroyed() && !levelFinished) {
