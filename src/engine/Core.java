@@ -260,4 +260,13 @@ public final class Core {
     public static StatusManager getStatusManager() {
         return StatusManager.getInstance();
     }
+
+    /**
+     * Controls access to the sound manager.
+     *
+     * @return Application sound manager.
+     */
+    public static SoundManager getSoundManager() {
+        return SoundManager.getInstance();
+    }
 }
