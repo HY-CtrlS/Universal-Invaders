@@ -34,7 +34,7 @@ public class TitleScreen extends Screen {
         this.selectionCooldown.reset();
 
         // 메인 메뉴 배경음악 재생
-        Core.getSoundManager().playBackgroundMusic("/Users/suhynnoh/IdeaProjects/Universal-Invaders/res/sounds/main_bgm.wav");
+        Core.getSoundManager().playBackgroundMusic("/Users/suhynnoh/IdeaProjects/Universal-Invaders/res/sounds/title_screen.wav");
     }
 
     /**
