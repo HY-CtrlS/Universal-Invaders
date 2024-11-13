@@ -80,8 +80,6 @@ public final class DrawManager {
         AttackSpeedUpItem
     }
 
-    ;
-
     /**
      * Private constructor.
      */

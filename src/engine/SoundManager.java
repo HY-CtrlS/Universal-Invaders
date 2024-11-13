@@ -22,7 +22,7 @@ public class SoundManager {
     }
 
     // SoundManager 인스턴스를 싱글톤 패턴으로 가져오기
-    public static SoundManager getInstance() {
+    protected static SoundManager getInstance() {
         if (instance == null) {
             instance = new SoundManager();
         }
@@ -34,7 +34,7 @@ public class SoundManager {
      *
      * @param filepath 재생할 배경음악 파일 경로
      */
-    public void playBackgroundMusic(String filepath) {
+    private void playBackgroundMusic(String filepath) {
         try {
             if (bgmClip != null && bgmClip.isOpen()) {
                 // 이미 음악이 재생 중이라면 종료하지 않고 그대로 유지
@@ -87,7 +87,7 @@ public class SoundManager {
      *
      * @param gain 설정할 볼륨 (0.0 - 1.0)
      */
-    public void setBackgroundMusicVolume(float gain) {
+    private void setBackgroundMusicVolume(float gain) {
         backgroundMusicVolume = Math.max(0.0f, Math.min(1.0f, gain)); // 볼륨 범위 제한
         if (bgmVolumeControl != null) {
             setVolume(bgmVolumeControl, backgroundMusicVolume);
@@ -99,7 +99,7 @@ public class SoundManager {
      *
      * @param filepath 재생할 효과음 파일 경로
      */
-    public void playSoundEffect(String filepath) {
+    private void playSoundEffect(String filepath) {
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filepath));
             Clip sfxClip = AudioSystem.getClip();
@@ -129,7 +129,7 @@ public class SoundManager {
      *
      * @param gain 설정할 볼륨 (0.0 - 1.0)
      */
-    public void setSoundEffectsVolume(float gain) {
+    private void setSoundEffectsVolume(float gain) {
         soundEffectsVolume = Math.max(0.0f, Math.min(1.0f, gain)); // 볼륨 범위 제한
     }
 
@@ -151,6 +151,22 @@ public class SoundManager {
             dB = Math.max(min, Math.min(dB, max)); // dB 값 범위 제한
         }
         volumeControl.setValue(dB);
+    }
+
+    /**
+     * 오디오 클립이 지원하는 볼륨 컨트롤을 반환합니다.
+     *
+     * @param clip 오디오 클립
+     * @return 지원되는 FloatControl 객체 또는 null
+     */
+    private FloatControl getSupportedVolumeControl(Clip clip) {
+        if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+            return (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        } else if (clip.isControlSupported(FloatControl.Type.VOLUME)) {
+            return (FloatControl) clip.getControl(FloatControl.Type.VOLUME);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -183,22 +199,6 @@ public class SoundManager {
     public void SFXDown() {
         float newSfxVolume = Math.max(0.0f, soundEffectsVolume - 0.1f);
         setSoundEffectsVolume(Math.round(newSfxVolume * 10) / 10.0f); // 소수점 첫째 자리까지 반올림
-    }
-
-    /**
-     * 오디오 클립이 지원하는 볼륨 컨트롤을 반환합니다.
-     *
-     * @param clip 오디오 클립
-     * @return 지원되는 FloatControl 객체 또는 null
-     */
-    private FloatControl getSupportedVolumeControl(Clip clip) {
-        if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-            return (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-        } else if (clip.isControlSupported(FloatControl.Type.VOLUME)) {
-            return (FloatControl) clip.getControl(FloatControl.Type.VOLUME);
-        } else {
-            return null;
-        }
     }
 
     // 현재 배경음악과 효과음 볼륨을 가져오는 게터

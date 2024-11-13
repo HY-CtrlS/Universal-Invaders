@@ -1,6 +1,7 @@
 package screen;
 
 import engine.Cooldown;
+import engine.SoundManager;
 import java.awt.event.KeyEvent;
 import engine.Core;
 
@@ -20,6 +21,8 @@ public class SettingScreen extends Screen {
     private Cooldown adjustCooldown;
     /** 현재 선택된 메뉴 항목 (0: BGM, 1: SFX). */
     private int selectionCode;
+    /** 사운드 관리 매니저 */
+    private final SoundManager soundManager;
 
     /**
      * 생성자, 화면 속성 설정.
@@ -36,6 +39,7 @@ public class SettingScreen extends Screen {
         this.adjustCooldown = Core.getCooldown(ADJUST_TIME);
         this.selectionCooldown.reset();
         this.adjustCooldown.reset();
+        this.soundManager = Core.getSoundManager(); // 필드로 저장
     }
 
     /**
@@ -43,6 +47,7 @@ public class SettingScreen extends Screen {
      *
      * @return 다음 화면 코드
      */
+    @Override
     public final int run() {
         super.run();
         return this.returnCode;
@@ -51,6 +56,7 @@ public class SettingScreen extends Screen {
     /**
      * 화면 요소를 업데이트하고 사용자 입력 이벤트를 처리합니다.
      */
+    @Override
     protected final void update() {
         super.update();
 
@@ -67,12 +73,12 @@ public class SettingScreen extends Screen {
         // 메뉴 이동
         if (inputManager.isKeyDown(KeyEvent.VK_UP) || inputManager.isKeyDown(KeyEvent.VK_W)) {
             previousMenuItem();
-            Core.getSoundManager().playButtonSound();
+            soundManager.playButtonSound(); // 필드를 통해 접근
             this.selectionCooldown.reset();
         }
         if (inputManager.isKeyDown(KeyEvent.VK_DOWN) || inputManager.isKeyDown(KeyEvent.VK_S)) {
             nextMenuItem();
-            Core.getSoundManager().playButtonSound();
+            soundManager.playButtonSound(); // 필드를 통해 접근
             this.selectionCooldown.reset();
         }
 
@@ -80,20 +86,20 @@ public class SettingScreen extends Screen {
         if (adjustCooldown.checkFinished()) {
             if (inputManager.isKeyDown(KeyEvent.VK_LEFT) || inputManager.isKeyDown(KeyEvent.VK_A)) {
                 adjustVolumeDown();
-                Core.getSoundManager().playButtonSound();
+                soundManager.playButtonSound(); // 필드를 통해 접근
                 this.adjustCooldown.reset();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_RIGHT) || inputManager.isKeyDown(
                 KeyEvent.VK_D)) {
                 adjustVolumeUp();
-                Core.getSoundManager().playButtonSound();
+                soundManager.playButtonSound(); // 필드를 통해 접근
                 this.adjustCooldown.reset();
             }
         }
 
         // 설정 화면 종료
         if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-            Core.getSoundManager().playButtonSound();
+            soundManager.playButtonSound(); // 필드를 통해 접근
             this.isRunning = false;
         }
     }
@@ -103,9 +109,9 @@ public class SettingScreen extends Screen {
      */
     private void adjustVolumeUp() {
         if (selectionCode == 0) {
-            Core.getSoundManager().BGMUp();
+            soundManager.BGMUp(); // 필드를 통해 접근
         } else if (selectionCode == 1) {
-            Core.getSoundManager().SFXUp();
+            soundManager.SFXUp(); // 필드를 통해 접근
         }
     }
 
@@ -114,9 +120,9 @@ public class SettingScreen extends Screen {
      */
     private void adjustVolumeDown() {
         if (selectionCode == 0) {
-            Core.getSoundManager().BGMDown();
+            soundManager.BGMDown(); // 필드를 통해 접근
         } else if (selectionCode == 1) {
-            Core.getSoundManager().SFXDown();
+            soundManager.SFXDown(); // 필드를 통해 접근
         }
     }
 

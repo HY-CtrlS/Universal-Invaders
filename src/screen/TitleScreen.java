@@ -34,7 +34,9 @@ public class TitleScreen extends Screen {
         this.selectionCooldown.reset();
 
         // 메인 메뉴 배경음악 재생
-        Core.getSoundManager().playTitleScreenBGM();
+        if (!Core.getSoundManager().isBackgroundMusicPlaying()) {
+            Core.getSoundManager().playTitleScreenBGM();
+        }
     }
 
     /**
@@ -42,6 +44,7 @@ public class TitleScreen extends Screen {
      *
      * @return Next screen code.
      */
+    @Override
     public final int run() {
         super.run();
 
@@ -51,6 +54,7 @@ public class TitleScreen extends Screen {
     /**
      * Updates the elements on screen and checks for events.
      */
+    @Override
     protected final void update() {
         super.update();
 
