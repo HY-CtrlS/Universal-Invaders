@@ -64,9 +64,9 @@ public class TitleScreen extends Screen {
                 nextMenuItem();
                 this.selectionCooldown.reset();
             }
-			if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-				this.isRunning = false;
-			}
+            if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
+                this.isRunning = false;
+            }
         }
     }
 
@@ -74,26 +74,26 @@ public class TitleScreen extends Screen {
      * Shifts the focus to the next menu item.
      */
     private void nextMenuItem() {
-		if (this.returnCode == 3) {
-			this.returnCode = 0;
-		} else if (this.returnCode == 0) {
-			this.returnCode = 2;
-		} else {
-			this.returnCode++;
-		}
+        if (this.returnCode == 3) {
+            this.returnCode = 0;
+        } else if (this.returnCode == 0) {
+            this.returnCode = 2;
+        } else {
+            this.returnCode++;
+        }
     }
 
     /**
      * Shifts the focus to the previous menu item.
      */
     private void previousMenuItem() {
-		if (this.returnCode == 0) {
-			this.returnCode = 3;
-		} else if (this.returnCode == 2) {
-			this.returnCode = 0;
-		} else {
-			this.returnCode--;
-		}
+        if (this.returnCode == 0) {
+            this.returnCode = 3;
+        } else if (this.returnCode == 2) {
+            this.returnCode = 0;
+        } else {
+            this.returnCode--;
+        }
     }
 
     /**

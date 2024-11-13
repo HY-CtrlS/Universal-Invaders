@@ -96,6 +96,7 @@ public class GameScreen extends Screen {
         this.hp = gameState.getHp();
         if (this.bonusLife) {
             this.hp++;
+
         }
         this.bulletsShot = gameState.getBulletsShot();
         this.shipsDestroyed = gameState.getShipsDestroyed();
@@ -304,27 +305,44 @@ public class GameScreen extends Screen {
     private void manageCollisions() {
         Set<Bullet> recyclable = new HashSet<Bullet>();
         for (Bullet bullet : this.bullets) {
+
             // 적 총알인 경우 실행되는 부분 ( 현재는 적 총알이 나오는 곳이 없음 )
+
             if (bullet.getClassify() == 1) {
                 if (checkCollision(bullet, this.ship) && !this.levelFinished) {
                     if (!this.ship.isDestroyed()) {
                         recyclable.add(bullet);
                         this.ship.destroy();
+
                         this.hp--;
                         this.logger.info("Hit on player ship, " + this.hp
                             + " reamining.");
                     }
                 }
             } else { //아군 총알인 경우 실행되는 부분
+
                 for (EnemyShip enemyShip : enemis) {
                     if (!enemyShip.isDestroyed()
                         && checkCollision(bullet, enemyShip)) {
                         this.score += enemyShip.getPointValue();
                         this.shipsDestroyed++;
+
                         this.enemyShipSet.damage_Enemy(enemyShip, bullet.getDamage());
                         recyclable.add(bullet);
+              
+
                     }
                 }
+                if (this.enemyShipSpecial != null
+                    && !this.enemyShipSpecial.isDestroyed()
+                    && checkCollision(bullet, this.enemyShipSpecial)) {
+                    this.score += this.enemyShipSpecial.getPointValue();
+                    this.shipsDestroyed++;
+                    this.enemyShipSpecial.destroy();
+                    this.enemyShipSpecialExplosionCooldown.reset();
+                    recyclable.add(bullet);
+                }
+
             }
         }
         this.bullets.removeAll(recyclable);
