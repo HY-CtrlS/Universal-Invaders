@@ -30,17 +30,23 @@ public class EnemyShipSet {
     private double X_speed = 1.0;
     // 적 함선의 Y 방향 속도
     private double Y_speed = 1.0;
+
+    private int base_hp = 2;
     // 적 함선 끼리의 최소 거리
     private final int MIN_DISTANCE = 5;
     // 로그 출력기
     private Logger logger;
     // 적 수 카운터
     private int enemyCounter;
+    // 이 적Set이 속해있는 레벨
+    private int game_Level;
+    // 적의 Hp를 깎는데 쓰이는 쿨타임
+    private Cooldown hpDecreaseCooldown;
 
     /**
      * 생성자 - 기본 set 초기화 및 스폰 준비
      */
-    public EnemyShipSet(GameSettings gameSettings, Ship ship) {
+    public EnemyShipSet(GameSettings gameSettings, final int game_Level, Ship ship) {
         this.enemies = new HashSet<>();
         this.spawnCooldown = Core.getCooldown(gameSettings.getEnemySpawnInterval());
         this.drawManager = Core.getDrawManager();
@@ -49,6 +55,7 @@ public class EnemyShipSet {
         this.movementSpeed = gameSettings.getBaseSpeed();
         this.logger = Core.getLogger();
         this.enemyCounter = 0;
+        this.game_Level = game_Level;
     }
 
     /**
@@ -72,23 +79,32 @@ public class EnemyShipSet {
 
         // 각 적 객체에 대해 업데이트
         for (EnemyShip enemy : enemies) {
-            // 각 축방향 이동량 0으로 초기화
-            enemy.update();
-            // X거리와 Y거리 측정
-            deltaX = ship.getPositionX() - enemy.getPositionX();
-            deltaY = ship.getPositionY() - enemy.getPositionY();
-            //플레이어와의 거리 계산
-            distance = Math.hypot(deltaX, deltaY);
-            // 거리가 0이 아닐때만 플레이어를 향해 이동
-            if (distance != 0.0) {
-                // X축과 Y축의 거리에 따른 비율을 이용하여 이동량 설정
-                movement_X = X_speed * (deltaX / distance);
-                movement_Y = Y_speed * (deltaY / distance);
-                enemy.move(movement_X, movement_Y);
+            // 죽지 않고 살아있는 적에 대해서만 적용
+            if (!enemy.isDestroyed()) {
+                // 각 축방향 이동량 0으로 초기화
+                enemy.update();
+                // X거리와 Y거리 측정
+                deltaX = ship.getPositionX() - enemy.getPositionX();
+                deltaY = ship.getPositionY() - enemy.getPositionY();
+                //플레이어와의 거리 계산
+                distance = Math.hypot(deltaX, deltaY);
+                // 거리가 0이 아닐때만 플레이어를 향해 이동
+                if (distance != 0.0) {
+                    // X축과 Y축의 거리에 따른 비율을 이용하여 이동량 설정
+                    movement_X = X_speed * (deltaX / distance);
+                    movement_Y = Y_speed * (deltaY / distance);
+                    enemy.move(movement_X, movement_Y);
+                }
             }
         }
     }
 
+    // 적의 체력을 설정해주는 메소드
+    private void setEnemyHp() {
+        //현재는 레벨이 곧 적의  hp가 되도록 설정
+        base_hp = game_Level;
+        logger.info("set Enemy's HP : " + base_hp);
+    }
 
     /**
      * 적을 생성해주는 메소드
@@ -103,9 +119,10 @@ public class EnemyShipSet {
             spawnY = random.nextInt(screen.getHeight());
         } while (Math.hypot(spawnX - ship.getPositionX(), spawnY - ship.getPositionY())
             < minDistance);
-
+        // 생성 전에 해당 적의 HP 설정
+        setEnemyHp();
         // 적 생성
-        EnemyShip newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1);
+        EnemyShip newEnemy = new EnemyShip(spawnX, spawnY, base_hp, SpriteType.EnemyShipA1);
         // 생성된 적 객체를 Set에 추가
         enemies.add(newEnemy);
     }
@@ -127,10 +144,11 @@ public class EnemyShipSet {
         return enemies;
     }
 
-    public void destroy(EnemyShip enemyShip) {
+    public void damage_Enemy(EnemyShip enemyShip, int damage) {
         for (EnemyShip enemy : enemies) {
             if (enemy.equals(enemyShip)) {
-                enemy.destroy();
+                enemy.decreaseHp(damage);
+                logger.info("-1 enemy's hp");
             }
         }
     }
@@ -140,7 +158,7 @@ public class EnemyShipSet {
         Set<EnemyShip> toRemove = new HashSet<>();
 
         for (EnemyShip enemy : enemies) {
-            if (enemy.isDestroyed()) {
+            if (enemy.isDestroyed() && enemy.isFinishedCleanCooldown()) {
                 toRemove.add(enemy);
             }
         }

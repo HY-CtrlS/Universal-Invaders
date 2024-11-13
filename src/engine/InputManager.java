@@ -30,9 +30,9 @@ public final class InputManager implements KeyListener {
      * @return Shared instance of InputManager.
      */
     protected static InputManager getInstance() {
-		if (instance == null) {
-			instance = new InputManager();
-		}
+        if (instance == null) {
+            instance = new InputManager();
+        }
         return instance;
     }
 
@@ -53,9 +53,9 @@ public final class InputManager implements KeyListener {
      */
     @Override
     public void keyPressed(final KeyEvent key) {
-		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS) {
-			keys[key.getKeyCode()] = true;
-		}
+        if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS) {
+            keys[key.getKeyCode()] = true;
+        }
     }
 
     /**
@@ -65,9 +65,9 @@ public final class InputManager implements KeyListener {
      */
     @Override
     public void keyReleased(final KeyEvent key) {
-		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS) {
-			keys[key.getKeyCode()] = false;
-		}
+        if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS) {
+            keys[key.getKeyCode()] = false;
+        }
     }
 
     /**

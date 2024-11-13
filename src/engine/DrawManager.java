@@ -1,5 +1,6 @@
 package engine;
 
+import Item.Item;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -74,7 +75,9 @@ public final class DrawManager {
         /** Bonus ship. */
         EnemyShipSpecial,
         /** Destroyed enemy ship. */
-        Explosion
+        Explosion,
+        // 공속증가 아이템
+        AttackSpeedUpItem
     }
 
     ;
@@ -102,6 +105,8 @@ public final class DrawManager {
             spriteMap.put(SpriteType.EnemyShipC2, new boolean[12][8]);
             spriteMap.put(SpriteType.EnemyShipSpecial, new boolean[16][7]);
             spriteMap.put(SpriteType.Explosion, new boolean[13][7]);
+            // 공속 증가 아이템 스프라이트
+            spriteMap.put(SpriteType.AttackSpeedUpItem, new boolean[10][10]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
@@ -253,14 +258,14 @@ public final class DrawManager {
         int barY = 10; // 체력 바의 Y 좌표
         int barWidth = 200; // 체력 바의 최대 너비
         int barHeight = 20; // 체력 바의 높이
-        int maxLives = Core.getStatusManager().getMaxLives(); // 최대 체력
+        int hp = Core.getStatusManager().getHp(); // 최대 체력
 
         // 체력 바의 테두리 그리기
         backBufferGraphics.setColor(Color.GRAY);
         backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
 
         // 현재 체력에 따른 바의 너비 계산
-        int healthWidth = (int) ((double) lives / maxLives * barWidth);
+        int healthWidth = (int) ((double) lives / hp * barWidth);
 
         // 체력 바 채우기
         backBufferGraphics.setColor(Color.RED); // 체력 바의 색상
@@ -268,7 +273,7 @@ public final class DrawManager {
 
         // 체력 수치 표시
         backBufferGraphics.setColor(Color.WHITE);
-        String hpText = +lives + "/" + maxLives;
+        String hpText = +lives + "/" + hp;
         int textX = barX + (barWidth - fontRegularMetrics.stringWidth(hpText)) / 2;
         int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2)
             + fontRegularMetrics.getAscent();
@@ -593,7 +598,7 @@ public final class DrawManager {
         String instructionsString1 =
             "Select your Item with A + D / arrows";
         String instructionsString2 =
-            "Press spacebar If you done.";
+            "Press spacebar If you want to select.";
         // 아이템 선택 지시 문구 표시
         backBufferGraphics.setColor(Color.GRAY);
         drawCenteredRegularString(screen, instructionsString1,
@@ -605,44 +610,86 @@ public final class DrawManager {
 
     }
 
-    public void drawSelectedItem(final Screen screen, final List<Integer> itemList,
+    public void drawSelectedItem(final Screen screen, final List<Item> itemList,
         final int selectedItem) {
+        if (itemList.size() < 3) {
+            String alarmString = "Only  " + itemList.size() + "  items left you can upgrade!!";
+            drawCenteredRegularString(screen, alarmString,
+                150);
+        }
+
         // 첫 아이템 선택여부
         if (selectedItem == 0) {
+            backBufferGraphics.setColor(Color.WHITE);
+            // 아이템 설명 출력
+            drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
+                screen.getHeight() / 3 + 200);
+            drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
+                screen.getHeight() / 3 + 300);
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
         // 첫 아이템 그리기
         drawItemBox((screen.getWidth() / 4) - 50, screen.getHeight() / 3);
-        //drawItem(0, (screen.getWidth() / 4), 350)
 
         // 두번째 아이템 선택여부
         if (selectedItem == 1) {
+            backBufferGraphics.setColor(Color.WHITE);
+            // 아이템 설명 출력
+            drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
+                screen.getHeight() / 3 + 200);
+            drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
+                screen.getHeight() / 3 + 300);
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
         // 두 번째 아이템 그리기
         drawItemBox((screen.getWidth() * 2 / 4) - 50, screen.getHeight() / 3);
-        //drawItem(1, (screen.getWidth() * 2 / 4), 350)
 
         // 세번째 아이템 선택여부
         if (selectedItem == 2) {
+            backBufferGraphics.setColor(Color.WHITE);
+            // 아이템 설명 출력
+            drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
+                screen.getHeight() / 3 + 200);
+            drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
+                screen.getHeight() / 3 + 300);
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
         //세 번째 아이템 그리기
         drawItemBox((screen.getWidth() * 3) / 4 - 50, screen.getHeight() / 3);
-        //drawItem(2, (screen.getWidth() * 3 / 4), 350)
-
     }
 
-    // 각 아이템을 그리는 메소드
-    public void drawItem(final int item, final int position_X, final int position_Y) {
-        // drawEntity로 해당 Item 스프라이트를 그림
-        // drawString 으로 해당 Item에 대한 설명 및 정보를 화면 아래 부분에 추가
+    // 각 아이템을 화면에 그리는 메소드
+    public void drawItems(final Screen screen, final List<Item> itemList) {
+        for (int i = 0; i < itemList.size(); i++) {
+            drawBigItem(itemList.get(i), (screen.getWidth() * (i + 1) / 4 - 30),
+                screen.getHeight() / 3 + 25);
+            String levelInformation = "Level " + itemList.get(i).getLevel();
+            backBufferGraphics.setColor(Color.ORANGE);
+            backBufferGraphics.setFont(fontRegular);
+            backBufferGraphics.drawString(levelInformation, (screen.getWidth() * (i + 1) / 4 - 33),
+                screen.getHeight() / 3 + 120);
+        }
+    }
+
+    // 아이템의 스프라이트를 받아와 스케일 업해서 그리는 메소드
+    public void drawBigItem(final Item item, final int position_X, final int position_Y) {
+        boolean[][] image = spriteMap.get(item.getSpriteType());
+
+        backBufferGraphics.setColor(item.getColor());
+        for (int i = 0; i < image.length; i++) {
+            for (int j = 0; j < image[i].length; j++) {
+                if (image[i][j]) {
+                    backBufferGraphics.drawRect(position_X + i * 6, position_Y
+                        + j * 6, 6, 6);
+                }
+            }
+        }
     }
 
     /**

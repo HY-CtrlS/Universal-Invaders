@@ -54,11 +54,11 @@ public class HighScoreScreen extends Screen {
         super.update();
 
         draw();
-		if (inputManager.isKeyDown(KeyEvent.VK_SPACE)
-			&& this.inputDelay.checkFinished()) {
-			this.isRunning = false;
+        if (inputManager.isKeyDown(KeyEvent.VK_SPACE)
+            && this.inputDelay.checkFinished()) {
+            this.isRunning = false;
             Core.getSoundManager().playButtonSound();
-		}
+        }
     }
 
     /**
