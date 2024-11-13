@@ -17,7 +17,6 @@ public class AttackSpeedUpItem implements Item {
     private SpriteType spriteType = SpriteType.AttackSpeedUpItem;
     // 현재 아이템을 보유중인지에 대한 변수
     private boolean isowned = false;
-    // 현재 아이템이 최대 레벨인지에 대한 변수
     // Status 싱글톤 객체를 위한 변수
     private StatusManager status;
     // Logger
