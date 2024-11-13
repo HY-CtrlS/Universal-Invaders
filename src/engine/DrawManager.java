@@ -124,9 +124,9 @@ public final class DrawManager {
      * @return Shared instance of DrawManager.
      */
     protected static DrawManager getInstance() {
-		if (instance == null) {
-			instance = new DrawManager();
-		}
+        if (instance == null) {
+            instance = new DrawManager();
+        }
         return instance;
     }
 
@@ -185,14 +185,14 @@ public final class DrawManager {
         boolean[][] image = spriteMap.get(entity.getSpriteType());
 
         backBufferGraphics.setColor(entity.getColor());
-		for (int i = 0; i < image.length; i++) {
-			for (int j = 0; j < image[i].length; j++) {
-				if (image[i][j]) {
-					backBufferGraphics.drawRect(positionX + i * 2, positionY
-						+ j * 2, 1, 1);
-				}
-			}
-		}
+        for (int i = 0; i < image.length; i++) {
+            for (int j = 0; j < image[i].length; j++) {
+                if (image[i][j]) {
+                    backBufferGraphics.drawRect(positionX + i * 2, positionY
+                        + j * 2, 1, 1);
+                }
+            }
+        }
     }
 
     /**
@@ -219,12 +219,12 @@ public final class DrawManager {
     @SuppressWarnings("unused")
     private void drawGrid(final Screen screen) {
         backBufferGraphics.setColor(Color.DARK_GRAY);
-		for (int i = 0; i < screen.getHeight() - 1; i += 2) {
-			backBufferGraphics.drawLine(0, i, screen.getWidth() - 1, i);
-		}
-		for (int j = 0; j < screen.getWidth() - 1; j += 2) {
-			backBufferGraphics.drawLine(j, 0, j, screen.getHeight() - 1);
-		}
+        for (int i = 0; i < screen.getHeight() - 1; i += 2) {
+            backBufferGraphics.drawLine(0, i, screen.getWidth() - 1, i);
+        }
+        for (int j = 0; j < screen.getWidth() - 1; j += 2) {
+            backBufferGraphics.drawLine(j, 0, j, screen.getHeight() - 1);
+        }
     }
 
     /**
@@ -315,29 +315,39 @@ public final class DrawManager {
     public void drawMenu(final Screen screen, final int option) {
         String playString = "Play";
         String highScoresString = "High scores";
-        String exitString = "exit";
+        String settingsString = "Settings"; // Added settings menu
+        String exitString = "Exit";
 
-		if (option == 2) {
-			backBufferGraphics.setColor(Color.GREEN);
-		} else {
-			backBufferGraphics.setColor(Color.WHITE);
-		}
-        drawCenteredRegularString(screen, playString,
-            screen.getHeight() / 3 * 2);
-		if (option == 3) {
-			backBufferGraphics.setColor(Color.GREEN);
-		} else {
-			backBufferGraphics.setColor(Color.WHITE);
-		}
-        drawCenteredRegularString(screen, highScoresString, screen.getHeight()
-            / 3 * 2 + fontRegularMetrics.getHeight() * 2);
-		if (option == 0) {
-			backBufferGraphics.setColor(Color.GREEN);
-		} else {
-			backBufferGraphics.setColor(Color.WHITE);
-		}
-        drawCenteredRegularString(screen, exitString, screen.getHeight() / 3
-            * 2 + fontRegularMetrics.getHeight() * 4);
+        if (option == 2) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, playString, screen.getHeight() / 3 * 2);
+
+        if (option == 3) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, highScoresString,
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+
+        if (option == 4) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, settingsString,
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+
+        if (option == 0) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, exitString,
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 6);
     }
 
     /**
@@ -402,11 +412,11 @@ public final class DrawManager {
             + fontRegularMetrics.getWidths()[' ']) / 2;
 
         for (int i = 0; i < 3; i++) {
-			if (i == nameCharSelected) {
-				backBufferGraphics.setColor(Color.GREEN);
-			} else {
-				backBufferGraphics.setColor(Color.WHITE);
-			}
+            if (i == nameCharSelected) {
+                backBufferGraphics.setColor(Color.GREEN);
+            } else {
+                backBufferGraphics.setColor(Color.WHITE);
+            }
 
             positionX += fontRegularMetrics.getWidths()[name[i]] / 2;
             positionX = i == 0 ? positionX
@@ -440,11 +450,11 @@ public final class DrawManager {
         drawCenteredBigString(screen, gameEndString, screen.getHeight()
             / height - fontBigMetrics.getHeight() * 2);
 
-		if (acceptsInput) {
-			backBufferGraphics.setColor(Color.GREEN);
-		} else {
-			backBufferGraphics.setColor(Color.GRAY);
-		}
+        if (acceptsInput) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.GRAY);
+        }
         drawCenteredRegularString(screen, continueOrExitString,
             screen.getHeight() / 2 + fontRegularMetrics.getHeight() * 10);
     }
@@ -535,24 +545,24 @@ public final class DrawManager {
             / 12);
         drawHorizontalLine(screen, screen.getHeight() / 2 + screen.getHeight()
             / 12);
-		if (number >= 4) {
-			if (!bonusLife) {
-				drawCenteredBigString(screen, "Level " + level,
-					screen.getHeight() / 2
-						+ fontBigMetrics.getHeight() / 3);
-			} else {
-				drawCenteredBigString(screen, "Level " + level
-						+ " - Bonus life!",
-					screen.getHeight() / 2
-						+ fontBigMetrics.getHeight() / 3);
-			}
-		} else if (number != 0) {
-			drawCenteredBigString(screen, Integer.toString(number),
-				screen.getHeight() / 2 + fontBigMetrics.getHeight() / 3);
-		} else {
-			drawCenteredBigString(screen, "GO!", screen.getHeight() / 2
-				+ fontBigMetrics.getHeight() / 3);
-		}
+        if (number >= 4) {
+            if (!bonusLife) {
+                drawCenteredBigString(screen, "Level " + level,
+                    screen.getHeight() / 2
+                        + fontBigMetrics.getHeight() / 3);
+            } else {
+                drawCenteredBigString(screen, "Level " + level
+                        + " - Bonus life!",
+                    screen.getHeight() / 2
+                        + fontBigMetrics.getHeight() / 3);
+            }
+        } else if (number != 0) {
+            drawCenteredBigString(screen, Integer.toString(number),
+                screen.getHeight() / 2 + fontBigMetrics.getHeight() / 3);
+        } else {
+            drawCenteredBigString(screen, "GO!", screen.getHeight() / 2
+                + fontBigMetrics.getHeight() / 3);
+        }
     }
 
     /**
@@ -598,31 +608,31 @@ public final class DrawManager {
     public void drawSelectedItem(final Screen screen, final List<Integer> itemList,
         final int selectedItem) {
         // 첫 아이템 선택여부
-		if (selectedItem == 0) {
-			backBufferGraphics.setColor(Color.GREEN);
-		} else {
-			backBufferGraphics.setColor(Color.WHITE);
-		}
+        if (selectedItem == 0) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
         // 첫 아이템 그리기
         drawItemBox((screen.getWidth() / 4) - 50, screen.getHeight() / 3);
         //drawItem(0, (screen.getWidth() / 4), 350)
 
         // 두번째 아이템 선택여부
-		if (selectedItem == 1) {
-			backBufferGraphics.setColor(Color.GREEN);
-		} else {
-			backBufferGraphics.setColor(Color.WHITE);
-		}
+        if (selectedItem == 1) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
         // 두 번째 아이템 그리기
         drawItemBox((screen.getWidth() * 2 / 4) - 50, screen.getHeight() / 3);
         //drawItem(1, (screen.getWidth() * 2 / 4), 350)
 
         // 세번째 아이템 선택여부
-		if (selectedItem == 2) {
-			backBufferGraphics.setColor(Color.GREEN);
-		} else {
-			backBufferGraphics.setColor(Color.WHITE);
-		}
+        if (selectedItem == 2) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
         //세 번째 아이템 그리기
         drawItemBox((screen.getWidth() * 3) / 4 - 50, screen.getHeight() / 3);
         //drawItem(2, (screen.getWidth() * 3 / 4), 350)
@@ -633,5 +643,72 @@ public final class DrawManager {
     public void drawItem(final int item, final int position_X, final int position_Y) {
         // drawEntity로 해당 Item 스프라이트를 그림
         // drawString 으로 해당 Item에 대한 설명 및 정보를 화면 아래 부분에 추가
+    }
+
+    /**
+     * 설정 메뉴를 그려주며, 사용자에게 배경음악 및 효과음 볼륨을 조정할 수 있도록 합니다.
+     *
+     * @param screen         설정 화면을 그릴 스크린 객체
+     * @param selectedOption 현재 선택된 옵션 (0: 배경음악, 1: 효과음)
+     */
+    public void drawSettingsMenu(final Screen screen, final int selectedOption) {
+        // 설정 화면 제목 및 안내 문자열
+        String settingsTitle = "Settings";
+        String instructionsString = "Use UP/DOWN to switch, LEFT/RIGHT to adjust, SPACE to exit";
+
+        // 설정 제목과 안내 문자열 표시
+        backBufferGraphics.setColor(Color.GREEN);
+        drawCenteredBigString(screen, settingsTitle, screen.getHeight() / 8);
+
+        backBufferGraphics.setColor(Color.GRAY);
+        drawCenteredRegularString(screen, instructionsString, screen.getHeight() / 5);
+
+        // 볼륨 바에 대한 공통 설정 변수
+        int boxSize = 20;
+        int spacing = 5;
+        int totalBoxes = 10;
+        int barX = (screen.getWidth() - (boxSize + spacing) * totalBoxes + spacing) / 2;
+
+        // 배경음악(BGM) 볼륨 레이블 및 바 표시
+        String bgmLabel = "Background Music Volume";
+        int filledBoxesBGM = (int) (Core.getSoundManager().getBackgroundMusicVolume() * totalBoxes);
+        int bgmBarY = screen.getHeight() / 3;
+
+        // 배경음악 볼륨 바 그리기
+        drawVolumeBar(screen, bgmLabel, filledBoxesBGM, barX, bgmBarY, selectedOption == 0);
+
+        // 효과음(SFX) 볼륨 레이블 및 바 표시
+        String sfxLabel = "Sound Effects Volume";
+        int filledBoxesSFX = (int) (Core.getSoundManager().getSoundEffectsVolume() * totalBoxes);
+        int sfxBarY = screen.getHeight() / 2;
+
+        // 효과음 볼륨 바 그리기
+        drawVolumeBar(screen, sfxLabel, filledBoxesSFX, barX, sfxBarY, selectedOption == 1);
+    }
+
+    /**
+     * 볼륨 바와 레이블을 그려주며, 현재 볼륨 레벨을 표시합니다.
+     *
+     * @param screen      볼륨 바를 그릴 스크린 객체
+     * @param label       볼륨 바에 대한 레이블 (예: "배경음악 볼륨")
+     * @param filledBoxes 현재 볼륨을 나타내는 채워진 박스 개수
+     * @param barX        볼륨 바의 X 좌표
+     * @param barY        볼륨 바의 Y 좌표
+     * @param isSelected  현재 볼륨 바가 선택되어 있는지 여부
+     */
+    private void drawVolumeBar(final Screen screen, String label, int filledBoxes, int barX,
+        int barY, boolean isSelected) {
+        // 선택된 항목에 따라 색상 설정
+        backBufferGraphics.setColor(isSelected ? Color.GREEN : Color.GRAY);
+        drawCenteredRegularString(screen, label, barY - fontRegularMetrics.getHeight());
+
+        // 볼륨 바의 박스들을 그려줌
+        for (int i = 0; i < 10; i++) {
+            if (i < filledBoxes) {
+                backBufferGraphics.fillRect(barX + (20 + 5) * i, barY, 20, 20); // 채워진 박스
+            } else {
+                backBufferGraphics.drawRect(barX + (20 + 5) * i, barY, 20, 20); // 빈 박스
+            }
+        }
     }
 }
