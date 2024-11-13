@@ -11,15 +11,10 @@ public class StatusManager {
 
     private StatusManager() {
         logger = Core.getLogger();
-        try {
-            status = FileManager.getInstance().loadShipStatus();
-        } catch (IOException e) {
-            logger.warning("Failed to load status. Using default values.");
-            status = new ShipStatus(750, -6, 2, 100);
-        }
+        resetDefaultStatus();
     }
 
-    public static StatusManager getInstance() {
+    protected static StatusManager getInstance() {
         if (instance == null) {
             instance = new StatusManager();
         }
@@ -63,6 +58,15 @@ public class StatusManager {
             FileManager.getInstance().saveShipStatus(status);
         } catch (IOException e) {
             logger.warning("Failed to save status.");
+        }
+    }
+
+    public void resetDefaultStatus() {
+        try {
+            status = FileManager.getInstance().loadShipStatus();
+        } catch (IOException e) {
+            logger.warning("Failed to load status. Using default values.");
+            status = new ShipStatus(750, 6, 2, 100);
         }
     }
 }
