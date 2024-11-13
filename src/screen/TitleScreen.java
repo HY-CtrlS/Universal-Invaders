@@ -32,6 +32,9 @@ public class TitleScreen extends Screen {
         this.returnCode = 2;
         this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
         this.selectionCooldown.reset();
+
+        // 메인 메뉴 배경음악 재생
+        Core.getSoundManager().playBackgroundMusic("/Users/suhynnoh/IdeaProjects/Universal-Invaders/res/sounds/main_bgm.wav");
     }
 
     /**
@@ -57,11 +60,13 @@ public class TitleScreen extends Screen {
             if (inputManager.isKeyDown(KeyEvent.VK_UP)
                 || inputManager.isKeyDown(KeyEvent.VK_W)) {
                 previousMenuItem();
+                Core.getSoundManager().playSoundEffect("/Users/suhynnoh/IdeaProjects/Universal-Invaders/res/sounds/button.wav");
                 this.selectionCooldown.reset();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
                 || inputManager.isKeyDown(KeyEvent.VK_S)) {
                 nextMenuItem();
+                Core.getSoundManager().playSoundEffect("/Users/suhynnoh/IdeaProjects/Universal-Invaders/res/sounds/button.wav");
                 this.selectionCooldown.reset();
             }
 			if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
