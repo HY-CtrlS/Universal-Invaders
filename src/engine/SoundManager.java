@@ -260,4 +260,18 @@ public class SoundManager {
     public boolean isBackgroundMusicPlaying() {
         return bgmClip != null && bgmClip.isRunning();
     }
+
+    /**
+     * 타이틀 스크린 배경음악을 재생합니다.
+     */
+    public void playTitleScreenBGM() {
+        playBackgroundMusic("res/sounds/title_screen.wav");
+    }
+
+    /**
+     * 인 게임 배경음악을 재생합니다.
+     */
+    public void playInGameBGM() {
+        playBackgroundMusic("res/sounds/in_game.wav");
+    }
 }

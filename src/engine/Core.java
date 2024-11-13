@@ -157,6 +157,7 @@ public final class Core {
 
                     } while (gameState.getLivesRemaining() > 0
                         && gameState.getLevel() <= NUM_LEVELS);
+                    getSoundManager().stopBackgroundMusic();
 
                     LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
                         + " score screen at " + FPS + " fps, with a score of "
