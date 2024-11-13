@@ -644,7 +644,7 @@ public final class DrawManager {
 
     public void drawPauseMenu(final Screen screen, final int option) {
         String resume = "Resume";
-        String mainmenu = "Main menu";
+        String quit = "Quit";
 
         if (option == 1) {
             backBufferGraphics.setColor(Color.GREEN);
@@ -658,7 +658,7 @@ public final class DrawManager {
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
-        drawCenteredRegularString(screen, mainmenu, screen.getHeight()
+        drawCenteredRegularString(screen, quit, screen.getHeight()
             / 3 * 2 + fontRegularMetrics.getHeight() * 2);
     }
 }

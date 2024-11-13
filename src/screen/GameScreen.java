@@ -1,5 +1,6 @@
 package screen;
 
+import engine.DrawManager;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
@@ -198,7 +199,10 @@ public class GameScreen extends Screen {
             }
             if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
                 Screen pause = new PauseScreen(getWidth(), getHeight(), fps);
-                pause.run();
+                int check = pause.run();
+                if (check == 0) {
+                    this.lives = 0;
+                }
             }
 
             //if (this.enemyShipSpecial != null) {
