@@ -129,10 +129,10 @@ public class EnemyShipSet {
         return enemies;
     }
 
-    public void destroy(EnemyShip enemyShip, int damage) {
+    public void damage_Enemy(EnemyShip enemyShip, int damage) {
         for (EnemyShip enemy : enemies) {
             if (enemy.equals(enemyShip)) {
-                enemy.damage(damage);
+                enemy.decreaseHp(damage);
             }
         }
     }

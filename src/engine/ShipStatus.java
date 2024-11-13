@@ -6,7 +6,7 @@ public class ShipStatus {
     private int bulletSpeed;
     private int speed;
     private int baseDamage;
-    private int maxLives;
+    private int hp;
 
 
     public ShipStatus(int shootingInterval, int bulletSpeed, int speed, int baseDamage, int maxLives) {
@@ -14,7 +14,7 @@ public class ShipStatus {
         this.bulletSpeed = bulletSpeed;
         this.speed = speed;
         this.baseDamage = baseDamage;
-        this.maxLives = maxLives;
+        this.hp = maxLives;
     }
 
     public int getShootingInterval() {
@@ -41,12 +41,10 @@ public class ShipStatus {
         this.speed = speed;
     }
 
-    public int getMaxLives() {
-        return maxLives;
-    }
+    public int getHp() {return hp;}
 
-    public void setMaxLives(int maxLives) {
-        this.maxLives = maxLives;
+    public void setHp(int maxLives) {
+        this.hp = maxLives;
     }
 
     public int getBaseDamage() {return baseDamage;}

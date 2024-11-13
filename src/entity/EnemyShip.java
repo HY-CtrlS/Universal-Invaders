@@ -12,7 +12,7 @@ import engine.DrawManager.SpriteType;
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
  */
 public class EnemyShip extends Entity {
-    private int maxLives;
+    private int hp;
     private int baseDamage;
     /** Point value of a type A enemy. */
     private static final int A_TYPE_POINTS = 10;
@@ -42,13 +42,13 @@ public class EnemyShip extends Entity {
      * @param positionY  Initial position of the ship in the Y axis.
      * @param spriteType Sprite type, image corresponding to the ship.
      */
-    public EnemyShip(final int positionX, final int positionY, int maxLives,
+    public EnemyShip(final int positionX, final int positionY, int hp,
         final SpriteType spriteType) {
         super(positionX, positionY, 12 * 2, 8 * 2, Color.WHITE);
 
         this.spriteType = spriteType;
         this.animationCooldown = Core.getCooldown(500);
-        this.maxLives = maxLives;
+        this.hp = hp;
         this.isDestroyed = false;
 
         switch (this.spriteType) {
@@ -143,10 +143,11 @@ public class EnemyShip extends Entity {
             }
         }
     }
-    public final void damage(int damage){
-        this.maxLives -= damage;
 
-        if (this.maxLives <= 0){
+    // 피해 입은 만큼 hp 감소시키고 0 이하가 되면 파괴.
+    public final void decreaseHp(int damaged){
+        this.hp -= damaged;
+        if (this.hp <= 0){
             destroy();
         }
     }

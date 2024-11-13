@@ -253,14 +253,14 @@ public final class DrawManager {
         int barY = 10; // 체력 바의 Y 좌표
         int barWidth = 200; // 체력 바의 최대 너비
         int barHeight = 20; // 체력 바의 높이
-        int maxLives = Core.getStatusManager().getMaxLives(); // 최대 체력
+        int hp = Core.getStatusManager().getHp(); // 최대 체력
 
         // 체력 바의 테두리 그리기
         backBufferGraphics.setColor(Color.GRAY);
         backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
 
         // 현재 체력에 따른 바의 너비 계산
-        int healthWidth = (int) ((double) lives / maxLives * barWidth);
+        int healthWidth = (int) ((double) lives / hp * barWidth);
 
         // 체력 바 채우기
         backBufferGraphics.setColor(Color.RED); // 체력 바의 색상
@@ -268,7 +268,7 @@ public final class DrawManager {
 
         // 체력 수치 표시
         backBufferGraphics.setColor(Color.WHITE);
-        String hpText = +lives + "/" + maxLives;
+        String hpText = +lives + "/" + hp;
         int textX = barX + (barWidth - fontRegularMetrics.stringWidth(hpText)) / 2;
         int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2)
             + fontRegularMetrics.getAscent();

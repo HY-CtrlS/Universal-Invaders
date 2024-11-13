@@ -23,7 +23,7 @@ public class Ship extends Entity {
     private int speed;
     /** Value for Max life*/
     private int maxLives;
-    private int baseDamage = 1;
+    private int baseDamage;
     /** 함선이 바라보고 있는 뱡향 */
     private static String direction;
     /** Minimum time between shots. */

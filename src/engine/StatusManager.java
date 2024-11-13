@@ -55,12 +55,12 @@ public class StatusManager {
     public void setBaseDamage(int baseDamage) {status.setBaseDamage(baseDamage);}
 
 
-    public int getMaxLives() {
-        return status.getMaxLives();
+    public int getHp() {
+        return status.getHp();
     }
 
-    public void setMaxLives(int maxLives) {
-        status.setMaxLives(maxLives);
+    public void setMaxLives(final int hp) {
+        status.setHp(hp);
     }
 
 

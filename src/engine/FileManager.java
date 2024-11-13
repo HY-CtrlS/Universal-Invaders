@@ -376,7 +376,7 @@ public final class FileManager {
             bufferedWriter.newLine();
             bufferedWriter.write(String.valueOf(shipStatus.getBaseDamage()));
             bufferedWriter.newLine();
-            bufferedWriter.write(String.valueOf(shipStatus.getMaxLives()));
+            bufferedWriter.write(String.valueOf(shipStatus.getHp()));
 
         } finally {
 			if (bufferedWriter != null) {
