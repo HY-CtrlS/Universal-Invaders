@@ -73,6 +73,7 @@ public class GameScreen extends Screen {
     private boolean levelStarted;
     /** 1초를 새는 Cooldown */
     private Cooldown clockCooldown;
+    private boolean isDestroyed = false;
 
     /**
      * Constructor, establishes the properties of the screen.
@@ -194,6 +195,7 @@ public class GameScreen extends Screen {
 			if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 				if (this.ship.shoot(this.bullets)) {
 					this.bulletsShot++;
+                    Core.getSoundManager().playBulletShotSound();
 				}
 			}
 
@@ -322,6 +324,7 @@ public class GameScreen extends Screen {
 						this.shipsDestroyed++;
 						this.enemyShipSet.destroy(enemyShip);
 						recyclable.add(bullet);
+                        Core.getSoundManager().playBulletHitSound();
 					}
 				}
 				if (this.enemyShipSpecial != null
@@ -345,6 +348,11 @@ public class GameScreen extends Screen {
                     this.lives -= 20;
                     this.logger.info("Hit on player ship, " + this.lives
                         + " lives remaining.");
+                    Core.getSoundManager().playDamageSound();
+                    if (this.lives <= 0 && !this.isDestroyed) {
+                        Core.getSoundManager().playExplosionSound();
+                        this.isDestroyed = true; // Mark as destroyed to prevent re-triggering
+                    }
                 }
             }
         }

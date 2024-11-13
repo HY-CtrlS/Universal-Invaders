@@ -213,4 +213,38 @@ public class SoundManager {
         playSoundEffect("res/sounds/button.wav");
     }
 
+    /**
+     * 총알 발사 사운드를 재생합니다.
+     */
+    public void playBulletShotSound() {
+        playSoundEffect("res/sounds/bullet_shot.wav");
+    }
+
+    /**
+     * 총알 적중 사운드를 재생합니다.
+     */
+    public void playBulletHitSound() {
+        playSoundEffect("res/sounds/bullet_hit.wav");
+    }
+
+    /**
+     * 아군 함선 피해 사운드를 재생합니다.
+     */
+    public void playDamageSound() {
+        playSoundEffect("res/sounds/damage.wav");
+    }
+
+    /**
+     * 아군 함선 파괴 사운드를 재생합니다.
+     */
+    public void playExplosionSound() {
+        playSoundEffect("res/sounds/explosion.wav");
+    }
+
+    /**
+     * 게임 시작 사운드를 재생합니다.
+     */
+    public void playPlaySound() {
+        playSoundEffect("res/sounds/play.wav");
+    }
 }
