@@ -137,4 +137,12 @@ public class SoundManager {
             return null;
         }
     }
+
+    public float getBackgroundMusicVolume() {
+        return backgroundMusicVolume;
+    }
+
+    public float getSoundEffectsVolume() {
+        return soundEffectsVolume;
+    }
 }
