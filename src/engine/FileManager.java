@@ -284,6 +284,7 @@ public final class FileManager {
             int bulletSpeed = Integer.parseInt(bufferedReader.readLine());
             int speed = Integer.parseInt(bufferedReader.readLine());
 
+            //오류 발생
             int baseDamage = Integer.parseInt(bufferedReader.readLine());
 
             int maxLives = Integer.parseInt(bufferedReader.readLine());

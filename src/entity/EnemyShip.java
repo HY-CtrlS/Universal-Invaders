@@ -145,6 +145,7 @@ public class EnemyShip extends Entity {
     }
     public final void damage(int damage){
         this.maxLives -= damage;
+
         if (this.maxLives <= 0){
             destroy();
         }
