@@ -205,4 +205,12 @@ public class SoundManager {
     public float getSoundEffectsVolume() {
         return soundEffectsVolume;
     }
+
+    /**
+     * 버튼 클릭 사운드를 재생합니다.
+     */
+    public void playButtonSound() {
+        playSoundEffect("res/sounds/button.wav");
+    }
+
 }

@@ -67,12 +67,12 @@ public class SettingScreen extends Screen {
         // 메뉴 이동
         if (inputManager.isKeyDown(KeyEvent.VK_UP) || inputManager.isKeyDown(KeyEvent.VK_W)) {
             previousMenuItem();
-            Core.getSoundManager().playSoundEffect("/Users/suhynnoh/IdeaProjects/Universal-Invaders/res/sounds/button.wav");
+            Core.getSoundManager().playButtonSound();
             this.selectionCooldown.reset();
         }
         if (inputManager.isKeyDown(KeyEvent.VK_DOWN) || inputManager.isKeyDown(KeyEvent.VK_S)) {
             nextMenuItem();
-            Core.getSoundManager().playSoundEffect("/Users/suhynnoh/IdeaProjects/Universal-Invaders/res/sounds/button.wav");
+            Core.getSoundManager().playButtonSound();
             this.selectionCooldown.reset();
         }
 
@@ -80,19 +80,20 @@ public class SettingScreen extends Screen {
         if (adjustCooldown.checkFinished()) {
             if (inputManager.isKeyDown(KeyEvent.VK_LEFT) || inputManager.isKeyDown(KeyEvent.VK_A)) {
                 adjustVolumeDown();
-                Core.getSoundManager().playSoundEffect("/Users/suhynnoh/IdeaProjects/Universal-Invaders/res/sounds/button.wav");
+                Core.getSoundManager().playButtonSound();
                 this.adjustCooldown.reset();
             }
-            if (inputManager.isKeyDown(KeyEvent.VK_RIGHT) || inputManager.isKeyDown(KeyEvent.VK_D)) {
+            if (inputManager.isKeyDown(KeyEvent.VK_RIGHT) || inputManager.isKeyDown(
+                KeyEvent.VK_D)) {
                 adjustVolumeUp();
-                Core.getSoundManager().playSoundEffect("/Users/suhynnoh/IdeaProjects/Universal-Invaders/res/sounds/button.wav");
+                Core.getSoundManager().playButtonSound();
                 this.adjustCooldown.reset();
             }
         }
 
         // 설정 화면 종료
         if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-            Core.getSoundManager().playSoundEffect("/Users/suhynnoh/IdeaProjects/Universal-Invaders/res/sounds/button.wav");
+            Core.getSoundManager().playButtonSound();
             this.isRunning = false;
         }
     }

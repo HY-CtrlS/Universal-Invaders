@@ -34,7 +34,8 @@ public class TitleScreen extends Screen {
         this.selectionCooldown.reset();
 
         // 메인 메뉴 배경음악 재생
-        Core.getSoundManager().playBackgroundMusic("/Users/suhynnoh/IdeaProjects/Universal-Invaders/res/sounds/title_screen.wav");
+        Core.getSoundManager().playBackgroundMusic(
+            "/Users/suhynnoh/IdeaProjects/Universal-Invaders/res/sounds/title_screen.wav");
     }
 
     /**
@@ -60,18 +61,18 @@ public class TitleScreen extends Screen {
             if (inputManager.isKeyDown(KeyEvent.VK_UP)
                 || inputManager.isKeyDown(KeyEvent.VK_W)) {
                 previousMenuItem();
-                Core.getSoundManager().playSoundEffect("/Users/suhynnoh/IdeaProjects/Universal-Invaders/res/sounds/button.wav");
+                Core.getSoundManager().playButtonSound();
                 this.selectionCooldown.reset();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
                 || inputManager.isKeyDown(KeyEvent.VK_S)) {
                 nextMenuItem();
-                Core.getSoundManager().playSoundEffect("/Users/suhynnoh/IdeaProjects/Universal-Invaders/res/sounds/button.wav");
+                Core.getSoundManager().playButtonSound();
                 this.selectionCooldown.reset();
             }
-			if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-				this.isRunning = false;
-			}
+            if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
+                this.isRunning = false;
+            }
         }
     }
 
@@ -79,26 +80,26 @@ public class TitleScreen extends Screen {
      * Shifts the focus to the next menu item.
      */
     private void nextMenuItem() {
-		if (this.returnCode == 4) {
-			this.returnCode = 0;
-		} else if (this.returnCode == 0) {
-			this.returnCode = 2;
-		} else {
-			this.returnCode++;
-		}
+        if (this.returnCode == 4) {
+            this.returnCode = 0;
+        } else if (this.returnCode == 0) {
+            this.returnCode = 2;
+        } else {
+            this.returnCode++;
+        }
     }
 
     /**
      * Shifts the focus to the previous menu item.
      */
     private void previousMenuItem() {
-		if (this.returnCode == 0) {
-			this.returnCode = 4;
-		} else if (this.returnCode == 2) {
-			this.returnCode = 0;
-		} else {
-			this.returnCode--;
-		}
+        if (this.returnCode == 0) {
+            this.returnCode = 4;
+        } else if (this.returnCode == 2) {
+            this.returnCode = 0;
+        } else {
+            this.returnCode--;
+        }
     }
 
     /**
