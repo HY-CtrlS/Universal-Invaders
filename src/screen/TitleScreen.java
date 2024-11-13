@@ -74,6 +74,9 @@ public class TitleScreen extends Screen {
                 this.isRunning = false;
                 if (returnCode == 2) {
                     Core.getSoundManager().playPlaySound();
+                    Core.getSoundManager().stopBackgroundMusic();
+                } else {
+                    Core.getSoundManager().playButtonSound();
                 }
             }
         }

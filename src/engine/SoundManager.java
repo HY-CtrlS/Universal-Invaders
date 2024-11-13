@@ -37,6 +37,10 @@ public class SoundManager {
     public void playBackgroundMusic(String filepath) {
         try {
             if (bgmClip != null && bgmClip.isOpen()) {
+                // 이미 음악이 재생 중이라면 종료하지 않고 그대로 유지
+                if (bgmClip.isRunning()) {
+                    return;
+                }
                 bgmClip.stop();
                 bgmClip.close();
             }
@@ -246,5 +250,14 @@ public class SoundManager {
      */
     public void playPlaySound() {
         playSoundEffect("res/sounds/play.wav");
+    }
+
+    /**
+     * 배경음악이 재생 중인지 확인합니다.
+     *
+     * @return 배경음악이 재생 중이면 true, 아니면 false
+     */
+    public boolean isBackgroundMusicPlaying() {
+        return bgmClip != null && bgmClip.isRunning();
     }
 }
