@@ -9,17 +9,19 @@ public class SoundManager {
 
     private static SoundManager instance;
     private static Logger logger;
-    private Clip bgmClip;
-    private FloatControl bgmVolumeControl;
-    private float backgroundMusicVolume;
-    private float soundEffectsVolume;
+    private Clip bgmClip; // 배경음악 클립
+    private FloatControl bgmVolumeControl; // 배경음악 볼륨 조절
+    private float backgroundMusicVolume; // 현재 배경음악 볼륨
+    private float soundEffectsVolume; // 현재 효과음 볼륨
 
+    // 생성자 - 로그 설정 및 초기 볼륨 값을 1.0으로 설정
     private SoundManager() {
-        logger = Core.getLogger(); // Core 클래스가 있다고 가정합니다.
+        logger = Core.getLogger();
         backgroundMusicVolume = 1.0f;
         soundEffectsVolume = 1.0f;
     }
 
+    // SoundManager 인스턴스를 싱글톤 패턴으로 가져오기
     public static SoundManager getInstance() {
         if (instance == null) {
             instance = new SoundManager();
@@ -27,6 +29,11 @@ public class SoundManager {
         return instance;
     }
 
+    /**
+     * 배경음악 파일을 재생합니다.
+     *
+     * @param filepath 재생할 배경음악 파일 경로
+     */
     public void playBackgroundMusic(String filepath) {
         try {
             if (bgmClip != null && bgmClip.isOpen()) {
@@ -37,27 +44,33 @@ public class SoundManager {
             bgmClip = AudioSystem.getClip();
             bgmClip.open(audioInputStream);
 
-            // 지원되는 볼륨 컨트롤 찾기
+            // 배경음악의 볼륨 컨트롤 설정
             bgmVolumeControl = getSupportedVolumeControl(bgmClip);
             if (bgmVolumeControl != null) {
                 setVolume(bgmVolumeControl, backgroundMusicVolume);
             } else {
-                logger.warning("No supported volume control found for background music.");
+                logger.warning("지원되는 볼륨 컨트롤을 찾을 수 없습니다.");
             }
 
-            bgmClip.loop(Clip.LOOP_CONTINUOUSLY); // 배경음악을 반복 재생합니다.
+            bgmClip.loop(Clip.LOOP_CONTINUOUSLY); // 배경음악 반복 재생
             bgmClip.start();
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             logger.warning("배경음악 재생 실패: " + e.getMessage());
         }
     }
 
+    /**
+     * 배경음악을 중지합니다.
+     */
     public void stopBackgroundMusic() {
         if (bgmClip != null && bgmClip.isRunning()) {
             bgmClip.stop();
         }
     }
 
+    /**
+     * 배경음악을 다시 재생합니다.
+     */
     public void resumeBackgroundMusic() {
         if (bgmClip != null && !bgmClip.isRunning()) {
             bgmClip.start();
@@ -65,27 +78,35 @@ public class SoundManager {
         }
     }
 
+    /**
+     * 배경음악 볼륨을 설정합니다.
+     *
+     * @param gain 설정할 볼륨 (0.0 - 1.0)
+     */
     public void setBackgroundMusicVolume(float gain) {
-        if (gain < 0.0f) gain = 0.0f;
-        if (gain > 1.0f) gain = 1.0f;
-        backgroundMusicVolume = gain;
+        backgroundMusicVolume = Math.max(0.0f, Math.min(1.0f, gain)); // 볼륨 범위 제한
         if (bgmVolumeControl != null) {
-            setVolume(bgmVolumeControl, gain);
+            setVolume(bgmVolumeControl, backgroundMusicVolume);
         }
     }
 
+    /**
+     * 효과음을 재생합니다.
+     *
+     * @param filepath 재생할 효과음 파일 경로
+     */
     public void playSoundEffect(String filepath) {
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filepath));
             Clip sfxClip = AudioSystem.getClip();
             sfxClip.open(audioInputStream);
 
-            // 지원되는 볼륨 컨트롤 찾기
+            // 효과음의 볼륨 컨트롤 설정
             FloatControl sfxVolumeControl = getSupportedVolumeControl(sfxClip);
             if (sfxVolumeControl != null) {
                 setVolume(sfxVolumeControl, soundEffectsVolume);
             } else {
-                logger.warning("No supported volume control found for sound effect.");
+                logger.warning("지원되는 볼륨 컨트롤을 찾을 수 없습니다.");
             }
 
             sfxClip.addLineListener(event -> {
@@ -99,31 +120,71 @@ public class SoundManager {
         }
     }
 
+    /**
+     * 효과음 볼륨을 설정합니다.
+     *
+     * @param gain 설정할 볼륨 (0.0 - 1.0)
+     */
     public void setSoundEffectsVolume(float gain) {
-        if (gain < 0.0f) gain = 0.0f;
-        if (gain > 1.0f) gain = 1.0f;
-        soundEffectsVolume = gain;
-        // 현재 재생 중인 효과음에는 적용되지 않음. 필요 시 추가 구현 가능
+        soundEffectsVolume = Math.max(0.0f, Math.min(1.0f, gain)); // 볼륨 범위 제한
     }
 
+    /**
+     * 현재 볼륨 값을 조정합니다.
+     *
+     * @param volumeControl 볼륨 컨트롤 객체
+     * @param gain          설정할 볼륨 (0.0 - 1.0)
+     */
     private void setVolume(FloatControl volumeControl, float gain) {
-        float min = volumeControl.getMinimum(); // 예: -80.0f
-        float max = volumeControl.getMaximum(); // 예: 6.0f
+        float min = volumeControl.getMinimum();
+        float max = volumeControl.getMaximum();
         float dB;
+
         if (gain <= 0.0f) {
             dB = min;
         } else {
             dB = (float) (Math.log10(gain) * 20.0);
-            if (dB < min) dB = min;
-            if (dB > max) dB = max;
+            dB = Math.max(min, Math.min(dB, max)); // dB 값 범위 제한
         }
         volumeControl.setValue(dB);
     }
 
     /**
-     * Clip이 지원하는 볼륨 컨트롤을 찾습니다.
+     * 배경음악 볼륨을 0.1 증가시킵니다.
+     */
+    public void BGMUp() {
+        float newBgmVolume = Math.min(1.0f, backgroundMusicVolume + 0.1f);
+        setBackgroundMusicVolume(Math.round(newBgmVolume * 10) / 10.0f); // 소수점 첫째 자리까지 반올림
+    }
+
+    /**
+     * 배경음악 볼륨을 0.1 감소시킵니다.
+     */
+    public void BGMDown() {
+        float newBgmVolume = Math.max(0.0f, backgroundMusicVolume - 0.1f);
+        setBackgroundMusicVolume(Math.round(newBgmVolume * 10) / 10.0f); // 소수점 첫째 자리까지 반올림
+    }
+
+    /**
+     * 효과음 볼륨을 0.1 증가시킵니다.
+     */
+    public void SFXUp() {
+        float newSfxVolume = Math.min(1.0f, soundEffectsVolume + 0.1f);
+        setSoundEffectsVolume(Math.round(newSfxVolume * 10) / 10.0f); // 소수점 첫째 자리까지 반올림
+    }
+
+    /**
+     * 효과음 볼륨을 0.1 감소시킵니다.
+     */
+    public void SFXDown() {
+        float newSfxVolume = Math.max(0.0f, soundEffectsVolume - 0.1f);
+        setSoundEffectsVolume(Math.round(newSfxVolume * 10) / 10.0f); // 소수점 첫째 자리까지 반올림
+    }
+
+    /**
+     * 오디오 클립이 지원하는 볼륨 컨트롤을 반환합니다.
      *
-     * @param clip 오디오 Clip
+     * @param clip 오디오 클립
      * @return 지원되는 FloatControl 객체 또는 null
      */
     private FloatControl getSupportedVolumeControl(Clip clip) {
@@ -132,12 +193,11 @@ public class SoundManager {
         } else if (clip.isControlSupported(FloatControl.Type.VOLUME)) {
             return (FloatControl) clip.getControl(FloatControl.Type.VOLUME);
         } else {
-            // 다른 볼륨 관련 컨트롤을 추가로 확인할 수 있습니다.
-            // 예: FloatControl.Type.AUX_GAIN 등
             return null;
         }
     }
 
+    // 현재 배경음악과 효과음 볼륨을 가져오는 게터
     public float getBackgroundMusicVolume() {
         return backgroundMusicVolume;
     }
