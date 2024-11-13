@@ -50,9 +50,9 @@ public final class FileManager {
      * @return Shared instance of FileManager.
      */
     protected static FileManager getInstance() {
-		if (instance == null) {
-			instance = new FileManager();
-		}
+        if (instance == null) {
+            instance = new FileManager();
+        }
         return instance;
     }
 
@@ -75,29 +75,29 @@ public final class FileManager {
             // Sprite loading.
             for (Map.Entry<SpriteType, boolean[][]> sprite : spriteMap
                 .entrySet()) {
-				for (int i = 0; i < sprite.getValue().length; i++) {
-					for (int j = 0; j < sprite.getValue()[i].length; j++) {
-						do {
-							c = (char) inputStream.read();
-						}
-						while (c != '0' && c != '1');
+                for (int i = 0; i < sprite.getValue().length; i++) {
+                    for (int j = 0; j < sprite.getValue()[i].length; j++) {
+                        do {
+                            c = (char) inputStream.read();
+                        }
+                        while (c != '0' && c != '1');
 
-						if (c == '1') {
-							sprite.getValue()[i][j] = true;
-						} else {
-							sprite.getValue()[i][j] = false;
-						}
-					}
-				}
+                        if (c == '1') {
+                            sprite.getValue()[i][j] = true;
+                        } else {
+                            sprite.getValue()[i][j] = false;
+                        }
+                    }
+                }
                 logger.fine("Sprite " + sprite.getKey() + " loaded.");
             }
-			if (inputStream != null) {
-				inputStream.close();
-			}
+            if (inputStream != null) {
+                inputStream.close();
+            }
         } finally {
-			if (inputStream != null) {
-				inputStream.close();
-			}
+            if (inputStream != null) {
+                inputStream.close();
+            }
         }
     }
 
@@ -121,9 +121,9 @@ public final class FileManager {
             font = Font.createFont(Font.TRUETYPE_FONT, inputStream).deriveFont(
                 size);
         } finally {
-			if (inputStream != null) {
-				inputStream.close();
-			}
+            if (inputStream != null) {
+                inputStream.close();
+            }
         }
 
         return font;
@@ -156,9 +156,9 @@ public final class FileManager {
                 score = reader.readLine();
             }
         } finally {
-			if (inputStream != null) {
-				inputStream.close();
-			}
+            if (inputStream != null) {
+                inputStream.close();
+            }
         }
 
         return highScores;
@@ -208,9 +208,9 @@ public final class FileManager {
             logger.info("Loading default high scores.");
             highScores = loadDefaultHighScores();
         } finally {
-			if (bufferedReader != null) {
-				bufferedReader.close();
-			}
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
         }
 
         Collections.sort(highScores);
@@ -239,9 +239,9 @@ public final class FileManager {
 
             File scoresFile = new File(scoresPath);
 
-			if (!scoresFile.exists()) {
-				scoresFile.createNewFile();
-			}
+            if (!scoresFile.exists()) {
+                scoresFile.createNewFile();
+            }
 
             outputStream = new FileOutputStream(scoresFile);
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(
@@ -252,9 +252,9 @@ public final class FileManager {
             // Saves 7 or less scores.
             int savedCount = 0;
             for (Score score : highScores) {
-				if (savedCount >= MAX_SCORES) {
-					break;
-				}
+                if (savedCount >= MAX_SCORES) {
+                    break;
+                }
                 bufferedWriter.write(score.getName());
                 bufferedWriter.newLine();
                 bufferedWriter.write(Integer.toString(score.getScore()));
@@ -263,9 +263,9 @@ public final class FileManager {
             }
 
         } finally {
-			if (bufferedWriter != null) {
-				bufferedWriter.close();
-			}
+            if (bufferedWriter != null) {
+                bufferedWriter.close();
+            }
         }
     }
 
@@ -288,9 +288,9 @@ public final class FileManager {
             shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, maxLives);
 
         } finally {
-			if (inputStream != null) {
-				inputStream.close();
-			}
+            if (inputStream != null) {
+                inputStream.close();
+            }
         }
 
         return shipStatus;
@@ -330,9 +330,9 @@ public final class FileManager {
             logger.info("Loading default ship status.");
             shipStatus = loadDefaultShipStatus();
         } finally {
-			if (bufferedReader != null) {
-				bufferedReader.close();
-			}
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
         }
 
         return shipStatus;
@@ -354,9 +354,9 @@ public final class FileManager {
 
             File scoresFile = new File(scoresPath);
 
-			if (!scoresFile.exists()) {
-				scoresFile.createNewFile();
-			}
+            if (!scoresFile.exists()) {
+                scoresFile.createNewFile();
+            }
 
             outputStream = new FileOutputStream(scoresFile);
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(
@@ -372,9 +372,9 @@ public final class FileManager {
             bufferedWriter.write(String.valueOf(shipStatus.getMaxLives()));
 
         } finally {
-			if (bufferedWriter != null) {
-				bufferedWriter.close();
-			}
+            if (bufferedWriter != null) {
+                bufferedWriter.close();
+            }
         }
     }
 }

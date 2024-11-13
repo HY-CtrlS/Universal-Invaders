@@ -23,7 +23,8 @@ public class ItemSelectedScreen extends Screen {
     private GameState gameState;
 
     // 생성자 - 아이템셋, width, height, fps 받아옴
-    public ItemSelectedScreen (final GameState gameState,List<Item> items, final int width, final int height, final int fps) {
+    public ItemSelectedScreen(final GameState gameState, List<Item> items, final int width,
+        final int height, final int fps) {
         super(width, height, fps);
 
         //아이템 리스트 받아옴
@@ -41,6 +42,7 @@ public class ItemSelectedScreen extends Screen {
 
         return 0;
     }
+
     // 화면 업데이트 메소드
     @Override
     protected final void update() {
@@ -48,14 +50,14 @@ public class ItemSelectedScreen extends Screen {
 
         draw();
         if (this.selectionCooldown.checkFinished()
-                && this.inputDelay.checkFinished()) {
+            && this.inputDelay.checkFinished()) {
             if (inputManager.isKeyDown(KeyEvent.VK_A)
-                    || inputManager.isKeyDown(KeyEvent.VK_LEFT)) {
+                || inputManager.isKeyDown(KeyEvent.VK_LEFT)) {
                 previousMenuItem();
                 this.selectionCooldown.reset();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_D)
-                    || inputManager.isKeyDown(KeyEvent.VK_RIGHT)) {
+                || inputManager.isKeyDown(KeyEvent.VK_RIGHT)) {
                 nextMenuItem();
                 this.selectionCooldown.reset();
             }
@@ -73,18 +75,18 @@ public class ItemSelectedScreen extends Screen {
      */
     private void nextMenuItem() {
         if (items.size() == 3) {
-            if (this.selectedItem == 2)
+            if (this.selectedItem == 2) {
                 this.selectedItem = 0;
-            else
+            } else {
                 this.selectedItem++;
-        }
-        else if (items.size() == 2) {
-            if (this.selectedItem == 1)
+            }
+        } else if (items.size() == 2) {
+            if (this.selectedItem == 1) {
                 this.selectedItem = 0;
-            else
+            } else {
                 this.selectedItem++;
-        }
-        else {
+            }
+        } else {
             this.selectedItem = 0;
         }
     }
@@ -94,18 +96,18 @@ public class ItemSelectedScreen extends Screen {
      */
     private void previousMenuItem() {
         if (items.size() == 3) {
-            if (this.selectedItem == 0)
+            if (this.selectedItem == 0) {
                 this.selectedItem = 2;
-            else
+            } else {
                 this.selectedItem--;
-        }
-        else if (items.size() == 2) {
-            if (this.selectedItem == 0)
+            }
+        } else if (items.size() == 2) {
+            if (this.selectedItem == 0) {
                 this.selectedItem = 1;
-            else
+            } else {
                 this.selectedItem--;
-        }
-        else {
+            }
+        } else {
             this.selectedItem = 0;
         }
     }

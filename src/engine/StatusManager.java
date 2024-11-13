@@ -15,8 +15,9 @@ public class StatusManager {
     }
 
     protected static StatusManager getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new StatusManager();
+        }
         return instance;
     }
 

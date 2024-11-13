@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class AttackSpeedUpItem implements Item {
+
     // 공속증가 아이템의 최대 레벨
     private static final int MAX_LEVEL = 5;
     // 공속증가 아이템의 현재 레벨
@@ -49,7 +50,7 @@ public class AttackSpeedUpItem implements Item {
 
     @Override
     public int getLevel() {
-            return level;
+        return level;
     }
 
     @Override
@@ -89,7 +90,9 @@ public class AttackSpeedUpItem implements Item {
 
     @Override
     public void increaseLevel() {
-        if (this.level < MAX_LEVEL) {this.level++;}
+        if (this.level < MAX_LEVEL) {
+            this.level++;
+        }
     }
 
     @Override
