@@ -31,7 +31,7 @@ public class EnemyShipSet {
     // 적 함선의 Y 방향 속도
     private double Y_speed = 1.0;
 
-    private int base_hp = 2;
+    private int base_hp;
     // 적 함선 끼리의 최소 거리
     private final int MIN_DISTANCE = 5;
     // 로그 출력기
