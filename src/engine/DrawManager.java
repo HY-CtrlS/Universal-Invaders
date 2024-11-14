@@ -635,13 +635,24 @@ public final class DrawManager {
         // drawString 으로 해당 Item에 대한 설명 및 정보를 화면 아래 부분에 추가
     }
 
+    /**
+     * PauseScreen의 제목을 화면 상단에 위치시키는 메소드
+     *
+     * @param screen 화면 객체를 받는 매개변수
+     */
     public void drawPauseTitle(final Screen screen) {
         String titleString = "Pause";
-
+        
         backBufferGraphics.setColor(Color.GREEN);
         drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
     }
 
+    /**
+     * PauseScreen의 메뉴를 표시하는 메소드
+     *
+     * @param screen 화면 객체를 받는 매개변수
+     * @param option 어떤 메뉴를 선택했는지 구분하는 매개변수
+     */
     public void drawPauseMenu(final Screen screen, final int option) {
         String resume = "Resume";
         String quit = "Quit";

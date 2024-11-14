@@ -197,9 +197,15 @@ public class GameScreen extends Screen {
                     this.bulletsShot++;
                 }
             }
+
+            // esc키를 눌렀을 때 일시정지 화면으로 전환
             if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
-                Screen pause = new PauseScreen(getWidth(), getHeight(), fps);
+                this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
+                    + " game screen at " + this.fps + " fps.");
+                Screen pause = new PauseScreen(this.getWidth(), this.getHeight(), this.fps);
                 int check = pause.run();
+                this.logger.info("Closing game screen.");
+                // quit를 눌러 리턴코드가 0이 반환되면 라운드 종료
                 if (check == 0) {
                     this.lives = 0;
                 }
