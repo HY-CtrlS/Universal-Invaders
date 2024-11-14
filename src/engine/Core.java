@@ -165,6 +165,7 @@ public final class Core {
 
                     } while (gameState.getHp() > 0
                         && gameState.getLevel() <= NUM_LEVELS);
+                    getSoundManager().stopBackgroundMusic();
 
                     LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
                         + " score screen at " + FPS + " fps, with a score of "
@@ -183,6 +184,14 @@ public final class Core {
                         + " high score screen at " + FPS + " fps.");
                     returnCode = frame.setScreen(currentScreen);
                     LOGGER.info("Closing high score screen.");
+                    break;
+                case 4:
+                    // 설정 화면
+                    currentScreen = new SettingScreen(width, height, FPS);
+                    LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+                        + " settings screen at " + FPS + " fps.");
+                    returnCode = frame.setScreen(currentScreen);
+                    LOGGER.info("Closing settings screen.");
                     break;
                 default:
                     break;
@@ -267,5 +276,14 @@ public final class Core {
      */
     public static StatusManager getStatusManager() {
         return StatusManager.getInstance();
+    }
+
+    /**
+     * Controls access to the sound manager.
+     *
+     * @return Application sound manager.
+     */
+    public static SoundManager getSoundManager() {
+        return SoundManager.getInstance();
     }
 }

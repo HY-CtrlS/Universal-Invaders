@@ -32,6 +32,11 @@ public class TitleScreen extends Screen {
         this.returnCode = 2;
         this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
         this.selectionCooldown.reset();
+
+        // 메인 메뉴 배경음악 재생
+        if (!Core.getSoundManager().isBackgroundMusicPlaying()) {
+            Core.getSoundManager().playTitleScreenBGM();
+        }
     }
 
     /**
@@ -39,6 +44,7 @@ public class TitleScreen extends Screen {
      *
      * @return Next screen code.
      */
+    @Override
     public final int run() {
         super.run();
 
@@ -48,6 +54,7 @@ public class TitleScreen extends Screen {
     /**
      * Updates the elements on screen and checks for events.
      */
+    @Override
     protected final void update() {
         super.update();
 
@@ -57,15 +64,23 @@ public class TitleScreen extends Screen {
             if (inputManager.isKeyDown(KeyEvent.VK_UP)
                 || inputManager.isKeyDown(KeyEvent.VK_W)) {
                 previousMenuItem();
+                Core.getSoundManager().playButtonSound();
                 this.selectionCooldown.reset();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
                 || inputManager.isKeyDown(KeyEvent.VK_S)) {
                 nextMenuItem();
+                Core.getSoundManager().playButtonSound();
                 this.selectionCooldown.reset();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                 this.isRunning = false;
+                if (returnCode == 2) {
+                    Core.getSoundManager().playPlaySound();
+                    Core.getSoundManager().stopBackgroundMusic();
+                } else {
+                    Core.getSoundManager().playButtonSound();
+                }
             }
         }
     }
@@ -74,7 +89,7 @@ public class TitleScreen extends Screen {
      * Shifts the focus to the next menu item.
      */
     private void nextMenuItem() {
-        if (this.returnCode == 3) {
+        if (this.returnCode == 4) {
             this.returnCode = 0;
         } else if (this.returnCode == 0) {
             this.returnCode = 2;
@@ -88,7 +103,7 @@ public class TitleScreen extends Screen {
      */
     private void previousMenuItem() {
         if (this.returnCode == 0) {
-            this.returnCode = 3;
+            this.returnCode = 4;
         } else if (this.returnCode == 2) {
             this.returnCode = 0;
         } else {
