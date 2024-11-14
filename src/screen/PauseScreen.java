@@ -52,28 +52,58 @@ public class PauseScreen extends Screen {
             && this.inputDelay.checkFinished()) {
             if (inputManager.isKeyDown(KeyEvent.VK_UP)
                 || inputManager.isKeyDown(KeyEvent.VK_W)) {
-                changeMenu();
+                previousMenuItem();
                 this.selectionCooldown.reset();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
                 || inputManager.isKeyDown(KeyEvent.VK_S)) {
-                changeMenu();
+                nextMenuItem();
                 this.selectionCooldown.reset();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-                this.isRunning = false;
+                // 일시정지 화면에서 setting 선택 시 setting 화면으로 이동
+                if (this.returnCode == 2) {
+                    this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
+                        + " settings screen at " + this.fps + " fps.");
+                    Screen setting = new SettingScreen(this.getWidth(), this.getHeight(), this.fps);
+                    setting.run();
+                    this.logger.info("Closing settings screen.");
+                    this.returnCode = 1;
+                } else if (this.returnCode == 0 || this.returnCode == 3) {
+                    this.isRunning = false;
+                }
+                // 현재 returncode가 1이면 일시정지 화면 유지
             }
         }
     }
 
     /**
-     * 메뉴를 전환하는 메소드
+     * 다음 메뉴 전환 메소드
      */
-    private void changeMenu() {
-        if (this.returnCode == 1) {
+    private void nextMenuItem() {
+        if (this.returnCode == 3) {
+            this.returnCode = 0;
+        } else if (this.returnCode == 0) {
+            this.returnCode = 2;
+        } else if (this.returnCode == 1) {
             this.returnCode = 0;
         } else {
-            this.returnCode = 1;
+            this.returnCode++;
+        }
+    }
+
+    /**
+     * 이전 메뉴 전환 메소드
+     */
+    private void previousMenuItem() {
+        if (this.returnCode == 0) {
+            this.returnCode = 3;
+        } else if (this.returnCode == 2) {
+            this.returnCode = 0;
+        } else if (this.returnCode == 1) {
+            this.returnCode = 0;
+        } else {
+            this.returnCode--;
         }
     }
 

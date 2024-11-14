@@ -756,6 +756,7 @@ public final class DrawManager {
             }
         }
     }
+
     // 각 아이템을 그리는 메소드
     public void drawItem(final int item, final int position_X, final int position_Y) {
         // drawEntity로 해당 Item 스프라이트를 그림
@@ -783,20 +784,28 @@ public final class DrawManager {
     public void drawPauseMenu(final Screen screen, final int option) {
         String resume = "Resume";
         String quit = "Quit";
+        String setting = "Setting";
 
-        if (option == 1) {
+        if (option == 0) {
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
         drawCenteredRegularString(screen, resume,
             screen.getHeight() / 3 * 2);
-        if (option == 0) {
+        if (option == 2) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, setting, screen.getHeight()
+            / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+        if (option == 3) {
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
         drawCenteredRegularString(screen, quit, screen.getHeight()
-            / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+            / 3 * 2 + fontRegularMetrics.getHeight() * 4);
     }
 }

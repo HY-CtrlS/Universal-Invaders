@@ -206,13 +206,13 @@ public class GameScreen extends Screen {
             // esc키를 눌렀을 때 일시정지 화면으로 전환
             if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
                 this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
-                    + " game screen at " + this.fps + " fps.");
+                    + " pause screen at " + this.fps + " fps.");
                 Screen pause = new PauseScreen(this.getWidth(), this.getHeight(), this.fps);
                 int check = pause.run();
-                this.logger.info("Closing game screen.");
-                // quit를 눌러 리턴코드가 0이 반환되면 라운드 종료
-                if (check == 0) {
-                    this.lives = 0;
+                this.logger.info("Closing pause screen.");
+                // 일시정지 화면에서 quit를 누른 경우 현재 hp를 0으로 변경하면서 라운드 종료
+                if (check == 3) {
+                    this.hp = 0;
                 }
             }
 
