@@ -291,14 +291,14 @@ public final class DrawManager {
         int barY = 10; // 체력 바의 Y 좌표
         int barWidth = 200; // 체력 바의 최대 너비
         int barHeight = 20; // 체력 바의 높이
-        int maxLives = Core.getStatusManager().getMaxLives(); // 최대 체력
+        int hp = Core.getStatusManager().getHp(); // 최대 체력
 
         // 체력 바의 테두리 그리기
         backBufferGraphics.setColor(Color.GRAY);
         backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
 
         // 현재 체력에 따른 바의 너비 계산
-        int healthWidth = (int) ((double) lives / maxLives * barWidth);
+        int healthWidth = (int) ((double) lives / hp * barWidth);
 
         // 체력 바 채우기
         backBufferGraphics.setColor(Color.RED); // 체력 바의 색상
@@ -306,7 +306,7 @@ public final class DrawManager {
 
         // 체력 수치 표시
         backBufferGraphics.setColor(Color.WHITE);
-        String hpText = +lives + "/" + maxLives;
+        String hpText = +lives + "/" + hp;
         int textX = barX + (barWidth - fontRegularMetrics.stringWidth(hpText)) / 2;
         int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2)
             + fontRegularMetrics.getAscent();
@@ -353,29 +353,39 @@ public final class DrawManager {
     public void drawMenu(final Screen screen, final int option) {
         String playString = "Play";
         String highScoresString = "High scores";
-        String exitString = "exit";
+        String settingsString = "Settings"; // Added settings menu
+        String exitString = "Exit";
 
         if (option == 2) {
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
-        drawCenteredRegularString(screen, playString,
-            screen.getHeight() / 3 * 2);
+        drawCenteredRegularString(screen, playString, screen.getHeight() / 3 * 2);
+
         if (option == 3) {
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
-        drawCenteredRegularString(screen, highScoresString, screen.getHeight()
-            / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+        drawCenteredRegularString(screen, highScoresString,
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+
+        if (option == 4) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, settingsString,
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+
         if (option == 0) {
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
-        drawCenteredRegularString(screen, exitString, screen.getHeight() / 3
-            * 2 + fontRegularMetrics.getHeight() * 4);
+        drawCenteredRegularString(screen, exitString,
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 6);
     }
 
     /**
@@ -711,6 +721,73 @@ public final class DrawManager {
                     backBufferGraphics.drawRect(position_X + i * 6, position_Y
                         + j * 6, 6, 6);
                 }
+            }
+        }
+    }
+
+    /**
+     * 설정 메뉴를 그려주며, 사용자에게 배경음악 및 효과음 볼륨을 조정할 수 있도록 합니다.
+     *
+     * @param screen         설정 화면을 그릴 스크린 객체
+     * @param selectedOption 현재 선택된 옵션 (0: 배경음악, 1: 효과음)
+     */
+    public void drawSettingsMenu(final Screen screen, final int selectedOption) {
+        // 설정 화면 제목 및 안내 문자열
+        String settingsTitle = "Settings";
+        String instructionsString = "Use UP/DOWN to switch, LEFT/RIGHT to adjust, SPACE to exit";
+
+        // 설정 제목과 안내 문자열 표시
+        backBufferGraphics.setColor(Color.GREEN);
+        drawCenteredBigString(screen, settingsTitle, screen.getHeight() / 8);
+
+        backBufferGraphics.setColor(Color.GRAY);
+        drawCenteredRegularString(screen, instructionsString, screen.getHeight() / 5);
+
+        // 볼륨 바에 대한 공통 설정 변수
+        int boxSize = 20;
+        int spacing = 5;
+        int totalBoxes = 10;
+        int barX = (screen.getWidth() - (boxSize + spacing) * totalBoxes + spacing) / 2;
+
+        // 배경음악(BGM) 볼륨 레이블 및 바 표시
+        String bgmLabel = "Background Music Volume";
+        int filledBoxesBGM = (int) (Core.getSoundManager().getBackgroundMusicVolume() * totalBoxes);
+        int bgmBarY = screen.getHeight() / 3;
+
+        // 배경음악 볼륨 바 그리기
+        drawVolumeBar(screen, bgmLabel, filledBoxesBGM, barX, bgmBarY, selectedOption == 0);
+
+        // 효과음(SFX) 볼륨 레이블 및 바 표시
+        String sfxLabel = "Sound Effects Volume";
+        int filledBoxesSFX = (int) (Core.getSoundManager().getSoundEffectsVolume() * totalBoxes);
+        int sfxBarY = screen.getHeight() / 2;
+
+        // 효과음 볼륨 바 그리기
+        drawVolumeBar(screen, sfxLabel, filledBoxesSFX, barX, sfxBarY, selectedOption == 1);
+    }
+
+    /**
+     * 볼륨 바와 레이블을 그려주며, 현재 볼륨 레벨을 표시합니다.
+     *
+     * @param screen      볼륨 바를 그릴 스크린 객체
+     * @param label       볼륨 바에 대한 레이블 (예: "배경음악 볼륨")
+     * @param filledBoxes 현재 볼륨을 나타내는 채워진 박스 개수
+     * @param barX        볼륨 바의 X 좌표
+     * @param barY        볼륨 바의 Y 좌표
+     * @param isSelected  현재 볼륨 바가 선택되어 있는지 여부
+     */
+    private void drawVolumeBar(final Screen screen, String label, int filledBoxes, int barX,
+        int barY, boolean isSelected) {
+        // 선택된 항목에 따라 색상 설정
+        backBufferGraphics.setColor(isSelected ? Color.GREEN : Color.GRAY);
+        drawCenteredRegularString(screen, label, barY - fontRegularMetrics.getHeight());
+
+        // 볼륨 바의 박스들을 그려줌
+        for (int i = 0; i < 10; i++) {
+            if (i < filledBoxes) {
+                backBufferGraphics.fillRect(barX + (20 + 5) * i, barY, 20, 20); // 채워진 박스
+            } else {
+                backBufferGraphics.drawRect(barX + (20 + 5) * i, barY, 20, 20); // 빈 박스
             }
         }
     }

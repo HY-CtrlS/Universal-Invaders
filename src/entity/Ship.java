@@ -21,6 +21,9 @@ public class Ship extends Entity {
     private int bulletSpeed;
     /** Movement of the ship for each unit of time. */
     private int speed;
+    /** Value for Max life*/
+    private int maxLives;
+    private int baseDamage;
     /** 함선이 바라보고 있는 뱡향 */
     private static Direction direction;
     /** Minimum time between shots. */
@@ -43,6 +46,7 @@ public class Ship extends Entity {
         StatusManager statusManager = Core.getStatusManager();
         this.shootingInterval = statusManager.getShootingInterval();
         this.bulletSpeed = statusManager.getBulletSpeed();
+        this.baseDamage = statusManager.getBaseDamage();
         this.speed = statusManager.getSpeed();
 
         this.shootingCooldown = Core.getCooldown(this.shootingInterval);
@@ -93,7 +97,7 @@ public class Ship extends Entity {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY, this.bulletSpeed, direction, "SHIP"));
+                positionY, this.bulletSpeed, this.baseDamage, direction, "SHIP"));
             return true;
         }
         return false;
@@ -134,6 +138,8 @@ public class Ship extends Entity {
     public final int getSpeed() {
         return this.speed;
     }
+
+    public final int getBaseDamage() {return this.baseDamage;}
 
     /**
      * 함선의 방향을 얻는 Getter

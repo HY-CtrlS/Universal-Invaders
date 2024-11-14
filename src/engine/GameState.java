@@ -12,7 +12,7 @@ public class GameState {
     /** Current score. */
     private int score;
     /** Lives currently remaining. */
-    private int livesRemaining;
+    private int hp;
     /** Bullets shot until now. */
     private int bulletsShot;
     /** Ships destroyed until now. */
@@ -23,16 +23,16 @@ public class GameState {
      *
      * @param level          Current game level.
      * @param score          Current score.
-     * @param livesRemaining Lives currently remaining.
+     * @param hp Lives currently remaining.
      * @param bulletsShot    Bullets shot until now.
      * @param shipsDestroyed Ships destroyed until now.
      */
     public GameState(final int level, final int score,
-        final int livesRemaining, final int bulletsShot,
+        final int hp, final int bulletsShot,
         final int shipsDestroyed) {
         this.level = level;
         this.score = score;
-        this.livesRemaining = livesRemaining;
+        this.hp = hp;
         this.bulletsShot = bulletsShot;
         this.shipsDestroyed = shipsDestroyed;
     }
@@ -54,8 +54,8 @@ public class GameState {
     /**
      * @return the livesRemaining
      */
-    public final int getLivesRemaining() {
-        return livesRemaining;
+    public final int getHp() {
+        return hp;
     }
 
     /**

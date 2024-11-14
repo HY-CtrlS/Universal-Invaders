@@ -111,7 +111,7 @@ public final class Core {
 
         int returnCode = 1;
         do {
-            gameState = new GameState(1, 0, getStatusManager().getMaxLives(), 0, 0);
+            gameState = new GameState(1, 0, getStatusManager().getHp(), 0, 0);
 
             switch (returnCode) {
                 case 1:
@@ -132,7 +132,7 @@ public final class Core {
                         // One extra live every few levels.
                         boolean bonusLife = gameState.getLevel()
                             % EXTRA_LIFE_FREQUENCY == 0
-                            && gameState.getLivesRemaining() < getStatusManager().getMaxLives();
+                            && gameState.getHp() < getStatusManager().getHp();
 
                         currentScreen = new GameScreen(gameState,
                             gameSettings.get(gameState.getLevel() - 1),
@@ -147,7 +147,7 @@ public final class Core {
 
                         // 아이템 선택화면으로 이동
                         // 아직 HP가 남아있거나 방금 깬 레벨이 마지막 레벨이 아닌 경우
-                        if (gameState.getLivesRemaining() > 0
+                        if (gameState.getHp() > 0
                             && gameState.getLevel() + 1 <= NUM_LEVELS) {
                             LOGGER.info(
                                 "Starting " + WIDTH + "X" + HEIGHT + " ItemSelectingScreen at "
@@ -159,17 +159,18 @@ public final class Core {
                         }
                         gameState = new GameState(gameState.getLevel() + 1,
                             gameState.getScore(),
-                            gameState.getLivesRemaining(),
+                            gameState.getHp(),
                             gameState.getBulletsShot(),
                             gameState.getShipsDestroyed());
 
-                    } while (gameState.getLivesRemaining() > 0
+                    } while (gameState.getHp() > 0
                         && gameState.getLevel() <= NUM_LEVELS);
+                    getSoundManager().stopBackgroundMusic();
 
                     LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
                         + " score screen at " + FPS + " fps, with a score of "
                         + gameState.getScore() + ", "
-                        + gameState.getLivesRemaining() + " lives remaining, "
+                        + gameState.getHp() + " lives remaining, "
                         + gameState.getBulletsShot() + " bullets shot and "
                         + gameState.getShipsDestroyed() + " ships destroyed.");
                     currentScreen = new ScoreScreen(width, height, FPS, gameState);
@@ -183,6 +184,14 @@ public final class Core {
                         + " high score screen at " + FPS + " fps.");
                     returnCode = frame.setScreen(currentScreen);
                     LOGGER.info("Closing high score screen.");
+                    break;
+                case 4:
+                    // 설정 화면
+                    currentScreen = new SettingScreen(width, height, FPS);
+                    LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+                        + " settings screen at " + FPS + " fps.");
+                    returnCode = frame.setScreen(currentScreen);
+                    LOGGER.info("Closing settings screen.");
                     break;
                 default:
                     break;
@@ -267,5 +276,14 @@ public final class Core {
      */
     public static StatusManager getStatusManager() {
         return StatusManager.getInstance();
+    }
+
+    /**
+     * Controls access to the sound manager.
+     *
+     * @return Application sound manager.
+     */
+    public static SoundManager getSoundManager() {
+        return SoundManager.getInstance();
     }
 }
