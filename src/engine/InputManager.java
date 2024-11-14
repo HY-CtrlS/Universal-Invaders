@@ -79,4 +79,15 @@ public final class InputManager implements KeyListener {
     public void keyTyped(final KeyEvent key) {
 
     }
+
+    /**
+     * 특정 키의 상태를 '누르지 않음'으로 초기화합니다.
+     *
+     * @param keyCode 초기화할 키의 번호.
+     */
+    public void resetKeyState(final int keyCode) {
+        if (keyCode >= 0 && keyCode < NUM_KEYS) {
+            keys[keyCode] = false;
+        }
+    }
 }
