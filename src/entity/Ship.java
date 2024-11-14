@@ -25,7 +25,7 @@ public class Ship extends Entity {
     private int maxLives;
     private int baseDamage;
     /** 함선이 바라보고 있는 뱡향 */
-    private static String direction;
+    private static Direction direction;
     /** Minimum time between shots. */
     private Cooldown shootingCooldown;
     /** Time spent inactive between hits. */
@@ -38,8 +38,8 @@ public class Ship extends Entity {
      * @param positionY Initial position of the ship in the Y axis.
      * @param direction 함선의 초기 방향.
      */
-    public Ship(final int positionX, final int positionY, String direction) {
-        super(positionX, positionY, 13 * 2, 8 * 2, Color.GREEN);
+    public Ship(final int positionX, final int positionY, final Direction direction) {
+        super(positionX, positionY, 13 * 2, 8 * 2, Color.GREEN, direction);
 
         this.spriteType = SpriteType.Ship;
 
@@ -59,32 +59,32 @@ public class Ship extends Entity {
      * Moves the ship speed uni ts right, or until the right screen border is reached.
      */
     public final void moveRight() {
-        this.direction = "RIGHT";
-        this.positionX += this.speed;
+        this.direction = Direction.RIGHT;
+        this.positionX += speed;
     }
 
     /**
      * Moves the ship speed units left, or until the left screen border is reached.
      */
     public final void moveLeft() {
-        this.direction = "LEFT";
-        this.positionX -= this.speed;
+        this.direction = Direction.LEFT;
+        this.positionX -= speed;
     }
 
     /**
      * Moves the ship speed units up, or until the top screen border is reached.
      */
     public final void moveUp() {
-        this.direction = "UP";
-        this.positionY -= this.speed;
+        this.direction = Direction.UP;
+        this.positionY -= speed;
     }
 
     /**
      * Moves the ship speed units down, or until the bottom screen border is reached.
      */
     public final void moveDown() {
-        this.direction = "DOWN";
-        this.positionY += this.speed;
+        this.direction = Direction.DOWN;
+        this.positionY += speed;
     }
 
     /**
@@ -107,11 +107,11 @@ public class Ship extends Entity {
      * Updates status of the ship.
      */
     public final void update() {
-		if (!this.destructionCooldown.checkFinished()) {
-			this.spriteType = SpriteType.ShipDestroyed;
-		} else {
-			this.spriteType = SpriteType.Ship;
-		}
+        if (!this.destructionCooldown.checkFinished()) {
+            this.spriteType = SpriteType.ShipDestroyed;
+        } else {
+            this.spriteType = SpriteType.Ship;
+        }
     }
 
     /**
@@ -146,7 +146,7 @@ public class Ship extends Entity {
      *
      * @return 함선의 방향.
      */
-    public String getDirection() {
+    public Direction getDirection() {
         return direction;
     }
 

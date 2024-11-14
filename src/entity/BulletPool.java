@@ -26,13 +26,14 @@ public final class BulletPool {
      * @param positionX Requested position of the bullet in the X axis.
      * @param positionY Requested position of the bullet in the Y axis.
      * @param speed     Requested speed of the bullet.
-     * @param damage 설정할 총알의 피해량.
+     * @param damage    설정할 총알의 피해량.
      * @param direction 설정할 총알의 방향.
      * @param classify  설정할 총할의 진영.
      * @return Requested bullet.
      */
     public static Bullet getBullet(final int positionX,
-        final int positionY, final int speed, int damage, String direction,  String classify) {
+        final int positionY, final int speed, int damage, Entity.Direction direction,
+        String classify) {
         Bullet bullet;
         if (!pool.isEmpty()) {
             bullet = pool.iterator().next();

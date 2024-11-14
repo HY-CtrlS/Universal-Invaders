@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 
 import screen.Screen;
 import entity.Entity;
-import entity.Ship;
 
 /**
  * Manages screen drawing.
@@ -89,7 +88,7 @@ public final class DrawManager {
         logger.info("Started loading resources.");
 
         try {
-            spriteMap = new LinkedHashMap<SpriteType, boolean[][]>();
+            spriteMap = new LinkedHashMap<>();
 
             spriteMap.put(SpriteType.Ship, new boolean[13][8]);
             spriteMap.put(SpriteType.ShipDestroyed, new boolean[13][8]);
@@ -143,7 +142,7 @@ public final class DrawManager {
     }
 
     /**
-     * First part of the drawing process. Initialices buffers, draws the background and prepares the
+     * First part of the drawing process. Initializes buffers, draws the background and prepares the
      * images.
      *
      * @param screen Screen to draw in.
@@ -177,7 +176,7 @@ public final class DrawManager {
     }
 
     /**
-     * Draws an entity, using the apropiate image.
+     * Draws an entity, using the appropriate image.
      *
      * @param entity    Entity to be drawn.
      * @param positionX Coordinates for the left side of the image.
@@ -188,18 +187,54 @@ public final class DrawManager {
         boolean[][] image = spriteMap.get(entity.getSpriteType());
 
         backBufferGraphics.setColor(entity.getColor());
-        for (int i = 0; i < image.length; i++) {
-            for (int j = 0; j < image[i].length; j++) {
-                if (image[i][j]) {
-                    backBufferGraphics.drawRect(positionX + i * 2, positionY
-                        + j * 2, 1, 1);
+        Entity.Direction direction = entity.getDirection();
+
+        switch (direction) {
+            case UP:
+                for (int i = 0; i < image.length; i++) {
+                    for (int j = 0; j < image[i].length; j++) {
+                        if (image[i][j]) {
+                            backBufferGraphics.drawRect(positionX + i * 2, positionY
+                                + j * 2, 1, 1);
+                        }
+                    }
                 }
-            }
+                break;
+            case DOWN:
+                for (int i = image.length - 1; i >= 0; i--) {
+                    for (int j = image[i].length - 1; j >= 0; j--) {
+                        if (image[image.length - 1 - i][image[i].length - 1 - j]) {
+                            backBufferGraphics.drawRect(positionX + i * 2, positionY
+                                + j * 2, 1, 1);
+                        }
+                    }
+                }
+                break;
+            case LEFT:
+                for (int i = 0; i < image[0].length; i++) {
+                    for (int j = 0; j < image.length; j++) {
+                        if (image[j][i]) {
+                            backBufferGraphics.drawRect(positionX + i * 2, positionY
+                                + j * 2, 1, 1);
+                        }
+                    }
+                }
+                break;
+            case RIGHT:
+                for (int i = image[0].length - 1; i >= 0; i--) {
+                    for (int j = image.length - 1; j >= 0; j--) {
+                        if (image[image.length - 1 - j][image[0].length - 1 - i]) {
+                            backBufferGraphics.drawRect(positionX + i * 2, positionY
+                                + j * 2, 1, 1);
+                        }
+                    }
+                }
+                break;
         }
     }
 
     /**
-     * For debugging purpouses, draws the canvas borders.
+     * For debugging purposes, draws the canvas borders.
      *
      * @param screen Screen to draw in.
      */
@@ -215,7 +250,7 @@ public final class DrawManager {
     }
 
     /**
-     * For debugging purpouses, draws a grid over the canvas.
+     * For debugging purposes, draws a grid over the canvas.
      *
      * @param screen Screen to draw in.
      */

@@ -23,6 +23,8 @@ public class Entity {
     private Color color;
     /** Sprite type assigned to the entity. */
     protected SpriteType spriteType;
+    /** 엔티티 스프라이트의 방향 (기본 위) */
+    protected Direction direction;
 
     /**
      * Constructor, establishes the entity's generic properties.
@@ -40,6 +42,25 @@ public class Entity {
         this.width = width;
         this.height = height;
         this.color = color;
+        this.direction = Entity.Direction.UP;
+    }
+
+    public Entity(final int positionX, final int positionY, final int width,
+        final int height, final Color color, final Direction direction) {
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.width = width;
+        this.height = height;
+        this.color = color;
+        this.direction = direction;
+    }
+
+    /** 방향 표시를 위한 열거형 */
+    public enum Direction {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
     }
 
     /**
@@ -112,5 +133,13 @@ public class Entity {
      */
     public final int getHeight() {
         return this.height;
+    }
+
+    public Direction getDirection() {
+        return this.direction;
+    }
+
+    public void setDirection(final Direction direction) {
+        this.direction = direction;
     }
 }
