@@ -15,7 +15,7 @@ public class Bullet extends Entity {
      * Speed of the bullet
      */
     private int speed;
-    private int damage = 1;
+    private int damage;
     // 총알의 뱡향
     private String direction;
     // 아군 또는 적 함선이 발사한 총알을 구분하는 식별자
