@@ -56,8 +56,8 @@ public class GameScreen extends Screen {
     private Set<Bullet> bullets;
     /** Current score. */
     private int score;
-    /** Player lives left. */
-    private int lives;
+    /** Player hp left. */
+    private int hp;
     /** Total bullets shot by the player. */
     private int bulletsShot;
     /** Total ships destroyed by the player. */
@@ -74,6 +74,8 @@ public class GameScreen extends Screen {
     private boolean levelStarted;
     /** 1초를 새는 Cooldown */
     private Cooldown clockCooldown;
+    /** 함선이 완전히 파괴되었는지 여부 */
+    private boolean isDestroyed = false;
 
     /**
      * Constructor, establishes the properties of the screen.
@@ -94,12 +96,15 @@ public class GameScreen extends Screen {
         this.bonusLife = bonusLife;
         this.level = gameState.getLevel();
         this.score = gameState.getScore();
-        this.lives = gameState.getLivesRemaining();
+        this.hp = gameState.getHp();
         if (this.bonusLife) {
-            this.lives++;
+            this.hp++;
+
         }
         this.bulletsShot = gameState.getBulletsShot();
         this.shipsDestroyed = gameState.getShipsDestroyed();
+
+        Core.getSoundManager().playInGameBGM();
     }
 
     /**
@@ -109,7 +114,7 @@ public class GameScreen extends Screen {
         super.initialize();
 
         this.ship = new Ship(this.width / 2, this.height / 2, "UP");
-        enemyShipSet = new EnemyShipSet(this.gameSettings, this.ship);
+        enemyShipSet = new EnemyShipSet(this.gameSettings, this.level, this.ship);
         enemyShipSet.attach(this);
 
         this.enemis = enemyShipSet.getEnemies();
@@ -142,7 +147,7 @@ public class GameScreen extends Screen {
     public final int run() {
         super.run();
 
-        this.score += LIFE_SCORE * (this.lives - 20);
+        this.score += LIFE_SCORE * (this.hp - 20);
         this.logger.info("Screen cleared with a score of " + this.score);
 
         return this.returnCode;
@@ -243,7 +248,7 @@ public class GameScreen extends Screen {
         cleanBullets();
         draw();
         // 현재 진행된 시간이 라운드에서 정한 시간과 같으면 클리어로 판단 후 라운드 종료
-        if ((levelTime == this.gameSettings.getRoundTime() || this.lives <= 0)
+        if ((levelTime == this.gameSettings.getRoundTime() || this.hp <= 0)
             && !this.levelFinished) {
             this.levelFinished = true;
             this.screenFinishedCooldown.reset();
@@ -278,7 +283,7 @@ public class GameScreen extends Screen {
 
         // Interface.
         drawManager.drawScore(this, this.score);
-        drawManager.drawLives(this, this.lives);
+        drawManager.drawLives(this, this.hp);
         drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
 
         // Countdown to game start.
@@ -318,24 +323,33 @@ public class GameScreen extends Screen {
     private void manageCollisions() {
         Set<Bullet> recyclable = new HashSet<Bullet>();
         for (Bullet bullet : this.bullets) {
+
+            // 적 총알인 경우 실행되는 부분 ( 현재는 적 총알이 나오는 곳이 없음 )
+
             if (bullet.getClassify() == 1) {
                 if (checkCollision(bullet, this.ship) && !this.levelFinished) {
                     if (!this.ship.isDestroyed()) {
                         recyclable.add(bullet);
                         this.ship.destroy();
-                        this.lives--;
-                        this.logger.info("Hit on player ship, " + this.lives
-                            + " lives remaining.");
+
+                        this.hp--;
+                        this.logger.info("Hit on player ship, " + this.hp
+                            + " reamining.");
                     }
                 }
-            } else {
+            } else { //아군 총알인 경우 실행되는 부분
+
                 for (EnemyShip enemyShip : enemis) {
                     if (!enemyShip.isDestroyed()
                         && checkCollision(bullet, enemyShip)) {
                         this.score += enemyShip.getPointValue();
                         this.shipsDestroyed++;
-                        this.enemyShipSet.destroy(enemyShip);
+
+                        this.enemyShipSet.damage_Enemy(enemyShip, bullet.getDamage());
                         recyclable.add(bullet);
+                        Core.getSoundManager().playBulletHitSound();
+
+
                     }
                 }
                 if (this.enemyShipSpecial != null
@@ -347,18 +361,24 @@ public class GameScreen extends Screen {
                     this.enemyShipSpecialExplosionCooldown.reset();
                     recyclable.add(bullet);
                 }
+
             }
         }
         this.bullets.removeAll(recyclable);
         BulletPool.recycle(recyclable);
+        // 적과 아군 함선의 충돌 체크
         for (EnemyShip enemyShip : enemis) {
             if (checkCollision(this.ship, enemyShip)) {
                 if (!this.ship.isDestroyed() && !enemyShip.isDestroyed() && !levelFinished) {
-                    this.enemyShipSet.destroy(enemyShip);
+                    this.enemyShipSet.damage_Enemy(enemyShip, this.ship.getBaseDamage());
                     this.ship.destroy();
-                    this.lives -= 20;
-                    this.logger.info("Hit on player ship, " + this.lives
-                        + " lives remaining.");
+                    this.hp -= 20;
+                    this.logger.info("Hit on player ship, -20 HP");
+                    Core.getSoundManager().playDamageSound();
+                    if (this.hp <= 0 && !this.isDestroyed) {
+                        Core.getSoundManager().playExplosionSound();
+                        this.isDestroyed = true;
+                    }
                 }
             }
         }
@@ -394,7 +414,7 @@ public class GameScreen extends Screen {
      * @return Current game state.
      */
     public final GameState getGameState() {
-        return new GameState(this.level, this.score, this.lives,
+        return new GameState(this.level, this.score, this.hp,
             this.bulletsShot, this.shipsDestroyed);
     }
 }

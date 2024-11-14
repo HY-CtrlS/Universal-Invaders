@@ -1,5 +1,6 @@
 package engine;
 
+import Item.Item;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -74,10 +75,10 @@ public final class DrawManager {
         /** Bonus ship. */
         EnemyShipSpecial,
         /** Destroyed enemy ship. */
-        Explosion
+        Explosion,
+        // 공속증가 아이템
+        AttackSpeedUpItem
     }
-
-    ;
 
     /**
      * Private constructor.
@@ -102,6 +103,8 @@ public final class DrawManager {
             spriteMap.put(SpriteType.EnemyShipC2, new boolean[12][8]);
             spriteMap.put(SpriteType.EnemyShipSpecial, new boolean[16][7]);
             spriteMap.put(SpriteType.Explosion, new boolean[13][7]);
+            // 공속 증가 아이템 스프라이트
+            spriteMap.put(SpriteType.AttackSpeedUpItem, new boolean[10][10]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
@@ -253,14 +256,14 @@ public final class DrawManager {
         int barY = 10; // 체력 바의 Y 좌표
         int barWidth = 200; // 체력 바의 최대 너비
         int barHeight = 20; // 체력 바의 높이
-        int maxLives = Core.getStatusManager().getMaxLives(); // 최대 체력
+        int hp = Core.getStatusManager().getHp(); // 최대 체력
 
         // 체력 바의 테두리 그리기
         backBufferGraphics.setColor(Color.GRAY);
         backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
 
         // 현재 체력에 따른 바의 너비 계산
-        int healthWidth = (int) ((double) lives / maxLives * barWidth);
+        int healthWidth = (int) ((double) lives / hp * barWidth);
 
         // 체력 바 채우기
         backBufferGraphics.setColor(Color.RED); // 체력 바의 색상
@@ -268,7 +271,7 @@ public final class DrawManager {
 
         // 체력 수치 표시
         backBufferGraphics.setColor(Color.WHITE);
-        String hpText = +lives + "/" + maxLives;
+        String hpText = +lives + "/" + hp;
         int textX = barX + (barWidth - fontRegularMetrics.stringWidth(hpText)) / 2;
         int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2)
             + fontRegularMetrics.getAscent();
@@ -315,29 +318,39 @@ public final class DrawManager {
     public void drawMenu(final Screen screen, final int option) {
         String playString = "Play";
         String highScoresString = "High scores";
-        String exitString = "exit";
+        String settingsString = "Settings"; // Added settings menu
+        String exitString = "Exit";
 
         if (option == 2) {
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
-        drawCenteredRegularString(screen, playString,
-            screen.getHeight() / 3 * 2);
+        drawCenteredRegularString(screen, playString, screen.getHeight() / 3 * 2);
+
         if (option == 3) {
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
-        drawCenteredRegularString(screen, highScoresString, screen.getHeight()
-            / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+        drawCenteredRegularString(screen, highScoresString,
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+
+        if (option == 4) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, settingsString,
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+
         if (option == 0) {
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
-        drawCenteredRegularString(screen, exitString, screen.getHeight() / 3
-            * 2 + fontRegularMetrics.getHeight() * 4);
+        drawCenteredRegularString(screen, exitString,
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 6);
     }
 
     /**
@@ -583,7 +596,7 @@ public final class DrawManager {
         String instructionsString1 =
             "Select your Item with A + D / arrows";
         String instructionsString2 =
-            "Press spacebar If you done.";
+            "Press spacebar If you want to select.";
         // 아이템 선택 지시 문구 표시
         backBufferGraphics.setColor(Color.GRAY);
         drawCenteredRegularString(screen, instructionsString1,
@@ -595,40 +608,154 @@ public final class DrawManager {
 
     }
 
-    public void drawSelectedItem(final Screen screen, final List<Integer> itemList,
+    public void drawSelectedItem(final Screen screen, final List<Item> itemList,
         final int selectedItem) {
+        if (itemList.size() < 3) {
+            String alarmString = "Only  " + itemList.size() + "  items left you can upgrade!!";
+            drawCenteredRegularString(screen, alarmString,
+                150);
+        }
+
         // 첫 아이템 선택여부
         if (selectedItem == 0) {
+            backBufferGraphics.setColor(Color.WHITE);
+            // 아이템 설명 출력
+            drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
+                screen.getHeight() / 3 + 200);
+            drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
+                screen.getHeight() / 3 + 300);
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
         // 첫 아이템 그리기
         drawItemBox((screen.getWidth() / 4) - 50, screen.getHeight() / 3);
-        //drawItem(0, (screen.getWidth() / 4), 350)
 
         // 두번째 아이템 선택여부
         if (selectedItem == 1) {
+            backBufferGraphics.setColor(Color.WHITE);
+            // 아이템 설명 출력
+            drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
+                screen.getHeight() / 3 + 200);
+            drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
+                screen.getHeight() / 3 + 300);
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
         // 두 번째 아이템 그리기
         drawItemBox((screen.getWidth() * 2 / 4) - 50, screen.getHeight() / 3);
-        //drawItem(1, (screen.getWidth() * 2 / 4), 350)
 
         // 세번째 아이템 선택여부
         if (selectedItem == 2) {
+            backBufferGraphics.setColor(Color.WHITE);
+            // 아이템 설명 출력
+            drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
+                screen.getHeight() / 3 + 200);
+            drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
+                screen.getHeight() / 3 + 300);
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
         //세 번째 아이템 그리기
         drawItemBox((screen.getWidth() * 3) / 4 - 50, screen.getHeight() / 3);
-        //drawItem(2, (screen.getWidth() * 3 / 4), 350)
-
     }
 
+    // 각 아이템을 화면에 그리는 메소드
+    public void drawItems(final Screen screen, final List<Item> itemList) {
+        for (int i = 0; i < itemList.size(); i++) {
+            drawBigItem(itemList.get(i), (screen.getWidth() * (i + 1) / 4 - 30),
+                screen.getHeight() / 3 + 25);
+            String levelInformation = "Level " + itemList.get(i).getLevel();
+            backBufferGraphics.setColor(Color.ORANGE);
+            backBufferGraphics.setFont(fontRegular);
+            backBufferGraphics.drawString(levelInformation, (screen.getWidth() * (i + 1) / 4 - 33),
+                screen.getHeight() / 3 + 120);
+        }
+    }
+
+    // 아이템의 스프라이트를 받아와 스케일 업해서 그리는 메소드
+    public void drawBigItem(final Item item, final int position_X, final int position_Y) {
+        boolean[][] image = spriteMap.get(item.getSpriteType());
+
+        backBufferGraphics.setColor(item.getColor());
+        for (int i = 0; i < image.length; i++) {
+            for (int j = 0; j < image[i].length; j++) {
+                if (image[i][j]) {
+                    backBufferGraphics.drawRect(position_X + i * 6, position_Y
+                        + j * 6, 6, 6);
+                }
+            }
+        }
+    }
+
+    /**
+     * 설정 메뉴를 그려주며, 사용자에게 배경음악 및 효과음 볼륨을 조정할 수 있도록 합니다.
+     *
+     * @param screen         설정 화면을 그릴 스크린 객체
+     * @param selectedOption 현재 선택된 옵션 (0: 배경음악, 1: 효과음)
+     */
+    public void drawSettingsMenu(final Screen screen, final int selectedOption) {
+        // 설정 화면 제목 및 안내 문자열
+        String settingsTitle = "Settings";
+        String instructionsString = "Use UP/DOWN to switch, LEFT/RIGHT to adjust, SPACE to exit";
+
+        // 설정 제목과 안내 문자열 표시
+        backBufferGraphics.setColor(Color.GREEN);
+        drawCenteredBigString(screen, settingsTitle, screen.getHeight() / 8);
+
+        backBufferGraphics.setColor(Color.GRAY);
+        drawCenteredRegularString(screen, instructionsString, screen.getHeight() / 5);
+
+        // 볼륨 바에 대한 공통 설정 변수
+        int boxSize = 20;
+        int spacing = 5;
+        int totalBoxes = 10;
+        int barX = (screen.getWidth() - (boxSize + spacing) * totalBoxes + spacing) / 2;
+
+        // 배경음악(BGM) 볼륨 레이블 및 바 표시
+        String bgmLabel = "Background Music Volume";
+        int filledBoxesBGM = (int) (Core.getSoundManager().getBackgroundMusicVolume() * totalBoxes);
+        int bgmBarY = screen.getHeight() / 3;
+
+        // 배경음악 볼륨 바 그리기
+        drawVolumeBar(screen, bgmLabel, filledBoxesBGM, barX, bgmBarY, selectedOption == 0);
+
+        // 효과음(SFX) 볼륨 레이블 및 바 표시
+        String sfxLabel = "Sound Effects Volume";
+        int filledBoxesSFX = (int) (Core.getSoundManager().getSoundEffectsVolume() * totalBoxes);
+        int sfxBarY = screen.getHeight() / 2;
+
+        // 효과음 볼륨 바 그리기
+        drawVolumeBar(screen, sfxLabel, filledBoxesSFX, barX, sfxBarY, selectedOption == 1);
+    }
+
+    /**
+     * 볼륨 바와 레이블을 그려주며, 현재 볼륨 레벨을 표시합니다.
+     *
+     * @param screen      볼륨 바를 그릴 스크린 객체
+     * @param label       볼륨 바에 대한 레이블 (예: "배경음악 볼륨")
+     * @param filledBoxes 현재 볼륨을 나타내는 채워진 박스 개수
+     * @param barX        볼륨 바의 X 좌표
+     * @param barY        볼륨 바의 Y 좌표
+     * @param isSelected  현재 볼륨 바가 선택되어 있는지 여부
+     */
+    private void drawVolumeBar(final Screen screen, String label, int filledBoxes, int barX,
+        int barY, boolean isSelected) {
+        // 선택된 항목에 따라 색상 설정
+        backBufferGraphics.setColor(isSelected ? Color.GREEN : Color.GRAY);
+        drawCenteredRegularString(screen, label, barY - fontRegularMetrics.getHeight());
+
+        // 볼륨 바의 박스들을 그려줌
+        for (int i = 0; i < 10; i++) {
+            if (i < filledBoxes) {
+                backBufferGraphics.fillRect(barX + (20 + 5) * i, barY, 20, 20); // 채워진 박스
+            } else {
+                backBufferGraphics.drawRect(barX + (20 + 5) * i, barY, 20, 20); // 빈 박스
+            }
+        }
+    }
     // 각 아이템을 그리는 메소드
     public void drawItem(final int item, final int position_X, final int position_Y) {
         // drawEntity로 해당 Item 스프라이트를 그림
@@ -642,7 +769,7 @@ public final class DrawManager {
      */
     public void drawPauseTitle(final Screen screen) {
         String titleString = "Pause";
-        
+
         backBufferGraphics.setColor(Color.GREEN);
         drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
     }

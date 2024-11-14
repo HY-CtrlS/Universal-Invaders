@@ -173,5 +173,4 @@ out
 
 # Default
 log*
-*.ttf
 .checkstyle

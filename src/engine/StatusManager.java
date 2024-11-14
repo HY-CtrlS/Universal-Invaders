@@ -11,15 +11,13 @@ public class StatusManager {
 
     private StatusManager() {
         logger = Core.getLogger();
-        try {
-            status = FileManager.getInstance().loadShipStatus();
-        } catch (IOException e) {
-            logger.warning("Failed to load status. Using default values.");
-            status = new ShipStatus(750, -6, 2, 100);
-        }
+
+
+        resetDefaultStatus();
+
     }
 
-    public static StatusManager getInstance() {
+    protected static StatusManager getInstance() {
         if (instance == null) {
             instance = new StatusManager();
         }
@@ -50,13 +48,19 @@ public class StatusManager {
         status.setSpeed(speed);
     }
 
-    public int getMaxLives() {
-        return status.getMaxLives();
+    public int getBaseDamage() {return status.getBaseDamage();}
+
+    public void setBaseDamage(int baseDamage) {status.setBaseDamage(baseDamage);}
+
+
+    public int getHp() {
+        return status.getHp();
     }
 
-    public void setMaxLives(int maxLives) {
-        status.setMaxLives(maxLives);
+    public void setMaxLives(final int hp) {
+        status.setHp(hp);
     }
+
 
     private void saveStatus() {
         try {
@@ -65,4 +69,15 @@ public class StatusManager {
             logger.warning("Failed to save status.");
         }
     }
+
+
+    public void resetDefaultStatus() {
+        try {
+            status = FileManager.getInstance().loadShipStatus();
+        } catch (IOException e) {
+            logger.warning("Failed to load status. Using default values.");
+            status = new ShipStatus(750, 6, 2, 1, 100);
+        }
+    }
+
 }
