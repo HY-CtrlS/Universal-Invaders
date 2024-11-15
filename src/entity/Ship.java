@@ -25,6 +25,10 @@ public class Ship extends Entity {
     private int baseDamage;
     /** 함선이 바라보고 있는 뱡향 */
     private static Direction direction;
+    /** 각 방향의 1미만의 이동량을 저장 및 누적 */
+    private double remainingMovement = 0;
+    /** 이동량의 정수 부분 (실제 이동량) */
+    private int movement = 0;
     /** Minimum time between shots. */
     private Cooldown shootingCooldown;
     /** Time spent inactive between hits. */
@@ -91,8 +95,9 @@ public class Ship extends Entity {
      */
     public final void moveUpRight() {
         this.direction = Direction.UP_RIGHT;
-        this.positionY -= (int) (speed / Math.sqrt(2));
-        this.positionX += (int) (speed / Math.sqrt(2));
+        calculateMovement();
+        this.positionY -= movement;
+        this.positionX += movement;
     }
 
     /**
@@ -100,8 +105,9 @@ public class Ship extends Entity {
      */
     public final void moveUpLeft() {
         this.direction = Direction.UP_LEFT;
-        this.positionY -= (int) (speed / Math.sqrt(2));
-        this.positionX -= (int) (speed / Math.sqrt(2));
+        calculateMovement();
+        this.positionY -= movement;
+        this.positionX -= movement;
     }
 
     /**
@@ -109,8 +115,9 @@ public class Ship extends Entity {
      */
     public final void moveDownRight() {
         this.direction = Direction.DOWN_RIGHT;
-        this.positionY += (int) (speed / Math.sqrt(2));
-        this.positionX += (int) (speed / Math.sqrt(2));
+        calculateMovement();
+        this.positionY += movement;
+        this.positionX += movement;
     }
 
     /**
@@ -118,8 +125,18 @@ public class Ship extends Entity {
      */
     public final void moveDownLeft() {
         this.direction = Direction.DOWN_LEFT;
-        this.positionY += (int) (speed / Math.sqrt(2));
-        this.positionX -= (int) (speed / Math.sqrt(2));
+        calculateMovement();
+        this.positionY += movement;
+        this.positionX -= movement;
+    }
+
+    /**
+     * 축 방향 이동속도에서 소수점 아래 부분 누적 및 정수 부분 구분.
+     */
+    private void calculateMovement() {
+        remainingMovement += (int) (speed / Math.sqrt(2));
+        movement = (int) remainingMovement; // 정수 부분
+        remainingMovement -= movement; // 소수 부분
     }
 
     /**

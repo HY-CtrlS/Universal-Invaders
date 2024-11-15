@@ -21,6 +21,10 @@ public class Bullet extends Entity {
     private Direction direction;
     // 아군 또는 적 함선이 발사한 총알을 구분하는 식별자
     private int classify;
+    // 1미만의 이동량을 저장 및 누적
+    private double remainingMovement = 0;
+    // 이동량의 정수 부분 (실제 이동량)
+    private int movement = 0;
 
     /**
      * Constructor, establishes the bullet's properties.
@@ -55,9 +59,19 @@ public class Bullet extends Entity {
     }
 
     /**
+     * 축 방향 이동속도에서 소수점 아래 부분 누적 및 정수 부분 구분.
+     */
+    private void calculateMovement() {
+        remainingMovement += (this.speed / Math.sqrt(2));
+        movement = (int) remainingMovement; // 정수 부분
+        remainingMovement -= movement; // 소수 부분
+    }
+
+    /**
      * Updates the bullet's position.
      */
     public final void update() {
+        calculateMovement();
         switch (direction) {
             case UP:
                 this.positionY -= this.speed;
@@ -72,20 +86,20 @@ public class Bullet extends Entity {
                 this.positionX -= this.speed;
                 break;
             case UP_RIGHT:
-                this.positionY -= (int) (speed / Math.sqrt(2));
-                this.positionX += (int) (speed / Math.sqrt(2));
+                this.positionY -= movement;
+                this.positionX += movement;
                 break;
             case UP_LEFT:
-                this.positionY -= (int) (speed / Math.sqrt(2));
-                this.positionX -= (int) (speed / Math.sqrt(2));
+                this.positionY -= movement;
+                this.positionX -= movement;
                 break;
             case DOWN_RIGHT:
-                this.positionY += (int) (speed / Math.sqrt(2));
-                this.positionX += (int) (speed / Math.sqrt(2));
+                this.positionY += movement;
+                this.positionX += movement;
                 break;
             case DOWN_LEFT:
-                this.positionY += (int) (speed / Math.sqrt(2));
-                this.positionX -= (int) (speed / Math.sqrt(2));
+                this.positionY += movement;
+                this.positionX -= movement;
                 break;
         }
     }
