@@ -25,9 +25,9 @@ public class Ship extends Entity {
     private int baseDamage;
     /** 함선이 바라보고 있는 뱡향 */
     private static Direction direction;
-    /** 각 방향의 1미만의 이동량을 저장 및 누적 */
+    /** 축 방향 속도의 소수 부분을 저장 및 누적 */
     private double remainingMovement = 0;
-    /** 이동량의 정수 부분 (실제 이동량) */
+    /** 축 방향 속도의 정수 부분 (실제 이동량) */
     private int movement = 0;
     /** Minimum time between shots. */
     private Cooldown shootingCooldown;
