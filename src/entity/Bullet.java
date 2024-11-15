@@ -15,6 +15,7 @@ public class Bullet extends Entity {
      * Speed of the bullet
      */
     private int speed;
+    // 총알의 데미지
     private int damage;
     // 총알의 뱡향
     private Direction direction;
@@ -27,6 +28,7 @@ public class Bullet extends Entity {
      * @param positionX Initial position of the bullet in the X axis.
      * @param positionY Initial position of the bullet in the Y axis.
      * @param speed     Speed of the bullet.
+     * @param damage    총알의 데미지.
      * @param direction 총알의 방향.
      * @param classify  총알의 진영.
      */

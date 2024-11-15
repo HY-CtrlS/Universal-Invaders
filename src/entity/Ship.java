@@ -21,8 +21,7 @@ public class Ship extends Entity {
     private int bulletSpeed;
     /** Movement of the ship for each unit of time. */
     private int speed;
-    /** Value for Max life */
-    private int maxLives;
+    /** 함선의 기본 데미지 */
     private int baseDamage;
     /** 함선이 바라보고 있는 뱡향 */
     private static Direction direction;
