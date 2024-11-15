@@ -294,14 +294,15 @@ public class GameScreen extends Screen {
     }
 
     /**
-     * Cleans bullets that go off screen.
+     * Cleans bullets that go off-screen.
      */
     private void cleanBullets() {
         Set<Bullet> recyclable = new HashSet<Bullet>();
         for (Bullet bullet : this.bullets) {
             bullet.update();
             if (bullet.getPositionY() < SEPARATION_LINE_HEIGHT
-                || bullet.getPositionY() > this.height) {
+                || bullet.getPositionY() > this.height || bullet.getPositionX() < 0
+                || bullet.getPositionX() > this.width) {
                 recyclable.add(bullet);
             }
         }
