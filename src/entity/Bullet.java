@@ -57,17 +57,33 @@ public class Bullet extends Entity {
      */
     public final void update() {
         switch (direction) {
-            case Direction.UP:
+            case UP:
                 this.positionY -= this.speed;
                 break;
-            case Direction.DOWN:
+            case DOWN:
                 this.positionY += this.speed;
                 break;
-            case Direction.RIGHT:
+            case RIGHT:
                 this.positionX += this.speed;
                 break;
-            case Direction.LEFT:
+            case LEFT:
                 this.positionX -= this.speed;
+                break;
+            case UP_RIGHT:
+                this.positionY -= (int) (speed / Math.sqrt(2));
+                this.positionX += (int) (speed / Math.sqrt(2));
+                break;
+            case UP_LEFT:
+                this.positionY -= (int) (speed / Math.sqrt(2));
+                this.positionX -= (int) (speed / Math.sqrt(2));
+                break;
+            case DOWN_RIGHT:
+                this.positionY += (int) (speed / Math.sqrt(2));
+                this.positionX += (int) (speed / Math.sqrt(2));
+                break;
+            case DOWN_LEFT:
+                this.positionY += (int) (speed / Math.sqrt(2));
+                this.positionX -= (int) (speed / Math.sqrt(2));
                 break;
         }
     }
