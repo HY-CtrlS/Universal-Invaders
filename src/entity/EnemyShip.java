@@ -14,6 +14,7 @@ import engine.DrawManager.SpriteType;
  */
 public class EnemyShip extends Entity {
 
+    /** 적 함선의 체력 */
     private int hp;
     private int baseDamage;
     /** Point value of a type A enemy. */
