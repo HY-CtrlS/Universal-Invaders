@@ -21,11 +21,14 @@ public class Ship extends Entity {
     private int bulletSpeed;
     /** Movement of the ship for each unit of time. */
     private int speed;
-    /** Value for Max life*/
-    private int maxLives;
+    /** 함선의 기본 데미지 */
     private int baseDamage;
     /** 함선이 바라보고 있는 뱡향 */
     private static Direction direction;
+    /** 축 방향 속도의 소수 부분을 저장 및 누적 */
+    private double remainingMovement = 0;
+    /** 축 방향 속도의 정수 부분 (실제 이동량) */
+    private int movement = 0;
     /** Minimum time between shots. */
     private Cooldown shootingCooldown;
     /** Time spent inactive between hits. */
@@ -56,7 +59,7 @@ public class Ship extends Entity {
     }
 
     /**
-     * Moves the ship speed uni ts right, or until the right screen border is reached.
+     * Moves the ship right until the right screen border is reached.
      */
     public final void moveRight() {
         this.direction = Direction.RIGHT;
@@ -64,7 +67,7 @@ public class Ship extends Entity {
     }
 
     /**
-     * Moves the ship speed units left, or until the left screen border is reached.
+     * Moves the ship left until the left screen border is reached.
      */
     public final void moveLeft() {
         this.direction = Direction.LEFT;
@@ -72,7 +75,7 @@ public class Ship extends Entity {
     }
 
     /**
-     * Moves the ship speed units up, or until the top screen border is reached.
+     * Moves the ship up until the top screen border is reached.
      */
     public final void moveUp() {
         this.direction = Direction.UP;
@@ -80,11 +83,60 @@ public class Ship extends Entity {
     }
 
     /**
-     * Moves the ship speed units down, or until the bottom screen border is reached.
+     * Moves the ship down until the bottom screen border is reached.
      */
     public final void moveDown() {
         this.direction = Direction.DOWN;
         this.positionY += speed;
+    }
+
+    /**
+     * Moves the ship up the right until the top and right screen border is reached.
+     */
+    public final void moveUpRight() {
+        this.direction = Direction.UP_RIGHT;
+        calculateMovement();
+        this.positionY -= movement;
+        this.positionX += movement;
+    }
+
+    /**
+     * Moves the ship up the left until the top and left screen border is reached.
+     */
+    public final void moveUpLeft() {
+        this.direction = Direction.UP_LEFT;
+        calculateMovement();
+        this.positionY -= movement;
+        this.positionX -= movement;
+    }
+
+    /**
+     * Moves the ship down the right until the bottom and right screen border is reached.
+     */
+    public final void moveDownRight() {
+        this.direction = Direction.DOWN_RIGHT;
+        calculateMovement();
+        this.positionY += movement;
+        this.positionX += movement;
+    }
+
+    /**
+     * Moves the ship down the left until the bottom and left screen border is reached.
+     */
+    public final void moveDownLeft() {
+        this.direction = Direction.DOWN_LEFT;
+        calculateMovement();
+        this.positionY += movement;
+        this.positionX -= movement;
+    }
+
+    /**
+     * 축 방향 이동속도에서 소수점 아래 부분 누적 및 정수 부분 구분.
+     */
+    private void calculateMovement() {
+        remainingMovement += speed / Math.sqrt(2);
+        movement = (int) remainingMovement; // 정수 부분
+        remainingMovement -= movement; // 소수 부분
     }
 
     /**
@@ -104,13 +156,21 @@ public class Ship extends Entity {
     }
 
     /**
-     * Updates status of the ship.
+     * Updates status of the ship, based on direction.
      */
     public final void update() {
         if (!this.destructionCooldown.checkFinished()) {
-            this.spriteType = SpriteType.ShipDestroyed;
+            if (isDiagonal()) {
+                this.spriteType = SpriteType.DiagonalShipDestroyed;
+            } else {
+                this.spriteType = SpriteType.ShipDestroyed;
+            }
         } else {
-            this.spriteType = SpriteType.Ship;
+            if (isDiagonal()) {
+                this.spriteType = SpriteType.DiagonalShip;
+            } else {
+                this.spriteType = SpriteType.Ship;
+            }
         }
     }
 
@@ -131,6 +191,18 @@ public class Ship extends Entity {
     }
 
     /**
+     * 함선이 대각선 방향을 바라보고 있는지 체크
+     *
+     * @return 함선의 방향이 대각선 방향이면 True
+     */
+    public final boolean isDiagonal() {
+        return switch (direction) {
+            case UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT -> true;
+            default -> false;
+        };
+    }
+
+    /**
      * Getter for the ship's speed.
      *
      * @return Speed of the ship.
@@ -139,7 +211,9 @@ public class Ship extends Entity {
         return this.speed;
     }
 
-    public final int getBaseDamage() {return this.baseDamage;}
+    public final int getBaseDamage() {
+        return this.baseDamage;
+    }
 
     /**
      * 함선의 방향을 얻는 Getter

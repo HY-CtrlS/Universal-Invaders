@@ -15,11 +15,16 @@ public class Bullet extends Entity {
      * Speed of the bullet
      */
     private int speed;
+    // 총알의 데미지
     private int damage;
     // 총알의 뱡향
     private Direction direction;
     // 아군 또는 적 함선이 발사한 총알을 구분하는 식별자
     private int classify;
+    // 축 방향 속도의 소수 부분을 저장 및 누적
+    private double remainingMovement = 0;
+    // 축 방향 속도의 정수 부분 (실제 이동량)
+    private int movement = 0;
 
     /**
      * Constructor, establishes the bullet's properties.
@@ -27,6 +32,7 @@ public class Bullet extends Entity {
      * @param positionX Initial position of the bullet in the X axis.
      * @param positionY Initial position of the bullet in the Y axis.
      * @param speed     Speed of the bullet.
+     * @param damage    총알의 데미지.
      * @param direction 총알의 방향.
      * @param classify  총알의 진영.
      */
@@ -42,32 +48,74 @@ public class Bullet extends Entity {
     }
 
     /**
-     * Sets correct sprite for the bullet, based on speed.
+     * 함선이 대각선 방향으로 총알을 발사했는지 체크
+     *
+     * @return 총알 발사 방향이 대각선 방향이면 True
+     */
+    public final boolean isDiagonal() {
+        return switch (direction) {
+            case UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT -> true;
+            default -> false;
+        };
+    }
+
+    /**
+     * Sets correct sprite for the bullet, based on classify and direction.
      */
     public final void setSprite() {
         if (this.classify == 0) {
-            this.spriteType = SpriteType.Bullet;
+            if (isDiagonal()) {
+                this.spriteType = SpriteType.DiagonalBullet;
+            } else {
+                this.spriteType = SpriteType.Bullet;
+            }
         } else {
             this.spriteType = SpriteType.EnemyBullet;
         }
     }
 
     /**
+     * 축 방향 이동속도에서 소수점 아래 부분 누적 및 정수 부분 구분.
+     */
+    private void calculateMovement() {
+        remainingMovement += speed / Math.sqrt(2);
+        movement = (int) remainingMovement; // 정수 부분
+        remainingMovement -= movement; // 소수 부분
+    }
+
+    /**
      * Updates the bullet's position.
      */
     public final void update() {
+        calculateMovement();
         switch (direction) {
-            case Direction.UP:
+            case UP:
                 this.positionY -= this.speed;
                 break;
-            case Direction.DOWN:
+            case DOWN:
                 this.positionY += this.speed;
                 break;
-            case Direction.RIGHT:
+            case RIGHT:
                 this.positionX += this.speed;
                 break;
-            case Direction.LEFT:
+            case LEFT:
                 this.positionX -= this.speed;
+                break;
+            case UP_RIGHT:
+                this.positionY -= movement;
+                this.positionX += movement;
+                break;
+            case UP_LEFT:
+                this.positionY -= movement;
+                this.positionX -= movement;
+                break;
+            case DOWN_RIGHT:
+                this.positionY += movement;
+                this.positionX += movement;
+                break;
+            case DOWN_LEFT:
+                this.positionY += movement;
+                this.positionX -= movement;
                 break;
         }
     }

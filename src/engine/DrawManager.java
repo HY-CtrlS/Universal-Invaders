@@ -239,6 +239,47 @@ public final class DrawManager {
                     }
                 }
                 break;
+            // 현재는 대각선에 대한 스프라이드가 없어서 임시로 UP과 DOWN의 스프라이트를 넣어둠, 추후에 수정 필요
+            case UP_RIGHT:
+                for (int i = 0; i < image.length; i++) {
+                    for (int j = 0; j < image[i].length; j++) {
+                        if (image[i][j]) {
+                            backBufferGraphics.drawRect(positionX + i * 2, positionY
+                                + j * 2, 1, 1);
+                        }
+                    }
+                }
+                break;
+            case UP_LEFT:
+                for (int i = 0; i < image.length; i++) {
+                    for (int j = 0; j < image[i].length; j++) {
+                        if (image[i][j]) {
+                            backBufferGraphics.drawRect(positionX + i * 2, positionY
+                                + j * 2, 1, 1);
+                        }
+                    }
+                }
+                break;
+            case DOWN_RIGHT:
+                for (int i = image.length - 1; i >= 0; i--) {
+                    for (int j = image[i].length - 1; j >= 0; j--) {
+                        if (image[image.length - 1 - i][image[i].length - 1 - j]) {
+                            backBufferGraphics.drawRect(positionX + i * 2, positionY
+                                + j * 2, 1, 1);
+                        }
+                    }
+                }
+                break;
+            case DOWN_LEFT:
+                for (int i = image.length - 1; i >= 0; i--) {
+                    for (int j = image[i].length - 1; j >= 0; j--) {
+                        if (image[image.length - 1 - i][image[i].length - 1 - j]) {
+                            backBufferGraphics.drawRect(positionX + i * 2, positionY
+                                + j * 2, 1, 1);
+                        }
+                    }
+                }
+                break;
         }
     }
 
