@@ -808,4 +808,54 @@ public final class DrawManager {
         drawCenteredRegularString(screen, quit, screen.getHeight()
             / 3 * 2 + fontRegularMetrics.getHeight() * 4);
     }
+
+    /**
+     * WarningScreen의 제목과 경고문을 화면 상단에 위치시키는 메소드
+     *
+     * @param screen 화면 객체를 받는 매개변수
+     */
+    public void drawWarningTitle(final Screen screen) {
+        String titleString = "Warning";
+        String instructionsString1 =
+            "When you leave the game, the information or money you get from this game will disappear.";
+        String instructionsString2 =
+            "Are you sure you want to exit?";
+
+        backBufferGraphics.setColor(Color.RED);
+        drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
+        backBufferGraphics.setColor(Color.GRAY);
+        drawCenteredRegularString(screen, instructionsString1,
+            100);
+        drawCenteredRegularString(screen, instructionsString2, screen.getHeight() - 50);
+        backBufferGraphics.setColor(Color.RED);
+        drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
+
+
+    }
+
+    /**
+     * WarningScreen의 메뉴를 표시하는 메소드
+     *
+     * @param screen 화면 객체를 받는 매개변수
+     * @param option 어떤 메뉴를 선택했는지 구분하는 매개변수
+     */
+    public void drawWarningMenu(final Screen screen, final int option) {
+        String quit = "Quit";
+        String cancel = "Cancel";
+
+        if (option == 0) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, quit,
+            screen.getHeight() / 3 * 2);
+        if (option == 1) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, cancel, screen.getHeight()
+            / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+    }
 }

@@ -105,6 +105,7 @@ public class GameScreen extends Screen {
         this.shipsDestroyed = gameState.getShipsDestroyed();
 
         Core.getSoundManager().playInGameBGM();
+        this.returnCode = 1;
     }
 
     /**
@@ -210,9 +211,10 @@ public class GameScreen extends Screen {
                 Screen pause = new PauseScreen(this.getWidth(), this.getHeight(), this.fps);
                 int check = pause.run();
                 this.logger.info("Closing pause screen.");
-                // 일시정지 화면에서 quit를 누른 경우 현재 hp를 0으로 변경하면서 라운드 종료
+                // 일시정지 화면에서 quit를 누른 경우 현재 라운드 종료
                 if (check == 2) {
-                    this.hp = 0;
+                    this.returnCode = 0;
+                    this.levelFinished = true;
                 }
                 // 일시정지 화면에서 돌아온 후 스페이스바 키 입력을 초기화하여
                 // 돌아오자마자 스페이스바가 눌린 상태로 인식되지 않도록 함
@@ -237,19 +239,21 @@ public class GameScreen extends Screen {
             //	this.enemyShipSpecial = null;
             //		this.logger.info("The special ship has escaped");
             //}
-
-            this.ship.update();
-            this.enemyShipSet.update();
-            // 1초마다 levelTime 1씩 증가
-            if (this.clockCooldown.checkFinished()) {
-                this.levelTime += 1;
-                this.clockCooldown.reset();
+            if (!this.levelFinished) {
+                this.ship.update();
+                this.enemyShipSet.update();
+                // 1초마다 levelTime 1씩 증가
+                if (this.clockCooldown.checkFinished()) {
+                    this.levelTime += 1;
+                    this.clockCooldown.reset();
+                }
             }
         }
-
-        manageCollisions();
-        cleanBullets();
-        draw();
+        if (!this.levelFinished) {
+            manageCollisions();
+            cleanBullets();
+            draw();
+        }
         // 현재 진행된 시간이 라운드에서 정한 시간과 같으면 클리어로 판단 후 라운드 종료
         if ((levelTime == this.gameSettings.getRoundTime() || this.hp <= 0)
             && !this.levelFinished) {
