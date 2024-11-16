@@ -223,22 +223,26 @@ public final class DrawManager {
                 break;
             case LEFT:
             case DOWN_LEFT:
-                for (int i = 0; i < image[0].length; i++) {
-                    for (int j = 0; j < image.length; j++) {
-                        if (image[j][i]) {
-                            backBufferGraphics.drawRect(positionX + i * 2, positionY
-                                + j * 2, 1, 1);
+                for (int i = 0; i < image.length; i++) {
+                    for (int j = 0; j < image[i].length; j++) {
+                        if (image[i][j]) {
+                            backBufferGraphics.drawRect(positionX + j * 2, positionY
+                                + (image.length - 1 - i) * 2, 1, 1);
                         }
                     }
                 }
                 break;
             case RIGHT:
             case UP_RIGHT:
-                for (int i = image[0].length - 1; i >= 0; i--) {
-                    for (int j = image.length - 1; j >= 0; j--) {
-                        if (image[image.length - 1 - j][image[0].length - 1 - i]) {
-                            backBufferGraphics.drawRect(positionX + i * 2, positionY
-                                + j * 2, 1, 1);
+                Core.getLogger().info(entity.getSpriteType() + "UP_RIGHT 실행");
+                for (int i = 0; i < image.length; i++) {
+                    for (int j = 0; j < image[i].length; j++) {
+                        if (image[i][j]) {
+                            backBufferGraphics.drawRect(
+                                positionX + (image[i].length - 1 - j) * 2,
+                                positionY + i * 2,
+                                1, 1
+                            );
                         }
                     }
                 }
