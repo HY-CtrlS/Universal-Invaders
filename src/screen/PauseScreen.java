@@ -79,7 +79,7 @@ public class PauseScreen extends Screen {
                         this.returnCode = 2;
                         this.isRunning = false;
                     } else {
-                        this.returnCode = 0;
+                        this.returnCode = 2;
                     }
                 } else {
                     this.isRunning = false;

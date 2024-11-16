@@ -27,7 +27,7 @@ public class WarningScreen extends Screen {
 
         this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
         this.selectionCooldown.reset();
-        this.returnCode = 1;
+        this.returnCode = 0;
     }
 
     /**

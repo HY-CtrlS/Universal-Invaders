@@ -817,20 +817,20 @@ public final class DrawManager {
     public void drawWarningTitle(final Screen screen) {
         String titleString = "Warning";
         String instructionsString1 =
-            "When you leave the game, the information or money you get from this game will disappear.";
-        String instructionsString2 =
+            "When you leave the game,";
+        String instructionsString2 = "the information or money you get from this game will disappear.";
+        String instructionsString3 =
             "Are you sure you want to exit?";
 
         backBufferGraphics.setColor(Color.RED);
         drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
         backBufferGraphics.setColor(Color.GRAY);
         drawCenteredRegularString(screen, instructionsString1,
-            100);
-        drawCenteredRegularString(screen, instructionsString2, screen.getHeight() - 50);
-        backBufferGraphics.setColor(Color.RED);
-        drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
-
-
+            screen.getHeight() / 3 + fontRegularMetrics.getHeight() * 2);
+        drawCenteredRegularString(screen, instructionsString2,
+            screen.getHeight() / 3 + fontRegularMetrics.getHeight() * 4);
+        drawCenteredRegularString(screen, instructionsString3,
+            screen.getHeight() / 2);
     }
 
     /**
