@@ -46,7 +46,7 @@ public class Bullet extends Entity {
      */
     public final void setSprite() {
         if (this.classify == 0) {
-            this.spriteType = SpriteType.Bullet;
+            this.spriteType = SpriteType.BulletUpward;
         } else {
             this.spriteType = SpriteType.EnemyBullet;
         }
