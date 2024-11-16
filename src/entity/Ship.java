@@ -156,13 +156,21 @@ public class Ship extends Entity {
     }
 
     /**
-     * Updates status of the ship.
+     * Updates status of the ship, based on direction.
      */
     public final void update() {
         if (!this.destructionCooldown.checkFinished()) {
-            this.spriteType = SpriteType.ShipDestroyed;
+            if (isDiagonal()) {
+                this.spriteType = SpriteType.DiagonalShipDestroyed;
+            } else {
+                this.spriteType = SpriteType.ShipDestroyed;
+            }
         } else {
-            this.spriteType = SpriteType.Ship;
+            if (isDiagonal()) {
+                this.spriteType = SpriteType.DiagonalShip;
+            } else {
+                this.spriteType = SpriteType.Ship;
+            }
         }
     }
 
@@ -180,6 +188,23 @@ public class Ship extends Entity {
      */
     public final boolean isDestroyed() {
         return !this.destructionCooldown.checkFinished();
+    }
+
+    /**
+     * 함선이 대각선 방향을 바라보고 있는지 체크
+     *
+     * @return 함선의 방향이 대각선 방향이면 True
+     */
+    public final boolean isDiagonal() {
+        switch (direction) {
+            case UP_RIGHT:
+            case UP_LEFT:
+            case DOWN_RIGHT:
+            case DOWN_LEFT:
+                return true;
+            default:
+                return false;
+        }
     }
 
     /**

@@ -48,11 +48,32 @@ public class Bullet extends Entity {
     }
 
     /**
-     * Sets correct sprite for the bullet, based on speed.
+     * 함선이 대각선 방향으로 총알을 발사했는지 체크
+     *
+     * @return 총알 발사 방향이 대각선 방향이면 True
+     */
+    public final boolean isDiagonal() {
+        switch (direction) {
+            case UP_RIGHT:
+            case UP_LEFT:
+            case DOWN_RIGHT:
+            case DOWN_LEFT:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Sets correct sprite for the bullet, based on classify and direction.
      */
     public final void setSprite() {
         if (this.classify == 0) {
-            this.spriteType = SpriteType.Bullet;
+            if (isDiagonal()) {
+                this.spriteType = SpriteType.DiagonalBullet;
+            } else {
+                this.spriteType = SpriteType.Bullet;
+            }
         } else {
             this.spriteType = SpriteType.EnemyBullet;
         }

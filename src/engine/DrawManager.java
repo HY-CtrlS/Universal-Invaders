@@ -53,10 +53,16 @@ public final class DrawManager {
     public static enum SpriteType {
         /** Player ship. */
         Ship,
+        /** Diagonal player ship. */
+        DiagonalShip,
         /** Destroyed player ship. */
         ShipDestroyed,
+        /** Diagonal destroyed player ship. */
+        DiagonalShipDestroyed,
         /** Player bullet. */
         Bullet,
+        /** Diagonal player bullet. */
+        DiagonalBullet,
         /** Enemy bullet. */
         EnemyBullet,
         /** First enemy ship - first form. */
@@ -90,9 +96,12 @@ public final class DrawManager {
         try {
             spriteMap = new LinkedHashMap<>();
 
-            spriteMap.put(SpriteType.Ship, new boolean[13][8]);
-            spriteMap.put(SpriteType.ShipDestroyed, new boolean[13][8]);
-            spriteMap.put(SpriteType.Bullet, new boolean[3][5]);
+            spriteMap.put(SpriteType.Ship, new boolean[13][13]);
+            spriteMap.put(SpriteType.ShipDestroyed, new boolean[15][13]);
+            spriteMap.put(SpriteType.DiagonalShip, new boolean[13][13]);
+            spriteMap.put(SpriteType.DiagonalShipDestroyed, new boolean[15][15]);
+            spriteMap.put(SpriteType.Bullet, new boolean[2][4]);
+            spriteMap.put(SpriteType.DiagonalBullet, new boolean[4][4]);
             spriteMap.put(SpriteType.EnemyBullet, new boolean[3][5]);
             spriteMap.put(SpriteType.EnemyShipA1, new boolean[12][8]);
             spriteMap.put(SpriteType.EnemyShipA2, new boolean[12][8]);
