@@ -53,15 +53,10 @@ public class Bullet extends Entity {
      * @return 총알 발사 방향이 대각선 방향이면 True
      */
     public final boolean isDiagonal() {
-        switch (direction) {
-            case UP_RIGHT:
-            case UP_LEFT:
-            case DOWN_RIGHT:
-            case DOWN_LEFT:
-                return true;
-            default:
-                return false;
-        }
+        return switch (direction) {
+            case UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT -> true;
+            default -> false;
+        };
     }
 
     /**
