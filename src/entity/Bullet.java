@@ -62,7 +62,7 @@ public class Bullet extends Entity {
      * 축 방향 이동속도에서 소수점 아래 부분 누적 및 정수 부분 구분.
      */
     private void calculateMovement() {
-        remainingMovement += (speed / Math.sqrt(2));
+        remainingMovement += speed / Math.sqrt(2);
         movement = (int) remainingMovement; // 정수 부분
         remainingMovement -= movement; // 소수 부분
     }
