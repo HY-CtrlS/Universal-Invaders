@@ -52,17 +52,17 @@ public final class DrawManager {
     /** Sprite types. */
     public static enum SpriteType {
         /** 상단을 향한 플레이어 함선 */
-        ShipUpward,
+        Ship,
         /** 좌상단을 향한 플레이어 함선 */
-        ShipUpperleftward,
+        ShipDiagonal,
         /** 파괴된 플레이어 함선 (상향) */
-        ShipUpwardDestroyed,
+        ShipDestroyed,
         /* 파괴된 플레이어 함선 (좌상향) */
-        ShipUpperleftwardDestroyed,
+        ShipDiagonalDestroyed,
         /** 상단을 향한 플레이어 탄막 */
-        BulletUpward,
+        Bullet,
         /** 좌상단을 향한 플레이어 탄막 */
-        BulletUpperleftward,
+        BulletDiagonal,
         /** Enemy bullet. */
         EnemyBullet,
         /** First enemy ship - first form. */
@@ -96,12 +96,12 @@ public final class DrawManager {
         try {
             spriteMap = new LinkedHashMap<>();
 
-            spriteMap.put(SpriteType.ShipUpward, new boolean[13][13]);
-            spriteMap.put(SpriteType.ShipUpperleftward, new boolean[13][13]);
-            spriteMap.put(SpriteType.ShipUpwardDestroyed, new boolean[15][13]);
-            spriteMap.put(SpriteType.ShipUpperleftwardDestroyed, new boolean[15][15]);
-            spriteMap.put(SpriteType.BulletUpward, new boolean[2][4]);
-            spriteMap.put(SpriteType.BulletUpperleftward, new boolean[4][4]);
+            spriteMap.put(SpriteType.Ship, new boolean[13][13]);
+            spriteMap.put(SpriteType.ShipDiagonal, new boolean[13][13]);
+            spriteMap.put(SpriteType.ShipDestroyed, new boolean[15][13]);
+            spriteMap.put(SpriteType.ShipDiagonalDestroyed, new boolean[15][15]);
+            spriteMap.put(SpriteType.Bullet, new boolean[2][4]);
+            spriteMap.put(SpriteType.BulletDiagonal, new boolean[4][4]);
             spriteMap.put(SpriteType.EnemyBullet, new boolean[3][5]);
             spriteMap.put(SpriteType.EnemyShipA1, new boolean[12][8]);
             spriteMap.put(SpriteType.EnemyShipA2, new boolean[12][8]);
