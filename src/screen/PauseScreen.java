@@ -27,7 +27,7 @@ public class PauseScreen extends Screen {
 
         this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
         this.selectionCooldown.reset();
-        this.returnCode = 1;
+        this.returnCode = 0;
     }
 
     /**
@@ -62,17 +62,19 @@ public class PauseScreen extends Screen {
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                 // 일시정지 화면에서 setting 선택 시 setting 화면으로 이동
-                if (this.returnCode == 2) {
+                if (this.returnCode == 1) {
                     this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
                         + " settings screen at " + this.fps + " fps.");
                     Screen setting = new SettingScreen(this.getWidth(), this.getHeight(), this.fps);
                     setting.run();
                     this.logger.info("Closing settings screen.");
-                    this.returnCode = 1;
-                } else if (this.returnCode == 0 || this.returnCode == 3) {
+                    this.returnCode = 0;
+                    // 세팅 화면에서 돌아온 후 스페이스바 키 입력을 초기화하여
+                    // 돌아오자마자 스페이스바가 눌린 상태로 인식되지 않도록 함
+                    inputManager.resetKeyState(KeyEvent.VK_SPACE);
+                } else {
                     this.isRunning = false;
                 }
-                // 현재 returncode가 1이면 일시정지 화면 유지
             }
         }
     }
@@ -81,11 +83,7 @@ public class PauseScreen extends Screen {
      * 다음 메뉴 전환 메소드
      */
     private void nextMenuItem() {
-        if (this.returnCode == 3) {
-            this.returnCode = 0;
-        } else if (this.returnCode == 0) {
-            this.returnCode = 2;
-        } else if (this.returnCode == 1) {
+        if (this.returnCode == 2) {
             this.returnCode = 0;
         } else {
             this.returnCode++;
@@ -97,11 +95,7 @@ public class PauseScreen extends Screen {
      */
     private void previousMenuItem() {
         if (this.returnCode == 0) {
-            this.returnCode = 3;
-        } else if (this.returnCode == 2) {
-            this.returnCode = 0;
-        } else if (this.returnCode == 1) {
-            this.returnCode = 0;
+            this.returnCode = 2;
         } else {
             this.returnCode--;
         }

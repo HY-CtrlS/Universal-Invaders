@@ -211,7 +211,7 @@ public class GameScreen extends Screen {
                 int check = pause.run();
                 this.logger.info("Closing pause screen.");
                 // 일시정지 화면에서 quit를 누른 경우 현재 hp를 0으로 변경하면서 라운드 종료
-                if (check == 3) {
+                if (check == 2) {
                     this.hp = 0;
                 }
                 // 일시정지 화면에서 돌아온 후 스페이스바 키 입력을 초기화하여
