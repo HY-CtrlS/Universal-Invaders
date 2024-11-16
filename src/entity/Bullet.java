@@ -65,7 +65,7 @@ public class Bullet extends Entity {
     public final void setSprite() {
         if (this.classify == 0) {
             if (isDiagonal()) {
-                this.spriteType = SpriteType.DiagonalBullet;
+                this.spriteType = SpriteType.BulletDiagonal;
             } else {
                 this.spriteType = SpriteType.Bullet;
             }

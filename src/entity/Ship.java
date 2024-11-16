@@ -161,13 +161,13 @@ public class Ship extends Entity {
     public final void update() {
         if (!this.destructionCooldown.checkFinished()) {
             if (isDiagonal()) {
-                this.spriteType = SpriteType.DiagonalShipDestroyed;
+                this.spriteType = SpriteType.ShipDiagonalDestroyed;
             } else {
                 this.spriteType = SpriteType.ShipDestroyed;
             }
         } else {
             if (isDiagonal()) {
-                this.spriteType = SpriteType.DiagonalShip;
+                this.spriteType = SpriteType.ShipDiagonal;
             } else {
                 this.spriteType = SpriteType.Ship;
             }
