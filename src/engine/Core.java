@@ -170,20 +170,19 @@ public final class Core {
                     } while (gameState.getHp() > 0
                         && gameState.getLevel() <= NUM_LEVELS);
                     getSoundManager().stopBackgroundMusic();
-                    if (isQuit != 0) {
-                        LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-                            + " score screen at " + FPS + " fps, with a score of "
-                            + gameState.getScore() + ", "
-                            + gameState.getHp() + " lives remaining, "
-                            + gameState.getBulletsShot() + " bullets shot and "
-                            + gameState.getShipsDestroyed() + " ships destroyed.");
-                        currentScreen = new ScoreScreen(width, height, FPS, gameState);
-                        returnCode = frame.setScreen(currentScreen);
-                        LOGGER.info("Closing score screen.");
-                    } else {
+                    if (isQuit == 0) {
                         returnCode = 1;
+                        break;
                     }
-                    break;
+                    LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+                        + " score screen at " + FPS + " fps, with a score of "
+                        + gameState.getScore() + ", "
+                        + gameState.getHp() + " lives remaining, "
+                        + gameState.getBulletsShot() + " bullets shot and "
+                        + gameState.getShipsDestroyed() + " ships destroyed.");
+                    currentScreen = new ScoreScreen(width, height, FPS, gameState);
+                    returnCode = frame.setScreen(currentScreen);
+                    LOGGER.info("Closing score screen.");
                 case 3:
                     // High scores.
                     currentScreen = new HighScoreScreen(width, height, FPS);
