@@ -41,7 +41,7 @@ public class Ship extends Entity {
     public Ship(final int positionX, final int positionY, final Direction direction) {
         super(positionX, positionY, 13 * 2, 8 * 2, Color.GREEN, direction);
 
-        this.spriteType = SpriteType.Ship;
+        this.spriteType = SpriteType.ShipUpward;
 
         StatusManager statusManager = Core.getStatusManager();
         this.shootingInterval = statusManager.getShootingInterval();
@@ -110,7 +110,7 @@ public class Ship extends Entity {
         if (!this.destructionCooldown.checkFinished()) {
             this.spriteType = SpriteType.ShipDestroyed;
         } else {
-            this.spriteType = SpriteType.Ship;
+            this.spriteType = SpriteType.ShipUpward;
         }
     }
 

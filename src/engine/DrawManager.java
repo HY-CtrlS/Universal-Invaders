@@ -51,8 +51,10 @@ public final class DrawManager {
 
     /** Sprite types. */
     public static enum SpriteType {
-        /** Player ship. */
-        Ship,
+        /** 상단을 향한 플레이어 함선 */
+        ShipUpward,
+        /** 좌상단을 향한 플레이어 함선 */
+        ShipUpperleftward,
         /** Destroyed player ship. */
         ShipDestroyed,
         /** Player bullet. */
@@ -90,7 +92,8 @@ public final class DrawManager {
         try {
             spriteMap = new LinkedHashMap<>();
 
-            spriteMap.put(SpriteType.Ship, new boolean[13][8]);
+            spriteMap.put(SpriteType.ShipUpward, new boolean[13][13]);
+            spriteMap.put(SpriteType.ShipUpperleftward, new boolean[13][13]);
             spriteMap.put(SpriteType.ShipDestroyed, new boolean[13][8]);
             spriteMap.put(SpriteType.Bullet, new boolean[3][5]);
             spriteMap.put(SpriteType.EnemyBullet, new boolean[3][5]);
