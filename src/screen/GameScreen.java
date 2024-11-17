@@ -249,10 +249,13 @@ public class GameScreen extends Screen {
 
         }
 
-        manageCollisions();
-        cleanBullets();
-        draw();
-        
+        // Quit시에(!isRunning) GameScreen 그려지지 않도록 함
+        if (isRunning) {
+            manageCollisions();
+            cleanBullets();
+            draw();
+        }
+
         // 현재 진행된 시간이 라운드에서 정한 시간과 같으면 클리어로 판단 후 라운드 종료
         if ((levelTime == this.gameSettings.getRoundTime() || this.hp <= 0)
             && !this.levelFinished) {
