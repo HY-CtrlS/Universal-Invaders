@@ -12,7 +12,7 @@ public class StatusManager {
     private StatusManager() {
         logger = Core.getLogger();
 
-        
+
         resetDefaultStatus();
 
     }

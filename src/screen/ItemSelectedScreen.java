@@ -42,7 +42,6 @@ public class ItemSelectedScreen extends Screen {
 
         return 0;
     }
-
     // 화면 업데이트 메소드
     @Override
     protected final void update() {

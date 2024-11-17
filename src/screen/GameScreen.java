@@ -1,5 +1,6 @@
 package screen;
 
+import engine.DrawManager;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
@@ -104,6 +105,7 @@ public class GameScreen extends Screen {
         this.shipsDestroyed = gameState.getShipsDestroyed();
 
         Core.getSoundManager().playInGameBGM();
+        this.returnCode = 1;
     }
 
     /**
@@ -204,8 +206,24 @@ public class GameScreen extends Screen {
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                 if (this.ship.shoot(this.bullets)) {
                     this.bulletsShot++;
-                    Core.getSoundManager().playBulletShotSound();
                 }
+            }
+
+            // esc키를 눌렀을 때 일시정지 화면으로 전환
+            if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
+                this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
+                    + " pause screen at " + this.fps + " fps.");
+                Screen pause = new PauseScreen(this.getWidth(), this.getHeight(), this.fps);
+                int check = pause.run();
+                this.logger.info("Closing pause screen.");
+                // 일시정지 화면에서 quit를 누른 경우 현재 라운드 종료
+                if (check == 2) {
+                    this.returnCode = 0;
+                    this.isRunning = false;
+                }
+                // 일시정지 화면에서 돌아온 후 스페이스바 키 입력을 초기화하여
+                // 돌아오자마자 스페이스바가 눌린 상태로 인식되지 않도록 함
+                inputManager.resetKeyState(KeyEvent.VK_SPACE);
             }
 
             //if (this.enemyShipSpecial != null) {
@@ -226,7 +244,6 @@ public class GameScreen extends Screen {
             //	this.enemyShipSpecial = null;
             //		this.logger.info("The special ship has escaped");
             //}
-
             this.ship.update();
             this.enemyShipSet.update();
             // 1초마다 levelTime 1씩 증가
@@ -234,11 +251,16 @@ public class GameScreen extends Screen {
                 this.levelTime += 1;
                 this.clockCooldown.reset();
             }
+
         }
 
-        manageCollisions();
-        cleanBullets();
-        draw();
+        // Quit시에(!isRunning) GameScreen 그려지지 않도록 함
+        if (isRunning) {
+            manageCollisions();
+            cleanBullets();
+            draw();
+        }
+
         // 현재 진행된 시간이 라운드에서 정한 시간과 같으면 클리어로 판단 후 라운드 종료
         if ((levelTime == this.gameSettings.getRoundTime() || this.hp <= 0)
             && !this.levelFinished) {

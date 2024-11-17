@@ -67,7 +67,8 @@ public final class Core {
     private static ConsoleHandler consoleHandler;
     // 아이템 리스트 객체 생성
     private static ItemList items = new ItemList();
-
+    /** quit로 라운드라 종료되었는지 확인하는 변수 */
+    private static int isQuit;
 
     /**
      * Test implementation.
@@ -139,8 +140,11 @@ public final class Core {
                             bonusLife, width, height, FPS);
                         LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
                             + " game screen at " + FPS + " fps.");
-                        frame.setScreen(currentScreen);
+                        isQuit = frame.setScreen(currentScreen);
                         LOGGER.info("Closing game screen.");
+                        if (isQuit == 0) {
+                            break;
+                        }
 
                         // 현재 플레이한 게임의 정보를 gameState에 저장
                         gameState = ((GameScreen) currentScreen).getGameState();
@@ -166,7 +170,10 @@ public final class Core {
                     } while (gameState.getHp() > 0
                         && gameState.getLevel() <= NUM_LEVELS);
                     getSoundManager().stopBackgroundMusic();
-
+                    if (isQuit == 0) {
+                        returnCode = 1;
+                        break;
+                    }
                     LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
                         + " score screen at " + FPS + " fps, with a score of "
                         + gameState.getScore() + ", "
@@ -176,7 +183,6 @@ public final class Core {
                     currentScreen = new ScoreScreen(width, height, FPS, gameState);
                     returnCode = frame.setScreen(currentScreen);
                     LOGGER.info("Closing score screen.");
-                    break;
                 case 3:
                     // High scores.
                     currentScreen = new HighScoreScreen(width, height, FPS);
