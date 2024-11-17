@@ -373,7 +373,7 @@ public class GameScreen extends Screen {
         for (EnemyShip enemyShip : enemis) {
             if (checkCollision(this.ship, enemyShip)) {
                 if (!this.ship.isDestroyed() && !enemyShip.isDestroyed() && !levelFinished) {
-                    this.enemyShipSet.damage_Enemy(enemyShip, this.ship.getBaseDamage());
+                    //this.enemyShipSet.damage_Enemy(enemyShip, this.ship.getBaseDamage());
                     this.ship.destroy();
                     this.hp -= 5;
                     this.logger.info("Hit on player ship, -5 HP");
