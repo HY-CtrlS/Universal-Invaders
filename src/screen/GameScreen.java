@@ -406,7 +406,7 @@ public class GameScreen extends Screen {
                 if (!this.ship.isDestroyed() && !enemyShip.isDestroyed() && !levelFinished) {
                     //this.enemyShipSet.damage_Enemy(enemyShip, this.ship.getBaseDamage());
                     this.ship.destroy();
-                    this.hp -= 5;
+                    this.hp = (this.hp - 5 > 0) ? this.hp - 5 : 0;
                     this.logger.info("Hit on player ship, -5 HP");
                     Core.getSoundManager().playDamageSound();
                     if (this.hp <= 0 && !this.isDestroyed) {
