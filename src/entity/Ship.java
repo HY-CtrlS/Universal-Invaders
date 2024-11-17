@@ -53,7 +53,8 @@ public class Ship extends Entity {
         this.speed = statusManager.getSpeed();
 
         this.shootingCooldown = Core.getCooldown(this.shootingInterval);
-        this.destructionCooldown = Core.getCooldown(1000);
+        this.destructionCooldown = Core.getCooldown(200);
+
 
         this.direction = direction;
     }
@@ -166,13 +167,17 @@ public class Ship extends Entity {
                 this.spriteType = SpriteType.ShipDestroyed;
             }
         } else {
+
             if (isDiagonal()) {
                 this.spriteType = SpriteType.ShipDiagonal;
             } else {
                 this.spriteType = SpriteType.Ship;
             }
+
         }
     }
+
+
 
     /**
      * Switches the ship to its destroyed state.
