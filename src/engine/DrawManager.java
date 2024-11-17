@@ -808,4 +808,106 @@ public final class DrawManager {
             }
         }
     }
+
+    // 각 아이템을 그리는 메소드
+    public void drawItem(final int item, final int position_X, final int position_Y) {
+        // drawEntity로 해당 Item 스프라이트를 그림
+        // drawString 으로 해당 Item에 대한 설명 및 정보를 화면 아래 부분에 추가
+    }
+
+    /**
+     * PauseScreen의 제목을 화면 상단에 위치시키는 메소드
+     *
+     * @param screen 화면 객체를 받는 매개변수
+     */
+    public void drawPauseTitle(final Screen screen) {
+        String titleString = "Pause";
+
+        backBufferGraphics.setColor(Color.GREEN);
+        drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
+    }
+
+    /**
+     * PauseScreen의 메뉴를 표시하는 메소드
+     *
+     * @param screen 화면 객체를 받는 매개변수
+     * @param option 어떤 메뉴를 선택했는지 구분하는 매개변수
+     */
+    public void drawPauseMenu(final Screen screen, final int option) {
+        String resume = "Resume";
+        String quit = "Quit";
+        String setting = "Setting";
+
+        if (option == 0) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, resume,
+            screen.getHeight() / 3 * 2);
+        if (option == 1) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, setting, screen.getHeight()
+            / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+        if (option == 2) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, quit, screen.getHeight()
+            / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+    }
+
+    /**
+     * WarningScreen의 제목과 경고문을 화면 상단에 위치시키는 메소드
+     *
+     * @param screen 화면 객체를 받는 매개변수
+     */
+    public void drawWarningTitle(final Screen screen) {
+        String titleString = "Warning";
+        String instructionsString1 =
+            "When you leave the game,";
+        String instructionsString2 = "the information or money you get from this game will disappear.";
+        String instructionsString3 =
+            "Are you sure you want to exit?";
+
+        backBufferGraphics.setColor(Color.RED);
+        drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
+        backBufferGraphics.setColor(Color.GRAY);
+        drawCenteredRegularString(screen, instructionsString1,
+            screen.getHeight() / 3 + fontRegularMetrics.getHeight() * 2);
+        drawCenteredRegularString(screen, instructionsString2,
+            screen.getHeight() / 3 + fontRegularMetrics.getHeight() * 4);
+        drawCenteredRegularString(screen, instructionsString3,
+            screen.getHeight() / 2);
+    }
+
+    /**
+     * WarningScreen의 메뉴를 표시하는 메소드
+     *
+     * @param screen 화면 객체를 받는 매개변수
+     * @param option 어떤 메뉴를 선택했는지 구분하는 매개변수
+     */
+    public void drawWarningMenu(final Screen screen, final int option) {
+        String quit = "Quit";
+        String cancel = "Cancel";
+
+        if (option == 0) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, quit,
+            screen.getHeight() / 3 * 2);
+        if (option == 1) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, cancel, screen.getHeight()
+            / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+    }
 }
