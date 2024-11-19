@@ -61,6 +61,9 @@ public class StatusManager {
         status.setMaxHp(hp);
     }
 
+    public double getRegenHp() {return status.getRegen_hp();}
+
+    public void setRegenHp(final double regenHp) {status.setRegen_hp(regenHp);}
 
     private void saveStatus() {
         try {
@@ -76,7 +79,7 @@ public class StatusManager {
             status = FileManager.getInstance().loadShipStatus();
         } catch (IOException e) {
             logger.warning("Failed to load status. Using default values.");
-            status = new ShipStatus(750, 6, 2, 1, 100);
+            status = new ShipStatus(750, 6, 2, 1, 100, 0);
         }
     }
 

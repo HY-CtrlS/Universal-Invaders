@@ -20,11 +20,18 @@ public class ItemList {
         // 아이템을 빈 리스트로 초기화
         items = new ArrayList<>();
         // 아이템 새로 추가시에 items에 초기 레벨로 추가하는 코드를 추가해주세요.
-        items.add(new AttackSpeedUpItem(0));
-        items.add(new MoveSpeedUpItem(0));
+        // 0번 아이템
         items.add(new AttackPowerUpItem(0));
-        items.add(new BulletSpeedUpItem(0));
+        // 1번 아이템
         items.add(new HealthUpItem(0));
+        // 2번 아이템
+        items.add(new AttackSpeedUpItem(0));
+        // 3번 아이템
+        items.add(new BulletSpeedUpItem(0));
+        // 4번 아이템
+        items.add(new MoveSpeedUpItem(0));
+        // 5번 아이템
+        items.add(new HpRegenItem(0));
     }
 
     // 선택화면에 표시하기 위해 무작위로 선택된 아이템 리스트를 얻어오는 메소드
