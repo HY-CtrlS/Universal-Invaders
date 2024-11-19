@@ -21,6 +21,7 @@ public class ItemList {
         items = new ArrayList<>();
         // 아이템 새로 추가시에 items에 초기 레벨로 추가하는 코드를 추가해주세요.
         items.add(new AttackSpeedUpItem(0));
+        items.add(new MoveSpeedUpItem(0));
     }
 
     // 선택화면에 표시하기 위해 무작위로 선택된 아이템 리스트를 얻어오는 메소드
