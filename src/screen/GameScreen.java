@@ -59,7 +59,7 @@ public class GameScreen extends Screen {
     /** Current score. */
     private int score;
     /** 플레이어의 최대 Hp. 기본값은 100. */
-    private int maxHp = Core.getStatusManager().getHp();
+    private int maxHp = Core.getStatusManager().getMaxHp();
     /** Player hp left. */
     private int hp;
     /** Total bullets shot by the player. */

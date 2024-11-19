@@ -6,7 +6,7 @@ import engine.StatusManager;
 import java.awt.Color;
 import java.util.logging.Logger;
 
-public class MoveSpeedUpItem implements Item {
+public class HealthUpItem implements Item {
 
     // 이속증가 아이템의 최대 레벨
     private static final int MAX_LEVEL = 5;
@@ -24,26 +24,26 @@ public class MoveSpeedUpItem implements Item {
     private Color color;
 
     // 공속증가 아이템 객체 생성자
-    public MoveSpeedUpItem(final int level) {
+    public HealthUpItem(final int level) {
         logger = Core.getLogger();
         this.level = level;
         status = Core.getStatusManager();
-        this.color = Color.YELLOW;
+        this.color = Color.PINK;
     }
 
     @Override
     public String getItemDescription() {
-        return "Upgrade your movement system.";
+        return "Upgrade your Ship's hull.";
     }
 
     @Override
     public String getItemEffectDescription() {
-        return "Move Speed : + 1";
+        return "Max HP : + 10";
     }
 
     @Override
     public String getItemName() {
-        return "Swift";
+        return "Iron";
     }
 
     @Override
@@ -74,12 +74,12 @@ public class MoveSpeedUpItem implements Item {
     @Override
     public int activateItem() {
         if (level < MAX_LEVEL) {
-            status.setSpeed(status.getSpeed() + 1);
-            this.logger.info("MoveSpeed Up!! + 1");
+            status.setMaxHp(status.getMaxHp() + 10);
+            this.logger.info("Health Up!! + 10");
             increaseLevel();
-            this.logger.info("MoveSpeed Level : " + getLevel());
+            this.logger.info("HP Level : " + getLevel());
         }
-        return 4;
+        return 1;
     }
 
     @Override

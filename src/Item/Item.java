@@ -30,7 +30,7 @@ public interface Item {
   void setSpriteType(SpriteType spriteType);
 
   // 아이템의 효과를 적용시키는 메소드
-  void activateItem();
+  int activateItem();
 
   // 아이템의 최대 레벨에 도달했는지에 대한 메소드 (최대 레벨 확인 체크)
   boolean isMaxLevel();

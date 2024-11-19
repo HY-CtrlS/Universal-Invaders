@@ -74,13 +74,14 @@ public class AttackSpeedUpItem implements Item {
     }
 
     @Override
-    public void activateItem() {
+    public int activateItem() {
         if (level < MAX_LEVEL) {
             status.setShootingInterval(status.getShootingInterval() - 100);
             this.logger.info("AttackSpeed Up!! + 1");
             increaseLevel();
             this.logger.info("AttackSpeed Level : " + getLevel());
         }
+        return 2;
     }
 
     @Override
