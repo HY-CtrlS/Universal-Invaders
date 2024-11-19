@@ -910,4 +910,48 @@ public final class DrawManager {
         drawCenteredRegularString(screen, cancel, screen.getHeight()
             / 3 * 2 + fontRegularMetrics.getHeight() * 2);
     }
+
+    /**
+     * shipSelectScreen의 제목을 화면 상단에 위치시키는 메소드
+     *
+     * @param screen 화면 객체를 받는 매개변수
+     */
+    public void drawShipSelectTitle(final Screen screen) {
+        String titleString = "Invaders";
+        String instructionsString =
+            "select with w+s / arrows, confirm with space";
+
+        backBufferGraphics.setColor(Color.GRAY);
+        drawCenteredRegularString(screen, instructionsString,
+            screen.getHeight() / 2);
+
+        backBufferGraphics.setColor(Color.GREEN);
+        drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
+    }
+
+    /**
+     * shipSelectScreen의 메뉴를 표시하는 메소드
+     *
+     * @param screen 화면 객체를 받는 매개변수
+     * @param option 어떤 메뉴를 선택했는지 구분하는 매개변수
+     */
+    public void drawShipSelectMenu(final Screen screen, final int option) {
+        String playString = "Play";
+        String highScoresString = "Select ship";
+
+        if (option == 1) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, playString, screen.getHeight() / 3 * 2);
+
+        if (option == 0) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, highScoresString,
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+    }
 }

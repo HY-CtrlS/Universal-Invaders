@@ -6,30 +6,28 @@ import engine.Cooldown;
 import engine.Core;
 
 /**
- * Implements the title screen.
- *
- * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
+ * 함선 선택 화면을 구현하는 클래스
  */
-public class TitleScreen extends Screen {
+public class shipSelectScreen extends Screen {
 
-    /** Milliseconds between changes in user selection. */
+    /** 사용자 선택의 변경 사이의 시간(밀리초) */
     private static final int SELECTION_TIME = 200;
 
-    /** Time between changes in user selection. */
+    /** 사용자 선택이 변경될 때까지의 시간 */
     private Cooldown selectionCooldown;
 
     /**
-     * Constructor, establishes the properties of the screen.
+     * 생성자, 함선 선택 화면의 속성을 설정
      *
      * @param width  Screen width.
      * @param height Screen height.
      * @param fps    Frames per second, frame rate at which the game is run.
      */
-    public TitleScreen(final int width, final int height, final int fps) {
+    public shipSelectScreen(final int width, final int height, final int fps) {
         super(width, height, fps);
 
         // Defaults to play.
-        this.returnCode = 2;
+        this.returnCode = 1;
         this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
         this.selectionCooldown.reset();
 
@@ -74,14 +72,8 @@ public class TitleScreen extends Screen {
                 this.selectionCooldown.reset();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-                this.isRunning = false;
-                if (returnCode == 2) {
-                    Screen selectship = new shipSelectScreen(this.getWidth(), this.getHeight(),
-                        this.fps);
-                    selectship.run();
-                    Core.getSoundManager().playPlaySound();
-                    Core.getSoundManager().stopBackgroundMusic();
-                } else {
+                if (this.returnCode == 1) {
+                    isRunning = false;
                     Core.getSoundManager().playButtonSound();
                 }
             }
@@ -92,10 +84,8 @@ public class TitleScreen extends Screen {
      * Shifts the focus to the next menu item.
      */
     private void nextMenuItem() {
-        if (this.returnCode == 4) {
+        if (this.returnCode == 1) {
             this.returnCode = 0;
-        } else if (this.returnCode == 0) {
-            this.returnCode = 2;
         } else {
             this.returnCode++;
         }
@@ -106,9 +96,7 @@ public class TitleScreen extends Screen {
      */
     private void previousMenuItem() {
         if (this.returnCode == 0) {
-            this.returnCode = 4;
-        } else if (this.returnCode == 2) {
-            this.returnCode = 0;
+            this.returnCode = 1;
         } else {
             this.returnCode--;
         }
@@ -120,8 +108,8 @@ public class TitleScreen extends Screen {
     private void draw() {
         drawManager.initDrawing(this);
 
-        drawManager.drawTitle(this);
-        drawManager.drawMenu(this, this.returnCode);
+        drawManager.drawShipSelectTitle(this);
+        drawManager.drawShipSelectMenu(this, this.returnCode);
 
         drawManager.completeDrawing(this);
     }

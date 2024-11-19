@@ -55,7 +55,6 @@ public class Ship extends Entity {
         this.shootingCooldown = Core.getCooldown(this.shootingInterval);
         this.destructionCooldown = Core.getCooldown(200);
 
-
         this.direction = direction;
     }
 
@@ -176,7 +175,6 @@ public class Ship extends Entity {
 
         }
     }
-
 
 
     /**

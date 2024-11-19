@@ -1,6 +1,6 @@
 package screen;
 
-import engine.DrawManager;
+import entity.Ship;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class GameScreen extends Screen {
     private static final int INPUT_DELAY = 6000;
     /** Bonus score for each life remaining at the end of the level. */
     private static final int LIFE_SCORE = 100;
-    /** 함선이 체력을 자동으로 회복하는 쿨타임. 기본값은 5000 밀리세컨드로 설정됨.*/
+    /** 함선이 체력을 자동으로 회복하는 쿨타임. 기본값은 5000 밀리세컨드로 설정됨. */
     private Cooldown hpRegenCooldown;
     /** Minimum time between bonus ship's appearances. */
     private static final int BONUS_SHIP_INTERVAL = 20000;
@@ -176,7 +176,6 @@ public class GameScreen extends Screen {
             this.levelStarted = true;
         }
 
-
         if (this.inputDelay.checkFinished() && !this.levelFinished) {
 
             boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT)
@@ -256,10 +255,8 @@ public class GameScreen extends Screen {
             //		this.logger.info("The special ship has escaped");
             //}
 
-
             // 5초마다 체력 1씩 회복
             hpRegen();
-
 
             this.ship.update();
             this.enemyShipSet.update();
@@ -288,7 +285,6 @@ public class GameScreen extends Screen {
         if (this.levelFinished && this.screenFinishedCooldown.checkFinished()) {
             this.isRunning = false;
         }
-
 
 
     }
@@ -442,7 +438,7 @@ public class GameScreen extends Screen {
         return distanceX < maxDistanceX && distanceY < maxDistanceY;
     }
 
-    /** hpRegenCooldown이 끝날 때마다 자동으로 체력을 회복함.*/
+    /** hpRegenCooldown이 끝날 때마다 자동으로 체력을 회복함. */
     private void hpRegen() {
         if (this.hpRegenCooldown.checkFinished() && this.hp < this.maxHp) {
             this.hp++;
