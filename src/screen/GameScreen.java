@@ -35,6 +35,8 @@ public class GameScreen extends Screen {
     private static final int SCREEN_CHANGE_INTERVAL = 1500;
     /** Height of the interface separation line. */
     private static final int SEPARATION_LINE_HEIGHT = 40;
+    /** 아이템 선택 회면으로 넘어가는 경험치 기준 양 */
+    private static final int EXPERIENCE_THRESHOLD = 100;
 
     /** Current game difficulty settings. */
     private GameSettings gameSettings;
@@ -82,6 +84,8 @@ public class GameScreen extends Screen {
     private Cooldown clockCooldown;
     /** 함선이 완전히 파괴되었는지 여부 */
     private boolean isDestroyed = false;
+    /** 현재까지 획득한 경험치 */
+    private int currentExperience = 0;
 
     /**
      * Constructor, establishes the properties of the screen.
@@ -437,7 +441,7 @@ public class GameScreen extends Screen {
             if (checkCollision(this.ship, experience)) {
                 collectedExperiences.add(experience);
 
-                // TODO: 경험치 먹었을 때 효과 추가
+                this.currentExperience += experience.getValue(); // 획득한 경험치 누적
                 this.logger.info("획득한 경험치: " + experience.getValue() + " EXP");
             }
         }
