@@ -430,6 +430,21 @@ public class GameScreen extends Screen {
                 }
             }
         }
+
+        // 아군 함선과 경험치 객체의 충돌 처리
+        Set<Experience> collectedExperiences = new HashSet<>();
+        for (Experience experience : this.experiences) {
+            if (checkCollision(this.ship, experience)) {
+                collectedExperiences.add(experience);
+
+                // TODO: 경험치 먹었을 때 효과 추가
+                this.logger.info("획득한 경험치: " + experience.getValue() + " EXP");
+            }
+        }
+
+        // 충돌한 경험치 제거 및 반환
+        this.experiences.removeAll(collectedExperiences);
+        ExperiencePool.recycle(collectedExperiences);
     }
 
 
