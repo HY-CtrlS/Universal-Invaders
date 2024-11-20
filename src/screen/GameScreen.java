@@ -23,6 +23,8 @@ public class GameScreen extends Screen {
     private static final int INPUT_DELAY = 6000;
     /** Bonus score for each life remaining at the end of the level. */
     private static final int LIFE_SCORE = 100;
+    /** 경험치 바의 높이 */
+    public static final int EXPERIENCE_BAR_HEIGHT = 40;
     /** 함선이 체력을 자동으로 회복하는 쿨타임. 기본값은 5000 밀리세컨드로 설정됨. */
     private Cooldown hpRegenCooldown;
     /** Minimum time between bonus ship's appearances. */
@@ -203,7 +205,8 @@ public class GameScreen extends Screen {
             boolean isTopBorder = this.ship.getPositionY()
                 - this.ship.getSpeed() < 1 + SEPARATION_LINE_HEIGHT;
             boolean isBottomBorder = this.ship.getPositionY()
-                + this.ship.getHeight() + this.ship.getSpeed() > this.height - 1;
+                + this.ship.getHeight() + this.ship.getSpeed()
+                > this.height - 1 - EXPERIENCE_BAR_HEIGHT;
 
             if (moveUp && moveRight && !isTopBorder && !isRightBorder) {
                 this.ship.moveUpRight();
@@ -331,8 +334,9 @@ public class GameScreen extends Screen {
         drawManager.drawLives(this, this.hp);
         drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
         drawManager.drawLevel(this, this.playerLevel); // 현재 레벨 그리기
+        drawManager.drawHorizontalLine(this, this.height - EXPERIENCE_BAR_HEIGHT - 1);
         drawManager.drawExperienceBar(this, this.currentExperience,
-            EXPERIENCE_THRESHOLD); // 경험치 바 그리기
+            EXPERIENCE_THRESHOLD, EXPERIENCE_BAR_HEIGHT); // 경험치 바 그리기
 
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {
@@ -400,8 +404,10 @@ public class GameScreen extends Screen {
 
                         // 적 함선이 파괴되었을 때 경험치 생성
                         if (enemyShip.isDestroyed()) {
-                            this.experiences.add(new Experience(enemyShip.getPositionX(),
-                                enemyShip.getPositionY(), enemyShip.getPointValue()));
+                            this.experiences.add(
+                                ExperiencePool.getExperience(enemyShip.getPositionX() + 3 * 2,
+                                    // enemyShip의 너비는 13, 경험치의 너비는 7이므로 3을 더해줌
+                                    enemyShip.getPositionY(), enemyShip.getPointValue()));
                         }
 
                     }
