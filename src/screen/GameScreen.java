@@ -56,6 +56,8 @@ public class GameScreen extends Screen {
     private Cooldown screenFinishedCooldown;
     /** Set of all bullets fired by on screen ships. */
     private Set<Bullet> bullets;
+    /** 화면에 존재하는 경험치들의 집합 */
+    private Set<Experience> experiences;
     /** Current score. */
     private int score;
     /** 플레이어의 최대 Hp. 기본값은 100. */
@@ -133,6 +135,7 @@ public class GameScreen extends Screen {
             .getCooldown(BONUS_SHIP_EXPLOSION);
         this.screenFinishedCooldown = Core.getCooldown(SCREEN_CHANGE_INTERVAL);
         this.bullets = new HashSet<Bullet>();
+        this.experiences = new HashSet<Experience>(); // 경험치 집합 초기화
 
         // Special input delay / countdown.
         this.gameStartTime = System.currentTimeMillis();
@@ -314,6 +317,12 @@ public class GameScreen extends Screen {
                 bullet.getPositionY());
         }
 
+        // 경험치 그리기
+        for (Experience experience : this.experiences) {
+            drawManager.drawEntity(experience, experience.getPositionX(),
+                experience.getPositionY());
+        }
+
         // Interface.
         drawManager.drawScore(this, this.score);
         drawManager.drawLives(this, this.hp);
@@ -383,6 +392,11 @@ public class GameScreen extends Screen {
                         recyclable.add(bullet);
                         Core.getSoundManager().playBulletHitSound();
 
+                        // 적 함선이 파괴되었을 때 경험치 생성
+                        if (enemyShip.isDestroyed()) {
+                            this.experiences.add(new Experience(enemyShip.getPositionX(),
+                                enemyShip.getPositionY(), enemyShip.getPointValue()));
+                        }
 
                     }
                 }
