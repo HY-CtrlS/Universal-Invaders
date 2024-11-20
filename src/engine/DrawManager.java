@@ -910,4 +910,24 @@ public final class DrawManager {
         drawCenteredRegularString(screen, cancel, screen.getHeight()
             / 3 * 2 + fontRegularMetrics.getHeight() * 2);
     }
+
+    /**
+     * Draws the player's current level on screen.
+     *
+     * @param screen Screen to draw on.
+     * @param level  Current level of the player.
+     */
+    public void drawLevel(final Screen screen, final int level) {
+        backBufferGraphics.setFont(fontRegular);
+
+        int barX = 230; // 레벨 표시 텍스트의 X 좌표
+        int barY = 25; // 레벨 표시 텍스트의 Y 좌표 (체력 바 아래)
+        String levelText = "LV. " + level; // 표시할 텍스트
+
+        // 텍스트 색상 설정
+        backBufferGraphics.setColor(Color.WHITE);
+
+        // 텍스트를 화면에 그리기
+        backBufferGraphics.drawString(levelText, barX, barY);
+    }
 }

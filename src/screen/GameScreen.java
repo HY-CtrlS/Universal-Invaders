@@ -86,6 +86,8 @@ public class GameScreen extends Screen {
     private boolean isDestroyed = false;
     /** 현재까지 획득한 경험치 */
     private int currentExperience = 0;
+    /** 플레이어의 현재 레벨 */
+    private int playerLevel = 1;
 
     /**
      * Constructor, establishes the properties of the screen.
@@ -331,6 +333,7 @@ public class GameScreen extends Screen {
         drawManager.drawScore(this, this.score);
         drawManager.drawLives(this, this.hp);
         drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
+        drawManager.drawLevel(this, this.playerLevel); // 현재 레벨 그리기
 
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {
@@ -443,6 +446,13 @@ public class GameScreen extends Screen {
 
                 this.currentExperience += experience.getValue(); // 획득한 경험치 누적
                 this.logger.info("획득한 경험치: " + experience.getValue() + " EXP");
+
+                // 임계점 도달 시 레벨 증가
+                while (currentExperience >= EXPERIENCE_THRESHOLD) {
+                    playerLevel++;
+                    this.logger.info("플레이어 레벨 업! 현재 레벨: " + playerLevel);
+                    currentExperience -= EXPERIENCE_THRESHOLD;
+                }
             }
         }
 
