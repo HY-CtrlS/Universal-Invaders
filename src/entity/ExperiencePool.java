@@ -26,7 +26,8 @@ public final class ExperiencePool {
      * @param value     Requested value of the experience point.
      * @return Requested experience point.
      */
-    public static Experience getExperience(final int positionX, final int positionY, final int value) {
+    public static Experience getExperience(final int positionX, final int positionY,
+        final int value) {
         Experience experience;
         if (!pool.isEmpty()) {
             experience = pool.iterator().next();

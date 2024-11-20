@@ -940,11 +940,12 @@ public final class DrawManager {
     /**
      * Draws the experience bar on the screen.
      *
-     * @param screen           Screen to draw on.
-     * @param currentExperience Current experience points of the player.
+     * @param screen              Screen to draw on.
+     * @param currentExperience   Current experience points of the player.
      * @param experienceThreshold Experience threshold for the next level.
      */
-    public void drawExperienceBar(final Screen screen, final int currentExperience, final int experienceThreshold) {
+    public void drawExperienceBar(final Screen screen, final int currentExperience,
+        final int experienceThreshold) {
         backBufferGraphics.setFont(fontRegular);
 
         // 경험치 바의 위치와 크기 설정
@@ -972,7 +973,8 @@ public final class DrawManager {
         // 경험치 텍스트 (중앙에 표시)
         String expText = currentExperience + " / " + experienceThreshold + " EXP";
         int textX = barX + (barWidth - fontRegularMetrics.stringWidth(expText)) / 2;
-        int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2) + fontRegularMetrics.getAscent();
+        int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2)
+            + fontRegularMetrics.getAscent();
 
         // 경험치 텍스트 색상
         backBufferGraphics.setColor(Color.WHITE);

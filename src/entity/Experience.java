@@ -6,6 +6,7 @@ import java.awt.Color;
 import engine.DrawManager.SpriteType;
 
 public class Experience extends Entity {
+
     private int value;
 
     private Cooldown animationCooldown;
