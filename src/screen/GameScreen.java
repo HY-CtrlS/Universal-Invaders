@@ -447,11 +447,13 @@ public class GameScreen extends Screen {
 
                 this.currentExperience += experience.getValue(); // 획득한 경험치 누적
                 this.logger.info("획득한 경험치: " + experience.getValue() + " EXP");
+                Core.getSoundManager().playExpCollectSound();
 
                 // 임계점 도달 시 레벨 증가
                 while (currentExperience >= EXPERIENCE_THRESHOLD) {
                     playerLevel++;
                     this.logger.info("플레이어 레벨 업! 현재 레벨: " + playerLevel);
+                    Core.getSoundManager().playLevelUpSound();
                     currentExperience -= EXPERIENCE_THRESHOLD;
                 }
             }
