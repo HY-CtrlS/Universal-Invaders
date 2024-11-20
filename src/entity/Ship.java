@@ -141,7 +141,7 @@ public class Ship extends Entity {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY, this.bulletSpeed, this.baseDamage, direction, "SHIP"));
+                positionY + this.width / 2, this.bulletSpeed, this.baseDamage, direction, "SHIP"));
             return true;
         }
         return false;
