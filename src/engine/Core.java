@@ -19,7 +19,7 @@ import Item.*;
 public final class Core {
 
     /** Width of current screen. */
-    private static final int WIDTH = 720;
+    private static final int WIDTH = 760;
     /** Height of current screen. */
     private static final int HEIGHT = WIDTH + 40;
     /** Max fps of current screen. */

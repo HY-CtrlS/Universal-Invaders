@@ -334,6 +334,7 @@ public class GameScreen extends Screen {
         drawManager.drawLives(this, this.hp);
         drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
         drawManager.drawLevel(this, this.playerLevel); // 현재 레벨 그리기
+        drawManager.drawExperienceBar(this, this.currentExperience, EXPERIENCE_THRESHOLD); // 경험치 바 그리기
 
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {

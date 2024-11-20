@@ -930,4 +930,46 @@ public final class DrawManager {
         // 텍스트를 화면에 그리기
         backBufferGraphics.drawString(levelText, barX, barY);
     }
+
+    /**
+     * Draws the experience bar on the screen.
+     *
+     * @param screen           Screen to draw on.
+     * @param currentExperience Current experience points of the player.
+     * @param experienceThreshold Experience threshold for the next level.
+     */
+    public void drawExperienceBar(final Screen screen, final int currentExperience, final int experienceThreshold) {
+        backBufferGraphics.setFont(fontRegular);
+
+        // 경험치 바의 위치와 크기 설정
+        int barHeight = 40; // 경험치 바 높이
+        int barX = 0; // 화면 왼쪽
+        int barY = screen.getHeight() - barHeight; // 화면 하단에서 경험치 바 크기 위
+        int barWidth = screen.getWidth(); // 화면 전체 너비
+
+        // 경험치 비율 계산
+        double experienceRatio = (double) currentExperience / experienceThreshold;
+        int filledWidth = (int) (experienceRatio * barWidth);
+
+        // 경험치 바 배경 (검은색으로 전체 채우기)
+        backBufferGraphics.setColor(Color.BLACK);
+        backBufferGraphics.fillRect(barX, barY, barWidth, barHeight);
+
+        // 경험치 바 배경 (회색 테두리)
+        backBufferGraphics.setColor(Color.GRAY);
+        backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
+
+        // 경험치 바 채워진 부분 (초록색)
+        backBufferGraphics.setColor(Color.GREEN);
+        backBufferGraphics.fillRect(barX + 1, barY + 1, filledWidth - 1, barHeight - 1);
+
+        // 경험치 텍스트 (중앙에 표시)
+        String expText = currentExperience + " / " + experienceThreshold + " EXP";
+        int textX = barX + (barWidth - fontRegularMetrics.stringWidth(expText)) / 2;
+        int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2) + fontRegularMetrics.getAscent();
+
+        // 경험치 텍스트 색상
+        backBufferGraphics.setColor(Color.WHITE);
+        backBufferGraphics.drawString(expText, textX, textY);
+    }
 }
