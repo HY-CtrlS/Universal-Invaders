@@ -63,6 +63,10 @@ public final class DrawManager {
         Bullet,
         /** 좌상단을 향한 플레이어 탄막 */
         BulletDiagonal,
+        /** 경험치 A */
+        ExperienceA,
+        /** 경험치 B */
+        ExperienceB,
         /** Enemy bullet. */
         EnemyBullet,
         /** First enemy ship - first form. */
@@ -102,6 +106,8 @@ public final class DrawManager {
             spriteMap.put(SpriteType.ShipDiagonalDestroyed, new boolean[15][15]);
             spriteMap.put(SpriteType.Bullet, new boolean[2][4]);
             spriteMap.put(SpriteType.BulletDiagonal, new boolean[4][4]);
+            spriteMap.put(SpriteType.ExperienceA, new boolean[7][7]);
+            spriteMap.put(SpriteType.ExperienceB, new boolean[7][7]);
             spriteMap.put(SpriteType.EnemyBullet, new boolean[3][5]);
             spriteMap.put(SpriteType.EnemyShipA1, new boolean[12][8]);
             spriteMap.put(SpriteType.EnemyShipA2, new boolean[12][8]);

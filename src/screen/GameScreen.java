@@ -272,6 +272,7 @@ public class GameScreen extends Screen {
 
             this.ship.update();
             this.enemyShipSet.update();
+            ExperiencePool.update(this.experiences);
             // 1초마다 levelTime 1씩 증가
             if (this.clockCooldown.checkFinished()) {
                 this.levelTime += 1;
@@ -316,8 +317,6 @@ public class GameScreen extends Screen {
                 this.enemyShipSpecial.getPositionY());
         }
 
-        enemyShipSet.draw();
-
         for (Bullet bullet : this.bullets) {
             drawManager.drawEntity(bullet, bullet.getPositionX(),
                 bullet.getPositionY());
@@ -328,6 +327,8 @@ public class GameScreen extends Screen {
             drawManager.drawEntity(experience, experience.getPositionX(),
                 experience.getPositionY());
         }
+
+        enemyShipSet.draw();
 
         // Interface.
         drawManager.drawScore(this, this.score);

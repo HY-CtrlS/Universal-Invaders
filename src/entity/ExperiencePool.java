@@ -48,4 +48,13 @@ public final class ExperiencePool {
     public static void recycle(final Set<Experience> experiences) {
         pool.addAll(experiences);
     }
+
+    /**
+     * Updates all experience points in the pool.
+     */
+    public static void update(final Set<Experience> experiences) {
+        for (Experience experience : experiences) {
+            experience.update(); // 경험치의 애니메이션 상태 업데이트
+        }
+    }
 }
