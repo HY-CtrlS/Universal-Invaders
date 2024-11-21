@@ -121,8 +121,8 @@ public class GameScreen extends Screen {
     public final void initialize() {
         super.initialize();
 
-        this.ship = new Ship4(this.width / 2, this.height / 2, Entity.Direction.UP, Color.RED,
-            4);
+        this.ship = new Ship3(this.width / 2, this.height / 2, Entity.Direction.UP, Color.YELLOW,
+            3);
         enemyShipSet = new EnemyShipSet(this.gameSettings, this.level, this.ship);
         enemyShipSet.attach(this);
 
@@ -216,6 +216,16 @@ public class GameScreen extends Screen {
                 this.ship.moveDown();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
+                if (this.ship.getShipID() == 3) {
+                    this.ship.startBurstShooting();
+                } else {
+                    if (this.ship.shoot(this.bullets)) {
+                        this.bulletsShot++;
+                    }
+                }
+            }
+
+            if (this.ship.isBurstShooting) {
                 if (this.ship.shoot(this.bullets)) {
                     this.bulletsShot++;
                 }

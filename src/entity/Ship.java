@@ -35,6 +35,8 @@ public class Ship extends Entity {
     protected Cooldown destructionCooldown;
     /** 함선의 ID */
     protected int shipID;
+    /** 점사 여부 확읹 변수 */
+    public boolean isBurstShooting;
 
     /**
      * Constructor, establishes the ship's properties.
@@ -60,6 +62,7 @@ public class Ship extends Entity {
 
         this.direction = direction;
         this.shipID = shipID;
+        this.isBurstShooting = false;
     }
 
     /**
@@ -256,5 +259,12 @@ public class Ship extends Entity {
      */
     public int getShipID() {
         return this.shipID;
+    }
+
+    /**
+     * 힘선이 점사를 시작하는 메소드
+     */
+    public void startBurstShooting() {
+        // 기본 Ship은 점사 기능 없음
     }
 }

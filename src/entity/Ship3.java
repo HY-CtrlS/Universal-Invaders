@@ -18,7 +18,6 @@ public class Ship3 extends Ship {
         final int shipID) {
         super(positionX, positionY, direction, color, shipID);
         this.burstCooldown = Core.getCooldown(100);
-        this.burstCooldown.reset();
         this.burstShotCount = 0;
     }
 
@@ -94,8 +93,8 @@ public class Ship3 extends Ship {
     public final boolean shoot(final Set<Bullet> bullets) {
         if (this.burstShotCount == 0 && this.shootingCooldown.checkFinished()) {
             // 첫 번째 발사
-            this.shootingCooldown.reset();
-            this.burstCooldown.reset(); // 점사 간 쿨타임 초기화
+            this.shootingCooldown.reset(); // 점사 시작 간격 초기화
+            this.burstCooldown.reset();    // 점사 내 간격 초기화
             this.burstShotCount++;
             shootBullet(bullets); // 첫 번째 총알 발사
             return true;
@@ -103,12 +102,13 @@ public class Ship3 extends Ship {
         } else if (this.burstShotCount > 0 && this.burstShotCount < maxBurstShots
             && this.burstCooldown.checkFinished()) {
             // 점사 진행
-            this.burstCooldown.reset(); // 점사 간 쿨타임 초기화
+            this.burstCooldown.reset(); // 점사 내 간격 초기화
             shootBullet(bullets); // 다음 총알 발사
             this.burstShotCount++;
 
             if (this.burstShotCount >= maxBurstShots) {
-                this.burstShotCount = 0; // 점사 종료
+                this.burstShotCount = 0; // 점사 완료
+                this.isBurstShooting = false; // 점사 상태 종료
             }
             return true;
         }
@@ -116,17 +116,19 @@ public class Ship3 extends Ship {
         return false;
     }
 
-    /**
-     * 총알 발사 로직.
-     *
-     * @param bullets 총알 Set에 새로 발사된 총알 추가.
-     */
     private void shootBullet(Set<Bullet> bullets) {
         Bullet bullet = BulletPool.getBullet(
-            this.positionX + this.width / 2, // 실시간 X 위치
-            this.positionY,                  // 실시간 Y 위치
+            this.positionX + (this.width / 2), // 함선의 중앙
+            this.positionY,                   // 함선의 상단
             this.bulletSpeed, this.baseDamage, this.direction, 3);
         bullets.add(bullet);
+    }
+
+    public void startBurstShooting() {
+        if (!isBurstShooting) {
+            isBurstShooting = true;
+            this.burstShotCount = 0; // 점사 초기화
+        }
     }
 
     /**
