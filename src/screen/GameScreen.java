@@ -1,6 +1,7 @@
 package screen;
 
 import entity.Ship;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
@@ -120,7 +121,7 @@ public class GameScreen extends Screen {
     public final void initialize() {
         super.initialize();
 
-        this.ship = new Ship(this.width / 2, this.height / 2, Entity.Direction.UP);
+        this.ship = new Ship(this.width / 2, this.height / 2, Entity.Direction.UP, Color.GREEN, 1);
         enemyShipSet = new EnemyShipSet(this.gameSettings, this.level, this.ship);
         enemyShipSet.attach(this);
 

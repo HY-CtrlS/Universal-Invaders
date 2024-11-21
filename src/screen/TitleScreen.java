@@ -76,9 +76,6 @@ public class TitleScreen extends Screen {
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                 this.isRunning = false;
                 if (returnCode == 2) {
-                    Screen selectship = new shipSelectScreen(this.getWidth(), this.getHeight(),
-                        this.fps);
-                    selectship.run();
                     Core.getSoundManager().playPlaySound();
                     Core.getSoundManager().stopBackgroundMusic();
                 } else {

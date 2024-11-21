@@ -128,6 +128,12 @@ public final class Core {
                     getStatusManager().resetDefaultStatus();
                     // 게임 시작 시 초기 아이템 리스트 생성
                     items.initializedItems();
+                    // 게임 시작 전 함선 선택
+                    currentScreen = new shipSelectScreen(width, height, FPS);
+                    LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+                        + " ship select screen at " + FPS + " fps.");
+                    int shipID = frame.setScreen(currentScreen);
+                    LOGGER.info("Closing ship select screen.");
                     // Game & score.
                     do {
                         // One extra live every few levels.

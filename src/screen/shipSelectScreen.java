@@ -16,6 +16,9 @@ public class shipSelectScreen extends Screen {
     /** 사용자 선택이 변경될 때까지의 시간 */
     private Cooldown selectionCooldown;
 
+    /** 함선 ID */
+    private int shipID;
+
     /**
      * 생성자, 함선 선택 화면의 속성을 설정
      *
@@ -30,6 +33,7 @@ public class shipSelectScreen extends Screen {
         this.returnCode = 1;
         this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
         this.selectionCooldown.reset();
+        this.shipID = 1;
 
         // 메인 메뉴 배경음악 재생
         if (!Core.getSoundManager().isBackgroundMusicPlaying()) {
@@ -43,10 +47,13 @@ public class shipSelectScreen extends Screen {
      * @return Next screen code.
      */
     @Override
-    public final int run() {
+    public final int[] run() {
         super.run();
 
-        return this.returnCode;
+        int[] returnValue = new int[2];
+        returnValue[0] = this.returnCode;
+        returnValue[1] = this.shipID;
+        return returnValue;
     }
 
     /**
@@ -70,6 +77,22 @@ public class shipSelectScreen extends Screen {
                 nextMenuItem();
                 Core.getSoundManager().playButtonSound();
                 this.selectionCooldown.reset();
+            }
+            if (this.returnCode == 0) {
+                if (this.selectionCooldown.checkFinished()
+                    && this.inputDelay.checkFinished()) {
+                    if (inputManager.isKeyDown(KeyEvent.VK_LEFT)
+                        || inputManager.isKeyDown(KeyEvent.VK_A)) {
+                        previousShip();
+                    }
+                    if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
+                        || inputManager.isKeyDown(KeyEvent.VK_D)) {
+                        nextShip();
+                    }
+                    if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
+
+                    }
+                }
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                 if (this.returnCode == 1) {
@@ -99,6 +122,28 @@ public class shipSelectScreen extends Screen {
             this.returnCode = 1;
         } else {
             this.returnCode--;
+        }
+    }
+
+    /**
+     * Shifts the focus to the next ship.
+     */
+    private void nextShip() {
+        if (this.shipID == 2) {
+            this.shipID = 1;
+        } else {
+            this.shipID++;
+        }
+    }
+
+    /**
+     * Shifts the focus to the next ship.
+     */
+    private void previousShip() {
+        if (this.shipID == 1) {
+            this.shipID = 2;
+        } else {
+            this.shipID--;
         }
     }
 
