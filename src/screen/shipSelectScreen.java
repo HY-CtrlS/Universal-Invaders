@@ -1,5 +1,7 @@
 package screen;
 
+import entity.*;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import engine.Cooldown;
@@ -18,6 +20,8 @@ public class shipSelectScreen extends Screen {
 
     /** 함선 ID */
     private int shipID;
+
+    private Color[] shipColors = {Color.GREEN, Color.BLUE, Color.YELLOW, Color.RED};
 
     /**
      * 생성자, 함선 선택 화면의 속성을 설정
@@ -50,7 +54,7 @@ public class shipSelectScreen extends Screen {
     public final int run() {
         super.run();
 
-        return this.returnCode;
+        return this.shipID;
     }
 
     /**
@@ -81,19 +85,23 @@ public class shipSelectScreen extends Screen {
                     if (inputManager.isKeyDown(KeyEvent.VK_LEFT)
                         || inputManager.isKeyDown(KeyEvent.VK_A)) {
                         previousShip();
+                        Core.getSoundManager().playButtonSound();
+                        this.selectionCooldown.reset();
                     }
                     if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
                         || inputManager.isKeyDown(KeyEvent.VK_D)) {
                         nextShip();
-                    }
-                    if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-
+                        Core.getSoundManager().playButtonSound();
+                        this.selectionCooldown.reset();
                     }
                 }
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-                if (this.returnCode == 1) {
-                    isRunning = false;
+                if (this.returnCode == 0) {
+                    this.returnCode = 1;
+                    Core.getSoundManager().playButtonSound();
+                } else {
+                    this.isRunning = false;
                     Core.getSoundManager().playButtonSound();
                 }
             }
@@ -126,7 +134,7 @@ public class shipSelectScreen extends Screen {
      * Shifts the focus to the next ship.
      */
     private void nextShip() {
-        if (this.shipID == 2) {
+        if (this.shipID == 4) {
             this.shipID = 1;
         } else {
             this.shipID++;
@@ -138,7 +146,7 @@ public class shipSelectScreen extends Screen {
      */
     private void previousShip() {
         if (this.shipID == 1) {
-            this.shipID = 2;
+            this.shipID = 4;
         } else {
             this.shipID--;
         }
@@ -151,8 +159,9 @@ public class shipSelectScreen extends Screen {
         drawManager.initDrawing(this);
 
         drawManager.drawShipSelectTitle(this);
-        drawManager.drawShipSelectMenu(this, this.returnCode);
-
+        drawManager.drawShipSelectMenu(this, this.returnCode, this.shipID);
+        drawManager.drawSeletShip(this.height / 3 * 2 + 115,
+            shipColors[this.shipID - 1]);
         drawManager.completeDrawing(this);
     }
 }

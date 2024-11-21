@@ -1,6 +1,7 @@
 package engine;
 
 import Item.Item;
+import entity.Ship;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -934,9 +935,10 @@ public final class DrawManager {
      * @param screen 화면 객체를 받는 매개변수
      * @param option 어떤 메뉴를 선택했는지 구분하는 매개변수
      */
-    public void drawShipSelectMenu(final Screen screen, final int option) {
+    public void drawShipSelectMenu(final Screen screen, final int option, final int shipID) {
         String playString = "Play";
         String highScoresString = "Select ship";
+        String[] shipColors = {"GREEN", "BLUE", "YELLOW", "RED"};
 
         if (option == 1) {
             backBufferGraphics.setColor(Color.GREEN);
@@ -952,5 +954,42 @@ public final class DrawManager {
         }
         drawCenteredRegularString(screen, highScoresString,
             screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+        switch (shipColors[shipID - 1]) {
+            case "GREEN":
+                backBufferGraphics.setColor(Color.GREEN);
+                break;
+            case "BLUE":
+                backBufferGraphics.setColor(Color.BLUE);
+                break;
+            case "YELLOW":
+                backBufferGraphics.setColor(Color.YELLOW);
+                break;
+            case "RED":
+                backBufferGraphics.setColor(Color.RED);
+                break;
+        }
+        drawCenteredRegularString(screen, shipColors[shipID - 1],
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+    }
+
+    public void drawSeletShip(final int positionY, Color color) {
+        boolean[][] image = spriteMap.get(SpriteType.Ship);
+        int positionX = 360 - image.length - image[0].length / 2 - image.length / 4;
+        int spriteWidth = image[0].length * 2;
+        int spriteHeight = image.length * 2;
+
+        backBufferGraphics.setColor(color);
+
+        backBufferGraphics.drawRect(positionX - 15, positionY - 15, spriteWidth + 30,
+            spriteHeight + 30);
+
+        for (int i = 0; i < image.length; i++) {
+            for (int j = 0; j < image[i].length; j++) {
+                if (image[i][j]) {
+                    backBufferGraphics.drawRect(positionX + i * 2, positionY
+                        + j * 2, 1, 1);
+                }
+            }
+        }
     }
 }
