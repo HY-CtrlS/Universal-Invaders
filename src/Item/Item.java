@@ -43,4 +43,6 @@ public interface Item {
 
   // 아이템의 최대 레벨 getter (이 아이템의 최대 레벨 제한은 어디까지인지에 대한 정보)
   int getMaxLevel();
+
+  int getChangedValue();
 }

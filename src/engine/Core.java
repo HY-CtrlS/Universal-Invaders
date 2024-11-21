@@ -67,6 +67,8 @@ public final class Core {
     private static ConsoleHandler consoleHandler;
     // 아이템 리스트 객체 생성
     private static ItemList items = new ItemList();
+    // 아이템 리스트 참조하기 위한 배열
+    private static List<Item> itemList;
     /** quit로 라운드라 종료되었는지 확인하는 변수 */
     private static int isQuit;
     /** 아이템 선택화면에서 선택된 아이템 판단**/
@@ -129,7 +131,7 @@ public final class Core {
                     // 게임 시작 시 StatusManager의 status 객체를 res/status 의 값으로 초기화
                     getStatusManager().resetDefaultStatus();
                     // 게임 시작 시 초기 아이템 리스트 생성
-                    items.initializedItems();
+                    itemList = items.initializedItems();
                     // 게임 시작 시 함선의 체력을 기본으로 초기화
                     gameState.setHP(getStatusManager().getMaxHp());
                     // Game & score.
@@ -168,7 +170,12 @@ public final class Core {
                             LOGGER.info("Closing Item Selecting Screen.");
                         }
                         // 최대 체력 증가 아이템을 선택한 경우, 현재 체력 또한 증가된 체력만큼 올려줌.
-                        if (selectedItem == 1) {gameState.setHP(gameState.getHp()+10);}
+                        if (selectedItem == 1) {
+                            // 가지고 있던 체력의 비율 계산
+                            double portionHp = (double) gameState.getHp() / (getStatusManager().getMaxHp() - itemList.get(1).getChangedValue());
+                            // 늘어난 체력에 맞게 현재 체력의 비율 조정
+                            gameState.setHP((int) (getStatusManager().getMaxHp() * portionHp));
+                        }
                         gameState = new GameState(gameState.getLevel() + 1,
                             gameState.getScore(),
                             gameState.getHp(),

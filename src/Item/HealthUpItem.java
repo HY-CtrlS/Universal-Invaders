@@ -103,4 +103,12 @@ public class HealthUpItem implements Item {
     public int getMaxLevel() {
         return MAX_LEVEL;
     }
+
+    //방금 적용된 아이템이 최대체력을 얼마나 증가시켰는지에 대한 정보
+    @Override
+    public int getChangedValue() {
+        // 이후에 level에 따라서도 얼마나 증가됬는지 반환 가능
+        // 현재는 고정적으로 10씩 증가하기에 10 반환
+        return 10;
+    }
 }

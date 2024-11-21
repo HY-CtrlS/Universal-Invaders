@@ -103,4 +103,10 @@ public class MoveSpeedUpItem implements Item {
     public int getMaxLevel() {
         return MAX_LEVEL;
     }
+
+    @Override
+    //미사용
+    public int getChangedValue() {
+        return 0;
+    }
 }
