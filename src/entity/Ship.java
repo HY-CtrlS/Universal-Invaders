@@ -42,7 +42,7 @@ public class Ship extends Entity {
      * @param direction 함선의 초기 에임 방향.
      */
     public Ship(final int positionX, final int positionY, final Direction direction) {
-        super(positionX, positionY, 13 * 2, 8 * 2, Color.GREEN, direction);
+        super(positionX, positionY, 13 * 2, 13 * 2, Color.GREEN, direction);
 
         this.spriteType = SpriteType.Ship;
 
@@ -141,7 +141,7 @@ public class Ship extends Entity {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY, this.bulletSpeed, this.baseDamage, direction, "SHIP"));
+                positionY + this.width / 2, this.bulletSpeed, this.baseDamage, direction, "SHIP"));
             return true;
         }
         return false;

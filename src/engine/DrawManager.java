@@ -63,6 +63,10 @@ public final class DrawManager {
         Bullet,
         /** 좌상단을 향한 플레이어 탄막 */
         BulletDiagonal,
+        /** 경험치 A */
+        ExperienceA,
+        /** 경험치 B */
+        ExperienceB,
         /** Enemy bullet. */
         EnemyBullet,
         /** First enemy ship - first form. */
@@ -102,6 +106,8 @@ public final class DrawManager {
             spriteMap.put(SpriteType.ShipDiagonalDestroyed, new boolean[15][15]);
             spriteMap.put(SpriteType.Bullet, new boolean[2][4]);
             spriteMap.put(SpriteType.BulletDiagonal, new boolean[4][4]);
+            spriteMap.put(SpriteType.ExperienceA, new boolean[7][7]);
+            spriteMap.put(SpriteType.ExperienceB, new boolean[7][7]);
             spriteMap.put(SpriteType.EnemyBullet, new boolean[3][5]);
             spriteMap.put(SpriteType.EnemyShipA1, new boolean[12][8]);
             spriteMap.put(SpriteType.EnemyShipA2, new boolean[12][8]);
@@ -875,7 +881,7 @@ public final class DrawManager {
 
         backBufferGraphics.setColor(Color.RED);
         drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
-        backBufferGraphics.setColor(Color.GRAY);
+        backBufferGraphics.setColor(Color.WHITE);
         drawCenteredRegularString(screen, instructionsString1,
             screen.getHeight() / 3 + fontRegularMetrics.getHeight() * 2);
         drawCenteredRegularString(screen, instructionsString2,
@@ -908,5 +914,64 @@ public final class DrawManager {
         }
         drawCenteredRegularString(screen, cancel, screen.getHeight()
             / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+    }
+
+    /**
+     * Draws the player's current level on screen.
+     *
+     * @param screen Screen to draw on.
+     * @param level  Current level of the player.
+     */
+    public void drawLevel(final Screen screen, final int level) {
+        backBufferGraphics.setFont(fontRegular);
+
+        int barX = 230; // 레벨 표시 텍스트의 X 좌표
+        int barY = 25; // 레벨 표시 텍스트의 Y 좌표 (체력 바 아래)
+        String levelText = "LV. " + level; // 표시할 텍스트
+
+        // 텍스트 색상 설정
+        backBufferGraphics.setColor(Color.WHITE);
+
+        // 텍스트를 화면에 그리기
+        backBufferGraphics.drawString(levelText, barX, barY);
+    }
+
+    /**
+     * Draws the experience bar on the screen.
+     *
+     * @param screen              Screen to draw on.
+     * @param currentExperience   Current experience points of the player.
+     * @param experienceThreshold Experience threshold for the next level.
+     */
+    public void drawExperienceBar(final Screen screen, final int currentExperience,
+        final int experienceThreshold, final int barHeight) {
+        backBufferGraphics.setFont(fontRegular);
+
+        // 경험치 바의 위치와 크기 설정
+        int barX = 0; // 화면 왼쪽
+        int barY = screen.getHeight() - barHeight; // 화면 하단에서 경험치 바 크기 위
+        int barWidth = screen.getWidth(); // 화면 전체 너비
+
+        // 경험치 비율 계산
+        double experienceRatio = (double) currentExperience / experienceThreshold;
+        int filledWidth = (int) (experienceRatio * barWidth);
+
+        // 경험치 바 배경 (검은색으로 전체 채우기)
+        backBufferGraphics.setColor(Color.BLACK);
+        backBufferGraphics.fillRect(barX, barY + 1, barWidth, barHeight - 1);
+
+        // 경험치 바 채워진 부분 (초록색)
+        backBufferGraphics.setColor(Color.GREEN);
+        backBufferGraphics.fillRect(barX, barY, filledWidth, barHeight);
+
+        // 경험치 텍스트 (중앙에 표시)
+        String expText = currentExperience + " / " + experienceThreshold + " EXP";
+        int textX = barX + (barWidth - fontRegularMetrics.stringWidth(expText)) / 2;
+        int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2)
+            + fontRegularMetrics.getAscent();
+
+        // 경험치 텍스트 색상
+        backBufferGraphics.setColor(Color.WHITE);
+        backBufferGraphics.drawString(expText, textX, textY);
     }
 }
