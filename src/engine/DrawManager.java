@@ -881,7 +881,7 @@ public final class DrawManager {
 
         backBufferGraphics.setColor(Color.RED);
         drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
-        backBufferGraphics.setColor(Color.GRAY);
+        backBufferGraphics.setColor(Color.WHITE);
         drawCenteredRegularString(screen, instructionsString1,
             screen.getHeight() / 3 + fontRegularMetrics.getHeight() * 2);
         drawCenteredRegularString(screen, instructionsString2,
