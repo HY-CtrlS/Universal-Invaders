@@ -47,13 +47,10 @@ public class shipSelectScreen extends Screen {
      * @return Next screen code.
      */
     @Override
-    public final int[] run() {
+    public final int run() {
         super.run();
 
-        int[] returnValue = new int[2];
-        returnValue[0] = this.returnCode;
-        returnValue[1] = this.shipID;
-        return returnValue;
+        return this.returnCode;
     }
 
     /**

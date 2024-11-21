@@ -45,9 +45,19 @@ public final class BulletPool {
             bullet.setSprite();
             bullet.setDirection(direction);
             bullet.setClassify(classify);
+
+            // 만약 함선 ID가 4이면 총알 관통으로 설정
+            if (classify == 4) {
+                bullet.setPiercing(true);
+            }
         } else {
             bullet = new Bullet(positionX, positionY, speed, damage, direction, classify);
             bullet.setPositionX(positionX - bullet.getWidth() / 2);
+
+            // 만약 함선 ID가 4이면 총알 관통으로 설정
+            if (classify == 4) {
+                bullet.setPiercing(true);
+            }
         }
         return bullet;
     }

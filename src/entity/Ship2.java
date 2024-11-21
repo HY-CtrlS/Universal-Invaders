@@ -2,6 +2,7 @@ package entity;
 
 import engine.DrawManager.SpriteType;
 import java.awt.Color;
+import java.util.List;
 import java.util.Set;
 
 public class Ship2 extends Ship {
@@ -81,7 +82,19 @@ public class Ship2 extends Ship {
      * @return Checks if the bullet was shot correctly.
      */
     public final boolean shoot(final Set<Bullet> bullets) {
-        return super.shoot(bullets);
+        if (this.shootingCooldown.checkFinished()) {
+            this.shootingCooldown.reset();
+            bullets.add(BulletPool.getBullet(positionX + this.width / 2,
+                positionY, this.bulletSpeed, this.baseDamage,
+                Direction.getOffsetDirection(direction, -1), 2));
+            bullets.add(BulletPool.getBullet(positionX + this.width / 2,
+                positionY, this.bulletSpeed, this.baseDamage, direction, 2));
+            bullets.add(BulletPool.getBullet(positionX + this.width / 2,
+                positionY, this.bulletSpeed, this.baseDamage,
+                Direction.getOffsetDirection(direction, 1), 2));
+            return true;
+        }
+        return false;
     }
 
     /**

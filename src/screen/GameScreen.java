@@ -121,7 +121,7 @@ public class GameScreen extends Screen {
     public final void initialize() {
         super.initialize();
 
-        this.ship = new Ship(this.width / 2, this.height / 2, Entity.Direction.UP, Color.GREEN, 1);
+        this.ship = new Ship2(this.width / 2, this.height / 2, Entity.Direction.UP, Color.BLUE, 2);
         enemyShipSet = new EnemyShipSet(this.gameSettings, this.level, this.ship);
         enemyShipSet.attach(this);
 
@@ -377,7 +377,11 @@ public class GameScreen extends Screen {
                         this.shipsDestroyed++;
 
                         this.enemyShipSet.damage_Enemy(enemyShip, bullet.getDamage());
-                        recyclable.add(bullet);
+
+                        // 관통 여부 확인
+                        if (!bullet.getisPiercing()) {
+                            recyclable.add(bullet); // 관통 아닌 경우 제거
+                        }
                         Core.getSoundManager().playBulletHitSound();
 
 

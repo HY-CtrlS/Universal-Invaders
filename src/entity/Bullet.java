@@ -25,6 +25,8 @@ public class Bullet extends Entity {
     private double remainingMovement = 0;
     // 축 방향 속도의 정수 부분 (실제 이동량)
     private int movement = 0;
+    // 총알의 적 관통 여부를 표시
+    private boolean isPiercing = false;
 
     /**
      * Constructor, establishes the bullet's properties.
@@ -185,5 +187,21 @@ public class Bullet extends Entity {
      */
     public int getClassify() {
         return this.classify;
+    }
+
+    /**
+     * 총알의 관통을 설정하는 Setter.
+     */
+    public void setPiercing(boolean isPiercing) {
+        this.isPiercing = isPiercing;
+    }
+
+    /**
+     * 총알의 관통 여부를 얻는 Getter.
+     *
+     * @return 총알의 진영.
+     */
+    public boolean getisPiercing() {
+        return this.isPiercing;
     }
 }
