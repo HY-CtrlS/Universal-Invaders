@@ -1,6 +1,8 @@
 package screen;
 
 import engine.DrawManager;
+import engine.ShipStatus;
+import engine.StatusManager;
 import entity.Entity.Direction;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
@@ -26,8 +28,6 @@ public class GameScreen extends Screen {
     private static final int LIFE_SCORE = 100;
     /** 경험치 바의 높이 */
     public static final int EXPERIENCE_BAR_HEIGHT = 40;
-    /** 함선이 체력을 자동으로 회복하는 쿨타임. 기본값은 5000 밀리세컨드로 설정됨. */
-    private Cooldown hpRegenCooldown;
     /** Minimum time between bonus ship's appearances. */
     private static final int BONUS_SHIP_INTERVAL = 20000;
     /** Maximum variance in the time between bonus ship's appearances. */
@@ -66,9 +66,13 @@ public class GameScreen extends Screen {
     /** Current score. */
     private int score;
     /** 플레이어의 최대 Hp. 기본값은 100. */
-    private int maxHp = Core.getStatusManager().getHp();
+    private int maxHp = Core.getStatusManager().getMaxHp();
     /** Player hp left. */
     private int hp;
+    /** HP 자동 재생되는 누적량 체크**/
+    private double remainingRegenHp;
+    /** HP 리젠되는 쿨타임 생성 **/
+    private Cooldown regenHpCooldown;
     /** Total bullets shot by the player. */
     private int bulletsShot;
     /** Total ships destroyed by the player. */
@@ -87,6 +91,8 @@ public class GameScreen extends Screen {
     private Cooldown clockCooldown;
     /** 함선이 완전히 파괴되었는지 여부 */
     private boolean isDestroyed = false;
+    /** 현재 함선의 status **/
+    private StatusManager status;
     /** 현재까지 획득한 경험치 */
     private int currentExperience = 0;
     /** 플레이어의 현재 레벨 */
@@ -123,6 +129,9 @@ public class GameScreen extends Screen {
 
         Core.getSoundManager().playInGameBGM();
         this.returnCode = 1;
+
+        // 현재 게임에 사용되는 Ship의 status 정보
+        this.status = Core.getStatusManager();
     }
 
     /**
@@ -157,8 +166,9 @@ public class GameScreen extends Screen {
         this.clockCooldown = Core.getCooldown(1000);
         this.clockCooldown.reset();
 
-        this.hpRegenCooldown = Core.getCooldown(5000);
-        this.hpRegenCooldown.reset();
+        // HP 리젠 쿨타임 생성 및 시작
+        this.regenHpCooldown = Core.getCooldown(1000);
+        this.regenHpCooldown.reset();
     }
 
     /**
@@ -184,7 +194,6 @@ public class GameScreen extends Screen {
         // level 이 처음 시작될 때 clockCooldown, hpRegenCooldown reset
         if (this.inputDelay.checkFinished() && !this.levelStarted) {
             this.clockCooldown.reset();
-            this.hpRegenCooldown.reset();
             this.levelStarted = true;
         }
 
@@ -293,8 +302,9 @@ public class GameScreen extends Screen {
             //		this.logger.info("The special ship has escaped");
             //}
 
-            // 5초마다 체력 1씩 회복
-            hpRegen();
+
+            // hp 자동 재생 기능 실행
+            hpRegen(status.getRegenHp());
 
             this.ship.update();
             this.enemyShipSet.update();
@@ -518,12 +528,18 @@ public class GameScreen extends Screen {
         return distanceX < maxDistanceX && distanceY < maxDistanceY;
     }
 
-    /** hpRegenCooldown이 끝날 때마다 자동으로 체력을 회복함. */
-    private void hpRegen() {
-        if (this.hpRegenCooldown.checkFinished() && this.hp < this.maxHp) {
-            this.hp++;
-            this.hpRegenCooldown.reset();
+    /** hpRegenCooldown이 끝날 때마다 자동으로 체력을 회복함.*/
+    private void hpRegen(final double regenHp) {
+        // 체력이 최대체력보다 낮을 경우에만 regen
+        if (this.regenHpCooldown.checkFinished() && this.hp < maxHp) {
+            this.remainingRegenHp += regenHp;
+            // 1 이상으로 쌓이면 hp 1만큼을 int_regenHp로 이동
+            int int_regenHp = (int) remainingRegenHp;
+            remainingRegenHp -= int_regenHp;
 
+            // HP 리젠율이 최대체력을 초과하는 경우, 최대체력을 초과해서 회복되지 않도록 설정
+            this.hp = (this.maxHp - this.hp < int_regenHp) ? maxHp : this.hp + int_regenHp;
+            this.regenHpCooldown.reset();
         }
     }
 
