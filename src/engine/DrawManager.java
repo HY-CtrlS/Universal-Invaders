@@ -240,7 +240,6 @@ public final class DrawManager {
                 break;
             case RIGHT:
             case UP_RIGHT:
-                Core.getLogger().info(entity.getSpriteType() + "UP_RIGHT 실행");
                 for (int i = 0; i < image.length; i++) {
                     for (int j = 0; j < image[i].length; j++) {
                         if (image[i][j]) {

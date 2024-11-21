@@ -23,7 +23,7 @@ public class Ship extends Entity {
     private int speed;
     /** 함선의 기본 데미지 */
     private int baseDamage;
-    /** 함선이 바라보고 있는 뱡향 */
+    /** 함선의 에임 뱡향 */
     private static Direction direction;
     /** 축 방향 속도의 소수 부분을 저장 및 누적 */
     private double remainingMovement = 0;
@@ -39,7 +39,7 @@ public class Ship extends Entity {
      *
      * @param positionX Initial position of the ship in the X axis.
      * @param positionY Initial position of the ship in the Y axis.
-     * @param direction 함선의 초기 방향.
+     * @param direction 함선의 초기 에임 방향.
      */
     public Ship(final int positionX, final int positionY, final Direction direction) {
         super(positionX, positionY, 13 * 2, 13 * 2, Color.GREEN, direction);
@@ -55,7 +55,6 @@ public class Ship extends Entity {
         this.shootingCooldown = Core.getCooldown(this.shootingInterval);
         this.destructionCooldown = Core.getCooldown(200);
 
-
         this.direction = direction;
     }
 
@@ -63,7 +62,6 @@ public class Ship extends Entity {
      * Moves the ship right until the right screen border is reached.
      */
     public final void moveRight() {
-        this.direction = Direction.RIGHT;
         this.positionX += speed;
     }
 
@@ -71,7 +69,6 @@ public class Ship extends Entity {
      * Moves the ship left until the left screen border is reached.
      */
     public final void moveLeft() {
-        this.direction = Direction.LEFT;
         this.positionX -= speed;
     }
 
@@ -79,7 +76,6 @@ public class Ship extends Entity {
      * Moves the ship up until the top screen border is reached.
      */
     public final void moveUp() {
-        this.direction = Direction.UP;
         this.positionY -= speed;
     }
 
@@ -87,7 +83,6 @@ public class Ship extends Entity {
      * Moves the ship down until the bottom screen border is reached.
      */
     public final void moveDown() {
-        this.direction = Direction.DOWN;
         this.positionY += speed;
     }
 
@@ -95,7 +90,6 @@ public class Ship extends Entity {
      * Moves the ship up the right until the top and right screen border is reached.
      */
     public final void moveUpRight() {
-        this.direction = Direction.UP_RIGHT;
         calculateMovement();
         this.positionY -= movement;
         this.positionX += movement;
@@ -105,7 +99,6 @@ public class Ship extends Entity {
      * Moves the ship up the left until the top and left screen border is reached.
      */
     public final void moveUpLeft() {
-        this.direction = Direction.UP_LEFT;
         calculateMovement();
         this.positionY -= movement;
         this.positionX -= movement;
@@ -115,7 +108,6 @@ public class Ship extends Entity {
      * Moves the ship down the right until the bottom and right screen border is reached.
      */
     public final void moveDownRight() {
-        this.direction = Direction.DOWN_RIGHT;
         calculateMovement();
         this.positionY += movement;
         this.positionX += movement;
@@ -125,7 +117,6 @@ public class Ship extends Entity {
      * Moves the ship down the left until the bottom and left screen border is reached.
      */
     public final void moveDownLeft() {
-        this.direction = Direction.DOWN_LEFT;
         calculateMovement();
         this.positionY += movement;
         this.positionX -= movement;
@@ -150,7 +141,7 @@ public class Ship extends Entity {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY, this.bulletSpeed, this.baseDamage, direction, "SHIP"));
+                positionY + this.width / 2, this.bulletSpeed, this.baseDamage, direction, "SHIP"));
             return true;
         }
         return false;
@@ -177,8 +168,6 @@ public class Ship extends Entity {
         }
     }
 
-
-
     /**
      * Switches the ship to its destroyed state.
      */
@@ -196,9 +185,9 @@ public class Ship extends Entity {
     }
 
     /**
-     * 함선이 대각선 방향을 바라보고 있는지 체크
+     * 함선의 에임이 대각선 방향인지 체크.
      *
-     * @return 함선의 방향이 대각선 방향이면 True
+     * @return 에임 방향이 대각선 방향이면 True.
      */
     public final boolean isDiagonal() {
         return switch (direction) {
@@ -221,9 +210,18 @@ public class Ship extends Entity {
     }
 
     /**
-     * 함선의 방향을 얻는 Getter
+     * 함선의 에임 방향을 설정하는 Setter.
      *
-     * @return 함선의 방향.
+     * @param direction 설정할 에임의 방향.
+     */
+    public final void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    /**
+     * 함선의 에임 방향을 얻는 Getter.
+     *
+     * @return 함선의 에임 방향.
      */
     public Direction getDirection() {
         return direction;

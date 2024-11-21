@@ -1,6 +1,7 @@
 package screen;
 
 import engine.DrawManager;
+import entity.Entity.Direction;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
@@ -189,14 +190,16 @@ public class GameScreen extends Screen {
 
         if (this.inputDelay.checkFinished() && !this.levelFinished) {
 
-            boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT)
-                || inputManager.isKeyDown(KeyEvent.VK_D);
-            boolean moveLeft = inputManager.isKeyDown(KeyEvent.VK_LEFT)
-                || inputManager.isKeyDown(KeyEvent.VK_A);
-            boolean moveUp = inputManager.isKeyDown(KeyEvent.VK_UP)
-                || inputManager.isKeyDown(KeyEvent.VK_W);
-            boolean moveDown = inputManager.isKeyDown(KeyEvent.VK_DOWN)
-                || inputManager.isKeyDown(KeyEvent.VK_S);
+            // WASD - 함선 이동
+            boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_D);
+            boolean moveLeft = inputManager.isKeyDown(KeyEvent.VK_A);
+            boolean moveUp = inputManager.isKeyDown(KeyEvent.VK_W);
+            boolean moveDown = inputManager.isKeyDown(KeyEvent.VK_S);
+            // 방향키 - 에임
+            boolean aimRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT);
+            boolean aimLeft = inputManager.isKeyDown(KeyEvent.VK_LEFT);
+            boolean aimUp = inputManager.isKeyDown(KeyEvent.VK_UP);
+            boolean aimDown = inputManager.isKeyDown(KeyEvent.VK_DOWN);
 
             boolean isRightBorder = this.ship.getPositionX()
                 + this.ship.getWidth() + this.ship.getSpeed() > this.width - 1;
@@ -225,10 +228,33 @@ public class GameScreen extends Screen {
             } else if (moveDown && !isBottomBorder) {
                 this.ship.moveDown();
             }
-            if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
+
+            if (aimUp && aimRight) {
+                this.ship.setDirection(Direction.UP_RIGHT);
+            } else if (aimUp && aimLeft) {
+                this.ship.setDirection(Direction.UP_LEFT);
+            } else if (aimDown && aimRight) {
+                this.ship.setDirection(Direction.DOWN_RIGHT);
+            } else if (aimDown && aimLeft) {
+                this.ship.setDirection(Direction.DOWN_LEFT);
+            } else if (aimUp) {
+                this.ship.setDirection(Direction.UP);
+            } else if (aimDown) {
+                this.ship.setDirection(Direction.DOWN);
+            } else if (aimRight) {
+                this.ship.setDirection(Direction.RIGHT);
+            } else if (aimLeft) {
+                this.ship.setDirection(Direction.LEFT);
+            }
+
+            if (aimUp || aimDown || aimRight || aimLeft) {
                 if (this.ship.shoot(this.bullets)) {
                     this.bulletsShot++;
                 }
+            }
+
+            if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
+                // 추후 궁극기 추가
             }
 
             // esc키를 눌렀을 때 일시정지 화면으로 전환
