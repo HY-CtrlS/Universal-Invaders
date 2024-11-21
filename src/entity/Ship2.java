@@ -1,8 +1,6 @@
 package entity;
 
-import engine.DrawManager.SpriteType;
 import java.awt.Color;
-import java.util.List;
 import java.util.Set;
 
 public class Ship2 extends Ship {

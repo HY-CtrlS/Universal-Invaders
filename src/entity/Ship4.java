@@ -1,6 +1,5 @@
 package entity;
 
-import engine.DrawManager.SpriteType;
 import java.awt.Color;
 import java.util.Set;
 
@@ -81,7 +80,19 @@ public class Ship4 extends Ship {
      * @return Checks if the bullet was shot correctly.
      */
     public final boolean shoot(final Set<Bullet> bullets) {
-        return super.shoot(bullets);
+        if (this.shootingCooldown.checkFinished()) {
+            this.shootingCooldown.reset();
+
+            // 관통 총알 발사
+            Bullet bullet = BulletPool.getBullet(
+                positionX + this.width / 2, positionY,
+                this.bulletSpeed, this.baseDamage, direction, 4);
+            bullet.setPiercing(true); // 관통 활성화
+            bullets.add(bullet);
+
+            return true;
+        }
+        return false;
     }
 
     /**

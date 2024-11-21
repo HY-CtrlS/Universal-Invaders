@@ -121,7 +121,8 @@ public class GameScreen extends Screen {
     public final void initialize() {
         super.initialize();
 
-        this.ship = new Ship2(this.width / 2, this.height / 2, Entity.Direction.UP, Color.BLUE, 2);
+        this.ship = new Ship4(this.width / 2, this.height / 2, Entity.Direction.UP, Color.RED,
+            4);
         enemyShipSet = new EnemyShipSet(this.gameSettings, this.level, this.ship);
         enemyShipSet.attach(this);
 
@@ -398,6 +399,8 @@ public class GameScreen extends Screen {
                 }
 
             }
+
+
         }
         this.bullets.removeAll(recyclable);
         BulletPool.recycle(recyclable);
