@@ -155,6 +155,9 @@ public class EnemyShip extends Entity {
                     break;
             }
         }
+        float hpPercentage = (float) this.hp / this.level;
+        int nonRedHue = (int) (hpPercentage * 255);
+        this.setColor(new Color[] { new Color(255, nonRedHue, nonRedHue) });
     }
 
     // 피해 입은 만큼 hp 감소시키고 0 이하가 되면 파괴.

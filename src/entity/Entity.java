@@ -20,7 +20,7 @@ public class Entity {
     /** Height of the entity. */
     protected int height;
     /** Color of the entity. */
-    private final Color[] color;
+    private Color[] color;
     /** Sprite type assigned to the entity. */
     protected SpriteType spriteType;
     /** 엔티티 스프라이트의 방향 (기본 위) */
@@ -122,6 +122,8 @@ public class Entity {
     public final Color[] getColor() {
         return color;
     }
+
+    public final void setColor(Color[] color) { this.color = color; }
 
     /**
      * Getter for the X axis position of the entity.
