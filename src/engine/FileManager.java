@@ -281,13 +281,11 @@ public final class FileManager {
             int shootingInterval = Integer.parseInt(bufferedReader.readLine());
             int bulletSpeed = Integer.parseInt(bufferedReader.readLine());
             int speed = Integer.parseInt(bufferedReader.readLine());
-
-           
             int baseDamage = Integer.parseInt(bufferedReader.readLine());
+            int maxHp = Integer.parseInt(bufferedReader.readLine());
+            double regenHp = Double.parseDouble(bufferedReader.readLine());
 
-            int maxLives = Integer.parseInt(bufferedReader.readLine());
-
-            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxLives);
+            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxHp, regenHp);
 
         } finally {
             if (inputStream != null) {
@@ -324,9 +322,10 @@ public final class FileManager {
             int bulletSpeed = Integer.parseInt(bufferedReader.readLine());
             int speed = Integer.parseInt(bufferedReader.readLine());
             int baseDamage = Integer.parseInt(bufferedReader.readLine());
-            int maxLives = Integer.parseInt(bufferedReader.readLine());
+            int maxHp = Integer.parseInt(bufferedReader.readLine());
+            double regenHP = Double.parseDouble((bufferedReader.readLine()));
 
-            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxLives);
+            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxHp, regenHP);
 
         } catch (FileNotFoundException e) {
             // loads default if there's no user scores.
@@ -374,7 +373,9 @@ public final class FileManager {
             bufferedWriter.newLine();
             bufferedWriter.write(String.valueOf(shipStatus.getBaseDamage()));
             bufferedWriter.newLine();
-            bufferedWriter.write(String.valueOf(shipStatus.getHp()));
+            bufferedWriter.write(String.valueOf(shipStatus.getMaxHp()));
+            bufferedWriter.newLine();
+            bufferedWriter.write(String.valueOf(shipStatus.getRegen_hp()));
 
         } finally {
             if (bufferedWriter != null) {
