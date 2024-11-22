@@ -20,7 +20,7 @@ public class Entity {
     /** Height of the entity. */
     protected int height;
     /** Color of the entity. */
-    private Color[] color;
+    private final Color[] color;
     /** Sprite type assigned to the entity. */
     protected SpriteType spriteType;
     /** 엔티티 스프라이트의 방향 (기본 위) */
