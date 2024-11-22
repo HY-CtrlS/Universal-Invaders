@@ -47,7 +47,7 @@ public final class DrawManager {
     private static FontMetrics fontBigMetrics;
 
     /** Sprite types mapped to their images. */
-    private static Map<SpriteType, boolean[][]> spriteMap;
+    private static Map<SpriteType, boolean[][][]> spriteMap;
 
     /** Sprite types. */
     public static enum SpriteType {
@@ -96,23 +96,23 @@ public final class DrawManager {
         try {
             spriteMap = new LinkedHashMap<>();
 
-            spriteMap.put(SpriteType.Ship, new boolean[13][13]);
-            spriteMap.put(SpriteType.ShipDiagonal, new boolean[13][13]);
-            spriteMap.put(SpriteType.ShipDestroyed, new boolean[16][13]);
-            spriteMap.put(SpriteType.ShipDiagonalDestroyed, new boolean[15][15]);
-            spriteMap.put(SpriteType.Bullet, new boolean[2][4]);
-            spriteMap.put(SpriteType.BulletDiagonal, new boolean[4][4]);
-            spriteMap.put(SpriteType.EnemyBullet, new boolean[3][5]);
-            spriteMap.put(SpriteType.EnemyShipA1, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipA2, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipB1, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipB2, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipC1, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipC2, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipSpecial, new boolean[16][7]);
-            spriteMap.put(SpriteType.Explosion, new boolean[13][7]);
+            spriteMap.put(SpriteType.Ship, new boolean[1][13][13]);
+            spriteMap.put(SpriteType.ShipDiagonal, new boolean[1][13][13]);
+            spriteMap.put(SpriteType.ShipDestroyed, new boolean[1][16][13]);
+            spriteMap.put(SpriteType.ShipDiagonalDestroyed, new boolean[1][15][15]);
+            spriteMap.put(SpriteType.Bullet, new boolean[1][2][4]);
+            spriteMap.put(SpriteType.BulletDiagonal, new boolean[1][4][4]);
+            spriteMap.put(SpriteType.EnemyBullet, new boolean[1][3][5]);
+            spriteMap.put(SpriteType.EnemyShipA1, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipA2, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipB1, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipB2, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipC1, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipC2, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipSpecial, new boolean[1][16][7]);
+            spriteMap.put(SpriteType.Explosion, new boolean[1][13][7]);
             // 공속 증가 아이템 스프라이트
-            spriteMap.put(SpriteType.AttackSpeedUpItem, new boolean[10][10]);
+            spriteMap.put(SpriteType.AttackSpeedUpItem, new boolean[1][10][10]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
@@ -193,7 +193,7 @@ public final class DrawManager {
      */
     public void drawEntity(final Entity entity, final int positionX,
         final int positionY) {
-        boolean[][] image = spriteMap.get(entity.getSpriteType());
+        boolean[][][] image = spriteMap.get(entity.getSpriteType());
 
         backBufferGraphics.setColor(entity.getColor());
         Entity.Direction direction = entity.getDirection();
@@ -201,47 +201,55 @@ public final class DrawManager {
         switch (direction) {
             case UP:
             case UP_LEFT:
-                for (int i = 0; i < image.length; i++) {
-                    for (int j = 0; j < image[i].length; j++) {
-                        if (image[i][j]) {
-                            backBufferGraphics.drawRect(positionX + i * 2, positionY
-                                + j * 2, 1, 1);
+                for (boolean[][] layer: image) {
+                    for (int i = 0; i < layer.length; i++) {
+                        for (int j = 0; j < layer[i].length; j++) {
+                            if (layer[i][j]) {
+                                backBufferGraphics.drawRect(positionX + i * 2, positionY
+                                    + j * 2, 1, 1);
+                            }
                         }
                     }
                 }
                 break;
             case DOWN:
             case DOWN_RIGHT:
-                for (int i = image.length - 1; i >= 0; i--) {
-                    for (int j = image[i].length - 1; j >= 0; j--) {
-                        if (image[image.length - 1 - i][image[i].length - 1 - j]) {
-                            backBufferGraphics.drawRect(positionX + i * 2, positionY
-                                + j * 2, 1, 1);
+                for (boolean[][] layer: image) {
+                    for (int i = layer.length - 1; i >= 0; i--) {
+                        for (int j = layer[i].length - 1; j >= 0; j--) {
+                            if (layer[layer.length - 1 - i][layer[i].length - 1 - j]) {
+                                backBufferGraphics.drawRect(positionX + i * 2, positionY
+                                    + j * 2, 1, 1);
+                            }
                         }
                     }
                 }
                 break;
             case LEFT:
             case DOWN_LEFT:
-                for (int i = 0; i < image.length; i++) {
-                    for (int j = 0; j < image[i].length; j++) {
-                        if (image[i][j]) {
-                            backBufferGraphics.drawRect(positionX + j * 2, positionY
-                                + (image.length - 1 - i) * 2, 1, 1);
+                for (boolean[][] layer: image) {
+                    for (int i = 0; i < layer.length; i++) {
+                        for (int j = 0; j < layer[i].length; j++) {
+                            if (layer[i][j]) {
+                                backBufferGraphics.drawRect(positionX + j * 2, positionY
+                                    + (layer.length - 1 - i) * 2, 1, 1);
+                            }
                         }
                     }
                 }
                 break;
             case RIGHT:
             case UP_RIGHT:
-                for (int i = 0; i < image.length; i++) {
-                    for (int j = 0; j < image[i].length; j++) {
-                        if (image[i][j]) {
-                            backBufferGraphics.drawRect(
-                                positionX + (image[i].length - 1 - j) * 2,
-                                positionY + i * 2,
-                                1, 1
-                            );
+                for (boolean[][] layer: image) {
+                    for (int i = 0; i < layer.length; i++) {
+                        for (int j = 0; j < layer[i].length; j++) {
+                            if (layer[i][j]) {
+                                backBufferGraphics.drawRect(
+                                    positionX + (layer[i].length - 1 - j) * 2,
+                                    positionY + i * 2,
+                                    1, 1
+                                );
+                            }
                         }
                     }
                 }
@@ -728,14 +736,16 @@ public final class DrawManager {
 
     // 아이템의 스프라이트를 받아와 스케일 업해서 그리는 메소드
     public void drawBigItem(final Item item, final int position_X, final int position_Y) {
-        boolean[][] image = spriteMap.get(item.getSpriteType());
+        boolean[][][] image = spriteMap.get(item.getSpriteType());
 
         backBufferGraphics.setColor(item.getColor());
-        for (int i = 0; i < image.length; i++) {
-            for (int j = 0; j < image[i].length; j++) {
-                if (image[i][j]) {
-                    backBufferGraphics.drawRect(position_X + i * 6, position_Y
-                        + j * 6, 6, 6);
+        for (boolean [][] layer: image) {
+            for (int i = 0; i < layer.length; i++) {
+                for (int j = 0; j < layer[i].length; j++) {
+                    if (layer[i][j]) {
+                        backBufferGraphics.drawRect(position_X + i * 6, position_Y
+                            + j * 6, 6, 6);
+                    }
                 }
             }
         }
