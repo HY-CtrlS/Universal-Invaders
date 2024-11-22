@@ -96,7 +96,7 @@ public final class DrawManager {
         try {
             spriteMap = new LinkedHashMap<>();
 
-            spriteMap.put(SpriteType.Ship, new boolean[1][13][13]);
+            spriteMap.put(SpriteType.Ship, new boolean[2][13][13]);
             spriteMap.put(SpriteType.ShipDiagonal, new boolean[1][13][13]);
             spriteMap.put(SpriteType.ShipDestroyed, new boolean[1][16][13]);
             spriteMap.put(SpriteType.ShipDiagonalDestroyed, new boolean[1][15][15]);
@@ -195,18 +195,20 @@ public final class DrawManager {
         final int positionY) {
         boolean[][][] image = spriteMap.get(entity.getSpriteType());
 
-        backBufferGraphics.setColor(entity.getColor());
+//        backBufferGraphics.setColor(entity.getColor());
         Entity.Direction direction = entity.getDirection();
 
+        // TODO: Ship 이외의 스프라이트들 깨짐 해결
         switch (direction) {
             case UP:
             case UP_LEFT:
-                for (boolean[][] layer: image) {
-                    for (int i = 0; i < layer.length; i++) {
-                        for (int j = 0; j < layer[i].length; j++) {
-                            if (layer[i][j]) {
-                                backBufferGraphics.drawRect(positionX + i * 2, positionY
-                                    + j * 2, 1, 1);
+                for (int layerNum = 0; layerNum < image.length; layerNum++) {
+                    backBufferGraphics.setColor(entity.getColor()[layerNum]);
+                    for (int row = 0; row < image[layerNum].length; row++) {
+                        for (int column = 0; column < image[layerNum][row].length; column++) {
+                            if (image[layerNum][row][column]) {
+                                backBufferGraphics.drawRect(positionX + row * 2, positionY
+                                    + column * 2, 1, 1);
                             }
                         }
                     }
@@ -214,12 +216,13 @@ public final class DrawManager {
                 break;
             case DOWN:
             case DOWN_RIGHT:
-                for (boolean[][] layer: image) {
-                    for (int i = layer.length - 1; i >= 0; i--) {
-                        for (int j = layer[i].length - 1; j >= 0; j--) {
-                            if (layer[layer.length - 1 - i][layer[i].length - 1 - j]) {
-                                backBufferGraphics.drawRect(positionX + i * 2, positionY
-                                    + j * 2, 1, 1);
+                for (int layerNum = 0; layerNum < image.length; layerNum++) {
+                    backBufferGraphics.setColor(entity.getColor()[layerNum]);
+                    for (int row = image[layerNum].length - 1; row >= 0; row--) {
+                        for (int column = image[layerNum][row].length - 1; column >= 0; column--) {
+                            if (image[layerNum][image[layerNum].length - 1 - row][image[layerNum][row].length - 1 - column]) {
+                                backBufferGraphics.drawRect(positionX + row * 2, positionY
+                                    + column * 2, 1, 1);
                             }
                         }
                     }
@@ -227,12 +230,13 @@ public final class DrawManager {
                 break;
             case LEFT:
             case DOWN_LEFT:
-                for (boolean[][] layer: image) {
-                    for (int i = 0; i < layer.length; i++) {
-                        for (int j = 0; j < layer[i].length; j++) {
-                            if (layer[i][j]) {
-                                backBufferGraphics.drawRect(positionX + j * 2, positionY
-                                    + (layer.length - 1 - i) * 2, 1, 1);
+                for (int layerNum = 0; layerNum < image.length; layerNum++) {
+                    backBufferGraphics.setColor(entity.getColor()[layerNum]);
+                    for (int row = 0; row < image[layerNum].length; row++) {
+                        for (int column = 0; column < image[layerNum][row].length; column++) {
+                            if (image[layerNum][row][column]) {
+                                backBufferGraphics.drawRect(positionX + column * 2, positionY
+                                    + (image[layerNum].length - 1 - row) * 2, 1, 1);
                             }
                         }
                     }
@@ -240,13 +244,14 @@ public final class DrawManager {
                 break;
             case RIGHT:
             case UP_RIGHT:
-                for (boolean[][] layer: image) {
-                    for (int i = 0; i < layer.length; i++) {
-                        for (int j = 0; j < layer[i].length; j++) {
-                            if (layer[i][j]) {
+                for (int layerNum = 0; layerNum < image.length; layerNum++) {
+                    backBufferGraphics.setColor(entity.getColor()[layerNum]);
+                    for (int row = 0; row < image[layerNum].length; row++) {
+                        for (int column = 0; column < image[layerNum][row].length; column++) {
+                            if (image[layerNum][row][column]) {
                                 backBufferGraphics.drawRect(
-                                    positionX + (layer[i].length - 1 - j) * 2,
-                                    positionY + i * 2,
+                                    positionX + (image[layerNum][row].length - 1 - column) * 2,
+                                    positionY + row * 2,
                                     1, 1
                                 );
                             }

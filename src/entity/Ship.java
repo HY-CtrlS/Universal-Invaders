@@ -42,7 +42,7 @@ public class Ship extends Entity {
      * @param direction 함선의 초기 에임 방향.
      */
     public Ship(final int positionX, final int positionY, final Direction direction) {
-        super(positionX, positionY, 13 * 2, 8 * 2, Color.GREEN, direction);
+        super(positionX, positionY, 13 * 2, 8 * 2, new Color[] {Color.GREEN, Color.WHITE}, direction);
 
         this.spriteType = SpriteType.Ship;
 
