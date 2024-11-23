@@ -47,7 +47,7 @@ public class Ship extends Entity {
      */
     public Ship(final int positionX, final int positionY, final Direction direction, Color color,
         final int shipID) {
-        super(positionX, positionY, 13 * 2, 13 * 2, color, direction);
+        super(positionX, positionY, 13 * 2, 13 * 2, new Color[] {color, Color.WHITE}, direction);
 
         this.spriteType = SpriteType.Ship;
 

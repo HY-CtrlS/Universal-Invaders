@@ -433,7 +433,7 @@ public class GameScreen extends Screen {
 
             // 적 총알인 경우 실행되는 부분 ( 현재는 적 총알이 나오는 곳이 없음 )
 
-            if (bullet.getClassify() == 1) {
+            if (bullet.getClassify() == 0) {
                 if (checkCollision(bullet, this.ship) && !this.levelFinished) {
                     if (!this.ship.isDestroyed()) {
                         recyclable.add(bullet);
