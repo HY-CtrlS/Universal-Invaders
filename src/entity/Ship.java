@@ -267,4 +267,19 @@ public class Ship extends Entity {
     public void startBurstShooting() {
         // 기본 Ship은 점사 기능 없음
     }
+
+    public static Ship createShipByID(int shipID, int positionX, int positionY) {
+        switch (shipID) {
+            case 1:
+                return new Ship1(positionX, positionY, Entity.Direction.UP, Color.GREEN, 1);
+            case 2:
+                return new Ship2(positionX, positionY, Entity.Direction.UP, Color.BLUE, 2);
+            case 3:
+                return new Ship3(positionX, positionY, Entity.Direction.UP, Color.RED, 3);
+            case 4:
+                return new Ship4(positionX, positionY, Entity.Direction.UP, Color.YELLOW, 4);
+            default:
+                throw new IllegalArgumentException("Invalid shipID: " + shipID);
+        }
+    }
 }

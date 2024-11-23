@@ -149,7 +149,7 @@ public class GameScreen extends Screen {
     public final void initialize() {
         super.initialize();
 
-        this.ship = createShipByID(this.shipID, this.width / 2, this.height / 2);
+        this.ship = Ship.createShipByID(this.shipID, this.width / 2, this.height / 2);
         enemyShipSet = new EnemyShipSet(this.gameSettings, this.level, this.ship);
         enemyShipSet.attach(this);
 
@@ -576,18 +576,4 @@ public class GameScreen extends Screen {
             this.bulletsShot, this.shipsDestroyed);
     }
 
-    private Ship createShipByID(int shipID, int positionX, int positionY) {
-        switch (shipID) {
-            case 1:
-                return new Ship1(positionX, positionY, Entity.Direction.UP, Color.GREEN, 1);
-            case 2:
-                return new Ship2(positionX, positionY, Entity.Direction.UP, Color.BLUE, 2);
-            case 3:
-                return new Ship3(positionX, positionY, Entity.Direction.UP, Color.RED, 3);
-            case 4:
-                return new Ship4(positionX, positionY, Entity.Direction.UP, Color.YELLOW, 4);
-            default:
-                throw new IllegalArgumentException("Invalid shipID: " + shipID);
-        }
-    }
 }
