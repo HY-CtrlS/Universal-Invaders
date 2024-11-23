@@ -68,10 +68,10 @@ public class GameScreen extends Screen {
     /** Current score. */
     private int score;
     /** 플레이어의 최대 Hp. 기본값은 100. */
-    private int maxHp = Core.getStatusManager().getHp();
+    private int maxHp = Core.getStatusManager().getMaxHp();
     /** Player hp left. */
     private int hp;
-    /** HP 자동 재생되는 누적량 체크**/
+    /** HP 자동 재생되는 누적량 체크 **/
     private double remainingRegenHp;
     /** HP 리젠되는 쿨타임 생성 **/
     private Cooldown regenHpCooldown;
@@ -316,7 +316,6 @@ public class GameScreen extends Screen {
             //		this.logger.info("The special ship has escaped");
             //}
 
-
             // hp 자동 재생 기능 실행
             hpRegen(status.getRegenHp());
 
@@ -546,7 +545,7 @@ public class GameScreen extends Screen {
         return distanceX < maxDistanceX && distanceY < maxDistanceY;
     }
 
-    /** hpRegenCooldown이 끝날 때마다 자동으로 체력을 회복함.*/
+    /** hpRegenCooldown이 끝날 때마다 자동으로 체력을 회복함. */
     private void hpRegen(final double regenHp) {
         // 체력이 최대체력보다 낮을 경우에만 regen
         if (this.regenHpCooldown.checkFinished() && this.hp < maxHp) {
@@ -575,7 +574,7 @@ public class GameScreen extends Screen {
     private Ship createShipByID(int shipID, int positionX, int positionY) {
         switch (shipID) {
             case 1:
-                return new Ship(positionX, positionY, Entity.Direction.UP, Color.GREEN, 1);
+                return new Ship1(positionX, positionY, Entity.Direction.UP, Color.GREEN, 1);
             case 2:
                 return new Ship2(positionX, positionY, Entity.Direction.UP, Color.BLUE, 2);
             case 3:

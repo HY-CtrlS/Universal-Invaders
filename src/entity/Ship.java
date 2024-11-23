@@ -22,9 +22,9 @@ public class Ship extends Entity {
     /** Movement of the ship for each unit of time. */
     protected int speed;
     /** 함선의 기본 데미지 */
-    private int baseDamage;
+    protected int baseDamage;
     /** 함선의 에임 뱡향 */
-    private static Direction direction;
+    protected static Direction direction;
     /** 축 방향 속도의 소수 부분을 저장 및 누적 */
     protected double remainingMovement = 0;
     /** 축 방향 속도의 정수 부분 (실제 이동량) */
@@ -68,35 +68,35 @@ public class Ship extends Entity {
     /**
      * Moves the ship right until the right screen border is reached.
      */
-    public final void moveRight() {
+    public void moveRight() {
         this.positionX += speed;
     }
 
     /**
      * Moves the ship left until the left screen border is reached.
      */
-    public final void moveLeft() {
+    public void moveLeft() {
         this.positionX -= speed;
     }
 
     /**
      * Moves the ship up until the top screen border is reached.
      */
-    public final void moveUp() {
+    public void moveUp() {
         this.positionY -= speed;
     }
 
     /**
      * Moves the ship down until the bottom screen border is reached.
      */
-    public final void moveDown() {
+    public void moveDown() {
         this.positionY += speed;
     }
 
     /**
      * Moves the ship up the right until the top and right screen border is reached.
      */
-    public final void moveUpRight() {
+    public void moveUpRight() {
         calculateMovement();
         this.positionY -= movement;
         this.positionX += movement;
@@ -105,7 +105,7 @@ public class Ship extends Entity {
     /**
      * Moves the ship up the left until the top and left screen border is reached.
      */
-    public final void moveUpLeft() {
+    public void moveUpLeft() {
         calculateMovement();
         this.positionY -= movement;
         this.positionX -= movement;
@@ -114,7 +114,7 @@ public class Ship extends Entity {
     /**
      * Moves the ship down the right until the bottom and right screen border is reached.
      */
-    public final void moveDownRight() {
+    public void moveDownRight() {
         calculateMovement();
         this.positionY += movement;
         this.positionX += movement;
@@ -123,7 +123,7 @@ public class Ship extends Entity {
     /**
      * Moves the ship down the left until the bottom and left screen border is reached.
      */
-    public final void moveDownLeft() {
+    public void moveDownLeft() {
         calculateMovement();
         this.positionY += movement;
         this.positionX -= movement;
