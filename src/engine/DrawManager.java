@@ -416,26 +416,30 @@ public final class DrawManager {
      */
     public void drawResults(final Screen screen, final int score,
         final int livesRemaining, final int shipsDestroyed,
-        final float accuracy, final boolean isNewRecord) {
+        final float accuracy, final int survivalTime, final boolean isNewRecord) {
         String scoreString = String.format("score %04d", score);
-        String livesRemainingString = "lives remaining " + livesRemaining;
+        //String livesRemainingString = "lives remaining " + livesRemaining;
         String shipsDestroyedString = "enemies destroyed " + shipsDestroyed;
+        String survivalTimeString = "Survival Time: " + survivalTime + " s";
         String accuracyString = String
             .format("accuracy %.2f%%", accuracy * 100);
 
         int height = isNewRecord ? 4 : 2;
 
+        drawCenteredRegularString(screen, survivalTimeString,
+           screen.getHeight() / height + fontRegularMetrics.getHeight()
+                * 2);
         backBufferGraphics.setColor(Color.WHITE);
         drawCenteredRegularString(screen, scoreString, screen.getHeight()
             / height);
-        drawCenteredRegularString(screen, livesRemainingString,
-            screen.getHeight() / height + fontRegularMetrics.getHeight()
-                * 2);
+        //drawCenteredRegularString(screen, livesRemainingString,
+        //   screen.getHeight() / height + fontRegularMetrics.getHeight()
+        //        * 2);
         drawCenteredRegularString(screen, shipsDestroyedString,
             screen.getHeight() / height + fontRegularMetrics.getHeight()
                 * 4);
-        drawCenteredRegularString(screen, accuracyString, screen.getHeight()
-            / height + fontRegularMetrics.getHeight() * 6);
+//        drawCenteredRegularString(screen, accuracyString, screen.getHeight()
+//            / height + fontRegularMetrics.getHeight() * 6);
     }
 
     /**

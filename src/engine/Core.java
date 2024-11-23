@@ -112,7 +112,7 @@ public final class Core {
 
         int returnCode = 1;
         do {
-            gameState = new GameState(1, 0, getStatusManager().getHp(), 0, 0);
+            gameState = new GameState(1, 0, getStatusManager().getHp(), 0, 0, 0);
 
             switch (returnCode) {
                 case 1:
@@ -134,10 +134,12 @@ public final class Core {
                         boolean bonusLife = gameState.getLevel()
                             % EXTRA_LIFE_FREQUENCY == 0
                             && gameState.getHp() < getStatusManager().getHp();
+                        int totalSurvivalTime = 0;
+                        totalSurvivalTime += gameState.getSurvivalTime();
 
                         currentScreen = new GameScreen(gameState,
                             gameSettings.get(gameState.getLevel() - 1),
-                            bonusLife, width, height, FPS);
+                            bonusLife, totalSurvivalTime, width, height, FPS);
                         LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
                             + " game screen at " + FPS + " fps.");
                         isQuit = frame.setScreen(currentScreen);
@@ -165,7 +167,8 @@ public final class Core {
                             gameState.getScore(),
                             gameState.getHp(),
                             gameState.getBulletsShot(),
-                            gameState.getShipsDestroyed());
+                            gameState.getShipsDestroyed(),
+                            (int) gameState.getSurvivalTime());
 
                     } while (gameState.getHp() > 0
                         && gameState.getLevel() <= NUM_LEVELS);
@@ -179,7 +182,8 @@ public final class Core {
                         + gameState.getScore() + ", "
                         + gameState.getHp() + " lives remaining, "
                         + gameState.getBulletsShot() + " bullets shot and "
-                        + gameState.getShipsDestroyed() + " ships destroyed.");
+                        + gameState.getShipsDestroyed() + " ships destroyed."
+                        + "Total survival time: " + (int) gameState.getSurvivalTime());
                     currentScreen = new ScoreScreen(width, height, FPS, gameState);
                     returnCode = frame.setScreen(currentScreen);
                     LOGGER.info("Closing score screen.");

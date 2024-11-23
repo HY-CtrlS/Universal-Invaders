@@ -36,6 +36,8 @@ public class ScoreScreen extends Screen {
     private int shipsDestroyed;
     /** List of past high scores. */
     private List<Score> highScores;
+    /** Total seconds of survival. */
+    private int survivalTime;
     /** Checks if current score is a new high score. */
     private boolean isNewRecord;
     /** Checks if the game was cleared. */
@@ -63,6 +65,7 @@ public class ScoreScreen extends Screen {
         this.hp = gameState.getHp();
         this.bulletsShot = gameState.getBulletsShot();
         this.shipsDestroyed = gameState.getShipsDestroyed();
+        this.survivalTime = gameState.getSurvivalTime();
         this.isNewRecord = false;
         this.isGameClear = false;
         this.name = "AAA".toCharArray();
@@ -182,7 +185,7 @@ public class ScoreScreen extends Screen {
             this.isNewRecord, this.isGameClear);
         drawManager.drawResults(this, this.score, this.hp,
             this.shipsDestroyed, (float) this.shipsDestroyed
-                / this.bulletsShot, this.isNewRecord);
+                / this.bulletsShot, this.survivalTime, this.isNewRecord);
 
         if (this.isNewRecord) {
             drawManager.drawNameInput(this, this.name, this.nameCharSelected);
