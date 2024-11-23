@@ -1,5 +1,9 @@
 package screen;
 
+import static engine.Core.getStatusManager;
+
+import Item.Item;
+import Item.ItemList;
 import engine.DrawManager;
 import engine.ShipStatus;
 import engine.StatusManager;
@@ -8,6 +12,7 @@ import entity.Ship;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import engine.Cooldown;
@@ -68,7 +73,7 @@ public class GameScreen extends Screen {
     /** Current score. */
     private int score;
     /** 플레이어의 최대 Hp. 기본값은 100. */
-    private int maxHp = Core.getStatusManager().getMaxHp();
+    private int maxHp = getStatusManager().getMaxHp();
     /** Player hp left. */
     private int hp;
     /** HP 자동 재생되는 누적량 체크 **/
@@ -101,6 +106,11 @@ public class GameScreen extends Screen {
     private int playerLevel = 1;
 
     private int shipID;
+
+    // 아이템 리스트 객체 생성
+    private static ItemList items = new ItemList();
+    // 아이템 리스트 참조하기 위한 배열
+    private static List<Item> itemList;
 
     /**
      * Constructor, establishes the properties of the screen.
@@ -140,7 +150,7 @@ public class GameScreen extends Screen {
         this.returnCode = 1;
 
         // 현재 게임에 사용되는 Ship의 status 정보
-        this.status = Core.getStatusManager();
+        this.status = getStatusManager();
     }
 
     /**
@@ -163,6 +173,13 @@ public class GameScreen extends Screen {
         this.screenFinishedCooldown = Core.getCooldown(SCREEN_CHANGE_INTERVAL);
         this.bullets = new HashSet<Bullet>();
         this.experiences = new HashSet<Experience>(); // 경험치 집합 초기화
+
+        // 게임 시작 시 초기 아이템 리스트 생성
+        itemList = items.initializedItems();
+        // 게임 시작 시 함선의 체력을 기본으로 초기화
+        this.hp = (getStatusManager().getMaxHp());
+        items.initializedItems();
+
 
         // Special input delay / countdown.
         this.gameStartTime = System.currentTimeMillis();
@@ -516,6 +533,21 @@ public class GameScreen extends Screen {
                     this.logger.info("플레이어 레벨 업! 현재 레벨: " + playerLevel);
                     Core.getSoundManager().playLevelUpSound();
                     currentExperience -= EXPERIENCE_THRESHOLD;
+                    // 선택한 아이템 없는 것으로 초기화
+                    int selectedItem = -1;
+                    this.logger.info(
+                        "Starting " + this.width + "X" + this.height + " ItemSelectingScreen at "
+                            + this.fps + " fps.");
+                    ItemSelectedScreen currentScreen = new ItemSelectedScreen(items.getSelectedItemList(), width, height, this.fps, playerLevel);
+                    selectedItem = currentScreen.run();
+                    this.logger.info("Closing Item Selecting Screen.");
+                    // 최대 체력 증가 아이템을 선택한 경우, 현재 체력 또한 증가된 체력만큼 올려줌.
+                    if (selectedItem == 1) {
+                        // 가지고 있던 체력의 비율 계산
+                        double portionHp = (double) this.hp / (getStatusManager().getMaxHp() - itemList.get(1).getChangedValue());
+                        // 늘어난 체력에 맞게 현재 체력의 비율 조정
+                        this.hp = ((int) (getStatusManager().getMaxHp() * portionHp));
+                    }
                 }
             }
         }

@@ -662,8 +662,8 @@ public final class DrawManager {
         backBufferGraphics.drawRect(position_X, position_Y, 100, 100);
     }
 
-    public void drawItemSelectingTitle(final Screen screen, final GameState gameState) {
-        String titleString = "Level  " + gameState.getLevel() + "  Clear!!";
+    public void drawItemSelectingTitle(final Screen screen, final int playerLevel) {
+        String titleString = "Level  " + playerLevel + "  !!";
         String instructionsString1 =
             "Select your Item with A + D / arrows";
         String instructionsString2 =

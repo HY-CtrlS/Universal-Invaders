@@ -65,10 +65,7 @@ public final class Core {
     private static Handler fileHandler;
     /** Logger handler for printing to console. */
     private static ConsoleHandler consoleHandler;
-    // 아이템 리스트 객체 생성
-    private static ItemList items = new ItemList();
-    // 아이템 리스트 참조하기 위한 배열
-    private static List<Item> itemList;
+
     /** quit로 라운드라 종료되었는지 확인하는 변수 */
     private static int isQuit;
     /** 아이템 선택화면에서 선택된 아이템 판단**/
@@ -130,11 +127,7 @@ public final class Core {
                 case 2:
                     // 게임 시작 시 StatusManager의 status 객체를 res/status 의 값으로 초기화
                     getStatusManager().resetDefaultStatus();
-                    // 게임 시작 시 초기 아이템 리스트 생성
-                    itemList = items.initializedItems();
-                    // 게임 시작 시 함선의 체력을 기본으로 초기화
-                    gameState.setHP(getStatusManager().getMaxHp());
-                    items.initializedItems();
+
                     // 게임 시작 전 함선 선택
                     currentScreen = new shipSelectScreen(width, height, FPS);
                     LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
@@ -143,8 +136,7 @@ public final class Core {
                     LOGGER.info("Closing ship select screen.");
                     // Game & score.
                     do {
-                        // 선택한 아이템 없는 것으로 초기화
-                        selectedItem = -1;
+
                         // One extra live every few levels.
                         boolean bonusLife = gameState.getLevel()
                             % EXTRA_LIFE_FREQUENCY == 0
@@ -164,25 +156,6 @@ public final class Core {
                         // 현재 플레이한 게임의 정보를 gameState에 저장
                         gameState = ((GameScreen) currentScreen).getGameState();
 
-                        // 아이템 선택화면으로 이동
-                        // 아직 HP가 남아있거나 방금 깬 레벨이 마지막 레벨이 아닌 경우
-                        if (gameState.getHp() > 0
-                            && gameState.getLevel() + 1 <= NUM_LEVELS) {
-                            LOGGER.info(
-                                "Starting " + WIDTH + "X" + HEIGHT + " ItemSelectingScreen at "
-                                    + FPS + " fps.");
-                            currentScreen = new ItemSelectedScreen(gameState,
-                                items.getSelectedItemList(), width, height, FPS);
-                            selectedItem = frame.setScreen(currentScreen);
-                            LOGGER.info("Closing Item Selecting Screen.");
-                        }
-                        // 최대 체력 증가 아이템을 선택한 경우, 현재 체력 또한 증가된 체력만큼 올려줌.
-                        if (selectedItem == 1) {
-                            // 가지고 있던 체력의 비율 계산
-                            double portionHp = (double) gameState.getHp() / (getStatusManager().getMaxHp() - itemList.get(1).getChangedValue());
-                            // 늘어난 체력에 맞게 현재 체력의 비율 조정
-                            gameState.setHP((int) (getStatusManager().getMaxHp() * portionHp));
-                        }
                         gameState = new GameState(gameState.getLevel() + 1,
                             gameState.getScore(),
                             gameState.getHp(),
