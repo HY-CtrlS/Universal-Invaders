@@ -39,10 +39,6 @@ public class shipSelectScreen extends Screen {
         this.selectionCooldown.reset();
         this.shipID = 1;
 
-        // 메인 메뉴 배경음악 재생
-        if (!Core.getSoundManager().isBackgroundMusicPlaying()) {
-            Core.getSoundManager().playTitleScreenBGM();
-        }
     }
 
     /**
@@ -99,11 +95,14 @@ public class shipSelectScreen extends Screen {
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                 if (this.returnCode == 0) {
                     this.returnCode = 1;
-                    Core.getSoundManager().playButtonSound();
                 } else {
                     this.isRunning = false;
-                    Core.getSoundManager().playButtonSound();
                 }
+                // SoundManager에서 음악 재생 중인지 확인 후 정지
+                if (Core.getSoundManager().isBackgroundMusicPlaying()) {
+                    Core.getSoundManager().stopBackgroundMusic();
+                }
+                Core.getSoundManager().playPlaySound();
             }
         }
     }

@@ -131,7 +131,12 @@ public class GameScreen extends Screen {
         this.bulletsShot = gameState.getBulletsShot();
         this.shipsDestroyed = gameState.getShipsDestroyed();
 
+        // 배경음악 중지 후 인게임 배경음악 재생
+        if (Core.getSoundManager().isBackgroundMusicPlaying()) {
+            Core.getSoundManager().stopBackgroundMusic();
+        }
         Core.getSoundManager().playInGameBGM();
+
         this.returnCode = 1;
 
         // 현재 게임에 사용되는 Ship의 status 정보
