@@ -83,12 +83,12 @@ public class Ship2 extends Ship {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY, this.bulletSpeed, this.baseDamage,
+                positionY + this.height / 2, this.bulletSpeed, this.baseDamage,
                 Direction.getOffsetDirection(direction, -1), 2));
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY, this.bulletSpeed, this.baseDamage, direction, 2));
+                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, direction, 2));
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY, this.bulletSpeed, this.baseDamage,
+                positionY + this.height / 2, this.bulletSpeed, this.baseDamage,
                 Direction.getOffsetDirection(direction, 1), 2));
             return true;
         }

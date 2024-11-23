@@ -47,7 +47,7 @@ public class Ship extends Entity {
      */
     public Ship(final int positionX, final int positionY, final Direction direction, Color color,
         final int shipID) {
-        super(positionX, positionY, 13 * 2, 8 * 2, color, direction);
+        super(positionX, positionY, 13 * 2, 13 * 2, color, direction);
 
         this.spriteType = SpriteType.Ship;
 
@@ -148,7 +148,7 @@ public class Ship extends Entity {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY, this.bulletSpeed, this.baseDamage, direction, 1));
+                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, direction, 1));
             return true;
         }
         return false;
