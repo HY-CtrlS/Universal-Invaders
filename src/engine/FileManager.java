@@ -63,7 +63,7 @@ public final class FileManager {
      *                  image.
      * @throws IOException In case of loading problems.
      */
-    public void loadSprite(final Map<SpriteType, boolean[][]> spriteMap)
+    public void loadSprite(final Map<SpriteType, boolean[][][]> spriteMap)
         throws IOException {
         InputStream inputStream = null;
 
@@ -73,19 +73,17 @@ public final class FileManager {
             char c;
 
             // Sprite loading.
-            for (Map.Entry<SpriteType, boolean[][]> sprite : spriteMap
+            for (Map.Entry<SpriteType, boolean[][][]> sprite : spriteMap
                 .entrySet()) {
                 for (int i = 0; i < sprite.getValue().length; i++) {
                     for (int j = 0; j < sprite.getValue()[i].length; j++) {
-                        do {
-                            c = (char) inputStream.read();
-                        }
-                        while (c != '0' && c != '1');
+                        for (int k = 0; k < sprite.getValue()[i][j].length; k++) {
+                            do {
+                                c = (char) inputStream.read();
+                            }
+                            while (c != '0' && c != '1');
 
-                        if (c == '1') {
-                            sprite.getValue()[i][j] = true;
-                        } else {
-                            sprite.getValue()[i][j] = false;
+                            sprite.getValue()[i][j][k] = c == '1';
                         }
                     }
                 }

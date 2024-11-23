@@ -47,7 +47,7 @@ public final class DrawManager {
     private static FontMetrics fontBigMetrics;
 
     /** Sprite types mapped to their images. */
-    private static Map<SpriteType, boolean[][]> spriteMap;
+    private static Map<SpriteType, boolean[][][]> spriteMap;
 
     /** Sprite types. */
     public static enum SpriteType {
@@ -100,25 +100,25 @@ public final class DrawManager {
         try {
             spriteMap = new LinkedHashMap<>();
 
-            spriteMap.put(SpriteType.Ship, new boolean[13][13]);
-            spriteMap.put(SpriteType.ShipDiagonal, new boolean[13][13]);
-            spriteMap.put(SpriteType.ShipDestroyed, new boolean[16][13]);
-            spriteMap.put(SpriteType.ShipDiagonalDestroyed, new boolean[15][15]);
-            spriteMap.put(SpriteType.Bullet, new boolean[2][4]);
-            spriteMap.put(SpriteType.BulletDiagonal, new boolean[4][4]);
-            spriteMap.put(SpriteType.ExperienceA, new boolean[7][7]);
-            spriteMap.put(SpriteType.ExperienceB, new boolean[7][7]);
-            spriteMap.put(SpriteType.EnemyBullet, new boolean[3][5]);
-            spriteMap.put(SpriteType.EnemyShipA1, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipA2, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipB1, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipB2, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipC1, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipC2, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipSpecial, new boolean[16][7]);
-            spriteMap.put(SpriteType.Explosion, new boolean[13][7]);
+            spriteMap.put(SpriteType.Ship, new boolean[2][13][13]);
+            spriteMap.put(SpriteType.ShipDiagonal, new boolean[1][13][13]);
+            spriteMap.put(SpriteType.ShipDestroyed, new boolean[1][16][13]);
+            spriteMap.put(SpriteType.ShipDiagonalDestroyed, new boolean[1][15][15]);
+            spriteMap.put(SpriteType.Bullet, new boolean[1][2][4]);
+            spriteMap.put(SpriteType.BulletDiagonal, new boolean[1][4][4]);
+            spriteMap.put(SpriteType.ExperienceA, new boolean[1][7][7]);
+            spriteMap.put(SpriteType.ExperienceB, new boolean[1][7][7]);
+            spriteMap.put(SpriteType.EnemyBullet, new boolean[1][3][5]);
+            spriteMap.put(SpriteType.EnemyShipA1, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipA2, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipB1, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipB2, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipC1, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipC2, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipSpecial, new boolean[1][16][7]);
+            spriteMap.put(SpriteType.Explosion, new boolean[1][13][7]);
             // 공속 증가 아이템 스프라이트
-            spriteMap.put(SpriteType.AttackSpeedUpItem, new boolean[10][10]);
+            spriteMap.put(SpriteType.AttackSpeedUpItem, new boolean[1][10][10]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
@@ -199,55 +199,68 @@ public final class DrawManager {
      */
     public void drawEntity(final Entity entity, final int positionX,
         final int positionY) {
-        boolean[][] image = spriteMap.get(entity.getSpriteType());
+        boolean[][][] image = spriteMap.get(entity.getSpriteType());
 
-        backBufferGraphics.setColor(entity.getColor());
+//        backBufferGraphics.setColor(entity.getColor());
         Entity.Direction direction = entity.getDirection();
 
+        // TODO: Ship 이외의 스프라이트들 깨짐 해결
         switch (direction) {
             case UP:
             case UP_LEFT:
-                for (int i = 0; i < image.length; i++) {
-                    for (int j = 0; j < image[i].length; j++) {
-                        if (image[i][j]) {
-                            backBufferGraphics.drawRect(positionX + i * 2, positionY
-                                + j * 2, 1, 1);
+                for (int layerNum = 0; layerNum < image.length; layerNum++) {
+                    backBufferGraphics.setColor(entity.getColor()[layerNum]);
+                    for (int row = 0; row < image[layerNum].length; row++) {
+                        for (int column = 0; column < image[layerNum][row].length; column++) {
+                            if (image[layerNum][row][column]) {
+                                backBufferGraphics.drawRect(positionX + row * 2, positionY
+                                    + column * 2, 1, 1);
+                            }
                         }
                     }
                 }
                 break;
             case DOWN:
             case DOWN_RIGHT:
-                for (int i = image.length - 1; i >= 0; i--) {
-                    for (int j = image[i].length - 1; j >= 0; j--) {
-                        if (image[image.length - 1 - i][image[i].length - 1 - j]) {
-                            backBufferGraphics.drawRect(positionX + i * 2, positionY
-                                + j * 2, 1, 1);
+                for (int layerNum = 0; layerNum < image.length; layerNum++) {
+                    backBufferGraphics.setColor(entity.getColor()[layerNum]);
+                    for (int row = image[layerNum].length - 1; row >= 0; row--) {
+                        for (int column = image[layerNum][row].length - 1; column >= 0; column--) {
+                            if (image[layerNum][image[layerNum].length - 1 - row][image[layerNum][row].length - 1 - column]) {
+                                backBufferGraphics.drawRect(positionX + row * 2, positionY
+                                    + column * 2, 1, 1);
+                            }
                         }
                     }
                 }
                 break;
             case LEFT:
             case DOWN_LEFT:
-                for (int i = 0; i < image.length; i++) {
-                    for (int j = 0; j < image[i].length; j++) {
-                        if (image[i][j]) {
-                            backBufferGraphics.drawRect(positionX + j * 2, positionY
-                                + (image.length - 1 - i) * 2, 1, 1);
+                for (int layerNum = 0; layerNum < image.length; layerNum++) {
+                    backBufferGraphics.setColor(entity.getColor()[layerNum]);
+                    for (int row = 0; row < image[layerNum].length; row++) {
+                        for (int column = 0; column < image[layerNum][row].length; column++) {
+                            if (image[layerNum][row][column]) {
+                                backBufferGraphics.drawRect(positionX + column * 2, positionY
+                                    + (image[layerNum].length - 1 - row) * 2, 1, 1);
+                            }
                         }
                     }
                 }
                 break;
             case RIGHT:
             case UP_RIGHT:
-                for (int i = 0; i < image.length; i++) {
-                    for (int j = 0; j < image[i].length; j++) {
-                        if (image[i][j]) {
-                            backBufferGraphics.drawRect(
-                                positionX + (image[i].length - 1 - j) * 2,
-                                positionY + i * 2,
-                                1, 1
-                            );
+                for (int layerNum = 0; layerNum < image.length; layerNum++) {
+                    backBufferGraphics.setColor(entity.getColor()[layerNum]);
+                    for (int row = 0; row < image[layerNum].length; row++) {
+                        for (int column = 0; column < image[layerNum][row].length; column++) {
+                            if (image[layerNum][row][column]) {
+                                backBufferGraphics.drawRect(
+                                    positionX + (image[layerNum][row].length - 1 - column) * 2,
+                                    positionY + row * 2,
+                                    1, 1
+                                );
+                            }
                         }
                     }
                 }
@@ -734,14 +747,16 @@ public final class DrawManager {
 
     // 아이템의 스프라이트를 받아와 스케일 업해서 그리는 메소드
     public void drawBigItem(final Item item, final int position_X, final int position_Y) {
-        boolean[][] image = spriteMap.get(item.getSpriteType());
+        boolean[][][] image = spriteMap.get(item.getSpriteType());
 
         backBufferGraphics.setColor(item.getColor());
-        for (int i = 0; i < image.length; i++) {
-            for (int j = 0; j < image[i].length; j++) {
-                if (image[i][j]) {
-                    backBufferGraphics.drawRect(position_X + i * 6, position_Y
-                        + j * 6, 6, 6);
+        for (boolean [][] layer: image) {
+            for (int i = 0; i < layer.length; i++) {
+                for (int j = 0; j < layer[i].length; j++) {
+                    if (layer[i][j]) {
+                        backBufferGraphics.drawRect(position_X + i * 6, position_Y
+                            + j * 6, 6, 6);
+                    }
                 }
             }
         }
