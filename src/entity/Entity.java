@@ -20,7 +20,7 @@ public class Entity {
     /** Height of the entity. */
     protected int height;
     /** Color of the entity. */
-    private Color color;
+    private Color[] color;
     /** Sprite type assigned to the entity. */
     protected SpriteType spriteType;
     /** 엔티티 스프라이트의 방향 (기본 위) */
@@ -41,12 +41,59 @@ public class Entity {
         this.positionY = positionY;
         this.width = width;
         this.height = height;
+        this.color = new Color[] { color };
+        this.direction = Entity.Direction.UP;
+    }
+
+    /**
+     * Constructor, establishes the entity's generic properties.
+     *
+     * @param positionX Initial position of the entity in the X axis.
+     * @param positionY Initial position of the entity in the Y axis.
+     * @param width     Width of the entity.
+     * @param height    Height of the entity.
+     * @param color     Color of the entity.
+     */
+    public Entity(final int positionX, final int positionY, final int width,
+        final int height, final Color[] color) {
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.width = width;
+        this.height = height;
         this.color = color;
         this.direction = Entity.Direction.UP;
     }
 
+    /**
+     * Constructor, establishes the entity's generic properties.
+     *
+     * @param positionX Initial position of the entity in the X axis.
+     * @param positionY Initial position of the entity in the Y axis.
+     * @param width     Width of the entity.
+     * @param height    Height of the entity.
+     * @param color     Color of the entity.
+     */
     public Entity(final int positionX, final int positionY, final int width,
         final int height, final Color color, final Direction direction) {
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.width = width;
+        this.height = height;
+        this.color = new Color[] { color };
+        this.direction = direction;
+    }
+
+    /**
+     * Constructor, establishes the entity's generic properties.
+     *
+     * @param positionX Initial position of the entity in the X axis.
+     * @param positionY Initial position of the entity in the Y axis.
+     * @param width     Width of the entity.
+     * @param height    Height of the entity.
+     * @param color     Color of the entity.
+     */
+    public Entity(final int positionX, final int positionY, final int width,
+        final int height, final Color[] color, final Direction direction) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.width = width;
@@ -135,9 +182,11 @@ public class Entity {
      *
      * @return Color of the entity, used when drawing it.
      */
-    public final Color getColor() {
+    public final Color[] getColor() {
         return color;
     }
+
+    public final void setColor(Color[] color) { this.color = color; }
 
     /**
      * Getter for the X axis position of the entity.
