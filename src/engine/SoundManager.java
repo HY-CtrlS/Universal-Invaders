@@ -253,6 +253,20 @@ public class SoundManager {
     }
 
     /**
+     * 경험치 획득 사운드를 재생합니다.
+     */
+    public void playExpCollectSound() {
+        playSoundEffect("res/sounds/exp_collect.wav");
+    }
+
+    /**
+     * 레벨 업 사운드를 재생합니다.
+     */
+    public void playLevelUpSound() {
+        playSoundEffect("res/sounds/level_up.wav");
+    }
+
+    /**
      * 배경음악이 재생 중인지 확인합니다.
      *
      * @return 배경음악이 재생 중이면 true, 아니면 false

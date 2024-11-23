@@ -42,6 +42,7 @@ public class EnemyShip extends Entity {
     private double remainingMovementY = 0;
     // 적을 화면에서 없에도 되는지에 대한 쿨다운
     private Cooldown cleanUpCooldown;
+
     /**
      * Constructor, establishes the ship's properties.
      *
@@ -155,6 +156,9 @@ public class EnemyShip extends Entity {
                     break;
             }
         }
+        float hpPercentage = (float) this.hp / this.level;
+        int nonRedHue = (int) (hpPercentage * 255);
+        this.setColor(new Color[] { new Color(255, nonRedHue, nonRedHue) });
     }
 
     // 피해 입은 만큼 hp 감소시키고 0 이하가 되면 파괴.
@@ -177,7 +181,10 @@ public class EnemyShip extends Entity {
     }
 
     // 적 함선이 부셔지고 나서 최소 시간이 지났는지에 대한 메소드
-    public boolean isFinishedCleanCooldown() {return cleanUpCooldown.checkFinished();}
+    public boolean isFinishedCleanCooldown() {
+        return cleanUpCooldown.checkFinished();
+    }
+
     /**
      * Checks if the ship has been destroyed.
      *

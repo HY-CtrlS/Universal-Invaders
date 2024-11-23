@@ -63,7 +63,7 @@ public final class FileManager {
      *                  image.
      * @throws IOException In case of loading problems.
      */
-    public void loadSprite(final Map<SpriteType, boolean[][]> spriteMap)
+    public void loadSprite(final Map<SpriteType, boolean[][][]> spriteMap)
         throws IOException {
         InputStream inputStream = null;
 
@@ -73,19 +73,17 @@ public final class FileManager {
             char c;
 
             // Sprite loading.
-            for (Map.Entry<SpriteType, boolean[][]> sprite : spriteMap
+            for (Map.Entry<SpriteType, boolean[][][]> sprite : spriteMap
                 .entrySet()) {
                 for (int i = 0; i < sprite.getValue().length; i++) {
                     for (int j = 0; j < sprite.getValue()[i].length; j++) {
-                        do {
-                            c = (char) inputStream.read();
-                        }
-                        while (c != '0' && c != '1');
+                        for (int k = 0; k < sprite.getValue()[i][j].length; k++) {
+                            do {
+                                c = (char) inputStream.read();
+                            }
+                            while (c != '0' && c != '1');
 
-                        if (c == '1') {
-                            sprite.getValue()[i][j] = true;
-                        } else {
-                            sprite.getValue()[i][j] = false;
+                            sprite.getValue()[i][j][k] = c == '1';
                         }
                     }
                 }
@@ -283,13 +281,11 @@ public final class FileManager {
             int shootingInterval = Integer.parseInt(bufferedReader.readLine());
             int bulletSpeed = Integer.parseInt(bufferedReader.readLine());
             int speed = Integer.parseInt(bufferedReader.readLine());
-
-           
             int baseDamage = Integer.parseInt(bufferedReader.readLine());
+            int maxHp = Integer.parseInt(bufferedReader.readLine());
+            double regenHp = Double.parseDouble(bufferedReader.readLine());
 
-            int maxLives = Integer.parseInt(bufferedReader.readLine());
-
-            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxLives);
+            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxHp, regenHp);
 
         } finally {
             if (inputStream != null) {
@@ -326,9 +322,10 @@ public final class FileManager {
             int bulletSpeed = Integer.parseInt(bufferedReader.readLine());
             int speed = Integer.parseInt(bufferedReader.readLine());
             int baseDamage = Integer.parseInt(bufferedReader.readLine());
-            int maxLives = Integer.parseInt(bufferedReader.readLine());
+            int maxHp = Integer.parseInt(bufferedReader.readLine());
+            double regenHP = Double.parseDouble((bufferedReader.readLine()));
 
-            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxLives);
+            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxHp, regenHP);
 
         } catch (FileNotFoundException e) {
             // loads default if there's no user scores.
@@ -376,7 +373,9 @@ public final class FileManager {
             bufferedWriter.newLine();
             bufferedWriter.write(String.valueOf(shipStatus.getBaseDamage()));
             bufferedWriter.newLine();
-            bufferedWriter.write(String.valueOf(shipStatus.getHp()));
+            bufferedWriter.write(String.valueOf(shipStatus.getMaxHp()));
+            bufferedWriter.newLine();
+            bufferedWriter.write(String.valueOf(shipStatus.getRegen_hp()));
 
         } finally {
             if (bufferedWriter != null) {

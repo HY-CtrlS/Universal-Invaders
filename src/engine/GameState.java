@@ -62,6 +62,10 @@ public class GameState {
         return hp;
     }
 
+    public void setHP(final int hp) {
+        this.hp = hp;
+    }
+
     /**
      * @return the bulletsShot
      */

@@ -21,6 +21,8 @@ public class ItemSelectedScreen extends Screen {
     private int selectedItem = 0;
     // 현재 게임 정보를 얻어오기 위한 게임 상태 변수
     private GameState gameState;
+    // 선택한 아이템에 대한 정보
+    private int item_num;
 
     // 생성자 - 아이템셋, width, height, fps 받아옴
     public ItemSelectedScreen(final GameState gameState, List<Item> items, final int width,
@@ -40,7 +42,7 @@ public class ItemSelectedScreen extends Screen {
     public final int run() {
         super.run();
 
-        return 0;
+        return item_num;
     }
     // 화면 업데이트 메소드
     @Override
@@ -62,7 +64,7 @@ public class ItemSelectedScreen extends Screen {
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                 // 해당 아이템 효과 적용
-                items.get(selectedItem).activateItem();
+                item_num = items.get(selectedItem).activateItem();
                 // 화면 종료
                 this.isRunning = false;
             }
