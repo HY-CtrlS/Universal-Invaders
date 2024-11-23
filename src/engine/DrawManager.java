@@ -1,6 +1,7 @@
 package engine;
 
 import Item.Item;
+import entity.Ship;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -988,5 +989,66 @@ public final class DrawManager {
         // 경험치 텍스트 색상
         backBufferGraphics.setColor(Color.WHITE);
         backBufferGraphics.drawString(expText, textX, textY);
+    }
+
+    /**
+     * shipSelectScreen의 제목을 화면 상단에 위치시키는 메소드
+     *
+     * @param screen 화면 객체를 받는 매개변수
+     */
+    public void drawShipSelectTitle(final Screen screen) {
+        String titleString = "Invaders";
+        String instructionsString =
+            "select with w+s / arrows, confirm with space";
+
+        backBufferGraphics.setColor(Color.GRAY);
+        drawCenteredRegularString(screen, instructionsString,
+            screen.getHeight() / 2);
+
+        backBufferGraphics.setColor(Color.GREEN);
+        drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
+    }
+
+    /**
+     * shipSelectScreen의 메뉴를 표시하는 메소드
+     *
+     * @param screen 화면 객체를 받는 매개변수
+     * @param option 어떤 메뉴를 선택했는지 구분하는 매개변수
+     */
+    public void drawShipSelectMenu(final Screen screen, final int option, final int shipID) {
+        String playString = "Play";
+        String highScoresString = "Select ship";
+        String[] shipColors = {"GREEN", "BLUE", "YELLOW", "RED"};
+
+        if (option == 1) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, playString, screen.getHeight() / 3 * 2);
+
+        if (option == 0) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, highScoresString,
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+        switch (shipColors[shipID - 1]) {
+            case "GREEN":
+                backBufferGraphics.setColor(Color.GREEN);
+                break;
+            case "BLUE":
+                backBufferGraphics.setColor(Color.BLUE);
+                break;
+            case "YELLOW":
+                backBufferGraphics.setColor(Color.YELLOW);
+                break;
+            case "RED":
+                backBufferGraphics.setColor(Color.RED);
+                break;
+        }
+        drawCenteredRegularString(screen, shipColors[shipID - 1],
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
     }
 }
