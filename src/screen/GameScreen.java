@@ -81,8 +81,7 @@ public class GameScreen extends Screen {
     /** 함선이 완전히 파괴되었는지 여부 */
     private boolean isDestroyed = false;
 
-    /** Moment the game ends. */
-    private long gameEndTime;
+
     /** Total survival time in milliseconds. */
     private int survivalTime = 0;
 
@@ -317,9 +316,6 @@ public class GameScreen extends Screen {
 
         if (this.levelFinished && this.screenFinishedCooldown.checkFinished()) {
             this.isRunning = false;
-
-            // 게임 종료 시간 기록
-            this.gameEndTime = System.currentTimeMillis();
 
 
             // 생존 시간 계산
