@@ -202,10 +202,20 @@ public class Entity {
         return this.height;
     }
 
+    /**
+     * 엔티티의 방향을 얻는 Getter. Ship의 경우 에임의 방향, Bullet의 경우 발사 방향.
+     *
+     * @return 엔티티의 방향.
+     */
     public Direction getDirection() {
         return this.direction;
     }
 
+    /**
+     * 엔티티의 방향을 설정하는 Setter. Ship의 경우 에임의 방향, Bullet의 경우 발사 방향.
+     *
+     * @param direction 설정할 엔티티의 방향.
+     */
     public void setDirection(final Direction direction) {
         this.direction = direction;
     }

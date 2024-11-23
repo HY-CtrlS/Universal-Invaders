@@ -7,15 +7,16 @@ public class ShipStatus {
     private int speed;
     private int baseDamage;
     private int hp;
+    private double regen_hp;
 
 
-    public ShipStatus(int shootingInterval, int bulletSpeed, int speed, int baseDamage,
-        int maxLives) {
+    public ShipStatus(int shootingInterval, int bulletSpeed, int speed, int baseDamage, int hp, double regen_hp) {
         this.shootingInterval = shootingInterval;
         this.bulletSpeed = bulletSpeed;
         this.speed = speed;
         this.baseDamage = baseDamage;
-        this.hp = maxLives;
+        this.hp = hp;
+        this.regen_hp = regen_hp;
     }
 
     public int getShootingInterval() {
@@ -42,19 +43,17 @@ public class ShipStatus {
         this.speed = speed;
     }
 
-    public int getHp() {
-        return hp;
+    public int getMaxHp() {return hp;}
+
+    public void setMaxHp(int hp) {
+        this.hp = hp;
     }
 
-    public void setHp(int maxLives) {
-        this.hp = maxLives;
-    }
+    public int getBaseDamage() {return baseDamage;}
 
-    public int getBaseDamage() {
-        return baseDamage;
-    }
+    public void setBaseDamage(int baseDamage) {this.baseDamage = baseDamage;}
 
-    public void setBaseDamage(int baseDamage) {
-        this.baseDamage = baseDamage;
-    }
+    public double getRegen_hp() {return regen_hp;}
+
+    public void setRegen_hp(double regenHp) {this.regen_hp = regenHp;}
 }

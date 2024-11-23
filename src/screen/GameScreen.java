@@ -1,5 +1,9 @@
 package screen;
 
+import engine.DrawManager;
+import engine.ShipStatus;
+import engine.StatusManager;
+import entity.Entity.Direction;
 import entity.Ship;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -24,8 +28,8 @@ public class GameScreen extends Screen {
     private static final int INPUT_DELAY = 6000;
     /** Bonus score for each life remaining at the end of the level. */
     private static final int LIFE_SCORE = 100;
-    /** 함선이 체력을 자동으로 회복하는 쿨타임. 기본값은 5000 밀리세컨드로 설정됨. */
-    private Cooldown hpRegenCooldown;
+    /** 경험치 바의 높이 */
+    public static final int EXPERIENCE_BAR_HEIGHT = 40;
     /** Minimum time between bonus ship's appearances. */
     private static final int BONUS_SHIP_INTERVAL = 20000;
     /** Maximum variance in the time between bonus ship's appearances. */
@@ -36,6 +40,8 @@ public class GameScreen extends Screen {
     private static final int SCREEN_CHANGE_INTERVAL = 1500;
     /** Height of the interface separation line. */
     private static final int SEPARATION_LINE_HEIGHT = 40;
+    /** 아이템 선택 화면으로 넘어가는 경험치 기준 양 */
+    private static final int EXPERIENCE_THRESHOLD = 100;
 
     /** Current game difficulty settings. */
     private GameSettings gameSettings;
@@ -57,12 +63,18 @@ public class GameScreen extends Screen {
     private Cooldown screenFinishedCooldown;
     /** Set of all bullets fired by on screen ships. */
     private Set<Bullet> bullets;
+    /** 화면에 존재하는 경험치들의 집합 */
+    private Set<Experience> experiences;
     /** Current score. */
     private int score;
     /** 플레이어의 최대 Hp. 기본값은 100. */
     private int maxHp = Core.getStatusManager().getHp();
     /** Player hp left. */
     private int hp;
+    /** HP 자동 재생되는 누적량 체크**/
+    private double remainingRegenHp;
+    /** HP 리젠되는 쿨타임 생성 **/
+    private Cooldown regenHpCooldown;
     /** Total bullets shot by the player. */
     private int bulletsShot;
     /** Total ships destroyed by the player. */
@@ -81,6 +93,12 @@ public class GameScreen extends Screen {
     private Cooldown clockCooldown;
     /** 함선이 완전히 파괴되었는지 여부 */
     private boolean isDestroyed = false;
+    /** 현재 함선의 status **/
+    private StatusManager status;
+    /** 현재까지 획득한 경험치 */
+    private int currentExperience = 0;
+    /** 플레이어의 현재 레벨 */
+    private int playerLevel = 1;
 
     private int shipID;
 
@@ -115,6 +133,9 @@ public class GameScreen extends Screen {
 
         Core.getSoundManager().playInGameBGM();
         this.returnCode = 1;
+
+        // 현재 게임에 사용되는 Ship의 status 정보
+        this.status = Core.getStatusManager();
     }
 
     /**
@@ -136,6 +157,7 @@ public class GameScreen extends Screen {
             .getCooldown(BONUS_SHIP_EXPLOSION);
         this.screenFinishedCooldown = Core.getCooldown(SCREEN_CHANGE_INTERVAL);
         this.bullets = new HashSet<Bullet>();
+        this.experiences = new HashSet<Experience>(); // 경험치 집합 초기화
 
         // Special input delay / countdown.
         this.gameStartTime = System.currentTimeMillis();
@@ -148,8 +170,9 @@ public class GameScreen extends Screen {
         this.clockCooldown = Core.getCooldown(1000);
         this.clockCooldown.reset();
 
-        this.hpRegenCooldown = Core.getCooldown(5000);
-        this.hpRegenCooldown.reset();
+        // HP 리젠 쿨타임 생성 및 시작
+        this.regenHpCooldown = Core.getCooldown(1000);
+        this.regenHpCooldown.reset();
     }
 
     /**
@@ -175,20 +198,21 @@ public class GameScreen extends Screen {
         // level 이 처음 시작될 때 clockCooldown, hpRegenCooldown reset
         if (this.inputDelay.checkFinished() && !this.levelStarted) {
             this.clockCooldown.reset();
-            this.hpRegenCooldown.reset();
             this.levelStarted = true;
         }
 
         if (this.inputDelay.checkFinished() && !this.levelFinished) {
 
-            boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT)
-                || inputManager.isKeyDown(KeyEvent.VK_D);
-            boolean moveLeft = inputManager.isKeyDown(KeyEvent.VK_LEFT)
-                || inputManager.isKeyDown(KeyEvent.VK_A);
-            boolean moveUp = inputManager.isKeyDown(KeyEvent.VK_UP)
-                || inputManager.isKeyDown(KeyEvent.VK_W);
-            boolean moveDown = inputManager.isKeyDown(KeyEvent.VK_DOWN)
-                || inputManager.isKeyDown(KeyEvent.VK_S);
+            // WASD - 함선 이동
+            boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_D);
+            boolean moveLeft = inputManager.isKeyDown(KeyEvent.VK_A);
+            boolean moveUp = inputManager.isKeyDown(KeyEvent.VK_W);
+            boolean moveDown = inputManager.isKeyDown(KeyEvent.VK_S);
+            // 방향키 - 에임
+            boolean aimRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT);
+            boolean aimLeft = inputManager.isKeyDown(KeyEvent.VK_LEFT);
+            boolean aimUp = inputManager.isKeyDown(KeyEvent.VK_UP);
+            boolean aimDown = inputManager.isKeyDown(KeyEvent.VK_DOWN);
 
             boolean isRightBorder = this.ship.getPositionX()
                 + this.ship.getWidth() + this.ship.getSpeed() > this.width - 1;
@@ -197,7 +221,8 @@ public class GameScreen extends Screen {
             boolean isTopBorder = this.ship.getPositionY()
                 - this.ship.getSpeed() < 1 + SEPARATION_LINE_HEIGHT;
             boolean isBottomBorder = this.ship.getPositionY()
-                + this.ship.getHeight() + this.ship.getSpeed() > this.height - 1;
+                + this.ship.getHeight() + this.ship.getSpeed()
+                > this.height - 1 - EXPERIENCE_BAR_HEIGHT;
 
             if (moveUp && moveRight && !isTopBorder && !isRightBorder) {
                 this.ship.moveUpRight();
@@ -216,8 +241,27 @@ public class GameScreen extends Screen {
             } else if (moveDown && !isBottomBorder) {
                 this.ship.moveDown();
             }
-            if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-                if (this.ship.getShipID() == 3) {
+
+            if (aimUp && aimRight) {
+                this.ship.setDirection(Direction.UP_RIGHT);
+            } else if (aimUp && aimLeft) {
+                this.ship.setDirection(Direction.UP_LEFT);
+            } else if (aimDown && aimRight) {
+                this.ship.setDirection(Direction.DOWN_RIGHT);
+            } else if (aimDown && aimLeft) {
+                this.ship.setDirection(Direction.DOWN_LEFT);
+            } else if (aimUp) {
+                this.ship.setDirection(Direction.UP);
+            } else if (aimDown) {
+                this.ship.setDirection(Direction.DOWN);
+            } else if (aimRight) {
+                this.ship.setDirection(Direction.RIGHT);
+            } else if (aimLeft) {
+                this.ship.setDirection(Direction.LEFT);
+            }
+
+            if (aimUp || aimDown || aimRight || aimLeft) {
+                if (this.shipID == 3) {
                     this.ship.startBurstShooting();
                 } else {
                     if (this.ship.shoot(this.bullets)) {
@@ -230,6 +274,10 @@ public class GameScreen extends Screen {
                 if (this.ship.shoot(this.bullets)) {
                     this.bulletsShot++;
                 }
+            }
+
+            if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
+                // 추후 궁극기 추가
             }
 
             // esc키를 눌렀을 때 일시정지 화면으로 전환
@@ -268,11 +316,13 @@ public class GameScreen extends Screen {
             //		this.logger.info("The special ship has escaped");
             //}
 
-            // 5초마다 체력 1씩 회복
-            hpRegen();
+
+            // hp 자동 재생 기능 실행
+            hpRegen(status.getRegenHp());
 
             this.ship.update();
             this.enemyShipSet.update();
+            ExperiencePool.update(this.experiences);
             // 1초마다 levelTime 1씩 증가
             if (this.clockCooldown.checkFinished()) {
                 this.levelTime += 1;
@@ -316,17 +366,27 @@ public class GameScreen extends Screen {
                 this.enemyShipSpecial.getPositionY());
         }
 
-        enemyShipSet.draw();
-
         for (Bullet bullet : this.bullets) {
             drawManager.drawEntity(bullet, bullet.getPositionX(),
                 bullet.getPositionY());
         }
 
+        // 경험치 그리기
+        for (Experience experience : this.experiences) {
+            drawManager.drawEntity(experience, experience.getPositionX(),
+                experience.getPositionY());
+        }
+
+        enemyShipSet.draw();
+
         // Interface.
         drawManager.drawScore(this, this.score);
         drawManager.drawLives(this, this.hp);
         drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
+        drawManager.drawLevel(this, this.playerLevel); // 현재 레벨 그리기
+        drawManager.drawHorizontalLine(this, this.height - EXPERIENCE_BAR_HEIGHT - 1);
+        drawManager.drawExperienceBar(this, this.currentExperience,
+            EXPERIENCE_THRESHOLD, EXPERIENCE_BAR_HEIGHT); // 경험치 바 그리기
 
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {
@@ -396,6 +456,13 @@ public class GameScreen extends Screen {
                         }
                         Core.getSoundManager().playBulletHitSound();
 
+                        // 적 함선이 파괴되었을 때 경험치 생성
+                        if (enemyShip.isDestroyed()) {
+                            this.experiences.add(
+                                ExperiencePool.getExperience(enemyShip.getPositionX() + 3 * 2,
+                                    // enemyShip의 너비는 13, 경험치의 너비는 7이므로 3을 더해줌
+                                    enemyShip.getPositionY(), enemyShip.getPointValue()));
+                        }
 
                     }
                 }
@@ -410,8 +477,6 @@ public class GameScreen extends Screen {
                 }
 
             }
-
-
         }
         this.bullets.removeAll(recyclable);
         BulletPool.recycle(recyclable);
@@ -431,6 +496,30 @@ public class GameScreen extends Screen {
                 }
             }
         }
+
+        // 아군 함선과 경험치 객체의 충돌 처리
+        Set<Experience> collectedExperiences = new HashSet<>();
+        for (Experience experience : this.experiences) {
+            if (checkCollision(this.ship, experience)) {
+                collectedExperiences.add(experience);
+
+                this.currentExperience += experience.getValue(); // 획득한 경험치 누적
+                this.logger.info("획득한 경험치: " + experience.getValue() + " EXP");
+                Core.getSoundManager().playExpCollectSound();
+
+                // 임계점 도달 시 레벨 증가
+                while (currentExperience >= EXPERIENCE_THRESHOLD) {
+                    playerLevel++;
+                    this.logger.info("플레이어 레벨 업! 현재 레벨: " + playerLevel);
+                    Core.getSoundManager().playLevelUpSound();
+                    currentExperience -= EXPERIENCE_THRESHOLD;
+                }
+            }
+        }
+
+        // 충돌한 경험치 제거 및 반환
+        this.experiences.removeAll(collectedExperiences);
+        ExperiencePool.recycle(collectedExperiences);
     }
 
 
@@ -457,12 +546,18 @@ public class GameScreen extends Screen {
         return distanceX < maxDistanceX && distanceY < maxDistanceY;
     }
 
-    /** hpRegenCooldown이 끝날 때마다 자동으로 체력을 회복함. */
-    private void hpRegen() {
-        if (this.hpRegenCooldown.checkFinished() && this.hp < this.maxHp) {
-            this.hp++;
-            this.hpRegenCooldown.reset();
+    /** hpRegenCooldown이 끝날 때마다 자동으로 체력을 회복함.*/
+    private void hpRegen(final double regenHp) {
+        // 체력이 최대체력보다 낮을 경우에만 regen
+        if (this.regenHpCooldown.checkFinished() && this.hp < maxHp) {
+            this.remainingRegenHp += regenHp;
+            // 1 이상으로 쌓이면 hp 1만큼을 int_regenHp로 이동
+            int int_regenHp = (int) remainingRegenHp;
+            remainingRegenHp -= int_regenHp;
 
+            // HP 리젠율이 최대체력을 초과하는 경우, 최대체력을 초과해서 회복되지 않도록 설정
+            this.hp = (this.maxHp - this.hp < int_regenHp) ? maxHp : this.hp + int_regenHp;
+            this.regenHpCooldown.reset();
         }
     }
 

@@ -21,7 +21,7 @@ public final class Core {
     /** Width of current screen. */
     private static final int WIDTH = 720;
     /** Height of current screen. */
-    private static final int HEIGHT = WIDTH + 40;
+    private static final int HEIGHT = WIDTH + 80;
     /** Max fps of current screen. */
     private static final int FPS = 60;
 
@@ -67,8 +67,12 @@ public final class Core {
     private static ConsoleHandler consoleHandler;
     // 아이템 리스트 객체 생성
     private static ItemList items = new ItemList();
+    // 아이템 리스트 참조하기 위한 배열
+    private static List<Item> itemList;
     /** quit로 라운드라 종료되었는지 확인하는 변수 */
     private static int isQuit;
+    /** 아이템 선택화면에서 선택된 아이템 판단**/
+    private static int selectedItem;
 
     /**
      * Test implementation.
@@ -112,8 +116,7 @@ public final class Core {
 
         int returnCode = 1;
         do {
-            gameState = new GameState(1, 0, getStatusManager().getHp(), 0, 0);
-
+            gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0);
             switch (returnCode) {
                 case 1:
                     // Main menu.
@@ -122,11 +125,15 @@ public final class Core {
                         + " title screen at " + FPS + " fps.");
                     returnCode = frame.setScreen(currentScreen);
                     LOGGER.info("Closing title screen.");
+                    // 게임 진입 전에 gameState 현재 체력을 다시 최대 체력으로 설정
                     break;
                 case 2:
                     // 게임 시작 시 StatusManager의 status 객체를 res/status 의 값으로 초기화
                     getStatusManager().resetDefaultStatus();
                     // 게임 시작 시 초기 아이템 리스트 생성
+                    itemList = items.initializedItems();
+                    // 게임 시작 시 함선의 체력을 기본으로 초기화
+                    gameState.setHP(getStatusManager().getMaxHp());
                     items.initializedItems();
                     // 게임 시작 전 함선 선택
                     currentScreen = new shipSelectScreen(width, height, FPS);
@@ -136,10 +143,12 @@ public final class Core {
                     LOGGER.info("Closing ship select screen.");
                     // Game & score.
                     do {
+                        // 선택한 아이템 없는 것으로 초기화
+                        selectedItem = -1;
                         // One extra live every few levels.
                         boolean bonusLife = gameState.getLevel()
                             % EXTRA_LIFE_FREQUENCY == 0
-                            && gameState.getHp() < getStatusManager().getHp();
+                            && gameState.getHp() < getStatusManager().getMaxHp();
 
                         currentScreen = new GameScreen(gameState,
                             gameSettings.get(gameState.getLevel() - 1),
@@ -164,8 +173,15 @@ public final class Core {
                                     + FPS + " fps.");
                             currentScreen = new ItemSelectedScreen(gameState,
                                 items.getSelectedItemList(), width, height, FPS);
-                            frame.setScreen(currentScreen);
+                            selectedItem = frame.setScreen(currentScreen);
                             LOGGER.info("Closing Item Selecting Screen.");
+                        }
+                        // 최대 체력 증가 아이템을 선택한 경우, 현재 체력 또한 증가된 체력만큼 올려줌.
+                        if (selectedItem == 1) {
+                            // 가지고 있던 체력의 비율 계산
+                            double portionHp = (double) gameState.getHp() / (getStatusManager().getMaxHp() - itemList.get(1).getChangedValue());
+                            // 늘어난 체력에 맞게 현재 체력의 비율 조정
+                            gameState.setHP((int) (getStatusManager().getMaxHp() * portionHp));
                         }
                         gameState = new GameState(gameState.getLevel() + 1,
                             gameState.getScore(),
@@ -189,6 +205,7 @@ public final class Core {
                     currentScreen = new ScoreScreen(width, height, FPS, gameState);
                     returnCode = frame.setScreen(currentScreen);
                     LOGGER.info("Closing score screen.");
+                    break;
                 case 3:
                     // High scores.
                     currentScreen = new HighScoreScreen(width, height, FPS);
