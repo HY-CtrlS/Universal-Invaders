@@ -24,7 +24,7 @@ public class Ship extends Entity {
     /** 함선의 기본 데미지 */
     protected int baseDamage;
     /** 함선의 에임 뱡향 */
-    protected static Direction direction;
+    protected Direction direction;
     /** 축 방향 속도의 소수 부분을 저장 및 누적 */
     protected double remainingMovement = 0;
     /** 축 방향 속도의 정수 부분 (실제 이동량) */
@@ -35,7 +35,7 @@ public class Ship extends Entity {
     protected Cooldown destructionCooldown;
     /** 함선의 ID */
     protected int shipID;
-    /** 점사 여부 확읹 변수 */
+    /** 점사 여부 확인 변수 */
     public boolean isBurstShooting;
 
     /**
@@ -148,7 +148,8 @@ public class Ship extends Entity {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, direction, 1));
+                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, direction,
+                getShipID()));
             return true;
         }
         return false;
@@ -275,9 +276,9 @@ public class Ship extends Entity {
             case 2:
                 return new Ship2(positionX, positionY, Entity.Direction.UP, Color.BLUE, 2);
             case 3:
-                return new Ship3(positionX, positionY, Entity.Direction.UP, Color.RED, 3);
+                return new Ship3(positionX, positionY, Entity.Direction.UP, Color.YELLOW, 3);
             case 4:
-                return new Ship4(positionX, positionY, Entity.Direction.UP, Color.YELLOW, 4);
+                return new Ship4(positionX, positionY, Entity.Direction.UP, Color.RED, 4);
             default:
                 throw new IllegalArgumentException("Invalid shipID: " + shipID);
         }

@@ -1036,25 +1036,4 @@ public final class DrawManager {
         drawCenteredRegularString(screen, shipColors[shipID - 1],
             screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
     }
-
-    public void drawSeletShip(final int positionY, Color color) {
-        boolean[][] image = spriteMap.get(SpriteType.Ship);
-        int positionX = 360 - image.length - image[0].length / 2 - image.length / 4;
-        int spriteWidth = image[0].length * 2;
-        int spriteHeight = image.length * 2;
-
-        backBufferGraphics.setColor(color);
-
-        backBufferGraphics.drawRect(positionX - 15, positionY - 15, spriteWidth + 30,
-            spriteHeight + 30);
-
-        for (int i = 0; i < image.length; i++) {
-            for (int j = 0; j < image[i].length; j++) {
-                if (image[i][j]) {
-                    backBufferGraphics.drawRect(positionX + i * 2, positionY
-                        + j * 2, 1, 1);
-                }
-            }
-        }
-    }
 }

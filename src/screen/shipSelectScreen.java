@@ -93,8 +93,8 @@ public class shipSelectScreen extends Screen {
                 }
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-                if (this.returnCode == 0) {
-                    this.returnCode = 1;
+                if (this.returnCode == 1) {
+                    this.returnCode = 0;
                 } else {
                     this.isRunning = false;
                 }
@@ -155,12 +155,13 @@ public class shipSelectScreen extends Screen {
      * Draws the elements associated with the screen.
      */
     private void draw() {
-        drawManager.initDrawing(this);
+        Entity dummy = Ship.createShipByID(this.shipID, 0, 0);
 
+        drawManager.initDrawing(this);
+        drawManager.drawEntity(dummy, this.width / 2 - (dummy.getWidth() / 2),
+            this.height / 3 * 2 + 115);
         drawManager.drawShipSelectTitle(this);
         drawManager.drawShipSelectMenu(this, this.returnCode, this.shipID);
-        drawManager.drawSeletShip(this.height / 3 * 2 + 115,
-            shipColors[this.shipID - 1]);
         drawManager.completeDrawing(this);
     }
 }
