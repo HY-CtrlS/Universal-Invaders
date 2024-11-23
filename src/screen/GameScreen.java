@@ -342,9 +342,8 @@ public class GameScreen extends Screen {
             draw();
         }
 
-        // 현재 진행된 시간이 라운드에서 정한 시간과 같으면 클리어로 판단 후 라운드 종료
-        if ((levelTime == this.gameSettings.getRoundTime() || this.hp <= 0)
-            && !this.levelFinished) {
+        // 체력이 0 이하로 내려가면 게임 종료
+        if ((this.hp <= 0) && !this.levelFinished) {
             this.levelFinished = true;
             this.screenFinishedCooldown.reset();
         }
@@ -402,7 +401,7 @@ public class GameScreen extends Screen {
         }
 
         // 현재 levelTime 그리기
-        drawManager.drawTime(this, this.gameSettings.getRoundTime() - levelTime);
+        drawManager.drawTime(this, levelTime);
 
         drawManager.completeDrawing(this);
     }
