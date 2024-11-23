@@ -143,7 +143,7 @@ public final class Core {
 
                         currentScreen = new GameScreen(gameState,
                             gameSettings.get(gameState.getLevel() - 1),
-                            bonusLife, width, height, FPS);
+                            bonusLife, width, height, FPS, shipID);
                         LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
                             + " game screen at " + FPS + " fps.");
                         isQuit = frame.setScreen(currentScreen);

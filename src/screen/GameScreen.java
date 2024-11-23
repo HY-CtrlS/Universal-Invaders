@@ -82,6 +82,8 @@ public class GameScreen extends Screen {
     /** 함선이 완전히 파괴되었는지 여부 */
     private boolean isDestroyed = false;
 
+    private int shipID;
+
     /**
      * Constructor, establishes the properties of the screen.
      *
@@ -94,12 +96,12 @@ public class GameScreen extends Screen {
      */
     public GameScreen(final GameState gameState,
         final GameSettings gameSettings, final boolean bonusLife,
-        final int width, final int height, final int fps) {
+        final int width, final int height, final int fps, final int shipID) {
         super(width, height, fps);
 
         this.gameSettings = gameSettings;
         this.bonusLife = bonusLife;
-
+        this.shipID = shipID;
         this.level = gameState.getLevel();
         this.score = gameState.getScore();
 
@@ -121,8 +123,7 @@ public class GameScreen extends Screen {
     public final void initialize() {
         super.initialize();
 
-        this.ship = new Ship3(this.width / 2, this.height / 2, Entity.Direction.UP, Color.YELLOW,
-            3);
+        this.ship = createShipByID(this.shipID, this.width / 2, this.height / 2);
         enemyShipSet = new EnemyShipSet(this.gameSettings, this.level, this.ship);
         enemyShipSet.attach(this);
 
@@ -474,5 +475,20 @@ public class GameScreen extends Screen {
     public final GameState getGameState() {
         return new GameState(this.level, this.score, this.hp,
             this.bulletsShot, this.shipsDestroyed);
+    }
+
+    private Ship createShipByID(int shipID, int positionX, int positionY) {
+        switch (shipID) {
+            case 1:
+                return new Ship(positionX, positionY, Entity.Direction.UP, Color.GREEN, 1);
+            case 2:
+                return new Ship2(positionX, positionY, Entity.Direction.UP, Color.BLUE, 2);
+            case 3:
+                return new Ship3(positionX, positionY, Entity.Direction.UP, Color.RED, 3);
+            case 4:
+                return new Ship4(positionX, positionY, Entity.Direction.UP, Color.YELLOW, 4);
+            default:
+                throw new IllegalArgumentException("Invalid shipID: " + shipID);
+        }
     }
 }
