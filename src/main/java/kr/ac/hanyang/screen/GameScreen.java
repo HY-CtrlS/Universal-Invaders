@@ -342,6 +342,7 @@ public class GameScreen extends Screen {
             this.ship.update();
             if (this.shipID == 2 && this.ship.isUltActivated()) {
                 this.enemyShipSet.noUpdate();
+                // TODO: 얼려진 적 스프라이트로 변경
             } else {
                 this.enemyShipSet.update();
             }
@@ -501,18 +502,23 @@ public class GameScreen extends Screen {
         }
         this.bullets.removeAll(recyclable);
         BulletPool.recycle(recyclable);
-        // 적과 아군 함선의 충돌 체크
-        for (EnemyShip enemyShip : enemis) {
-            if (checkCollision(this.ship, enemyShip)) {
-                if (!this.ship.isDestroyed() && !enemyShip.isDestroyed() && !levelFinished) {
-                    //this.enemyShipSet.damage_Enemy(enemyShip, this.ship.getBaseDamage());
-                    this.ship.destroy();
-                    this.hp = (this.hp - 5 > 0) ? this.hp - 5 : 0;
-                    this.logger.info("Hit on player ship, -5 HP");
-                    Core.getSoundManager().playDamageSound();
-                    if (this.hp <= 0 && !this.isDestroyed) {
-                        Core.getSoundManager().playExplosionSound();
-                        this.isDestroyed = true;
+
+        if (this.shipID == 3 && this.ship.isUltActivated()) {
+            // 아군 Ship은 무적이라 충돌 무시
+        } else {
+            // 적과 아군 함선의 충돌 체크
+            for (EnemyShip enemyShip : enemis) {
+                if (checkCollision(this.ship, enemyShip)) {
+                    if (!this.ship.isDestroyed() && !enemyShip.isDestroyed() && !levelFinished) {
+                        //this.enemyShipSet.damage_Enemy(enemyShip, this.ship.getBaseDamage());
+                        this.ship.destroy();
+                        this.hp = (this.hp - 5 > 0) ? this.hp - 5 : 0;
+                        this.logger.info("Hit on player ship, -5 HP");
+                        Core.getSoundManager().playDamageSound();
+                        if (this.hp <= 0 && !this.isDestroyed) {
+                            Core.getSoundManager().playExplosionSound();
+                            this.isDestroyed = true;
+                        }
                     }
                 }
             }

@@ -1,5 +1,8 @@
 package kr.ac.hanyang.entity;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
 import java.awt.Color;
@@ -69,7 +72,19 @@ public class Ship3 extends Ship {
         }
     }
 
+    /**
+     * 5초간 무적.
+     */
     public final void useUlt() {
-        // 잠시 무적
+        // TODO: 무적 스프라이트로 변경
+        isUltActv = true;
+        ultGauge = 0;
+        // 궁극기 발동 시간을 위한 타이머
+        ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
+        timer.schedule(() -> {
+            isUltActv = false;
+        }, 5, TimeUnit.SECONDS);
+
+        timer.shutdown();
     }
 }
