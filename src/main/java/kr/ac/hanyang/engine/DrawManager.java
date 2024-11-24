@@ -312,7 +312,7 @@ public final class DrawManager {
         backBufferGraphics.setFont(fontRegular);
         backBufferGraphics.setColor(Color.WHITE);
         String scoreString = ultGauge + " / 100 Ult";
-        backBufferGraphics.drawString(scoreString, screen.getWidth() - 30, 25);
+        backBufferGraphics.drawString(scoreString, screen.getWidth() - 250, 25);
     }
 
     /**
