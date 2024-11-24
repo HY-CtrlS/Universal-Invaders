@@ -135,40 +135,31 @@ public final class Core {
                     int shipID = frame.setScreen(currentScreen);
                     LOGGER.info("Closing ship select screen.");
                     // Game & score.
-                    do {
+                    // One extra live every few levels.
+                    boolean bonusLife = gameState.getLevel()
+                        % EXTRA_LIFE_FREQUENCY == 0
+                        && gameState.getHp() < getStatusManager().getMaxHp();
 
-                        // One extra live every few levels.
-                        boolean bonusLife = gameState.getLevel()
-                            % EXTRA_LIFE_FREQUENCY == 0
-                            && gameState.getHp() < getStatusManager().getMaxHp();
+                    currentScreen = new GameScreen(gameState,
+                        gameSettings.get(gameState.getLevel() - 1),
+                        bonusLife, width, height, FPS, shipID);
+                    LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+                        + " game screen at " + FPS + " fps.");
+                    isQuit = frame.setScreen(currentScreen);
+                    LOGGER.info("Closing game screen.");
+                    if (isQuit == 0) {
+                        break;
+                    }
 
-                        currentScreen = new GameScreen(gameState,
-                            gameSettings.get(gameState.getLevel() - 1),
-                            bonusLife, width, height, FPS, shipID);
-                        LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-                            + " game screen at " + FPS + " fps.");
-                        isQuit = frame.setScreen(currentScreen);
-                        LOGGER.info("Closing game screen.");
-                        if (isQuit == 0) {
-                            break;
-                        }
+                    // 현재 플레이한 게임의 정보를 gameState에 저장
+                    gameState = ((GameScreen) currentScreen).getGameState();
 
-                        // 현재 플레이한 게임의 정보를 gameState에 저장
-                        gameState = ((GameScreen) currentScreen).getGameState();
-
-                        gameState = new GameState(gameState.getLevel() + 1,
-                            gameState.getScore(),
-                            gameState.getHp(),
-                            gameState.getBulletsShot(),
-                            gameState.getShipsDestroyed());
-
-                    } while (gameState.getHp() > 0
-                        && gameState.getLevel() <= NUM_LEVELS);
                     getSoundManager().stopBackgroundMusic();
                     if (isQuit == 0) {
                         returnCode = 1;
                         break;
                     }
+                    // 게임 종료 후 gameState의 정보를 이용하여 scoreScreen 생성
                     LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
                         + " score screen at " + FPS + " fps, with a score of "
                         + gameState.getScore() + ", "
