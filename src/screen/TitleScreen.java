@@ -76,8 +76,7 @@ public class TitleScreen extends Screen {
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                 this.isRunning = false;
                 if (returnCode == 2) {
-                    Core.getSoundManager().playPlaySound();
-                    Core.getSoundManager().stopBackgroundMusic();
+                    Core.getSoundManager().playButtonSound();
                 } else {
                     Core.getSoundManager().playButtonSound();
                 }

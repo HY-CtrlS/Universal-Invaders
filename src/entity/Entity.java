@@ -111,7 +111,70 @@ public class Entity {
         UP_RIGHT,
         UP_LEFT,
         DOWN_RIGHT,
-        DOWN_LEFT
+        DOWN_LEFT;
+
+        /**
+         * 현재 방향에서 각도 오프셋에 따라 새로운 방향을 반환.
+         *
+         * @param currentDirection 현재 방향.
+         * @param angleOffset      각도 오프셋 (양수: 시계방향, 음수: 반시계방향).
+         * @return 새 방향.
+         */
+        public static Direction getOffsetDirection(Direction currentDirection, int angleOffset) {
+            // 기존 방향을 기준으로 각도별 새로운 방향 매핑
+            switch (currentDirection) {
+                case UP:
+                    if (angleOffset > 0) {
+                        return UP_RIGHT;
+                    } else {
+                        return UP_LEFT;
+                    }
+                case DOWN:
+                    if (angleOffset > 0) {
+                        return DOWN_RIGHT;
+                    } else {
+                        return DOWN_LEFT;
+                    }
+                case LEFT:
+                    if (angleOffset > 0) {
+                        return UP_LEFT;
+                    } else {
+                        return DOWN_LEFT;
+                    }
+                case RIGHT:
+                    if (angleOffset > 0) {
+                        return DOWN_RIGHT;
+                    } else {
+                        return UP_RIGHT;
+                    }
+                case UP_RIGHT:
+                    if (angleOffset > 0) {
+                        return RIGHT;
+                    } else {
+                        return UP;
+                    }
+                case UP_LEFT:
+                    if (angleOffset > 0) {
+                        return UP;
+                    } else {
+                        return LEFT;
+                    }
+                case DOWN_RIGHT:
+                    if (angleOffset > 0) {
+                        return DOWN;
+                    } else {
+                        return RIGHT;
+                    }
+                case DOWN_LEFT:
+                    if (angleOffset > 0) {
+                        return LEFT;
+                    } else {
+                        return DOWN;
+                    }
+                default:
+                    return currentDirection; // 기본적으로 변경되지 않은 방향 반환
+            }
+        }
     }
 
     /**

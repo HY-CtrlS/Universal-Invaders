@@ -6,6 +6,8 @@ import engine.ShipStatus;
 import engine.StatusManager;
 
 import entity.Entity.Direction;
+import entity.Ship;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
@@ -71,7 +73,7 @@ public class GameScreen extends Screen {
     private int maxHp = Core.getStatusManager().getMaxHp();
     /** Player hp left. */
     private int hp;
-    /** HP 자동 재생되는 누적량 체크**/
+    /** HP 자동 재생되는 누적량 체크 **/
     private double remainingRegenHp;
     /** HP 리젠되는 쿨타임 생성 **/
     private Cooldown regenHpCooldown;
@@ -104,6 +106,9 @@ public class GameScreen extends Screen {
     /** Total survival time in milliseconds. */
     private int survivalTime = 0;
 
+    private int shipID;
+
+
     /**
      * Constructor, establishes the properties of the screen.
      *
@@ -117,13 +122,19 @@ public class GameScreen extends Screen {
 
      */
     public GameScreen(final GameState gameState,
+
         final GameSettings gameSettings, final boolean bonusLife,  int totalSurvivalTime,
-        final int width, final int height, final int fps) {
+        final int width, final int height, final int fps, final int shipID) {
+
         super(width, height, fps);
 
         this.gameSettings = gameSettings;
         this.bonusLife = bonusLife;
+
         this.survivalTime = totalSurvivalTime;
+
+
+        this.shipID = shipID;
 
         this.level = gameState.getLevel();
         this.score = gameState.getScore();
@@ -136,7 +147,12 @@ public class GameScreen extends Screen {
         this.bulletsShot = gameState.getBulletsShot();
         this.shipsDestroyed = gameState.getShipsDestroyed();
 
+        // 배경음악 중지 후 인게임 배경음악 재생
+        if (Core.getSoundManager().isBackgroundMusicPlaying()) {
+            Core.getSoundManager().stopBackgroundMusic();
+        }
         Core.getSoundManager().playInGameBGM();
+
         this.returnCode = 1;
 
         // 현재 게임에 사용되는 Ship의 status 정보
@@ -149,7 +165,7 @@ public class GameScreen extends Screen {
     public final void initialize() {
         super.initialize();
 
-        this.ship = new Ship(this.width / 2, this.height / 2, Entity.Direction.UP);
+        this.ship = Ship.createShipByID(this.shipID, this.width / 2, this.height / 2);
         enemyShipSet = new EnemyShipSet(this.gameSettings, this.level, this.ship);
         enemyShipSet.attach(this);
 
@@ -266,6 +282,16 @@ public class GameScreen extends Screen {
             }
 
             if (aimUp || aimDown || aimRight || aimLeft) {
+                if (this.shipID == 3) {
+                    this.ship.startBurstShooting();
+                } else {
+                    if (this.ship.shoot(this.bullets)) {
+                        this.bulletsShot++;
+                    }
+                }
+            }
+
+            if (this.ship.isBurstShooting) {
                 if (this.ship.shoot(this.bullets)) {
                     this.bulletsShot++;
                 }
@@ -310,7 +336,6 @@ public class GameScreen extends Screen {
             //	this.enemyShipSpecial = null;
             //		this.logger.info("The special ship has escaped");
             //}
-
 
             // hp 자동 재생 기능 실행
             hpRegen(status.getRegenHp());
@@ -429,7 +454,7 @@ public class GameScreen extends Screen {
 
             // 적 총알인 경우 실행되는 부분 ( 현재는 적 총알이 나오는 곳이 없음 )
 
-            if (bullet.getClassify() == 1) {
+            if (bullet.getClassify() == 0) {
                 if (checkCollision(bullet, this.ship) && !this.levelFinished) {
                     if (!this.ship.isDestroyed()) {
                         recyclable.add(bullet);
@@ -449,7 +474,11 @@ public class GameScreen extends Screen {
                         this.shipsDestroyed++;
 
                         this.enemyShipSet.damage_Enemy(enemyShip, bullet.getDamage());
-                        recyclable.add(bullet);
+
+                        // 관통 여부 확인
+                        if (!bullet.getisPiercing()) {
+                            recyclable.add(bullet); // 관통 아닌 경우 제거
+                        }
                         Core.getSoundManager().playBulletHitSound();
 
                         // 적 함선이 파괴되었을 때 경험치 생성
@@ -542,7 +571,7 @@ public class GameScreen extends Screen {
         return distanceX < maxDistanceX && distanceY < maxDistanceY;
     }
 
-    /** hpRegenCooldown이 끝날 때마다 자동으로 체력을 회복함.*/
+    /** hpRegenCooldown이 끝날 때마다 자동으로 체력을 회복함. */
     private void hpRegen(final double regenHp) {
         // 체력이 최대체력보다 낮을 경우에만 regen
         if (this.regenHpCooldown.checkFinished() && this.hp < maxHp) {
@@ -567,4 +596,5 @@ public class GameScreen extends Screen {
         return new GameState(this.level, this.score, this.hp,
             this.bulletsShot, this.shipsDestroyed, this.survivalTime);
     }
+
 }

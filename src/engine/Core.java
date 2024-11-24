@@ -137,6 +137,13 @@ public final class Core {
                     itemList = items.initializedItems();
                     // 게임 시작 시 함선의 체력을 기본으로 초기화
                     gameState.setHP(getStatusManager().getMaxHp());
+                    items.initializedItems();
+                    // 게임 시작 전 함선 선택
+                    currentScreen = new shipSelectScreen(width, height, FPS);
+                    LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+                        + " ship select screen at " + FPS + " fps.");
+                    int shipID = frame.setScreen(currentScreen);
+                    LOGGER.info("Closing ship select screen.");
                     // Game & score.
                     do {
                         // 선택한 아이템 없는 것으로 초기화
@@ -153,7 +160,9 @@ public final class Core {
 
                         currentScreen = new GameScreen(gameState,
                             gameSettings.get(gameState.getLevel() - 1),
-                            bonusLife, totalSurvivalTime, width, height, FPS);
+
+                            bonusLife, totalSurvivalTime, width, height, FPS, shipID);
+
                         LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
                             + " game screen at " + FPS + " fps.");
                         isQuit = frame.setScreen(currentScreen);

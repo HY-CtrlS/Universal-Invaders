@@ -33,7 +33,7 @@ public final class BulletPool {
      */
     public static Bullet getBullet(final int positionX,
         final int positionY, final int speed, int damage, Entity.Direction direction,
-        String classify) {
+        int classify) {
         Bullet bullet;
         if (!pool.isEmpty()) {
             bullet = pool.iterator().next();
@@ -45,10 +45,19 @@ public final class BulletPool {
             bullet.setSprite();
             bullet.setDirection(direction);
             bullet.setClassify(classify);
+
         } else {
             bullet = new Bullet(positionX, positionY, speed, damage, direction, classify);
             bullet.setPositionX(positionX - bullet.getWidth() / 2);
         }
+
+        // 만약 함선 ID가 4이면 총알 관통으로 설정, 아니면 관통 해제
+        if (classify == 4) {
+            bullet.setPiercing(true);
+        } else {
+            bullet.setPiercing(false);
+        }
+
         return bullet;
     }
 
