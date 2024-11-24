@@ -1,15 +1,11 @@
 package engine;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import screen.*;
-import Item.*;
 
 /**
  * Implements core game logic.
@@ -26,7 +22,7 @@ public final class Core {
     private static final int FPS = 60;
     /** 게임 난이도 설정 */
     private static final GameSettings GAME_SETTING =
-        new GameSettings(5, 4, 60, 2000, 500, 30);
+        new GameSettings(10, 5000);
 
     /** Frame to draw the screen on. */
     private static Frame frame;
