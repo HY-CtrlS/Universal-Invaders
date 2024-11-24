@@ -24,9 +24,6 @@ public final class Core {
     private static final int HEIGHT = WIDTH + 80;
     /** Max fps of current screen. */
     private static final int FPS = 60;
-
-    /** Levels between extra life. */
-    private static final int EXTRA_LIFE_FREQUENCY = 3;
     /** Total number of levels. */
     private static final int NUM_LEVELS = 7;
 
@@ -134,15 +131,11 @@ public final class Core {
                         + " ship select screen at " + FPS + " fps.");
                     int shipID = frame.setScreen(currentScreen);
                     LOGGER.info("Closing ship select screen.");
-                    // Game & score.
-                    // One extra live every few levels.
-                    boolean bonusLife = gameState.getLevel()
-                        % EXTRA_LIFE_FREQUENCY == 0
-                        && gameState.getHp() < getStatusManager().getMaxHp();
 
+                    // 게임 화면 시작
                     currentScreen = new GameScreen(gameState,
                         gameSettings.get(gameState.getLevel() - 1),
-                        bonusLife, width, height, FPS, shipID);
+                        width, height, FPS, shipID);
                     LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
                         + " game screen at " + FPS + " fps.");
                     isQuit = frame.setScreen(currentScreen);
@@ -151,7 +144,7 @@ public final class Core {
                         break;
                     }
 
-                    // 현재 플레이한 게임의 정보를 gameState에 저장
+                    // 플레이한 게임의 정보를 gameState에 저장
                     gameState = ((GameScreen) currentScreen).getGameState();
 
                     getSoundManager().stopBackgroundMusic();
@@ -159,6 +152,7 @@ public final class Core {
                         returnCode = 1;
                         break;
                     }
+
                     // 게임 종료 후 gameState의 정보를 이용하여 scoreScreen 생성
                     LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
                         + " score screen at " + FPS + " fps, with a score of "

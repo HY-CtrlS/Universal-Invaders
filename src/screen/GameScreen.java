@@ -88,8 +88,6 @@ public class GameScreen extends Screen {
     private long gameStartTime;
     /** Checks if the level is finished. */
     private boolean levelFinished;
-    /** Checks if a bonus life is received. */
-    private boolean bonusLife;
     /** level 경과 시간 */
     private int levelTime;
     /** level 이 시작 되었는지 여부 */
@@ -117,27 +115,21 @@ public class GameScreen extends Screen {
      *
      * @param gameState    Current game state.
      * @param gameSettings Current game settings.
-     * @param bonusLife    Checks if a bonus life is awarded this level.
      * @param width        Screen width.
      * @param height       Screen height.
      * @param fps          Frames per second, frame rate at which the game is run.
      */
     public GameScreen(final GameState gameState,
-        final GameSettings gameSettings, final boolean bonusLife,
+        final GameSettings gameSettings,
         final int width, final int height, final int fps, final int shipID) {
         super(width, height, fps);
 
         this.gameSettings = gameSettings;
-        this.bonusLife = bonusLife;
         this.shipID = shipID;
         this.level = gameState.getLevel();
         this.score = gameState.getScore();
 
         this.hp = gameState.getHp();
-        if (this.bonusLife) {
-            this.hp++;
-
-        }
         this.bulletsShot = gameState.getBulletsShot();
         this.shipsDestroyed = gameState.getShipsDestroyed();
 
@@ -413,8 +405,7 @@ public class GameScreen extends Screen {
             int countdown = (int) ((INPUT_DELAY
                 - (System.currentTimeMillis()
                 - this.gameStartTime)) / 1000);
-            drawManager.drawCountDown(this, this.level, countdown,
-                this.bonusLife);
+            drawManager.drawCountDown(this, this.level, countdown);
         }
 
         // 현재 levelTime 그리기

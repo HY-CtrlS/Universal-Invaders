@@ -605,31 +605,19 @@ public final class DrawManager {
      * @param screen    Screen to draw on.
      * @param level     Game difficulty level.
      * @param number    Countdown number.
-     * @param bonusLife Checks if a bonus life is received.
      */
-    public void drawCountDown(final Screen screen, final int level,
-        final int number, final boolean bonusLife) {
+    public void drawCountDown(final Screen screen, final int level, final int number) {
         int rectWidth = screen.getWidth();
         int rectHeight = screen.getHeight() / 6;
         backBufferGraphics.setColor(Color.BLACK);
         backBufferGraphics.fillRect(0, screen.getHeight() / 2 - rectHeight / 2,
             rectWidth, rectHeight);
         backBufferGraphics.setColor(Color.GREEN);
-        drawHorizontalLine(screen, screen.getHeight() / 2 - screen.getHeight()
-            / 12);
-        drawHorizontalLine(screen, screen.getHeight() / 2 + screen.getHeight()
-            / 12);
+        drawHorizontalLine(screen, screen.getHeight() / 2 - screen.getHeight() / 12);
+        drawHorizontalLine(screen, screen.getHeight() / 2 + screen.getHeight() / 12);
         if (number >= 4) {
-            if (!bonusLife) {
-                drawCenteredBigString(screen, "Level " + level,
-                    screen.getHeight() / 2
-                        + fontBigMetrics.getHeight() / 3);
-            } else {
-                drawCenteredBigString(screen, "Level " + level
-                        + " - Bonus life!",
-                    screen.getHeight() / 2
-                        + fontBigMetrics.getHeight() / 3);
-            }
+            drawCenteredBigString(screen, "Are you ready?",
+                screen.getHeight() / 2 + fontBigMetrics.getHeight() / 3);
         } else if (number != 0) {
             drawCenteredBigString(screen, Integer.toString(number),
                 screen.getHeight() / 2 + fontBigMetrics.getHeight() / 3);
