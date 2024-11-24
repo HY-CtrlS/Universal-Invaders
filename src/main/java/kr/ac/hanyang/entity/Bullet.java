@@ -19,12 +19,14 @@ public class Bullet extends Entity {
     private int damage;
     // 총알의 뱡향
     private Direction direction;
-    // 아군 또는 적 함선이 발사한 총알을 구분하는 식별자
+    // 총알을 발사한 함선 식별
     private int classify;
     // 축 방향 속도의 소수 부분을 저장 및 누적
     private double remainingMovement = 0;
     // 축 방향 속도의 정수 부분 (실제 이동량)
     private int movement = 0;
+    // 총알의 적 관통 여부를 표시
+    private boolean isPiercing = false;
 
     /**
      * Constructor, establishes the bullet's properties.
@@ -34,13 +36,13 @@ public class Bullet extends Entity {
      * @param speed     Speed of the bullet.
      * @param damage    총알의 데미지.
      * @param direction 총알의 방향.
-     * @param classify  총알의 진영.
+     * @param classify  총알의 종류.
      */
     public Bullet(final int positionX, final int positionY, final int speed, int damage,
-        Direction direction, String classify) {
+        Direction direction, int classify) {
         super(positionX, positionY, 3 * 2, 5 * 2, Color.WHITE);
 
-        this.classify = classify.equals("ENEMY") ? 1 : 0; // 아군 SHIP : 0, 적군 ENEMY : 1
+        this.classify = classify; // 함선 코드로 어느 함선에서 발사한 총알인지 식별
         this.direction = direction;
         this.speed = speed;
         this.damage = damage;
@@ -174,8 +176,8 @@ public class Bullet extends Entity {
      *
      * @param classify 총알의 진영
      */
-    public void setClassify(String classify) {
-        this.classify = classify.equals("ENEMY") ? 1 : 0; // 아군 SHIP : 0, 적군 ENEMY : 1
+    public void setClassify(int classify) {
+        this.classify = classify;
     }
 
     /**
@@ -185,5 +187,21 @@ public class Bullet extends Entity {
      */
     public int getClassify() {
         return this.classify;
+    }
+
+    /**
+     * 총알의 관통을 설정하는 Setter.
+     */
+    public void setPiercing(boolean isPiercing) {
+        this.isPiercing = isPiercing;
+    }
+
+    /**
+     * 총알의 관통 여부를 얻는 Getter.
+     *
+     * @return 총알의 진영.
+     */
+    public boolean getisPiercing() {
+        return this.isPiercing;
     }
 }

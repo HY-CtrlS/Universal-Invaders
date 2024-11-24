@@ -1,6 +1,7 @@
 package kr.ac.hanyang.engine;
 
 import kr.ac.hanyang.Item.Item;
+import kr.ac.hanyang.entity.Ship;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -47,7 +48,7 @@ public final class DrawManager {
     private static FontMetrics fontBigMetrics;
 
     /** Sprite types mapped to their images. */
-    private static Map<SpriteType, boolean[][]> spriteMap;
+    private static Map<SpriteType, boolean[][][]> spriteMap;
 
     /** Sprite types. */
     public static enum SpriteType {
@@ -100,25 +101,25 @@ public final class DrawManager {
         try {
             spriteMap = new LinkedHashMap<>();
 
-            spriteMap.put(SpriteType.Ship, new boolean[13][13]);
-            spriteMap.put(SpriteType.ShipDiagonal, new boolean[13][13]);
-            spriteMap.put(SpriteType.ShipDestroyed, new boolean[16][13]);
-            spriteMap.put(SpriteType.ShipDiagonalDestroyed, new boolean[15][15]);
-            spriteMap.put(SpriteType.Bullet, new boolean[2][4]);
-            spriteMap.put(SpriteType.BulletDiagonal, new boolean[4][4]);
-            spriteMap.put(SpriteType.ExperienceA, new boolean[7][7]);
-            spriteMap.put(SpriteType.ExperienceB, new boolean[7][7]);
-            spriteMap.put(SpriteType.EnemyBullet, new boolean[3][5]);
-            spriteMap.put(SpriteType.EnemyShipA1, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipA2, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipB1, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipB2, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipC1, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipC2, new boolean[12][8]);
-            spriteMap.put(SpriteType.EnemyShipSpecial, new boolean[16][7]);
-            spriteMap.put(SpriteType.Explosion, new boolean[13][7]);
+            spriteMap.put(SpriteType.Ship, new boolean[2][13][13]);
+            spriteMap.put(SpriteType.ShipDiagonal, new boolean[1][13][13]);
+            spriteMap.put(SpriteType.ShipDestroyed, new boolean[1][16][13]);
+            spriteMap.put(SpriteType.ShipDiagonalDestroyed, new boolean[1][15][15]);
+            spriteMap.put(SpriteType.Bullet, new boolean[1][2][4]);
+            spriteMap.put(SpriteType.BulletDiagonal, new boolean[1][4][4]);
+            spriteMap.put(SpriteType.ExperienceA, new boolean[1][7][7]);
+            spriteMap.put(SpriteType.ExperienceB, new boolean[1][7][7]);
+            spriteMap.put(SpriteType.EnemyBullet, new boolean[1][3][5]);
+            spriteMap.put(SpriteType.EnemyShipA1, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipA2, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipB1, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipB2, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipC1, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipC2, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipSpecial, new boolean[1][16][7]);
+            spriteMap.put(SpriteType.Explosion, new boolean[1][13][7]);
             // 공속 증가 아이템 스프라이트
-            spriteMap.put(SpriteType.AttackSpeedUpItem, new boolean[10][10]);
+            spriteMap.put(SpriteType.AttackSpeedUpItem, new boolean[1][10][10]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
@@ -199,55 +200,69 @@ public final class DrawManager {
      */
     public void drawEntity(final Entity entity, final int positionX,
         final int positionY) {
-        boolean[][] image = spriteMap.get(entity.getSpriteType());
+        boolean[][][] image = spriteMap.get(entity.getSpriteType());
 
-        backBufferGraphics.setColor(entity.getColor());
+//        backBufferGraphics.setColor(entity.getColor());
         Entity.Direction direction = entity.getDirection();
 
+        // TODO: Ship 이외의 스프라이트들 깨짐 해결
         switch (direction) {
             case UP:
             case UP_LEFT:
-                for (int i = 0; i < image.length; i++) {
-                    for (int j = 0; j < image[i].length; j++) {
-                        if (image[i][j]) {
-                            backBufferGraphics.drawRect(positionX + i * 2, positionY
-                                + j * 2, 1, 1);
+                for (int layerNum = 0; layerNum < image.length; layerNum++) {
+                    backBufferGraphics.setColor(entity.getColor()[layerNum]);
+                    for (int row = 0; row < image[layerNum].length; row++) {
+                        for (int column = 0; column < image[layerNum][row].length; column++) {
+                            if (image[layerNum][row][column]) {
+                                backBufferGraphics.drawRect(positionX + row * 2, positionY
+                                    + column * 2, 1, 1);
+                            }
                         }
                     }
                 }
                 break;
             case DOWN:
             case DOWN_RIGHT:
-                for (int i = image.length - 1; i >= 0; i--) {
-                    for (int j = image[i].length - 1; j >= 0; j--) {
-                        if (image[image.length - 1 - i][image[i].length - 1 - j]) {
-                            backBufferGraphics.drawRect(positionX + i * 2, positionY
-                                + j * 2, 1, 1);
+                for (int layerNum = 0; layerNum < image.length; layerNum++) {
+                    backBufferGraphics.setColor(entity.getColor()[layerNum]);
+                    for (int row = image[layerNum].length - 1; row >= 0; row--) {
+                        for (int column = image[layerNum][row].length - 1; column >= 0; column--) {
+                            if (image[layerNum][image[layerNum].length - 1 - row][
+                                image[layerNum][row].length - 1 - column]) {
+                                backBufferGraphics.drawRect(positionX + row * 2, positionY
+                                    + column * 2, 1, 1);
+                            }
                         }
                     }
                 }
                 break;
             case LEFT:
             case DOWN_LEFT:
-                for (int i = 0; i < image.length; i++) {
-                    for (int j = 0; j < image[i].length; j++) {
-                        if (image[i][j]) {
-                            backBufferGraphics.drawRect(positionX + j * 2, positionY
-                                + (image.length - 1 - i) * 2, 1, 1);
+                for (int layerNum = 0; layerNum < image.length; layerNum++) {
+                    backBufferGraphics.setColor(entity.getColor()[layerNum]);
+                    for (int row = 0; row < image[layerNum].length; row++) {
+                        for (int column = 0; column < image[layerNum][row].length; column++) {
+                            if (image[layerNum][row][column]) {
+                                backBufferGraphics.drawRect(positionX + column * 2, positionY
+                                    + (image[layerNum].length - 1 - row) * 2, 1, 1);
+                            }
                         }
                     }
                 }
                 break;
             case RIGHT:
             case UP_RIGHT:
-                for (int i = 0; i < image.length; i++) {
-                    for (int j = 0; j < image[i].length; j++) {
-                        if (image[i][j]) {
-                            backBufferGraphics.drawRect(
-                                positionX + (image[i].length - 1 - j) * 2,
-                                positionY + i * 2,
-                                1, 1
-                            );
+                for (int layerNum = 0; layerNum < image.length; layerNum++) {
+                    backBufferGraphics.setColor(entity.getColor()[layerNum]);
+                    for (int row = 0; row < image[layerNum].length; row++) {
+                        for (int column = 0; column < image[layerNum][row].length; column++) {
+                            if (image[layerNum][row][column]) {
+                                backBufferGraphics.drawRect(
+                                    positionX + (image[layerNum][row].length - 1 - column) * 2,
+                                    positionY + row * 2,
+                                    1, 1
+                                );
+                            }
                         }
                     }
                 }
@@ -285,19 +300,6 @@ public final class DrawManager {
         for (int j = 0; j < screen.getWidth() - 1; j += 2) {
             backBufferGraphics.drawLine(j, 0, j, screen.getHeight() - 1);
         }
-    }
-
-    /**
-     * Draws current score on screen.
-     *
-     * @param screen Screen to draw on.
-     * @param score  Current score.
-     */
-    public void drawScore(final Screen screen, final int score) {
-        backBufferGraphics.setFont(fontRegular);
-        backBufferGraphics.setColor(Color.WHITE);
-        String scoreString = String.format("%04d", score);
-        backBufferGraphics.drawString(scoreString, screen.getWidth() - 60, 25);
     }
 
     /**
@@ -414,34 +416,26 @@ public final class DrawManager {
      * Draws game results.
      *
      * @param screen         Screen to draw on.
-     * @param score          Score obtained.
-     * @param livesRemaining Lives remaining when finished.
      * @param shipsDestroyed Total ships destroyed.
-     * @param accuracy       Total accuracy.
      * @param isNewRecord    If the score is a new high score.
      */
-    public void drawResults(final Screen screen, final int score,
-        final int livesRemaining, final int shipsDestroyed,
-        final float accuracy, final boolean isNewRecord) {
-        String scoreString = String.format("score %04d", score);
-        String livesRemainingString = "lives remaining " + livesRemaining;
+    public void drawResults(final Screen screen,
+        final int shipsDestroyed, final int survivalTime, final boolean isNewRecord) {
+
         String shipsDestroyedString = "enemies destroyed " + shipsDestroyed;
-        String accuracyString = String
-            .format("accuracy %.2f%%", accuracy * 100);
+        String survivalTimeString = "Survival Time: " + survivalTime + " s";
 
         int height = isNewRecord ? 4 : 2;
 
-        backBufferGraphics.setColor(Color.WHITE);
-        drawCenteredRegularString(screen, scoreString, screen.getHeight()
-            / height);
-        drawCenteredRegularString(screen, livesRemainingString,
+        drawCenteredRegularString(screen, survivalTimeString,
             screen.getHeight() / height + fontRegularMetrics.getHeight()
                 * 2);
+        backBufferGraphics.setColor(Color.WHITE);
+
         drawCenteredRegularString(screen, shipsDestroyedString,
             screen.getHeight() / height + fontRegularMetrics.getHeight()
                 * 4);
-        drawCenteredRegularString(screen, accuracyString, screen.getHeight()
-            / height + fontRegularMetrics.getHeight() * 6);
+
     }
 
     /**
@@ -549,8 +543,10 @@ public final class DrawManager {
         String scoreString = "";
 
         for (Score score : highScores) {
-            scoreString = String.format("%s        %04d", score.getName(),
-                score.getScore());
+            scoreString = String.format("%s        %d sec",
+                score.getName(),
+                score.getSurvivalTime());
+
             drawCenteredRegularString(screen, scoreString, screen.getHeight()
                 / 4 + fontRegularMetrics.getHeight() * (i + 1) * 2);
             i++;
@@ -588,34 +584,22 @@ public final class DrawManager {
     /**
      * Countdown to game start.
      *
-     * @param screen    Screen to draw on.
-     * @param level     Game difficulty level.
-     * @param number    Countdown number.
-     * @param bonusLife Checks if a bonus life is received.
+     * @param screen Screen to draw on.
+     * @param level  Game difficulty level.
+     * @param number Countdown number.
      */
-    public void drawCountDown(final Screen screen, final int level,
-        final int number, final boolean bonusLife) {
+    public void drawCountDown(final Screen screen, final int level, final int number) {
         int rectWidth = screen.getWidth();
         int rectHeight = screen.getHeight() / 6;
         backBufferGraphics.setColor(Color.BLACK);
         backBufferGraphics.fillRect(0, screen.getHeight() / 2 - rectHeight / 2,
             rectWidth, rectHeight);
         backBufferGraphics.setColor(Color.GREEN);
-        drawHorizontalLine(screen, screen.getHeight() / 2 - screen.getHeight()
-            / 12);
-        drawHorizontalLine(screen, screen.getHeight() / 2 + screen.getHeight()
-            / 12);
+        drawHorizontalLine(screen, screen.getHeight() / 2 - screen.getHeight() / 12);
+        drawHorizontalLine(screen, screen.getHeight() / 2 + screen.getHeight() / 12);
         if (number >= 4) {
-            if (!bonusLife) {
-                drawCenteredBigString(screen, "Level " + level,
-                    screen.getHeight() / 2
-                        + fontBigMetrics.getHeight() / 3);
-            } else {
-                drawCenteredBigString(screen, "Level " + level
-                        + " - Bonus life!",
-                    screen.getHeight() / 2
-                        + fontBigMetrics.getHeight() / 3);
-            }
+            drawCenteredBigString(screen, "Are you ready?",
+                screen.getHeight() / 2 + fontBigMetrics.getHeight() / 3);
         } else if (number != 0) {
             drawCenteredBigString(screen, Integer.toString(number),
                 screen.getHeight() / 2 + fontBigMetrics.getHeight() / 3);
@@ -626,30 +610,24 @@ public final class DrawManager {
     }
 
     /**
-     * 레벨 시작 후 경과 시간을 화면 상단 중앙에 표시합니다.
+     * 현재 생존 시간을 화면에 그립니다.
      *
-     * @param screen      화면 객체입니다.
-     * @param elapsedTime 경과 시간(초)입니다.
+     * @param screen        화면 객체
+     * @param survivalTime  현재 생존 시간
      */
-    public void drawTime(final Screen screen, final int elapsedTime) {
+    public void drawSurvivalTime(final Screen screen, final int survivalTime) {
         backBufferGraphics.setFont(fontRegular);
         backBufferGraphics.setColor(Color.WHITE);
-        String timeString = elapsedTime + " S";
-
-        // 문자열의 너비를 계산하여 중앙에 위치시킵니다.
-        int xPosition = (screen.getWidth() - fontRegularMetrics.stringWidth(timeString)) / 2;
-        // Y 좌표는 원하는 위치로 설정합니다. 여기서는 상단 여백을 25로 설정했습니다.
-        int yPosition = 25;
-
-        backBufferGraphics.drawString(timeString, xPosition, yPosition);
+        String survivalTimeString = String.format("%d S", survivalTime);
+        backBufferGraphics.drawString(survivalTimeString, screen.getWidth() - 60, 25);
     }
 
     public void drawItemBox(final int position_X, final int position_Y) {
         backBufferGraphics.drawRect(position_X, position_Y, 100, 100);
     }
 
-    public void drawItemSelectingTitle(final Screen screen, final GameState gameState) {
-        String titleString = "Level  " + gameState.getLevel() + "  Clear!!";
+    public void drawItemSelectingTitle(final Screen screen, final int playerLevel) {
+        String titleString = "Level  " + playerLevel + "  !!";
         String instructionsString1 =
             "Select your Item with A + D / arrows";
         String instructionsString2 =
@@ -734,14 +712,16 @@ public final class DrawManager {
 
     // 아이템의 스프라이트를 받아와 스케일 업해서 그리는 메소드
     public void drawBigItem(final Item item, final int position_X, final int position_Y) {
-        boolean[][] image = spriteMap.get(item.getSpriteType());
+        boolean[][][] image = spriteMap.get(item.getSpriteType());
 
         backBufferGraphics.setColor(item.getColor());
-        for (int i = 0; i < image.length; i++) {
-            for (int j = 0; j < image[i].length; j++) {
-                if (image[i][j]) {
-                    backBufferGraphics.drawRect(position_X + i * 6, position_Y
-                        + j * 6, 6, 6);
+        for (boolean[][] layer : image) {
+            for (int i = 0; i < layer.length; i++) {
+                for (int j = 0; j < layer[i].length; j++) {
+                    if (layer[i][j]) {
+                        backBufferGraphics.drawRect(position_X + i * 6, position_Y
+                            + j * 6, 6, 6);
+                    }
                 }
             }
         }
@@ -924,16 +904,13 @@ public final class DrawManager {
      */
     public void drawLevel(final Screen screen, final int level) {
         backBufferGraphics.setFont(fontRegular);
-
-        int barX = 230; // 레벨 표시 텍스트의 X 좌표
-        int barY = 25; // 레벨 표시 텍스트의 Y 좌표 (체력 바 아래)
         String levelText = "LV. " + level; // 표시할 텍스트
 
         // 텍스트 색상 설정
         backBufferGraphics.setColor(Color.WHITE);
 
         // 텍스트를 화면에 그리기
-        backBufferGraphics.drawString(levelText, barX, barY);
+        drawCenteredRegularString(screen, levelText, 25);
     }
 
     /**
@@ -973,5 +950,66 @@ public final class DrawManager {
         // 경험치 텍스트 색상
         backBufferGraphics.setColor(Color.WHITE);
         backBufferGraphics.drawString(expText, textX, textY);
+    }
+
+    /**
+     * shipSelectScreen의 제목을 화면 상단에 위치시키는 메소드
+     *
+     * @param screen 화면 객체를 받는 매개변수
+     */
+    public void drawShipSelectTitle(final Screen screen) {
+        String titleString = "Invaders";
+        String instructionsString =
+            "select with w+s / arrows, confirm with space";
+
+        backBufferGraphics.setColor(Color.GRAY);
+        drawCenteredRegularString(screen, instructionsString,
+            screen.getHeight() / 2);
+
+        backBufferGraphics.setColor(Color.GREEN);
+        drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
+    }
+
+    /**
+     * shipSelectScreen의 메뉴를 표시하는 메소드
+     *
+     * @param screen 화면 객체를 받는 매개변수
+     * @param option 어떤 메뉴를 선택했는지 구분하는 매개변수
+     */
+    public void drawShipSelectMenu(final Screen screen, final int option, final int shipID) {
+        String playString = "Play";
+        String highScoresString = "Select ship";
+        String[] shipColors = {"GREEN", "BLUE", "YELLOW", "RED"};
+
+        if (option == 1) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, playString, screen.getHeight() / 3 * 2);
+
+        if (option == 0) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, highScoresString,
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+        switch (shipColors[shipID - 1]) {
+            case "GREEN":
+                backBufferGraphics.setColor(Color.GREEN);
+                break;
+            case "BLUE":
+                backBufferGraphics.setColor(Color.BLUE);
+                break;
+            case "YELLOW":
+                backBufferGraphics.setColor(Color.YELLOW);
+                break;
+            case "RED":
+                backBufferGraphics.setColor(Color.RED);
+                break;
+        }
+        drawCenteredRegularString(screen, shipColors[shipID - 1],
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
     }
 }

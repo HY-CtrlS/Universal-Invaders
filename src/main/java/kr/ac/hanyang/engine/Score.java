@@ -9,18 +9,18 @@ public class Score implements Comparable<Score> {
 
     /** Player's name. */
     private String name;
-    /** Score points. */
-    private int score;
+    /** 생존 시간 */
+    private int survivalTime;
 
     /**
      * Constructor.
      *
-     * @param name  Player name, three letters.
-     * @param score Player score.
+     * @param name         Player name, three letters.
+     * @param survivalTime Player score.
      */
-    public Score(final String name, final int score) {
+    public Score(final String name, final int survivalTime) {
         this.name = name;
-        this.score = score;
+        this.survivalTime = survivalTime;
     }
 
     /**
@@ -33,12 +33,12 @@ public class Score implements Comparable<Score> {
     }
 
     /**
-     * Getter for the player's score.
+     * Getter for the player's survival time.
      *
-     * @return High score.
+     * @return Survival time.
      */
-    public final int getScore() {
-        return this.score;
+    public final int getSurvivalTime() {
+        return this.survivalTime;
     }
 
     /**
@@ -50,8 +50,8 @@ public class Score implements Comparable<Score> {
      */
     @Override
     public final int compareTo(final Score score) {
-        int comparison = this.score < score.getScore() ? 1 : this.score > score
-            .getScore() ? -1 : 0;
+        int comparison = this.survivalTime < score.getSurvivalTime() ? 1
+            : this.survivalTime > score.getSurvivalTime() ? -1 : 0;
         return comparison;
     }
 

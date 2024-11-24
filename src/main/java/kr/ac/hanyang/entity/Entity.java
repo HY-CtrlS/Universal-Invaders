@@ -20,7 +20,7 @@ public class Entity {
     /** Height of the entity. */
     protected int height;
     /** Color of the entity. */
-    private Color color;
+    private Color[] color;
     /** Sprite type assigned to the entity. */
     protected SpriteType spriteType;
     /** 엔티티 스프라이트의 방향 (기본 위) */
@@ -41,12 +41,59 @@ public class Entity {
         this.positionY = positionY;
         this.width = width;
         this.height = height;
+        this.color = new Color[] { color };
+        this.direction = Entity.Direction.UP;
+    }
+
+    /**
+     * Constructor, establishes the entity's generic properties.
+     *
+     * @param positionX Initial position of the entity in the X axis.
+     * @param positionY Initial position of the entity in the Y axis.
+     * @param width     Width of the entity.
+     * @param height    Height of the entity.
+     * @param color     Color of the entity.
+     */
+    public Entity(final int positionX, final int positionY, final int width,
+        final int height, final Color[] color) {
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.width = width;
+        this.height = height;
         this.color = color;
         this.direction = Entity.Direction.UP;
     }
 
+    /**
+     * Constructor, establishes the entity's generic properties.
+     *
+     * @param positionX Initial position of the entity in the X axis.
+     * @param positionY Initial position of the entity in the Y axis.
+     * @param width     Width of the entity.
+     * @param height    Height of the entity.
+     * @param color     Color of the entity.
+     */
     public Entity(final int positionX, final int positionY, final int width,
         final int height, final Color color, final Direction direction) {
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.width = width;
+        this.height = height;
+        this.color = new Color[] { color };
+        this.direction = direction;
+    }
+
+    /**
+     * Constructor, establishes the entity's generic properties.
+     *
+     * @param positionX Initial position of the entity in the X axis.
+     * @param positionY Initial position of the entity in the Y axis.
+     * @param width     Width of the entity.
+     * @param height    Height of the entity.
+     * @param color     Color of the entity.
+     */
+    public Entity(final int positionX, final int positionY, final int width,
+        final int height, final Color[] color, final Direction direction) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.width = width;
@@ -64,7 +111,70 @@ public class Entity {
         UP_RIGHT,
         UP_LEFT,
         DOWN_RIGHT,
-        DOWN_LEFT
+        DOWN_LEFT;
+
+        /**
+         * 현재 방향에서 각도 오프셋에 따라 새로운 방향을 반환.
+         *
+         * @param currentDirection 현재 방향.
+         * @param angleOffset      각도 오프셋 (양수: 시계방향, 음수: 반시계방향).
+         * @return 새 방향.
+         */
+        public static Direction getOffsetDirection(Direction currentDirection, int angleOffset) {
+            // 기존 방향을 기준으로 각도별 새로운 방향 매핑
+            switch (currentDirection) {
+                case UP:
+                    if (angleOffset > 0) {
+                        return UP_RIGHT;
+                    } else {
+                        return UP_LEFT;
+                    }
+                case DOWN:
+                    if (angleOffset > 0) {
+                        return DOWN_RIGHT;
+                    } else {
+                        return DOWN_LEFT;
+                    }
+                case LEFT:
+                    if (angleOffset > 0) {
+                        return UP_LEFT;
+                    } else {
+                        return DOWN_LEFT;
+                    }
+                case RIGHT:
+                    if (angleOffset > 0) {
+                        return DOWN_RIGHT;
+                    } else {
+                        return UP_RIGHT;
+                    }
+                case UP_RIGHT:
+                    if (angleOffset > 0) {
+                        return RIGHT;
+                    } else {
+                        return UP;
+                    }
+                case UP_LEFT:
+                    if (angleOffset > 0) {
+                        return UP;
+                    } else {
+                        return LEFT;
+                    }
+                case DOWN_RIGHT:
+                    if (angleOffset > 0) {
+                        return DOWN;
+                    } else {
+                        return RIGHT;
+                    }
+                case DOWN_LEFT:
+                    if (angleOffset > 0) {
+                        return LEFT;
+                    } else {
+                        return DOWN;
+                    }
+                default:
+                    return currentDirection; // 기본적으로 변경되지 않은 방향 반환
+            }
+        }
     }
 
     /**
@@ -72,9 +182,11 @@ public class Entity {
      *
      * @return Color of the entity, used when drawing it.
      */
-    public final Color getColor() {
+    public final Color[] getColor() {
         return color;
     }
+
+    public final void setColor(Color[] color) { this.color = color; }
 
     /**
      * Getter for the X axis position of the entity.
