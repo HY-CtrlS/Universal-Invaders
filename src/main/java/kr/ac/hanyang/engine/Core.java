@@ -14,7 +14,7 @@ import kr.ac.hanyang.Item.*;
  *
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
  */
-public final class Core
+public final class Core {
 
     // test
     /** Width of current screen. */
