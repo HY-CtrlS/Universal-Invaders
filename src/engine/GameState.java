@@ -32,7 +32,7 @@ public class GameState {
      */
     public GameState(final int level, final int score,
         final int hp, final int bulletsShot,
-        final int shipsDestroyed, int survivalTime) {
+        final int shipsDestroyed, final int survivalTime) {
         this.level = level;
         this.score = score;
         this.hp = hp;

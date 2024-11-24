@@ -90,8 +90,6 @@ public class GameScreen extends Screen {
     private long gameStartTime;
     /** Checks if the level is finished. */
     private boolean levelFinished;
-    /** level 경과 시간 */
-    private int levelTime;
     /** level 이 시작 되었는지 여부 */
     private boolean levelStarted;
     /** 1초를 새는 Cooldown */
@@ -107,7 +105,7 @@ public class GameScreen extends Screen {
 
 
     /** Total survival time in milliseconds. */
-    private int survivalTime = 0;
+    private int survivalTime;
 
     private int shipID;
 
@@ -121,7 +119,6 @@ public class GameScreen extends Screen {
      *
      * @param gameState    Current game state.
      * @param gameSettings Current game settings.
-     * @param totalSurvivalTime Total Survival time from the last gamescreen instance.
      * @param width        Screen width.
      * @param height       Screen height.
      * @param fps          Frames per second, frame rate at which the game is run.
@@ -187,7 +184,7 @@ public class GameScreen extends Screen {
 
         // GameScreen 이 시작될 땐 카운트 다운이 시작되므로
         this.levelStarted = false;
-        this.levelTime = 0;
+        this.survivalTime = 0;
         this.clockCooldown = Core.getCooldown(1000);
         this.clockCooldown.reset();
 
@@ -343,9 +340,9 @@ public class GameScreen extends Screen {
             this.ship.update();
             this.enemyShipSet.update();
             ExperiencePool.update(this.experiences);
-            // 1초마다 levelTime 1씩 증가
+            // 1초마다 생존 시간 1씩 증가
             if (this.clockCooldown.checkFinished()) {
-                this.levelTime += 1;
+                this.survivalTime += 1;
                 this.clockCooldown.reset();
             }
 
@@ -416,7 +413,7 @@ public class GameScreen extends Screen {
         }
 
         // 현재 levelTime 그리기
-        drawManager.drawTime(this, levelTime);
+        drawManager.drawTime(this, survivalTime);
 
         drawManager.completeDrawing(this);
     }

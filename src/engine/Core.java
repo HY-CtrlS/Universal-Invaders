@@ -77,7 +77,6 @@ public final class Core {
         int returnCode = 1;
         do {
 
-
             gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0, 0);
 
             switch (returnCode) {
