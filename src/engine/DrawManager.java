@@ -610,22 +610,16 @@ public final class DrawManager {
     }
 
     /**
-     * 레벨 시작 후 경과 시간을 화면 상단 중앙에 표시합니다.
+     * 현재 생존 시간을 화면에 그립니다.
      *
-     * @param screen      화면 객체입니다.
-     * @param elapsedTime 경과 시간(초)입니다.
+     * @param screen        화면 객체
+     * @param survivalTime  현재 생존 시간
      */
-    public void drawTime(final Screen screen, final int elapsedTime) {
+    public void drawSurvivalTime(final Screen screen, final int survivalTime) {
         backBufferGraphics.setFont(fontRegular);
         backBufferGraphics.setColor(Color.WHITE);
-        String timeString = elapsedTime + " S";
-
-        // 문자열의 너비를 계산하여 중앙에 위치시킵니다.
-        int xPosition = (screen.getWidth() - fontRegularMetrics.stringWidth(timeString)) / 2;
-        // Y 좌표는 원하는 위치로 설정합니다. 여기서는 상단 여백을 25로 설정했습니다.
-        int yPosition = 25;
-
-        backBufferGraphics.drawString(timeString, xPosition, yPosition);
+        String survivalTimeString = String.format("%d S", survivalTime);
+        backBufferGraphics.drawString(survivalTimeString, screen.getWidth() - 60, 25);
     }
 
     public void drawItemBox(final int position_X, final int position_Y) {
@@ -910,16 +904,13 @@ public final class DrawManager {
      */
     public void drawLevel(final Screen screen, final int level) {
         backBufferGraphics.setFont(fontRegular);
-
-        int barX = 230; // 레벨 표시 텍스트의 X 좌표
-        int barY = 25; // 레벨 표시 텍스트의 Y 좌표 (체력 바 아래)
         String levelText = "LV. " + level; // 표시할 텍스트
 
         // 텍스트 색상 설정
         backBufferGraphics.setColor(Color.WHITE);
 
         // 텍스트를 화면에 그리기
-        backBufferGraphics.drawString(levelText, barX, barY);
+        drawCenteredRegularString(screen, levelText, 25);
     }
 
     /**

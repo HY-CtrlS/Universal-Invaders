@@ -389,7 +389,7 @@ public class GameScreen extends Screen {
         }
 
         // 현재 levelTime 그리기
-        drawManager.drawTime(this, survivalTime);
+        drawManager.drawSurvivalTime(this, survivalTime);
 
         drawManager.completeDrawing(this);
     }
