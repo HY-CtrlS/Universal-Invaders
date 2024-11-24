@@ -162,7 +162,7 @@ public class ScoreScreen extends Screen {
      * Saves the score as a high score.
      */
     private void saveScore() {
-        highScores.add(new Score(new String(this.name), score));
+        highScores.add(new Score(new String(this.name), score, survivalTime));
         Collections.sort(highScores);
         if (highScores.size() > MAX_HIGH_SCORE_NUM) {
             highScores.remove(highScores.size() - 1);
@@ -183,7 +183,7 @@ public class ScoreScreen extends Screen {
 
         drawManager.drawGameEnd(this, this.inputDelay.checkFinished(),
             this.isNewRecord, this.isGameClear);
-        drawManager.drawResults(this, this.score, this.hp,
+        drawManager.drawResults(this, this.score,
             this.shipsDestroyed, (float) this.shipsDestroyed
                 / this.bulletsShot, this.survivalTime, this.isNewRecord);
 

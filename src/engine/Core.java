@@ -189,7 +189,7 @@ public final class Core {
                             gameState.getHp(),
                             gameState.getBulletsShot(),
                             gameState.getShipsDestroyed(),
-                            (int) gameState.getSurvivalTime());
+                            gameState.getSurvivalTime());
 
                     } while (gameState.getHp() > 0
                         && gameState.getLevel() <= NUM_LEVELS);
