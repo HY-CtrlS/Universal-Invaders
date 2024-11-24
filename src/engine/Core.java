@@ -24,37 +24,14 @@ public final class Core {
     private static final int HEIGHT = WIDTH + 80;
     /** Max fps of current screen. */
     private static final int FPS = 60;
-    /** Total number of levels. */
-    private static final int NUM_LEVELS = 7;
-
-    /** Difficulty settings for level 1. */
-    private static final GameSettings SETTINGS_LEVEL_1 =
+    /** 게임 난이도 설정 */
+    private static final GameSettings GAME_SETTING =
         new GameSettings(5, 4, 60, 2000, 500, 30);
-    /** Difficulty settings for level 2. */
-    private static final GameSettings SETTINGS_LEVEL_2 =
-        new GameSettings(5, 5, 50, 2000, 1000, 35);
-    /** Difficulty settings for level 3. */
-    private static final GameSettings SETTINGS_LEVEL_3 =
-        new GameSettings(6, 5, 40, 1500, 1000, 40);
-    /** Difficulty settings for level 4. */
-    private static final GameSettings SETTINGS_LEVEL_4 =
-        new GameSettings(6, 6, 30, 1500, 1000, 45);
-    /** Difficulty settings for level 5. */
-    private static final GameSettings SETTINGS_LEVEL_5 =
-        new GameSettings(7, 6, 20, 1000, 1, 50);
-    /** Difficulty settings for level 6. */
-    private static final GameSettings SETTINGS_LEVEL_6 =
-        new GameSettings(7, 7, 10, 1000, 1, 55);
-    /** Difficulty settings for level 7. */
-    private static final GameSettings SETTINGS_LEVEL_7 =
-        new GameSettings(8, 7, 2, 500, 1, 60);
 
     /** Frame to draw the screen on. */
     private static Frame frame;
     /** Screen currently shown. */
     private static Screen currentScreen;
-    /** Difficulty settings list. */
-    private static List<GameSettings> gameSettings;
     /** Application logger. */
     private static final Logger LOGGER = Logger.getLogger(Core.class
         .getSimpleName());
@@ -65,8 +42,6 @@ public final class Core {
 
     /** quit로 라운드라 종료되었는지 확인하는 변수 */
     private static int isQuit;
-    /** 아이템 선택화면에서 선택된 아이템 판단**/
-    private static int selectedItem;
 
     /**
      * Test implementation.
@@ -97,15 +72,6 @@ public final class Core {
         int width = frame.getWidth();
         int height = frame.getHeight();
 
-        gameSettings = new ArrayList<GameSettings>();
-        gameSettings.add(SETTINGS_LEVEL_1);
-        gameSettings.add(SETTINGS_LEVEL_2);
-        gameSettings.add(SETTINGS_LEVEL_3);
-        gameSettings.add(SETTINGS_LEVEL_4);
-        gameSettings.add(SETTINGS_LEVEL_5);
-        gameSettings.add(SETTINGS_LEVEL_6);
-        gameSettings.add(SETTINGS_LEVEL_7);
-
         GameState gameState;
 
         int returnCode = 1;
@@ -134,7 +100,7 @@ public final class Core {
 
                     // 게임 화면 시작
                     currentScreen = new GameScreen(gameState,
-                        gameSettings.get(gameState.getLevel() - 1),
+                        GAME_SETTING,
                         width, height, FPS, shipID);
                     LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
                         + " game screen at " + FPS + " fps.");
