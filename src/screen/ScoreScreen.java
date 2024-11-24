@@ -76,8 +76,8 @@ public class ScoreScreen extends Screen {
         try {
             this.highScores = Core.getFileManager().loadHighScores();
             if (highScores.size() < MAX_HIGH_SCORE_NUM
-                || highScores.get(highScores.size() - 1).getScore()
-                < this.score) {
+                || highScores.get(highScores.size() - 1).getSurvivalTime()
+                < this.survivalTime) {
                 this.isNewRecord = true;
             }
 
@@ -162,7 +162,7 @@ public class ScoreScreen extends Screen {
      * Saves the score as a high score.
      */
     private void saveScore() {
-        highScores.add(new Score(new String(this.name), score, survivalTime));
+        highScores.add(new Score(new String(this.name), survivalTime));
         Collections.sort(highScores);
         if (highScores.size() > MAX_HIGH_SCORE_NUM) {
             highScores.remove(highScores.size() - 1);

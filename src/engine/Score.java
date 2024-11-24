@@ -9,20 +9,17 @@ public class Score implements Comparable<Score> {
 
     /** Player's name. */
     private String name;
-    /** Score points. */
-    private int score;
-
+    /** 생존 시간 */
     private int survivalTime;
 
     /**
      * Constructor.
      *
-     * @param name  Player name, three letters.
-     * @param score Player score.
+     * @param name         Player name, three letters.
+     * @param survivalTime Player score.
      */
-    public Score(final String name, final int score, final int survivalTime) {
+    public Score(final String name, final int survivalTime) {
         this.name = name;
-        this.score = score;
         this.survivalTime = survivalTime;
     }
 
@@ -36,20 +33,13 @@ public class Score implements Comparable<Score> {
     }
 
     /**
-     * Getter for the player's score.
-     *
-     * @return High score.
-     */
-    public final int getScore() {
-        return this.score;
-    }
-
-    /**
      * Getter for the player's survival time.
      *
      * @return Survival time.
      */
-    public final int getSurvivalTime(){ return this.survivalTime;}
+    public final int getSurvivalTime() {
+        return this.survivalTime;
+    }
 
     /**
      * Orders the scores descending by score.
@@ -58,20 +48,10 @@ public class Score implements Comparable<Score> {
      * @return Comparison between the two scores. Positive if the current one is smaller, positive
      * if its bigger, zero if its the same.
      */
-
-
-
     @Override
     public final int compareTo(final Score score) {
-        // 1차적으로 score를 비교
-        int comparison = this.score < score.getScore() ? 1 : this.score > score.getScore() ? -1 : 0;
-
-        // score가 동일한 경우 survivalTime으로 비교
-        if (comparison == 0) {
-            comparison = this.survivalTime < score.getSurvivalTime() ? 1
-                : this.survivalTime > score.getSurvivalTime() ? -1 : 0;
-        }
-
+        int comparison = this.survivalTime < score.getSurvivalTime() ? 1
+            : this.survivalTime > score.getSurvivalTime() ? -1 : 0;
         return comparison;
     }
 

@@ -145,14 +145,12 @@ public final class FileManager {
 
             Score highScore = null;
             String name = reader.readLine();
-            String score = reader.readLine();
             String survivalTime = reader.readLine();
 
-            while ((name != null) && (score != null)) {
-                highScore = new Score(name, Integer.parseInt(score), Integer.parseInt(survivalTime));
+            while ((name != null) && (survivalTime != null)) {
+                highScore = new Score(name, Integer.parseInt(survivalTime));
                 highScores.add(highScore);
                 name = reader.readLine();
-                score = reader.readLine();
                 survivalTime = reader.readLine();
             }
         } finally {
@@ -194,14 +192,12 @@ public final class FileManager {
 
             Score highScore = null;
             String name = bufferedReader.readLine();
-            String score = bufferedReader.readLine();
             String survivalTime = bufferedReader.readLine();
 
-            while ((name != null) && (score != null)) {
-                highScore = new Score(name, Integer.parseInt(score), Integer.parseInt(survivalTime));
+            while ((name != null) && (survivalTime != null)) {
+                highScore = new Score(name, Integer.parseInt(survivalTime));
                 highScores.add(highScore);
                 name = bufferedReader.readLine();
-                score = bufferedReader.readLine();
                 survivalTime = bufferedReader.readLine();
             }
 
@@ -258,8 +254,6 @@ public final class FileManager {
                     break;
                 }
                 bufferedWriter.write(score.getName());
-                bufferedWriter.newLine();
-                bufferedWriter.write(Integer.toString(score.getScore()));
                 bufferedWriter.newLine();
                 bufferedWriter.write(Integer.toString(score.getSurvivalTime()));
                 bufferedWriter.newLine();

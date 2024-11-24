@@ -563,9 +563,8 @@ public final class DrawManager {
         String scoreString = "";
 
         for (Score score : highScores) {
-            scoreString =String.format("%s        %04d        %d sec",
+            scoreString =String.format("%s        %d sec",
                 score.getName(),
-                score.getScore(),
                 score.getSurvivalTime());
 
             drawCenteredRegularString(screen, scoreString, screen.getHeight()
