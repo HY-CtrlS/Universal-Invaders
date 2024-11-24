@@ -150,6 +150,9 @@ public class GameScreen extends Screen {
     public final void initialize() {
         super.initialize();
 
+        // 게임 시작 시 StatusManager의 status 객체를 res/status 의 값으로 초기화
+        getStatusManager().resetDefaultStatus();
+
         this.ship = Ship.createShipByID(this.shipID, this.width / 2, this.height / 2);
         enemyShipSet = new EnemyShipSet(this.gameSettings, this.level, this.ship);
         enemyShipSet.attach(this);
@@ -164,9 +167,6 @@ public class GameScreen extends Screen {
         this.screenFinishedCooldown = Core.getCooldown(SCREEN_CHANGE_INTERVAL);
         this.bullets = new HashSet<Bullet>();
         this.experiences = new HashSet<Experience>(); // 경험치 집합 초기화
-
-        // 게임 시작 시 StatusManager의 status 객체를 res/status 의 값으로 초기화
-        getStatusManager().resetDefaultStatus();
 
         // 게임 시작 시 초기 아이템 리스트 생성
         itemList = items.initializedItems();
@@ -520,6 +520,7 @@ public class GameScreen extends Screen {
                         // 늘어난 체력에 맞게 현재 체력의 비율 조정
                         this.hp = ((int) (getStatusManager().getMaxHp() * portionHp));
                     }
+                    this.ship.updateStatsFromStatusManager();
                 }
             }
         }
