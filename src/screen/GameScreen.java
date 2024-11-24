@@ -1,8 +1,10 @@
 package screen;
 
+
 import engine.DrawManager;
 import engine.ShipStatus;
 import engine.StatusManager;
+
 import entity.Entity.Direction;
 import entity.Ship;
 import java.awt.Color;
@@ -100,7 +102,12 @@ public class GameScreen extends Screen {
     /** 플레이어의 현재 레벨 */
     private int playerLevel = 1;
 
+
+    /** Total survival time in milliseconds. */
+    private int survivalTime = 0;
+
     private int shipID;
+
 
     /**
      * Constructor, establishes the properties of the screen.
@@ -108,18 +115,27 @@ public class GameScreen extends Screen {
      * @param gameState    Current game state.
      * @param gameSettings Current game settings.
      * @param bonusLife    Checks if a bonus life is awarded this level.
+     * @param totalSurvivalTime Total Survival time from the last gamescreen instance.
      * @param width        Screen width.
      * @param height       Screen height.
      * @param fps          Frames per second, frame rate at which the game is run.
+
      */
     public GameScreen(final GameState gameState,
-        final GameSettings gameSettings, final boolean bonusLife,
+
+        final GameSettings gameSettings, final boolean bonusLife,  int totalSurvivalTime,
         final int width, final int height, final int fps, final int shipID) {
+
         super(width, height, fps);
 
         this.gameSettings = gameSettings;
         this.bonusLife = bonusLife;
+
+        this.survivalTime = totalSurvivalTime;
+
+
         this.shipID = shipID;
+
         this.level = gameState.getLevel();
         this.score = gameState.getScore();
 
@@ -351,6 +367,11 @@ public class GameScreen extends Screen {
 
         if (this.levelFinished && this.screenFinishedCooldown.checkFinished()) {
             this.isRunning = false;
+
+
+            // 생존 시간 계산
+            this.survivalTime += levelTime;
+            this.logger.info("Survival Time: " + this.survivalTime + " ms");
         }
 
 
@@ -573,7 +594,7 @@ public class GameScreen extends Screen {
      */
     public final GameState getGameState() {
         return new GameState(this.level, this.score, this.hp,
-            this.bulletsShot, this.shipsDestroyed);
+            this.bulletsShot, this.shipsDestroyed, this.survivalTime);
     }
 
 }
