@@ -1,5 +1,9 @@
 package screen;
 
+import static engine.Core.getStatusManager;
+
+import Item.Item;
+import Item.ItemList;
 
 import engine.DrawManager;
 import engine.ShipStatus;
@@ -10,6 +14,7 @@ import entity.Ship;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import engine.Cooldown;
@@ -28,8 +33,6 @@ public class GameScreen extends Screen {
 
     /** Milliseconds until the screen accepts user input. */
     private static final int INPUT_DELAY = 6000;
-    /** Bonus score for each life remaining at the end of the level. */
-    private static final int LIFE_SCORE = 100;
     /** 경험치 바의 높이 */
     public static final int EXPERIENCE_BAR_HEIGHT = 40;
     /** Minimum time between bonus ship's appearances. */
@@ -67,10 +70,8 @@ public class GameScreen extends Screen {
     private Set<Bullet> bullets;
     /** 화면에 존재하는 경험치들의 집합 */
     private Set<Experience> experiences;
-    /** Current score. */
-    private int score;
     /** 플레이어의 최대 Hp. 기본값은 100. */
-    private int maxHp = Core.getStatusManager().getMaxHp();
+    private int maxHp = getStatusManager().getMaxHp();
     /** Player hp left. */
     private int hp;
     /** HP 자동 재생되는 누적량 체크 **/
@@ -85,10 +86,6 @@ public class GameScreen extends Screen {
     private long gameStartTime;
     /** Checks if the level is finished. */
     private boolean levelFinished;
-    /** Checks if a bonus life is received. */
-    private boolean bonusLife;
-    /** level 경과 시간 */
-    private int levelTime;
     /** level 이 시작 되었는지 여부 */
     private boolean levelStarted;
     /** 1초를 새는 Cooldown */
@@ -104,46 +101,34 @@ public class GameScreen extends Screen {
 
 
     /** Total survival time in milliseconds. */
-    private int survivalTime = 0;
+    private int survivalTime;
 
     private int shipID;
 
+    // 아이템 리스트 객체 생성
+    private static ItemList items = new ItemList();
+    // 아이템 리스트 참조하기 위한 배열
+    private static List<Item> itemList;
 
     /**
      * Constructor, establishes the properties of the screen.
      *
      * @param gameState    Current game state.
      * @param gameSettings Current game settings.
-     * @param bonusLife    Checks if a bonus life is awarded this level.
-     * @param totalSurvivalTime Total Survival time from the last gamescreen instance.
      * @param width        Screen width.
      * @param height       Screen height.
      * @param fps          Frames per second, frame rate at which the game is run.
-
      */
     public GameScreen(final GameState gameState,
-
-        final GameSettings gameSettings, final boolean bonusLife,  int totalSurvivalTime,
+        final GameSettings gameSettings,
         final int width, final int height, final int fps, final int shipID) {
-
         super(width, height, fps);
 
         this.gameSettings = gameSettings;
-        this.bonusLife = bonusLife;
-
-        this.survivalTime = totalSurvivalTime;
-
-
         this.shipID = shipID;
-
         this.level = gameState.getLevel();
-        this.score = gameState.getScore();
 
         this.hp = gameState.getHp();
-        if (this.bonusLife) {
-            this.hp++;
-
-        }
         this.bulletsShot = gameState.getBulletsShot();
         this.shipsDestroyed = gameState.getShipsDestroyed();
 
@@ -156,7 +141,7 @@ public class GameScreen extends Screen {
         this.returnCode = 1;
 
         // 현재 게임에 사용되는 Ship의 status 정보
-        this.status = Core.getStatusManager();
+        this.status = getStatusManager();
     }
 
     /**
@@ -180,6 +165,15 @@ public class GameScreen extends Screen {
         this.bullets = new HashSet<Bullet>();
         this.experiences = new HashSet<Experience>(); // 경험치 집합 초기화
 
+        // 게임 시작 시 StatusManager의 status 객체를 res/status 의 값으로 초기화
+        getStatusManager().resetDefaultStatus();
+
+        // 게임 시작 시 초기 아이템 리스트 생성
+        itemList = items.initializedItems();
+        // 게임 시작 시 함선의 체력을 기본으로 초기화
+        this.hp = (getStatusManager().getMaxHp());
+        items.initializedItems();
+
         // Special input delay / countdown.
         this.gameStartTime = System.currentTimeMillis();
         this.inputDelay = Core.getCooldown(INPUT_DELAY);
@@ -187,7 +181,7 @@ public class GameScreen extends Screen {
 
         // GameScreen 이 시작될 땐 카운트 다운이 시작되므로
         this.levelStarted = false;
-        this.levelTime = 0;
+        this.survivalTime = 0;
         this.clockCooldown = Core.getCooldown(1000);
         this.clockCooldown.reset();
 
@@ -204,8 +198,7 @@ public class GameScreen extends Screen {
     public final int run() {
         super.run();
 
-        this.score += LIFE_SCORE * (this.hp - 20);
-        this.logger.info("Screen cleared with a score of " + this.score);
+        this.logger.info("Screen cleared with a survival time " + this.survivalTime);
 
         return this.returnCode;
     }
@@ -318,34 +311,15 @@ public class GameScreen extends Screen {
                 inputManager.resetKeyState(KeyEvent.VK_SPACE);
             }
 
-            //if (this.enemyShipSpecial != null) {
-            //	if (!this.enemyShipSpecial.isDestroyed())
-            //		this.enemyShipSpecial.move(2, 0);
-            //else if (this.enemyShipSpecialExplosionCooldown.checkFinished())
-            //	this.enemyShipSpecial = null;
-
-            //}
-            //if (this.enemyShipSpecial == null
-            //		&& this.enemyShipSpecialCooldown.checkFinished()) {
-            //	this.enemyShipSpecial = new EnemyShip();
-            //	this.enemyShipSpecialCooldown.reset();
-            //	this.logger.info("A special ship appears");
-            //	}
-            //	if (this.enemyShipSpecial != null
-            //		&& this.enemyShipSpecial.getPositionX() > this.width) {
-            //	this.enemyShipSpecial = null;
-            //		this.logger.info("The special ship has escaped");
-            //}
-
             // hp 자동 재생 기능 실행
             hpRegen(status.getRegenHp());
 
             this.ship.update();
             this.enemyShipSet.update();
             ExperiencePool.update(this.experiences);
-            // 1초마다 levelTime 1씩 증가
+            // 1초마다 생존 시간 1씩 증가
             if (this.clockCooldown.checkFinished()) {
-                this.levelTime += 1;
+                this.survivalTime += 1;
                 this.clockCooldown.reset();
             }
 
@@ -358,20 +332,14 @@ public class GameScreen extends Screen {
             draw();
         }
 
-        // 현재 진행된 시간이 라운드에서 정한 시간과 같으면 클리어로 판단 후 라운드 종료
-        if ((levelTime == this.gameSettings.getRoundTime() || this.hp <= 0)
-            && !this.levelFinished) {
+        // 체력이 0 이하로 내려가면 게임 종료
+        if ((this.hp <= 0) && !this.levelFinished) {
             this.levelFinished = true;
             this.screenFinishedCooldown.reset();
         }
 
         if (this.levelFinished && this.screenFinishedCooldown.checkFinished()) {
             this.isRunning = false;
-
-
-            // 생존 시간 계산
-            this.survivalTime += levelTime;
-            this.logger.info("Survival Time: " + this.survivalTime + " ms");
         }
 
 
@@ -405,7 +373,6 @@ public class GameScreen extends Screen {
         enemyShipSet.draw();
 
         // Interface.
-        drawManager.drawScore(this, this.score);
         drawManager.drawLives(this, this.hp);
         drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
         drawManager.drawLevel(this, this.playerLevel); // 현재 레벨 그리기
@@ -418,12 +385,11 @@ public class GameScreen extends Screen {
             int countdown = (int) ((INPUT_DELAY
                 - (System.currentTimeMillis()
                 - this.gameStartTime)) / 1000);
-            drawManager.drawCountDown(this, this.level, countdown,
-                this.bonusLife);
+            drawManager.drawCountDown(this, this.level, countdown);
         }
 
         // 현재 levelTime 그리기
-        drawManager.drawTime(this, this.gameSettings.getRoundTime() - levelTime);
+        drawManager.drawSurvivalTime(this, survivalTime);
 
         drawManager.completeDrawing(this);
     }
@@ -470,7 +436,6 @@ public class GameScreen extends Screen {
                 for (EnemyShip enemyShip : enemis) {
                     if (!enemyShip.isDestroyed()
                         && checkCollision(bullet, enemyShip)) {
-                        this.score += enemyShip.getPointValue();
                         this.shipsDestroyed++;
 
                         this.enemyShipSet.damage_Enemy(enemyShip, bullet.getDamage());
@@ -494,7 +459,6 @@ public class GameScreen extends Screen {
                 if (this.enemyShipSpecial != null
                     && !this.enemyShipSpecial.isDestroyed()
                     && checkCollision(bullet, this.enemyShipSpecial)) {
-                    this.score += this.enemyShipSpecial.getPointValue();
                     this.shipsDestroyed++;
                     this.enemyShipSpecial.destroy();
                     this.enemyShipSpecialExplosionCooldown.reset();
@@ -538,6 +502,24 @@ public class GameScreen extends Screen {
                     this.logger.info("플레이어 레벨 업! 현재 레벨: " + playerLevel);
                     Core.getSoundManager().playLevelUpSound();
                     currentExperience -= EXPERIENCE_THRESHOLD;
+                    // 선택한 아이템 없는 것으로 초기화
+                    int selectedItem = -1;
+                    this.logger.info(
+                        "Starting " + this.width + "X" + this.height + " ItemSelectingScreen at "
+                            + this.fps + " fps.");
+                    ItemSelectedScreen currentScreen = new ItemSelectedScreen(
+                        items.getSelectedItemList(), width, height, this.fps, playerLevel);
+                    selectedItem = currentScreen.run();
+                    this.logger.info("Closing Item Selecting Screen.");
+                    // 최대 체력 증가 아이템을 선택한 경우, 현재 체력 또한 증가된 체력만큼 올려줌.
+                    if (selectedItem == 1) {
+                        // 가지고 있던 체력의 비율 계산
+                        double portionHp =
+                            (double) this.hp / (getStatusManager().getMaxHp() - itemList.get(1)
+                                .getChangedValue());
+                        // 늘어난 체력에 맞게 현재 체력의 비율 조정
+                        this.hp = ((int) (getStatusManager().getMaxHp() * portionHp));
+                    }
                 }
             }
         }
@@ -593,7 +575,7 @@ public class GameScreen extends Screen {
      * @return Current game state.
      */
     public final GameState getGameState() {
-        return new GameState(this.level, this.score, this.hp,
+        return new GameState(this.level, this.hp,
             this.bulletsShot, this.shipsDestroyed, this.survivalTime);
     }
 

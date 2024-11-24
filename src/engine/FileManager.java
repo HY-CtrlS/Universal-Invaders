@@ -145,14 +145,12 @@ public final class FileManager {
 
             Score highScore = null;
             String name = reader.readLine();
-            String score = reader.readLine();
             String survivalTime = reader.readLine();
 
-            while ((name != null) && (score != null)) {
-                highScore = new Score(name, Integer.parseInt(score), Integer.parseInt(survivalTime));
+            while ((name != null) && (survivalTime != null)) {
+                highScore = new Score(name, Integer.parseInt(survivalTime));
                 highScores.add(highScore);
                 name = reader.readLine();
-                score = reader.readLine();
                 survivalTime = reader.readLine();
             }
         } finally {
@@ -194,14 +192,12 @@ public final class FileManager {
 
             Score highScore = null;
             String name = bufferedReader.readLine();
-            String score = bufferedReader.readLine();
             String survivalTime = bufferedReader.readLine();
 
-            while ((name != null) && (score != null)) {
-                highScore = new Score(name, Integer.parseInt(score), Integer.parseInt(survivalTime));
+            while ((name != null) && (survivalTime != null)) {
+                highScore = new Score(name, Integer.parseInt(survivalTime));
                 highScores.add(highScore);
                 name = bufferedReader.readLine();
-                score = bufferedReader.readLine();
                 survivalTime = bufferedReader.readLine();
             }
 
@@ -259,8 +255,6 @@ public final class FileManager {
                 }
                 bufferedWriter.write(score.getName());
                 bufferedWriter.newLine();
-                bufferedWriter.write(Integer.toString(score.getScore()));
-                bufferedWriter.newLine();
                 bufferedWriter.write(Integer.toString(score.getSurvivalTime()));
                 bufferedWriter.newLine();
                 savedCount++;
@@ -291,7 +285,8 @@ public final class FileManager {
             int maxHp = Integer.parseInt(bufferedReader.readLine());
             double regenHp = Double.parseDouble(bufferedReader.readLine());
 
-            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxHp, regenHp);
+            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxHp,
+                regenHp);
 
         } finally {
             if (inputStream != null) {
@@ -331,7 +326,8 @@ public final class FileManager {
             int maxHp = Integer.parseInt(bufferedReader.readLine());
             double regenHP = Double.parseDouble((bufferedReader.readLine()));
 
-            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxHp, regenHP);
+            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxHp,
+                regenHP);
 
         } catch (FileNotFoundException e) {
             // loads default if there's no user scores.

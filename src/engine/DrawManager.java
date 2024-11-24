@@ -227,7 +227,8 @@ public final class DrawManager {
                     backBufferGraphics.setColor(entity.getColor()[layerNum]);
                     for (int row = image[layerNum].length - 1; row >= 0; row--) {
                         for (int column = image[layerNum][row].length - 1; column >= 0; column--) {
-                            if (image[layerNum][image[layerNum].length - 1 - row][image[layerNum][row].length - 1 - column]) {
+                            if (image[layerNum][image[layerNum].length - 1 - row][
+                                image[layerNum][row].length - 1 - column]) {
                                 backBufferGraphics.drawRect(positionX + row * 2, positionY
                                     + column * 2, 1, 1);
                             }
@@ -299,19 +300,6 @@ public final class DrawManager {
         for (int j = 0; j < screen.getWidth() - 1; j += 2) {
             backBufferGraphics.drawLine(j, 0, j, screen.getHeight() - 1);
         }
-    }
-
-    /**
-     * Draws current score on screen.
-     *
-     * @param screen Screen to draw on.
-     * @param score  Current score.
-     */
-    public void drawScore(final Screen screen, final int score) {
-        backBufferGraphics.setFont(fontRegular);
-        backBufferGraphics.setColor(Color.WHITE);
-        String scoreString = String.format("%04d", score);
-        backBufferGraphics.drawString(scoreString, screen.getWidth() - 60, 25);
     }
 
     /**
@@ -428,29 +416,21 @@ public final class DrawManager {
      * Draws game results.
      *
      * @param screen         Screen to draw on.
-     * @param score          Score obtained.
      * @param shipsDestroyed Total ships destroyed.
-     * @param accuracy       Total accuracy.
      * @param isNewRecord    If the score is a new high score.
      */
-    public void drawResults(final Screen screen, final int score,
-         final int shipsDestroyed,
-        final float accuracy, final int survivalTime, final boolean isNewRecord) {
-        String scoreString = String.format("score %04d", score);
+    public void drawResults(final Screen screen,
+        final int shipsDestroyed, final int survivalTime, final boolean isNewRecord) {
 
         String shipsDestroyedString = "enemies destroyed " + shipsDestroyed;
         String survivalTimeString = "Survival Time: " + survivalTime + " s";
-        String accuracyString = String
-            .format("accuracy %.2f%%", accuracy * 100);
 
         int height = isNewRecord ? 4 : 2;
 
         drawCenteredRegularString(screen, survivalTimeString,
-           screen.getHeight() / height + fontRegularMetrics.getHeight()
+            screen.getHeight() / height + fontRegularMetrics.getHeight()
                 * 2);
         backBufferGraphics.setColor(Color.WHITE);
-        drawCenteredRegularString(screen, scoreString, screen.getHeight()
-            / height);
 
         drawCenteredRegularString(screen, shipsDestroyedString,
             screen.getHeight() / height + fontRegularMetrics.getHeight()
@@ -563,9 +543,8 @@ public final class DrawManager {
         String scoreString = "";
 
         for (Score score : highScores) {
-            scoreString =String.format("%s        %04d        %d sec",
+            scoreString = String.format("%s        %d sec",
                 score.getName(),
-                score.getScore(),
                 score.getSurvivalTime());
 
             drawCenteredRegularString(screen, scoreString, screen.getHeight()
@@ -605,34 +584,22 @@ public final class DrawManager {
     /**
      * Countdown to game start.
      *
-     * @param screen    Screen to draw on.
-     * @param level     Game difficulty level.
-     * @param number    Countdown number.
-     * @param bonusLife Checks if a bonus life is received.
+     * @param screen Screen to draw on.
+     * @param level  Game difficulty level.
+     * @param number Countdown number.
      */
-    public void drawCountDown(final Screen screen, final int level,
-        final int number, final boolean bonusLife) {
+    public void drawCountDown(final Screen screen, final int level, final int number) {
         int rectWidth = screen.getWidth();
         int rectHeight = screen.getHeight() / 6;
         backBufferGraphics.setColor(Color.BLACK);
         backBufferGraphics.fillRect(0, screen.getHeight() / 2 - rectHeight / 2,
             rectWidth, rectHeight);
         backBufferGraphics.setColor(Color.GREEN);
-        drawHorizontalLine(screen, screen.getHeight() / 2 - screen.getHeight()
-            / 12);
-        drawHorizontalLine(screen, screen.getHeight() / 2 + screen.getHeight()
-            / 12);
+        drawHorizontalLine(screen, screen.getHeight() / 2 - screen.getHeight() / 12);
+        drawHorizontalLine(screen, screen.getHeight() / 2 + screen.getHeight() / 12);
         if (number >= 4) {
-            if (!bonusLife) {
-                drawCenteredBigString(screen, "Level " + level,
-                    screen.getHeight() / 2
-                        + fontBigMetrics.getHeight() / 3);
-            } else {
-                drawCenteredBigString(screen, "Level " + level
-                        + " - Bonus life!",
-                    screen.getHeight() / 2
-                        + fontBigMetrics.getHeight() / 3);
-            }
+            drawCenteredBigString(screen, "Are you ready?",
+                screen.getHeight() / 2 + fontBigMetrics.getHeight() / 3);
         } else if (number != 0) {
             drawCenteredBigString(screen, Integer.toString(number),
                 screen.getHeight() / 2 + fontBigMetrics.getHeight() / 3);
@@ -643,30 +610,24 @@ public final class DrawManager {
     }
 
     /**
-     * 레벨 시작 후 경과 시간을 화면 상단 중앙에 표시합니다.
+     * 현재 생존 시간을 화면에 그립니다.
      *
-     * @param screen      화면 객체입니다.
-     * @param elapsedTime 경과 시간(초)입니다.
+     * @param screen        화면 객체
+     * @param survivalTime  현재 생존 시간
      */
-    public void drawTime(final Screen screen, final int elapsedTime) {
+    public void drawSurvivalTime(final Screen screen, final int survivalTime) {
         backBufferGraphics.setFont(fontRegular);
         backBufferGraphics.setColor(Color.WHITE);
-        String timeString = elapsedTime + " S";
-
-        // 문자열의 너비를 계산하여 중앙에 위치시킵니다.
-        int xPosition = (screen.getWidth() - fontRegularMetrics.stringWidth(timeString)) / 2;
-        // Y 좌표는 원하는 위치로 설정합니다. 여기서는 상단 여백을 25로 설정했습니다.
-        int yPosition = 25;
-
-        backBufferGraphics.drawString(timeString, xPosition, yPosition);
+        String survivalTimeString = String.format("%d S", survivalTime);
+        backBufferGraphics.drawString(survivalTimeString, screen.getWidth() - 60, 25);
     }
 
     public void drawItemBox(final int position_X, final int position_Y) {
         backBufferGraphics.drawRect(position_X, position_Y, 100, 100);
     }
 
-    public void drawItemSelectingTitle(final Screen screen, final GameState gameState) {
-        String titleString = "Level  " + gameState.getLevel() + "  Clear!!";
+    public void drawItemSelectingTitle(final Screen screen, final int playerLevel) {
+        String titleString = "Level  " + playerLevel + "  !!";
         String instructionsString1 =
             "Select your Item with A + D / arrows";
         String instructionsString2 =
@@ -754,7 +715,7 @@ public final class DrawManager {
         boolean[][][] image = spriteMap.get(item.getSpriteType());
 
         backBufferGraphics.setColor(item.getColor());
-        for (boolean [][] layer: image) {
+        for (boolean[][] layer : image) {
             for (int i = 0; i < layer.length; i++) {
                 for (int j = 0; j < layer[i].length; j++) {
                     if (layer[i][j]) {
@@ -943,16 +904,13 @@ public final class DrawManager {
      */
     public void drawLevel(final Screen screen, final int level) {
         backBufferGraphics.setFont(fontRegular);
-
-        int barX = 230; // 레벨 표시 텍스트의 X 좌표
-        int barY = 25; // 레벨 표시 텍스트의 Y 좌표 (체력 바 아래)
         String levelText = "LV. " + level; // 표시할 텍스트
 
         // 텍스트 색상 설정
         backBufferGraphics.setColor(Color.WHITE);
 
         // 텍스트를 화면에 그리기
-        backBufferGraphics.drawString(levelText, barX, barY);
+        drawCenteredRegularString(screen, levelText, 25);
     }
 
     /**

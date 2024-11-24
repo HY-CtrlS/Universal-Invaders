@@ -19,20 +19,20 @@ public class ItemSelectedScreen extends Screen {
     private static final int SELECTION_TIME = 200;
     // 현재 선택된 아이템
     private int selectedItem = 0;
-    // 현재 게임 정보를 얻어오기 위한 게임 상태 변수
-    private GameState gameState;
+    // 플레이어 레벨
+    private int playerLevel;
     // 선택한 아이템에 대한 정보
     private int item_num;
 
     // 생성자 - 아이템셋, width, height, fps 받아옴
-    public ItemSelectedScreen(final GameState gameState, List<Item> items, final int width,
-        final int height, final int fps) {
+    public ItemSelectedScreen(List<Item> items, final int width,
+        final int height, final int fps, final int playerLevel) {
         super(width, height, fps);
 
         //아이템 리스트 받아옴
         this.items = items;
 
-        this.gameState = gameState;
+        this.playerLevel = playerLevel;
         this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
         this.selectionCooldown.reset();
     }
@@ -118,7 +118,7 @@ public class ItemSelectedScreen extends Screen {
     private void draw() {
         drawManager.initDrawing(this);
 
-        drawManager.drawItemSelectingTitle(this, this.gameState);
+        drawManager.drawItemSelectingTitle(this, this.playerLevel);
         drawManager.drawSelectedItem(this, items, this.selectedItem);
         drawManager.drawItems(this, items);
 

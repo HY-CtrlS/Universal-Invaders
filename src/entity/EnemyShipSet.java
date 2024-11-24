@@ -24,8 +24,6 @@ public class EnemyShipSet {
     private Random random;
     // 아군 함선 참조를 위한 변수
     private Ship ship;
-    // 적 함선의 이동속도
-    private int movementSpeed;
     // 적 함선의 X 방향 속도
     private double X_speed = 1.0;
     // 적 함선의 Y 방향 속도
@@ -52,7 +50,6 @@ public class EnemyShipSet {
         this.drawManager = Core.getDrawManager();
         this.random = new Random();
         this.ship = ship;
-        this.movementSpeed = gameSettings.getBaseSpeed();
         this.logger = Core.getLogger();
         this.enemyCounter = 0;
         this.game_Level = game_Level;
