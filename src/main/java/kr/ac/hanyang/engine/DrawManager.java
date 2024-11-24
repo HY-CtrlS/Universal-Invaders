@@ -303,6 +303,19 @@ public final class DrawManager {
     }
 
     /**
+     * Draws current ultimate skill gauge on screen.
+     *
+     * @param screen   Screen to draw on.
+     * @param ultGauge Current ultimate skill gauge of the player.
+     */
+    public void drawUltGauge(final Screen screen, final int ultGauge) {
+        backBufferGraphics.setFont(fontRegular);
+        backBufferGraphics.setColor(Color.WHITE);
+        String scoreString = ultGauge + " / 100 Ult";
+        backBufferGraphics.drawString(scoreString, screen.getWidth() - 30, 25);
+    }
+
+    /**
      * Draws number of remaining lives on screen.
      *
      * @param screen Screen to draw on.
