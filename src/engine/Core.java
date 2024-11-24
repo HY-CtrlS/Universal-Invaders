@@ -76,7 +76,10 @@ public final class Core {
 
         int returnCode = 1;
         do {
-            gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0);
+
+
+            gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0, 0);
+
             switch (returnCode) {
                 case 1:
                     // Main menu.
@@ -125,7 +128,8 @@ public final class Core {
                         + gameState.getScore() + ", "
                         + gameState.getHp() + " lives remaining, "
                         + gameState.getBulletsShot() + " bullets shot and "
-                        + gameState.getShipsDestroyed() + " ships destroyed.");
+                        + gameState.getShipsDestroyed() + " ships destroyed."
+                        + "Total survival time: " + (int) gameState.getSurvivalTime());
                     currentScreen = new ScoreScreen(width, height, FPS, gameState);
                     returnCode = frame.setScreen(currentScreen);
                     LOGGER.info("Closing score screen.");

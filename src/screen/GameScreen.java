@@ -4,9 +4,11 @@ import static engine.Core.getStatusManager;
 
 import Item.Item;
 import Item.ItemList;
+
 import engine.DrawManager;
 import engine.ShipStatus;
 import engine.StatusManager;
+
 import entity.Entity.Direction;
 import entity.Ship;
 import java.awt.Color;
@@ -103,6 +105,10 @@ public class GameScreen extends Screen {
     /** 플레이어의 현재 레벨 */
     private int playerLevel = 1;
 
+
+    /** Total survival time in milliseconds. */
+    private int survivalTime = 0;
+
     private int shipID;
 
     // 아이템 리스트 객체 생성
@@ -115,6 +121,7 @@ public class GameScreen extends Screen {
      *
      * @param gameState    Current game state.
      * @param gameSettings Current game settings.
+     * @param totalSurvivalTime Total Survival time from the last gamescreen instance.
      * @param width        Screen width.
      * @param height       Screen height.
      * @param fps          Frames per second, frame rate at which the game is run.
@@ -595,7 +602,7 @@ public class GameScreen extends Screen {
      */
     public final GameState getGameState() {
         return new GameState(this.level, this.score, this.hp,
-            this.bulletsShot, this.shipsDestroyed);
+            this.bulletsShot, this.shipsDestroyed, this.survivalTime);
     }
 
 }
