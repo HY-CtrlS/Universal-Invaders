@@ -29,15 +29,11 @@ public final class Core {
     /** Screen currently shown. */
     private static Screen currentScreen;
     /** Application logger. */
-    private static final Logger LOGGER = Logger.getLogger(Core.class
-        .getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(Core.class.getSimpleName());
     /** Logger handler for printing to disk. */
     private static Handler fileHandler;
     /** Logger handler for printing to console. */
     private static ConsoleHandler consoleHandler;
-
-    /** quit로 라운드라 종료되었는지 확인하는 변수 */
-    private static int isQuit;
 
     /**
      * Test implementation.
@@ -45,6 +41,68 @@ public final class Core {
      * @param args Program args, ignored.
      */
     public static void main(final String[] args) {
+        initializeLogger();
+        initializeFrame();
+
+        int width = frame.getWidth();
+        int height = frame.getHeight();
+
+        int returnCode = 1;
+        GameState gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0, 0);
+
+        do {
+
+            switch (returnCode) {
+                case 1:
+                    // Main menu.
+                    currentScreen = new TitleScreen(width, height, FPS);
+                    returnCode = handleScreen(currentScreen, "title screen");
+                    break;
+                case 2:
+                    // 게임 시작 전 함선 선택
+                    currentScreen = new shipSelectScreen(width, height, FPS);
+                    int shipID = handleScreen(currentScreen, "ship select screen");
+
+                    // 게임 화면 시작
+                    currentScreen = new GameScreen(gameState, GAME_SETTING, width, height, FPS, shipID);
+                    int isQuit = handleScreen(currentScreen, "game screen");
+
+                    // 플레이한 게임의 정보를 gameState에 저장
+                    gameState = ((GameScreen) currentScreen).getGameState();
+
+                    getSoundManager().stopBackgroundMusic();
+                    if (isQuit == 0) {
+                        returnCode = 1;
+                        break;
+                    }
+
+                    // 게임 종료 후 gameState의 정보를 이용하여 scoreScreen 생성
+                    currentScreen = new ScoreScreen(width, height, FPS, gameState);
+                    returnCode = handleScreen(currentScreen, "score screen");
+                    break;
+                case 3:
+                    // High scores.
+                    currentScreen = new HighScoreScreen(width, height, FPS);
+                    returnCode = handleScreen(currentScreen, "high score screen");
+                    break;
+                case 4:
+                    // 설정 화면
+                    currentScreen = new SettingScreen(width, height, FPS);
+                    returnCode = handleScreen(currentScreen, "setting screen");
+                    break;
+                default:
+                    break;
+            }
+
+        } while (returnCode != 0);
+
+        close();
+    }
+
+    /**
+     * 로거를 초기화합니다.
+     */
+    private static void initializeLogger() {
         try {
             LOGGER.setUseParentHandlers(false);
 
@@ -59,98 +117,36 @@ public final class Core {
             LOGGER.setLevel(Level.ALL);
 
         } catch (Exception e) {
-            // TODO handle exception
-            e.printStackTrace();
+            LOGGER.severe("An error occurred during logger initialization: " + e.getMessage());
         }
+    }
 
+    /**
+     * 메인 게임 프레임을 초기화합니다.
+     */
+    private static void initializeFrame() {
         frame = new Frame(WIDTH, HEIGHT);
         DrawManager.getInstance().setFrame(frame);
-        int width = frame.getWidth();
-        int height = frame.getHeight();
+    }
 
-        GameState gameState;
+    /**
+     * 화면을 처리합니다.
+     *
+     * @param screen     화면
+     * @param screenName 화면 이름
+     * @return 화면 종료 코드
+     */
+    private static int handleScreen(Screen screen, String screenName) {
+        LOGGER.info("Starting " + WIDTH + "x" + HEIGHT + " " + screenName + " at " + FPS + " fps.");
+        int returnCode = frame.setScreen(screen);
+        LOGGER.info("Closing " + screenName + ".");
+        return returnCode;
+    }
 
-        int returnCode = 1;
-        do {
-
-            gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0, 0);
-
-            switch (returnCode) {
-                case 1:
-                    // Main menu.
-                    currentScreen = new TitleScreen(width, height, FPS);
-                    LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-                        + " title screen at " + FPS + " fps.");
-                    returnCode = frame.setScreen(currentScreen);
-                    LOGGER.info("Closing title screen.");
-                    // 게임 진입 전에 gameState 현재 체력을 다시 최대 체력으로 설정
-                    break;
-                case 2:
-                    // 게임 시작 시 StatusManager의 status 객체를 res/status 의 값으로 초기화
-                    getStatusManager().resetDefaultStatus();
-
-                    // 게임 시작 전 함선 선택
-                    currentScreen = new shipSelectScreen(width, height, FPS);
-                    LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-                        + " ship select screen at " + FPS + " fps.");
-                    int shipID = frame.setScreen(currentScreen);
-                    LOGGER.info("Closing ship select screen.");
-
-                    // 게임 화면 시작
-                    currentScreen = new GameScreen(gameState,
-                        GAME_SETTING,
-                        width, height, FPS, shipID);
-                    LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-                        + " game screen at " + FPS + " fps.");
-                    isQuit = frame.setScreen(currentScreen);
-                    LOGGER.info("Closing game screen.");
-                    if (isQuit == 0) {
-                        break;
-                    }
-
-                    // 플레이한 게임의 정보를 gameState에 저장
-                    gameState = ((GameScreen) currentScreen).getGameState();
-
-                    getSoundManager().stopBackgroundMusic();
-                    if (isQuit == 0) {
-                        returnCode = 1;
-                        break;
-                    }
-
-                    // 게임 종료 후 gameState의 정보를 이용하여 scoreScreen 생성
-                    LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-                        + " score screen at " + FPS + " fps, with a score of "
-                        + gameState.getScore() + ", "
-                        + gameState.getHp() + " lives remaining, "
-                        + gameState.getBulletsShot() + " bullets shot and "
-                        + gameState.getShipsDestroyed() + " ships destroyed."
-                        + "Total survival time: " + (int) gameState.getSurvivalTime());
-                    currentScreen = new ScoreScreen(width, height, FPS, gameState);
-                    returnCode = frame.setScreen(currentScreen);
-                    LOGGER.info("Closing score screen.");
-                    break;
-                case 3:
-                    // High scores.
-                    currentScreen = new HighScoreScreen(width, height, FPS);
-                    LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-                        + " high score screen at " + FPS + " fps.");
-                    returnCode = frame.setScreen(currentScreen);
-                    LOGGER.info("Closing high score screen.");
-                    break;
-                case 4:
-                    // 설정 화면
-                    currentScreen = new SettingScreen(width, height, FPS);
-                    LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-                        + " settings screen at " + FPS + " fps.");
-                    returnCode = frame.setScreen(currentScreen);
-                    LOGGER.info("Closing settings screen.");
-                    break;
-                default:
-                    break;
-            }
-
-        } while (returnCode != 0);
-
+    /**
+     * 리소스를 정리하고 애플리케이션을 종료합니다.
+     */
+    private static void close() {
         fileHandler.flush();
         fileHandler.close();
         System.exit(0);
@@ -200,6 +196,24 @@ public final class Core {
     }
 
     /**
+     * Controls access to the status manager.
+     *
+     * @return Application status manager.
+     */
+    public static StatusManager getStatusManager() {
+        return StatusManager.getInstance();
+    }
+
+    /**
+     * Controls access to the sound manager.
+     *
+     * @return Application sound manager.
+     */
+    public static SoundManager getSoundManager() {
+        return SoundManager.getInstance();
+    }
+
+    /**
      * Controls creation of new cooldowns.
      *
      * @param milliseconds Duration of the cooldown.
@@ -219,23 +233,5 @@ public final class Core {
     public static Cooldown getVariableCooldown(final int milliseconds,
         final int variance) {
         return new Cooldown(milliseconds, variance);
-    }
-
-    /**
-     * Controls access to the status manager.
-     *
-     * @return Application status manager.
-     */
-    public static StatusManager getStatusManager() {
-        return StatusManager.getInstance();
-    }
-
-    /**
-     * Controls access to the sound manager.
-     *
-     * @return Application sound manager.
-     */
-    public static SoundManager getSoundManager() {
-        return SoundManager.getInstance();
     }
 }

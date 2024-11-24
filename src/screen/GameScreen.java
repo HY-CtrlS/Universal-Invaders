@@ -170,6 +170,9 @@ public class GameScreen extends Screen {
         this.bullets = new HashSet<Bullet>();
         this.experiences = new HashSet<Experience>(); // 경험치 집합 초기화
 
+        // 게임 시작 시 StatusManager의 status 객체를 res/status 의 값으로 초기화
+        getStatusManager().resetDefaultStatus();
+
         // 게임 시작 시 초기 아이템 리스트 생성
         itemList = items.initializedItems();
         // 게임 시작 시 함선의 체력을 기본으로 초기화
