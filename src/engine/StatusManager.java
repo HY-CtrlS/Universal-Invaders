@@ -1,5 +1,6 @@
 package engine;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -11,7 +12,6 @@ public class StatusManager {
 
     private StatusManager() {
         logger = Core.getLogger();
-
 
         resetDefaultStatus();
 
@@ -48,9 +48,13 @@ public class StatusManager {
         status.setSpeed(speed);
     }
 
-    public int getBaseDamage() {return status.getBaseDamage();}
+    public int getBaseDamage() {
+        return status.getBaseDamage();
+    }
 
-    public void setBaseDamage(int baseDamage) {status.setBaseDamage(baseDamage);}
+    public void setBaseDamage(int baseDamage) {
+        status.setBaseDamage(baseDamage);
+    }
 
 
     public int getMaxHp() {
