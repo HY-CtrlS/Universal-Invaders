@@ -2,12 +2,21 @@ package kr.ac.hanyang.entity;
 
 import java.awt.Color;
 import java.util.Set;
+import kr.ac.hanyang.engine.Cooldown;
+import kr.ac.hanyang.engine.Core;
+import kr.ac.hanyang.screen.GameScreen;
 
 public class Ship2 extends Ship {
 
+    /** 적 프리징 시간 */
+    private Cooldown freezingTime;
+
+    // Blue
     public Ship2(final int positionX, final int positionY, final Direction direction, Color color,
-        final int shipID) {
-        super(positionX, positionY, direction, color, shipID);
+        final int shipID, final int ultGauge) {
+        super(positionX, positionY, direction, color, shipID, ultGauge);
+
+        this.freezingTime = Core.getCooldown(5000);
     }
 
     /**
@@ -31,5 +40,20 @@ public class Ship2 extends Ship {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 현재 모든 적 함선들을 얼리고 적 생성을 멈추는 궁극기 사용.
+     */
+    public final void useUlt() {
+        ultGauge = 0;
+        isUltActv = true;
+        freezingTime.reset();
+        while (!freezingTime.checkFinished()) {
+            if (freezingTime.checkFinished()) {
+                isUltActv = false;
+                break;
+            }
+        }
     }
 }

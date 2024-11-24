@@ -69,6 +69,7 @@ public class Ship extends Entity {
         this.destructionCooldown = Core.getCooldown(200);
 
         this.ultGauge = ultGauge;
+        this.isUltActv = false;
         this.direction = direction;
         this.shipID = shipID;
         this.isBurstShooting = false;
@@ -335,11 +336,14 @@ public class Ship extends Entity {
     public static Ship createShipByID(int shipID, int ultGauge, int positionX, int positionY) {
         switch (shipID) {
             case 1:
-                return new Ship1(positionX, positionY, Entity.Direction.UP, Color.GREEN, 1, ultGauge);
+                return new Ship1(positionX, positionY, Entity.Direction.UP, Color.GREEN, 1,
+                    ultGauge);
             case 2:
-                return new Ship2(positionX, positionY, Entity.Direction.UP, Color.BLUE, 2, ultGauge);
+                return new Ship2(positionX, positionY, Entity.Direction.UP, Color.BLUE, 2,
+                    ultGauge);
             case 3:
-                return new Ship3(positionX, positionY, Entity.Direction.UP, Color.YELLOW, 3,ultGauge);
+                return new Ship3(positionX, positionY, Entity.Direction.UP, Color.YELLOW, 3,
+                    ultGauge);
             case 4:
                 return new Ship4(positionX, positionY, Entity.Direction.UP, Color.RED, 4, ultGauge);
             default:

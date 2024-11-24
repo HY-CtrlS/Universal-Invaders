@@ -14,9 +14,10 @@ public class Ship3 extends Ship {
     /** 총 점사 횟수 (삼점사). */
     private static final int maxBurstShots = 3;
 
+    // Yellow
     public Ship3(final int positionX, final int positionY, final Direction direction, Color color,
-        final int shipID) {
-        super(positionX, positionY, direction, color, shipID);
+        final int shipID, final int ultGauge) {
+        super(positionX, positionY, direction, color, shipID, ultGauge);
         this.burstCooldown = Core.getCooldown(100);
         this.burstShotCount = 0;
     }
@@ -66,5 +67,9 @@ public class Ship3 extends Ship {
             isBurstShooting = true;
             this.burstShotCount = 0; // 점사 초기화
         }
+    }
+
+    public final void useUlt() {
+        // 잠시 무적
     }
 }

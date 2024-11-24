@@ -5,9 +5,10 @@ import java.util.Set;
 
 public class Ship4 extends Ship {
 
+    // Red
     public Ship4(final int positionX, final int positionY, final Direction direction, Color color,
-        final int shipID) {
-        super(positionX, positionY, direction, color, shipID);
+        final int shipID, final int ultGauge) {
+        super(positionX, positionY, direction, color, shipID, ultGauge);
     }
 
     /**
@@ -29,5 +30,9 @@ public class Ship4 extends Ship {
             return true;
         }
         return false;
+    }
+
+    public final void useUlt() {
+        // 슈퍼파워 (이속, 공속 폭발적으로 증가)
     }
 }
