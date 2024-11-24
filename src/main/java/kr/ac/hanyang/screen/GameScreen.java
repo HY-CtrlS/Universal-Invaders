@@ -98,12 +98,12 @@ public class GameScreen extends Screen {
     private int currentExperience = 0;
     /** 플레이어의 현재 레벨 */
     private int playerLevel = 1;
-
-
     /** Total survival time in milliseconds. */
     private int survivalTime;
-
+    /** 함선의 ID */
     private int shipID;
+    /** 궁극기 게이지 */
+    private int ultGauge;
 
     // 아이템 리스트 객체 생성
     private static ItemList items = new ItemList();
@@ -128,6 +128,7 @@ public class GameScreen extends Screen {
         this.shipID = shipID;
         this.level = gameState.getLevel();
 
+        this.ultGauge = gameState.getUltGauge();
         this.hp = gameState.getHp();
         this.bulletsShot = gameState.getBulletsShot();
         this.shipsDestroyed = gameState.getShipsDestroyed();
@@ -150,7 +151,8 @@ public class GameScreen extends Screen {
     public final void initialize() {
         super.initialize();
 
-        this.ship = Ship.createShipByID(this.shipID, this.width / 2, this.height / 2);
+        this.ship = Ship.createShipByID(this.shipID, this.ultGauge, this.width / 2,
+            this.height / 2);
         enemyShipSet = new EnemyShipSet(this.gameSettings, this.level, this.ship);
         enemyShipSet.attach(this);
 
@@ -576,6 +578,6 @@ public class GameScreen extends Screen {
      */
     public final GameState getGameState() {
         return new GameState(this.level, this.hp,
-            this.bulletsShot, this.shipsDestroyed, this.survivalTime);
+            this.bulletsShot, this.shipsDestroyed, this.survivalTime, this.ultGauge);
     }
 }

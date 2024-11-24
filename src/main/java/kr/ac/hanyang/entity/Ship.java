@@ -7,6 +7,7 @@ import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.engine.DrawManager.SpriteType;
 import kr.ac.hanyang.engine.StatusManager;
+import kr.ac.hanyang.screen.GameScreen;
 
 /**
  * Implements a ship, to be controlled by the player.
@@ -29,6 +30,8 @@ public class Ship extends Entity {
     protected double remainingMovement = 0;
     /** 축 방향 속도의 정수 부분 (실제 이동량) */
     protected int movement = 0;
+    /** 궁극기 게이지 */
+    protected int ultGauge = 0;
     /** Minimum time between shots. */
     protected Cooldown shootingCooldown;
     /** Time spent inactive between hits. */
@@ -37,6 +40,8 @@ public class Ship extends Entity {
     protected int shipID;
     /** 점사 여부 확인 변수 */
     public boolean isBurstShooting;
+    /** 토글형 궁극기 활성화 여부 */
+    public boolean isUltActv;
 
     /**
      * Constructor, establishes the ship's properties.
@@ -44,10 +49,13 @@ public class Ship extends Entity {
      * @param positionX Initial position of the ship in the X axis.
      * @param positionY Initial position of the ship in the Y axis.
      * @param direction 함선의 초기 에임 방향.
+     * @param color     함선의 색상.
+     * @param shipID    함선의 ID.
+     * @param ultGauge  궁극기 게이지.
      */
     public Ship(final int positionX, final int positionY, final Direction direction, Color color,
-        final int shipID) {
-        super(positionX, positionY, 13 * 2, 13 * 2, new Color[] {color, Color.WHITE}, direction);
+        final int shipID, final int ultGauge) {
+        super(positionX, positionY, 13 * 2, 13 * 2, new Color[]{color, Color.WHITE}, direction);
 
         this.spriteType = SpriteType.Ship;
 
@@ -60,6 +68,7 @@ public class Ship extends Entity {
         this.shootingCooldown = Core.getCooldown(this.shootingInterval);
         this.destructionCooldown = Core.getCooldown(200);
 
+        this.ultGauge = ultGauge;
         this.direction = direction;
         this.shipID = shipID;
         this.isBurstShooting = false;
@@ -153,6 +162,60 @@ public class Ship extends Entity {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 궁극기 사용.
+     */
+    public void useUlt() {
+
+    }
+
+    public void useUlt(final GameScreen gameScreen) {
+
+    }
+
+    public void useUlt(final GameScreen gameScreen, final Set<EnemyShip> enemies) {
+
+    }
+
+    /**
+     * 궁극기 게이지 1 증가.
+     */
+    public final void increaseUltGauge() {
+        if (ultGauge < 100) {
+            ultGauge += 1;
+            if (ultGauge == 100) {
+                // TODO 궁극기 사용 가능 알림 효과음 추가
+            }
+        }
+    }
+
+    /**
+     * 궁극기 게이지가 모두 차 사용 가능한 상태인지 체크.
+     *
+     * @return 궁극기 게이지가 100이면 True.
+     */
+    public final boolean isUltReady() {
+        return ultGauge == 100;
+    }
+
+    /**
+     * 토글형 궁극기가 현재 활성화 중인지 체크.
+     *
+     * @return 토글형 궁극기 스킬이 실행 중이면 True.
+     */
+    public final boolean isUltActivated() {
+        return isUltActv;
+    }
+
+    /**
+     * 현재 궁극기 게이지 값을 얻는 Getter.
+     *
+     * @return 현재 궁극기 게이지.
+     */
+    public final int getUltGauge() {
+        return ultGauge;
     }
 
     /**
@@ -269,16 +332,16 @@ public class Ship extends Entity {
         // 기본 Ship은 점사 기능 없음
     }
 
-    public static Ship createShipByID(int shipID, int positionX, int positionY) {
+    public static Ship createShipByID(int shipID, int ultGauge, int positionX, int positionY) {
         switch (shipID) {
             case 1:
-                return new Ship1(positionX, positionY, Entity.Direction.UP, Color.GREEN, 1);
+                return new Ship1(positionX, positionY, Entity.Direction.UP, Color.GREEN, 1, ultGauge);
             case 2:
-                return new Ship2(positionX, positionY, Entity.Direction.UP, Color.BLUE, 2);
+                return new Ship2(positionX, positionY, Entity.Direction.UP, Color.BLUE, 2, ultGauge);
             case 3:
-                return new Ship3(positionX, positionY, Entity.Direction.UP, Color.YELLOW, 3);
+                return new Ship3(positionX, positionY, Entity.Direction.UP, Color.YELLOW, 3,ultGauge);
             case 4:
-                return new Ship4(positionX, positionY, Entity.Direction.UP, Color.RED, 4);
+                return new Ship4(positionX, positionY, Entity.Direction.UP, Color.RED, 4, ultGauge);
             default:
                 throw new IllegalArgumentException("Invalid shipID: " + shipID);
         }

@@ -50,7 +50,7 @@ public final class Core {
         int height = frame.getHeight();
 
         int returnCode = 1;
-        GameState gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0);
+        GameState gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0, 0);
 
         do {
 

@@ -155,7 +155,7 @@ public class shipSelectScreen extends Screen {
      * Draws the elements associated with the screen.
      */
     private void draw() {
-        Entity dummy = Ship.createShipByID(this.shipID, 0, 0);
+        Entity dummy = Ship.createShipByID(this.shipID, 0, 0, 0);
 
         drawManager.initDrawing(this);
         drawManager.drawEntity(dummy, this.width / 2 - (dummy.getWidth() / 2),

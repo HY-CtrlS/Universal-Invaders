@@ -17,6 +17,8 @@ public class GameState {
     private int shipsDestroyed;
     /** Total seconds of survival. */
     private int survivalTime;
+    /** 현재 궁극기 게이지 */
+    private int ultGauge;
 
     /**
      * Constructor.
@@ -26,15 +28,17 @@ public class GameState {
      * @param bulletsShot    Bullets shot until now.
      * @param shipsDestroyed Ships destroyed until now.
      * @param survivalTime   Total seconds of survival.
+     * @param ultGauge       현재 궁극기 게이지.
      */
     public GameState(final int level,
         final int hp, final int bulletsShot,
-        final int shipsDestroyed, final int survivalTime) {
+        final int shipsDestroyed, final int survivalTime, final int ultGauge) {
         this.level = level;
         this.hp = hp;
         this.bulletsShot = bulletsShot;
         this.shipsDestroyed = shipsDestroyed;
         this.survivalTime = survivalTime;
+        this.ultGauge = ultGauge;
     }
 
     /**
@@ -74,5 +78,12 @@ public class GameState {
      */
     public final int getSurvivalTime() {
         return survivalTime;
+    }
+
+    /**
+     * @return 현재 궁극기 게이지
+     */
+    public final int getUltGauge() {
+        return ultGauge;
     }
 }
