@@ -174,3 +174,6 @@ out
 # Default
 log*
 .checkstyle
+
+# Ignore Gradle project-specific cache directory
+.gradle

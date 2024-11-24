@@ -1,0 +1,31 @@
+plugins {
+    // Java CLI 애플리케이션 지원을 위해 application 플러그인 적용
+    id 'application'
+}
+
+repositories {
+    // 의존성 관리를 위해 Maven Central 저장소 사용
+    mavenCentral()
+}
+
+dependencies {
+    // JUnit 5를 테스트 의존성으로 추가
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
+}
+
+java {
+    toolchain {
+        // Java 21 버전 설정
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+application {
+    // 애플리케이션의 메인 클래스 경로 정의
+    mainClass = 'kr.ac.hanyang.engine.Core'
+}
+
+tasks.named('test') {
+    // JUnit 5 플랫폼을 사용하여 테스트 실행
+    useJUnitPlatform()
+}
