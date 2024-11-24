@@ -24,7 +24,7 @@ public final class Core {
     private static final int FPS = 60;
     /** 게임 난이도 설정 */
     private static final GameSettings GAME_SETTING =
-        new GameSettings(10, 5000);
+        new GameSettings(10, 500);
 
     /** Frame to draw the screen on. */
     private static Frame frame;
