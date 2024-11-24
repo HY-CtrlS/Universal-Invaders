@@ -16,6 +16,7 @@ import kr.ac.hanyang.Item.*;
  */
 public final class Core {
 
+    // test
     /** Width of current screen. */
     private static final int WIDTH = 720;
     /** Height of current screen. */
