@@ -227,7 +227,8 @@ public final class DrawManager {
                     backBufferGraphics.setColor(entity.getColor()[layerNum]);
                     for (int row = image[layerNum].length - 1; row >= 0; row--) {
                         for (int column = image[layerNum][row].length - 1; column >= 0; column--) {
-                            if (image[layerNum][image[layerNum].length - 1 - row][image[layerNum][row].length - 1 - column]) {
+                            if (image[layerNum][image[layerNum].length - 1 - row][
+                                image[layerNum][row].length - 1 - column]) {
                                 backBufferGraphics.drawRect(positionX + row * 2, positionY
                                     + column * 2, 1, 1);
                             }
@@ -299,19 +300,6 @@ public final class DrawManager {
         for (int j = 0; j < screen.getWidth() - 1; j += 2) {
             backBufferGraphics.drawLine(j, 0, j, screen.getHeight() - 1);
         }
-    }
-
-    /**
-     * Draws current score on screen.
-     *
-     * @param screen Screen to draw on.
-     * @param score  Current score.
-     */
-    public void drawScore(final Screen screen, final int score) {
-        backBufferGraphics.setFont(fontRegular);
-        backBufferGraphics.setColor(Color.WHITE);
-        String scoreString = String.format("%04d", score);
-        backBufferGraphics.drawString(scoreString, screen.getWidth() - 60, 25);
     }
 
     /**
@@ -428,29 +416,21 @@ public final class DrawManager {
      * Draws game results.
      *
      * @param screen         Screen to draw on.
-     * @param score          Score obtained.
      * @param shipsDestroyed Total ships destroyed.
-     * @param accuracy       Total accuracy.
      * @param isNewRecord    If the score is a new high score.
      */
-    public void drawResults(final Screen screen, final int score,
-         final int shipsDestroyed,
-        final float accuracy, final int survivalTime, final boolean isNewRecord) {
-        String scoreString = String.format("score %04d", score);
+    public void drawResults(final Screen screen,
+        final int shipsDestroyed, final int survivalTime, final boolean isNewRecord) {
 
         String shipsDestroyedString = "enemies destroyed " + shipsDestroyed;
         String survivalTimeString = "Survival Time: " + survivalTime + " s";
-        String accuracyString = String
-            .format("accuracy %.2f%%", accuracy * 100);
 
         int height = isNewRecord ? 4 : 2;
 
         drawCenteredRegularString(screen, survivalTimeString,
-           screen.getHeight() / height + fontRegularMetrics.getHeight()
+            screen.getHeight() / height + fontRegularMetrics.getHeight()
                 * 2);
         backBufferGraphics.setColor(Color.WHITE);
-        drawCenteredRegularString(screen, scoreString, screen.getHeight()
-            / height);
 
         drawCenteredRegularString(screen, shipsDestroyedString,
             screen.getHeight() / height + fontRegularMetrics.getHeight()
@@ -563,7 +543,7 @@ public final class DrawManager {
         String scoreString = "";
 
         for (Score score : highScores) {
-            scoreString =String.format("%s        %d sec",
+            scoreString = String.format("%s        %d sec",
                 score.getName(),
                 score.getSurvivalTime());
 
@@ -604,9 +584,9 @@ public final class DrawManager {
     /**
      * Countdown to game start.
      *
-     * @param screen    Screen to draw on.
-     * @param level     Game difficulty level.
-     * @param number    Countdown number.
+     * @param screen Screen to draw on.
+     * @param level  Game difficulty level.
+     * @param number Countdown number.
      */
     public void drawCountDown(final Screen screen, final int level, final int number) {
         int rectWidth = screen.getWidth();
@@ -741,7 +721,7 @@ public final class DrawManager {
         boolean[][][] image = spriteMap.get(item.getSpriteType());
 
         backBufferGraphics.setColor(item.getColor());
-        for (boolean [][] layer: image) {
+        for (boolean[][] layer : image) {
             for (int i = 0; i < layer.length; i++) {
                 for (int j = 0; j < layer[i].length; j++) {
                     if (layer[i][j]) {

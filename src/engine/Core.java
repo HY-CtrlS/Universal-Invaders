@@ -48,7 +48,7 @@ public final class Core {
         int height = frame.getHeight();
 
         int returnCode = 1;
-        GameState gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0, 0);
+        GameState gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0);
 
         do {
 
@@ -64,7 +64,8 @@ public final class Core {
                     int shipID = handleScreen(currentScreen, "ship select screen");
 
                     // 게임 화면 시작
-                    currentScreen = new GameScreen(gameState, GAME_SETTING, width, height, FPS, shipID);
+                    currentScreen = new GameScreen(gameState, GAME_SETTING, width, height, FPS,
+                        shipID);
                     int isQuit = handleScreen(currentScreen, "game screen");
 
                     // 플레이한 게임의 정보를 gameState에 저장

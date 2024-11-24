@@ -33,8 +33,6 @@ public class GameScreen extends Screen {
 
     /** Milliseconds until the screen accepts user input. */
     private static final int INPUT_DELAY = 6000;
-    /** Bonus score for each life remaining at the end of the level. */
-    private static final int LIFE_SCORE = 100;
     /** 경험치 바의 높이 */
     public static final int EXPERIENCE_BAR_HEIGHT = 40;
     /** Minimum time between bonus ship's appearances. */
@@ -72,8 +70,6 @@ public class GameScreen extends Screen {
     private Set<Bullet> bullets;
     /** 화면에 존재하는 경험치들의 집합 */
     private Set<Experience> experiences;
-    /** Current score. */
-    private int score;
     /** 플레이어의 최대 Hp. 기본값은 100. */
     private int maxHp = getStatusManager().getMaxHp();
     /** Player hp left. */
@@ -131,7 +127,6 @@ public class GameScreen extends Screen {
         this.gameSettings = gameSettings;
         this.shipID = shipID;
         this.level = gameState.getLevel();
-        this.score = gameState.getScore();
 
         this.hp = gameState.getHp();
         this.bulletsShot = gameState.getBulletsShot();
@@ -179,7 +174,6 @@ public class GameScreen extends Screen {
         this.hp = (getStatusManager().getMaxHp());
         items.initializedItems();
 
-
         // Special input delay / countdown.
         this.gameStartTime = System.currentTimeMillis();
         this.inputDelay = Core.getCooldown(INPUT_DELAY);
@@ -204,8 +198,7 @@ public class GameScreen extends Screen {
     public final int run() {
         super.run();
 
-        this.score += LIFE_SCORE * (this.hp - 20);
-        this.logger.info("Screen cleared with a score of " + this.score);
+        this.logger.info("Screen cleared with a survival time " + this.survivalTime);
 
         return this.returnCode;
     }
@@ -318,25 +311,6 @@ public class GameScreen extends Screen {
                 inputManager.resetKeyState(KeyEvent.VK_SPACE);
             }
 
-            //if (this.enemyShipSpecial != null) {
-            //	if (!this.enemyShipSpecial.isDestroyed())
-            //		this.enemyShipSpecial.move(2, 0);
-            //else if (this.enemyShipSpecialExplosionCooldown.checkFinished())
-            //	this.enemyShipSpecial = null;
-
-            //}
-            //if (this.enemyShipSpecial == null
-            //		&& this.enemyShipSpecialCooldown.checkFinished()) {
-            //	this.enemyShipSpecial = new EnemyShip();
-            //	this.enemyShipSpecialCooldown.reset();
-            //	this.logger.info("A special ship appears");
-            //	}
-            //	if (this.enemyShipSpecial != null
-            //		&& this.enemyShipSpecial.getPositionX() > this.width) {
-            //	this.enemyShipSpecial = null;
-            //		this.logger.info("The special ship has escaped");
-            //}
-
             // hp 자동 재생 기능 실행
             hpRegen(status.getRegenHp());
 
@@ -399,7 +373,6 @@ public class GameScreen extends Screen {
         enemyShipSet.draw();
 
         // Interface.
-        drawManager.drawScore(this, this.score);
         drawManager.drawLives(this, this.hp);
         drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
         drawManager.drawLevel(this, this.playerLevel); // 현재 레벨 그리기
@@ -463,7 +436,6 @@ public class GameScreen extends Screen {
                 for (EnemyShip enemyShip : enemis) {
                     if (!enemyShip.isDestroyed()
                         && checkCollision(bullet, enemyShip)) {
-                        this.score += enemyShip.getPointValue();
                         this.shipsDestroyed++;
 
                         this.enemyShipSet.damage_Enemy(enemyShip, bullet.getDamage());
@@ -487,7 +459,6 @@ public class GameScreen extends Screen {
                 if (this.enemyShipSpecial != null
                     && !this.enemyShipSpecial.isDestroyed()
                     && checkCollision(bullet, this.enemyShipSpecial)) {
-                    this.score += this.enemyShipSpecial.getPointValue();
                     this.shipsDestroyed++;
                     this.enemyShipSpecial.destroy();
                     this.enemyShipSpecialExplosionCooldown.reset();
@@ -536,13 +507,16 @@ public class GameScreen extends Screen {
                     this.logger.info(
                         "Starting " + this.width + "X" + this.height + " ItemSelectingScreen at "
                             + this.fps + " fps.");
-                    ItemSelectedScreen currentScreen = new ItemSelectedScreen(items.getSelectedItemList(), width, height, this.fps, playerLevel);
+                    ItemSelectedScreen currentScreen = new ItemSelectedScreen(
+                        items.getSelectedItemList(), width, height, this.fps, playerLevel);
                     selectedItem = currentScreen.run();
                     this.logger.info("Closing Item Selecting Screen.");
                     // 최대 체력 증가 아이템을 선택한 경우, 현재 체력 또한 증가된 체력만큼 올려줌.
                     if (selectedItem == 1) {
                         // 가지고 있던 체력의 비율 계산
-                        double portionHp = (double) this.hp / (getStatusManager().getMaxHp() - itemList.get(1).getChangedValue());
+                        double portionHp =
+                            (double) this.hp / (getStatusManager().getMaxHp() - itemList.get(1)
+                                .getChangedValue());
                         // 늘어난 체력에 맞게 현재 체력의 비율 조정
                         this.hp = ((int) (getStatusManager().getMaxHp() * portionHp));
                     }
@@ -601,7 +575,7 @@ public class GameScreen extends Screen {
      * @return Current game state.
      */
     public final GameState getGameState() {
-        return new GameState(this.level, this.score, this.hp,
+        return new GameState(this.level, this.hp,
             this.bulletsShot, this.shipsDestroyed, this.survivalTime);
     }
 

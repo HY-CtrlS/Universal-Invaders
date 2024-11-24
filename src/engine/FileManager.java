@@ -285,7 +285,8 @@ public final class FileManager {
             int maxHp = Integer.parseInt(bufferedReader.readLine());
             double regenHp = Double.parseDouble(bufferedReader.readLine());
 
-            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxHp, regenHp);
+            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxHp,
+                regenHp);
 
         } finally {
             if (inputStream != null) {
@@ -325,7 +326,8 @@ public final class FileManager {
             int maxHp = Integer.parseInt(bufferedReader.readLine());
             double regenHP = Double.parseDouble((bufferedReader.readLine()));
 
-            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxHp, regenHP);
+            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, maxHp,
+                regenHP);
 
         } catch (FileNotFoundException e) {
             // loads default if there's no user scores.
