@@ -106,7 +106,8 @@ public class GameScreen extends Screen {
     private int shipID;
     /** 궁극기 게이지 */
     private int ultGauge;
-
+    /** 궁극기 활성화 시간 */
+    protected Cooldown ultActivatedTime;
     // 아이템 리스트 객체 생성
     private static ItemList items = new ItemList();
     // 아이템 리스트 참조하기 위한 배열
@@ -196,6 +197,26 @@ public class GameScreen extends Screen {
         // 궁극기 게이지 상승 쿨타임 생성 및 시작
         this.increUltCooldown = Core.getCooldown(1000);
         this.increUltCooldown.reset();
+
+        // 궁극기 효과 지속시간 쿨타임 생성 및 시작
+        switch (this.shipID) {
+            case 1:
+                this.ultActivatedTime = Core.getCooldown(1500);
+                this.ultActivatedTime.reset();
+                break;
+            case 2:
+                this.ultActivatedTime = Core.getCooldown(4000);
+                this.ultActivatedTime.reset();
+                break;
+            case 3:
+                this.ultActivatedTime = Core.getCooldown(3000);
+                this.ultActivatedTime.reset();
+                break;
+            case 4:
+                this.ultActivatedTime = Core.getCooldown(5000);
+                this.ultActivatedTime.reset();
+                break;
+        }
     }
 
     /**
@@ -226,15 +247,32 @@ public class GameScreen extends Screen {
         if (this.inputDelay.checkFinished() && !this.levelFinished) {
 
             // WASD - 함선 이동
-            boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_D);
-            boolean moveLeft = inputManager.isKeyDown(KeyEvent.VK_A);
-            boolean moveUp = inputManager.isKeyDown(KeyEvent.VK_W);
-            boolean moveDown = inputManager.isKeyDown(KeyEvent.VK_S);
+            boolean moveRight, moveLeft, moveUp, moveDown;
             // 방향키 - 에임
-            boolean aimRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT);
-            boolean aimLeft = inputManager.isKeyDown(KeyEvent.VK_LEFT);
-            boolean aimUp = inputManager.isKeyDown(KeyEvent.VK_UP);
-            boolean aimDown = inputManager.isKeyDown(KeyEvent.VK_DOWN);
+            boolean aimRight, aimLeft, aimUp, aimDown;
+
+            // Ship1 궁극기 활성화 여부에 따라 이동 및 발사 가능 여부 결정
+            if (this.shipID == 1 && this.ship.isUltActivated()) {
+                moveRight = false;
+                moveLeft = false;
+                moveUp = false;
+                moveDown = false;
+
+                aimRight = false;
+                aimLeft = false;
+                aimUp = false;
+                aimDown = false;
+            } else {
+                moveRight = inputManager.isKeyDown(KeyEvent.VK_D);
+                moveLeft = inputManager.isKeyDown(KeyEvent.VK_A);
+                moveUp = inputManager.isKeyDown(KeyEvent.VK_W);
+                moveDown = inputManager.isKeyDown(KeyEvent.VK_S);
+
+                aimRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT);
+                aimLeft = inputManager.isKeyDown(KeyEvent.VK_LEFT);
+                aimUp = inputManager.isKeyDown(KeyEvent.VK_UP);
+                aimDown = inputManager.isKeyDown(KeyEvent.VK_DOWN);
+            }
 
             boolean isRightBorder = this.ship.getPositionX()
                 + this.ship.getWidth() + this.ship.getSpeed() > this.width - 1;
@@ -300,20 +338,8 @@ public class GameScreen extends Screen {
 
             if (inputManager.isKeyDown(KeyEvent.VK_F)) {
                 if (this.ship.isUltReady()) {
-                    switch (this.shipID) {
-                        case 1:
-                            this.ship.useUlt(this, enemis);
-                            break;
-                        case 2:
-                            this.ship.useUlt();
-                            break;
-                        case 3:
-                            this.ship.useUlt();
-                            break;
-                        case 4:
-                            this.ship.useUlt();
-                            break;
-                    }
+                    this.ultActivatedTime.reset();
+                    this.ship.useUlt();
                     this.logger.info("Ultimate Skill!");
                 }
             }
@@ -340,17 +366,34 @@ public class GameScreen extends Screen {
             increaseUltGauge();
 
             this.ship.update();
+
+            // Ship2 궁극기 활성화 여부에 따라 적 함선 이동 및 생성 여부 결정
             if (this.shipID == 2 && this.ship.isUltActivated()) {
                 this.enemyShipSet.noUpdate();
                 // TODO: 얼려진 적 스프라이트로 변경
             } else {
                 this.enemyShipSet.update();
             }
-            ExperiencePool.update(this.experiences);
+
+            // Ship4 궁극기 활성화 여부에 따라 경험치 자석 효과 결정
+            if (this.shipID == 4 && this.ship.isUltActivated()) {
+                ExperiencePool.move(this.experiences, this.ship);
+            } else {
+                ExperiencePool.update(this.experiences);
+            }
+
             // 1초마다 생존 시간 1씩 증가
             if (this.clockCooldown.checkFinished()) {
                 this.survivalTime += 1;
                 this.clockCooldown.reset();
+            }
+
+            if (this.ship.isUltActivated() && this.ultActivatedTime.checkFinished()) {
+                this.ship.stopUlt();
+                this.ultActivatedTime.reset();
+                if (this.shipID == 1) {
+                    this.ship.useUlt(this, this.enemis);
+                }
             }
 
         }
@@ -409,7 +452,7 @@ public class GameScreen extends Screen {
         drawManager.drawHorizontalLine(this, this.height - EXPERIENCE_BAR_HEIGHT - 1);
         drawManager.drawExperienceBar(this, this.currentExperience,
             EXPERIENCE_THRESHOLD, EXPERIENCE_BAR_HEIGHT); // 경험치 바 그리기
-        drawManager.drawUltGauge(this, this.ship.getUltGauge()); // 궁극기 게이지 그리기
+        drawManager.drawUltGauge(this, this.ship); // 궁극기 게이지 그리기
 
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {
@@ -503,6 +546,7 @@ public class GameScreen extends Screen {
         this.bullets.removeAll(recyclable);
         BulletPool.recycle(recyclable);
 
+        // Ship3 궁극기 활성화 여부에 따라 무적(충돌 무시) 여부 결정
         if (this.shipID == 3 && this.ship.isUltActivated()) {
             // 아군 Ship은 무적이라 충돌 무시
         } else {
@@ -547,7 +591,13 @@ public class GameScreen extends Screen {
                             + this.fps + " fps.");
                     ItemSelectedScreen currentScreen = new ItemSelectedScreen(
                         items.getSelectedItemList(), width, height, this.fps, playerLevel);
+                    if (this.ship.isUltActivated()) {
+                        this.ultActivatedTime.pause();
+                    }
                     selectedItem = currentScreen.run();
+                    if (this.ultActivatedTime.isPaused()) {
+                        this.ultActivatedTime.resume();
+                    }
                     this.logger.info("Closing Item Selecting Screen.");
                     // 최대 체력 증가 아이템을 선택한 경우, 현재 체력 또한 증가된 체력만큼 올려줌.
                     if (selectedItem == 1) {
