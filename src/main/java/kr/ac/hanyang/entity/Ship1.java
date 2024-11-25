@@ -8,8 +8,8 @@ public class Ship1 extends Ship {
 
     // Green
     public Ship1(final int positionX, final int positionY, final Direction direction, Color color,
-        final int shipID, final int ultGauge) {
-        super(positionX, positionY, direction, color, shipID, ultGauge);
+        final int shipID) {
+        super(positionX, positionY, direction, color, shipID);
 
         ultThreshold = 200;
     }

@@ -16,8 +16,8 @@ public class Ship3 extends Ship {
 
     // Yellow
     public Ship3(final int positionX, final int positionY, final Direction direction, Color color,
-        final int shipID, final int ultGauge) {
-        super(positionX, positionY, direction, color, shipID, ultGauge);
+        final int shipID) {
+        super(positionX, positionY, direction, color, shipID);
         this.burstCooldown = Core.getCooldown(100);
         this.burstShotCount = 0;
 

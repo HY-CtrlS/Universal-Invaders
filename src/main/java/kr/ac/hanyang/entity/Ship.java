@@ -31,7 +31,7 @@ public class Ship extends Entity {
     /** 축 방향 속도의 정수 부분 (실제 이동량) */
     protected int movement = 0;
     /** 궁극기 게이지 */
-    protected int ultGauge = 0;
+    protected int ultGauge;
     /** Minimum time between shots. */
     protected Cooldown shootingCooldown;
     /** Time spent inactive between hits. */
@@ -53,10 +53,9 @@ public class Ship extends Entity {
      * @param direction 함선의 초기 에임 방향.
      * @param color     함선의 색상.
      * @param shipID    함선의 ID.
-     * @param ultGauge  궁극기 게이지.
      */
     public Ship(final int positionX, final int positionY, final Direction direction, Color color,
-        final int shipID, final int ultGauge) {
+        final int shipID) {
         super(positionX, positionY, 13 * 2, 13 * 2, new Color[]{color, Color.WHITE}, direction);
 
         this.spriteType = SpriteType.Ship;
@@ -70,7 +69,7 @@ public class Ship extends Entity {
         this.shootingCooldown = Core.getCooldown(this.shootingInterval);
         this.destructionCooldown = Core.getCooldown(200);
 
-        this.ultGauge = ultGauge;
+        this.ultGauge = 0;
         this.isUltActv = false;
         this.direction = direction;
         this.shipID = shipID;
@@ -344,19 +343,16 @@ public class Ship extends Entity {
         // 기본 Ship은 점사 기능 없음
     }
 
-    public static Ship createShipByID(int shipID, int ultGauge, int positionX, int positionY) {
+    public static Ship createShipByID(int shipID, int positionX, int positionY) {
         switch (shipID) {
             case 1:
-                return new Ship1(positionX, positionY, Entity.Direction.UP, Color.GREEN, 1,
-                    ultGauge);
+                return new Ship1(positionX, positionY, Entity.Direction.UP, Color.GREEN, 1);
             case 2:
-                return new Ship2(positionX, positionY, Entity.Direction.UP, Color.BLUE, 2,
-                    ultGauge);
+                return new Ship2(positionX, positionY, Entity.Direction.UP, Color.BLUE, 2);
             case 3:
-                return new Ship3(positionX, positionY, Entity.Direction.UP, Color.YELLOW, 3,
-                    ultGauge);
+                return new Ship3(positionX, positionY, Entity.Direction.UP, Color.YELLOW, 3);
             case 4:
-                return new Ship4(positionX, positionY, Entity.Direction.UP, Color.RED, 4, ultGauge);
+                return new Ship4(positionX, positionY, Entity.Direction.UP, Color.RED, 4);
             default:
                 throw new IllegalArgumentException("Invalid shipID: " + shipID);
         }

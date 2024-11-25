@@ -23,9 +23,7 @@ public final class Core {
     /** Max fps of current screen. */
     private static final int FPS = 60;
     /** 게임 난이도 설정 */
-    private static final GameSettings GAME_SETTING =
-        new GameSettings(10, 500);
-
+    private static final GameSettings GAME_SETTING = new GameSettings(10, 500);
     /** Frame to draw the screen on. */
     private static Frame frame;
     /** Screen currently shown. */
@@ -50,10 +48,9 @@ public final class Core {
         int height = frame.getHeight();
 
         int returnCode = 1;
-        GameState gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0, 0);
+        GameState gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0);
 
         do {
-
             switch (returnCode) {
                 case 1:
                     // Main menu.
@@ -96,7 +93,6 @@ public final class Core {
                 default:
                     break;
             }
-
         } while (returnCode != 0);
 
         close();
