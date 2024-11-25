@@ -392,7 +392,14 @@ public class GameScreen extends Screen {
                 this.ship.stopUlt();
                 this.ultActivatedTime.reset();
                 if (this.shipID == 1) {
-                    this.ship.useUlt(this, this.enemis);
+                    for (EnemyShip enemyShip : this.enemis) {
+                        enemyShip.destroy();
+                        this.shipsDestroyed++;
+                        this.experiences.add(
+                            ExperiencePool.getExperience(enemyShip.getPositionX() + 3 * 2,
+                                // enemyShip의 너비는 13, 경험치의 너비는 7이므로 3을 더해줌
+                                enemyShip.getPositionY(), enemyShip.getPointValue()));
+                    }
                 }
             }
 
@@ -663,27 +670,6 @@ public class GameScreen extends Screen {
         if (this.increUltCooldown.checkFinished() && !this.ship.isUltReady()) {
             this.ship.increaseUltGauge();
             this.increUltCooldown.reset();
-        }
-    }
-
-    /**
-     * 파괴된 함선의 수를 증가 시김.
-     */
-    public final void increaseShipsDestroyed() {
-        this.shipsDestroyed++;
-    }
-
-    /**
-     * 파괴된 적 함선에 대해 경험치 생성.
-     *
-     * @param enemy 적 함선.
-     */
-    public final void createExp(final EnemyShip enemy) {
-        if (enemy.isDestroyed()) {
-            this.experiences.add(
-                ExperiencePool.getExperience(enemy.getPositionX() + 3 * 2,
-                    // enemyShip의 너비는 13, 경험치의 너비는 7이므로 3을 더해줌
-                    enemy.getPositionY(), enemy.getPointValue()));
         }
     }
 

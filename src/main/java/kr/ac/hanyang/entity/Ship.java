@@ -175,10 +175,6 @@ public class Ship extends Entity {
         ultGauge = 0;
     }
 
-    public void useUlt(final GameScreen gameScreen, final Set<EnemyShip> enemies) {
-
-    }
-
     /**
      * 궁극기 게이지 1 증가.
      */
