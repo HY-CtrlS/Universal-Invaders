@@ -2,9 +2,6 @@ package kr.ac.hanyang.entity;
 
 import java.awt.Color;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Ship2 extends Ship {
 
@@ -12,6 +9,8 @@ public class Ship2 extends Ship {
     public Ship2(final int positionX, final int positionY, final Direction direction, Color color,
         final int shipID, final int ultGauge) {
         super(positionX, positionY, direction, color, shipID, ultGauge);
+
+        ultThreshold = 150;
     }
 
     /**
@@ -38,17 +37,9 @@ public class Ship2 extends Ship {
     }
 
     /**
-     * 현재 모든 적 함선들을 얼리고 적 생성을 멈추는 궁극기 사용.
+     * 현재 모든 적 함선 프리징 + 적 생성X, 토글형.
      */
     public final void useUlt() {
-        isUltActv = true;
-        ultGauge = 0;
-        // 궁극기 발동 시간을 위한 타이머
-        ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
-        timer.schedule(() -> {
-            isUltActv = false;
-        }, 5, TimeUnit.SECONDS);
-
-        timer.shutdown();
+        super.useUlt();
     }
 }

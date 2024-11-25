@@ -9,6 +9,8 @@ public class Ship4 extends Ship {
     public Ship4(final int positionX, final int positionY, final Direction direction, Color color,
         final int shipID, final int ultGauge) {
         super(positionX, positionY, direction, color, shipID, ultGauge);
+
+        ultThreshold = 100;
     }
 
     /**
@@ -32,7 +34,10 @@ public class Ship4 extends Ship {
         return false;
     }
 
+    /**
+     * 자석 (화면상 모든 경험치 끌어오기), 토글형.
+     */
     public final void useUlt() {
-        // 슈퍼파워 (이속, 공속 폭발적으로 증가)
+        super.useUlt();
     }
 }

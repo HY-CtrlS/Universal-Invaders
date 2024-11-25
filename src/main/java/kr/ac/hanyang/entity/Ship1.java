@@ -10,13 +10,16 @@ public class Ship1 extends Ship {
     public Ship1(final int positionX, final int positionY, final Direction direction, Color color,
         final int shipID, final int ultGauge) {
         super(positionX, positionY, direction, color, shipID, ultGauge);
+
+        ultThreshold = 200;
+    }
+
+    public final void useUlt() {
+        super.useUlt();
     }
 
     /**
-     * 현재 모든 적 함선들을 파괴하는 궁극기 사용.
-     *
-     * @param gameScreen 현재 게임이 진행되고 있는 화면.
-     * @param enemies    적을 갖고 있는 set.
+     * 현재 모든 적 함선들을 파괴, 토글형.
      */
     public final void useUlt(final GameScreen gameScreen, final Set<EnemyShip> enemies) {
         for (EnemyShip enemyShip : enemies) {
@@ -24,7 +27,5 @@ public class Ship1 extends Ship {
             gameScreen.increaseShipsDestroyed();
             gameScreen.createExp(enemyShip);
         }
-
-        ultGauge = 0;
     }
 }
