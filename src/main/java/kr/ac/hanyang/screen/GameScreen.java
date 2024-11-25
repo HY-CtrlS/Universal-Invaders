@@ -345,7 +345,13 @@ public class GameScreen extends Screen {
                 this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
                     + " pause screen at " + this.fps + " fps.");
                 Screen pause = new PauseScreen(this.getWidth(), this.getHeight(), this.fps);
+                if (this.ship.isUltActivated()) {
+                    this.ultActivatedTime.pause();
+                }
                 int check = pause.run();
+                if (this.ultActivatedTime.isPaused()) {
+                    this.ultActivatedTime.resume();
+                }
                 this.logger.info("Closing pause screen.");
                 // 일시정지 화면에서 quit를 누른 경우 현재 라운드 종료
                 if (check == 2) {
