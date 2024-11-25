@@ -41,7 +41,9 @@ public class Ship extends Entity {
     /** 점사 여부 확인 변수 */
     public boolean isBurstShooting;
     /** 토글형 궁극기 활성화 여부 */
-    public boolean isUltActv;
+    protected boolean isUltActv;
+    /** 궁극기를 사용할 수 있는 게이지 기준 양 */
+    protected int ultThreshold;
 
     /**
      * Constructor, establishes the ship's properties.
@@ -169,11 +171,8 @@ public class Ship extends Entity {
      * 궁극기 사용.
      */
     public void useUlt() {
-
-    }
-
-    public void useUlt(final GameScreen gameScreen) {
-
+        isUltActv = true;
+        ultGauge = 0;
     }
 
     public void useUlt(final GameScreen gameScreen, final Set<EnemyShip> enemies) {
@@ -183,10 +182,10 @@ public class Ship extends Entity {
     /**
      * 궁극기 게이지 1 증가.
      */
-    public final void increaseUltGauge() {
-        if (ultGauge < 100) {
+    public void increaseUltGauge() {
+        if (ultGauge < ultThreshold) {
             ultGauge += 1;
-            if (ultGauge == 100) {
+            if (ultGauge == ultThreshold) {
                 // TODO 궁극기 사용 가능 알림 효과음 추가
             }
         }
@@ -195,10 +194,10 @@ public class Ship extends Entity {
     /**
      * 궁극기 게이지가 모두 차 사용 가능한 상태인지 체크.
      *
-     * @return 궁극기 게이지가 100이면 True.
+     * @return 궁극기 게이지가 ultThreshold면 True.
      */
-    public final boolean isUltReady() {
-        return ultGauge == 100;
+    public boolean isUltReady() {
+        return ultGauge == ultThreshold;
     }
 
     /**
@@ -211,12 +210,28 @@ public class Ship extends Entity {
     }
 
     /**
+     * 궁극기 효과 중지.
+     */
+    public final void stopUlt() {
+        isUltActv = false;
+    }
+
+    /**
      * 현재 궁극기 게이지 값을 얻는 Getter.
      *
      * @return 현재 궁극기 게이지.
      */
     public final int getUltGauge() {
         return ultGauge;
+    }
+
+    /**
+     * 궁극기 사용 가능 게이지 기준을 얻는 Getter.
+     *
+     * @return 궁극기 사용 가능 기준.
+     */
+    public final int getUltThreshold() {
+        return ultThreshold;
     }
 
     /**

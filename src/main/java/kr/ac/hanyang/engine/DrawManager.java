@@ -305,13 +305,13 @@ public final class DrawManager {
     /**
      * Draws current ultimate skill gauge on screen.
      *
-     * @param screen   Screen to draw on.
-     * @param ultGauge Current ultimate skill gauge of the player.
+     * @param screen Screen to draw on.
+     * @param ship   Current player ship.
      */
-    public void drawUltGauge(final Screen screen, final int ultGauge) {
+    public void drawUltGauge(final Screen screen, final Ship ship) {
         backBufferGraphics.setFont(fontRegular);
         backBufferGraphics.setColor(Color.WHITE);
-        String scoreString = ultGauge + " / 100 Ult";
+        String scoreString = ship.getUltGauge() + " / " + ship.getUltThreshold() + " Ult";
         backBufferGraphics.drawString(scoreString, screen.getWidth() - 250, 25);
     }
 
@@ -625,8 +625,8 @@ public final class DrawManager {
     /**
      * 현재 생존 시간을 화면에 그립니다.
      *
-     * @param screen        화면 객체
-     * @param survivalTime  현재 생존 시간
+     * @param screen       화면 객체
+     * @param survivalTime 현재 생존 시간
      */
     public void drawSurvivalTime(final Screen screen, final int survivalTime) {
         backBufferGraphics.setFont(fontRegular);
