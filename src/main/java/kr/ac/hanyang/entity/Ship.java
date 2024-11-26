@@ -283,4 +283,15 @@ public class Ship extends Entity {
                 throw new IllegalArgumentException("Invalid shipID: " + shipID);
         }
     }
+
+    /**
+     * Ship의 Stat을 StatusManager에서 업데이트.
+     */
+    public void updateStatsFromStatusManager() {
+        StatusManager statusManager = Core.getStatusManager();
+        this.shootingInterval = statusManager.getShootingInterval();
+        this.bulletSpeed = statusManager.getBulletSpeed();
+        this.baseDamage = statusManager.getBaseDamage();
+        this.speed = statusManager.getSpeed();
+    }
 }
