@@ -50,7 +50,7 @@ public class GameScreen extends Screen {
     /** Formation of enemy ships. */
     private EnemyShipSet enemyShipSet;
     /** 적을 갖고 있는 set */
-    private Set<EnemyShip> enemis; // TODO: enemies 오타 수정
+    private Set<EnemyShip> enemies;
     /** Player's ship. */
     private Ship ship;
     /** Bonus enemy ship that appears sometimes. */
@@ -162,7 +162,7 @@ public class GameScreen extends Screen {
         enemyShipSet = new EnemyShipSet(this.enemySpawnInterval, this.ship);
         enemyShipSet.attach(this);
 
-        this.enemis = enemyShipSet.getEnemies();
+        this.enemies = enemyShipSet.getEnemies();
         // Appears each 10-30 seconds.
         this.enemyShipSpecialCooldown = Core.getVariableCooldown(
             BONUS_SHIP_INTERVAL, BONUS_SHIP_VARIANCE);
@@ -393,7 +393,7 @@ public class GameScreen extends Screen {
                 this.ship.stopUlt();
                 this.ultActivatedTime.reset();
                 if (this.shipID == 1) {
-                    for (EnemyShip enemyShip : this.enemis) {
+                    for (EnemyShip enemyShip : this.enemies) {
                         enemyShip.destroy();
                         this.shipsDestroyed++;
                         this.experiences.add(
@@ -516,7 +516,7 @@ public class GameScreen extends Screen {
                 }
             } else { //아군 총알인 경우 실행되는 부분
 
-                for (EnemyShip enemyShip : enemis) {
+                for (EnemyShip enemyShip : enemies) {
                     if (!enemyShip.isDestroyed()
                         && checkCollision(bullet, enemyShip)) {
                         this.shipsDestroyed++;
@@ -559,7 +559,7 @@ public class GameScreen extends Screen {
             // 아군 Ship은 무적이라 충돌 무시
         } else {
             // 적과 아군 함선의 충돌 체크
-            for (EnemyShip enemyShip : enemis) {
+            for (EnemyShip enemyShip : enemies) {
                 if (checkCollision(this.ship, enemyShip)) {
                     if (!this.ship.isDestroyed() && !enemyShip.isDestroyed() && !levelFinished) {
                         //this.enemyShipSet.damage_Enemy(enemyShip, this.ship.getBaseDamage());
