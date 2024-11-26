@@ -84,6 +84,7 @@ public class EnemyShip extends Entity {
                 this.maxHp = 100;
                 this.XSpeed = 0.5;
                 this.YSpeed = 0.5;
+                this.setColor(new Color[]{new Color(0), new Color(0x8F623B)});
                 break;
             // C1은 체력은 없어서 한방에 죽지만 속도가 매우 빠른 적임. hp = 1, 속도는 4로 설정
             case EnemyShipC1:
@@ -163,7 +164,7 @@ public class EnemyShip extends Entity {
         }
         double hpPercentage = this.hp / this.maxHp;
         int nonRedHue = (int) (hpPercentage * 255);
-        this.setColor(new Color[] { new Color(255, nonRedHue, nonRedHue) });
+        this.setColorIndex(new Color(255, nonRedHue, nonRedHue), 0);
     }
 
     // 피해 입은 만큼 hp 감소시키고 0 이하가 되면 파괴.
