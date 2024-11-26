@@ -117,6 +117,21 @@ public class EnemyShipSet {
     }
 
     /**
+     * Ship2의 궁극기 발동시 적 업데이트.
+     */
+    public void noUpdate() {
+        cleanup();
+        // 각 적 객체에 대해 업데이트
+        for (EnemyShip enemy : enemies) {
+            // 죽지 않고 살아있는 적에 대해서만 적용
+            if (!enemy.isDestroyed()) {
+                // 각 축방향 이동량 0으로 초기화
+                enemy.update();
+            }
+        }
+    }
+
+    /**
      * 적을 생성해주는 메소드
      */
     private void spawnEnemy() {

@@ -5,9 +5,12 @@ import java.util.Set;
 
 public class Ship4 extends Ship {
 
+    // Red
     public Ship4(final int positionX, final int positionY, final Direction direction, Color color,
         final int shipID) {
         super(positionX, positionY, direction, color, shipID);
+
+        ultThreshold = 100;
     }
 
     /**
@@ -29,5 +32,12 @@ public class Ship4 extends Ship {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 자석 (화면상 모든 경험치 끌어오기), 토글형.
+     */
+    public final void useUlt() {
+        super.useUlt();
     }
 }

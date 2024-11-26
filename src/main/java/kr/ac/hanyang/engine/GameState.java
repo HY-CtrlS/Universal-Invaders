@@ -40,6 +40,11 @@ public class GameState {
         return hp;
     }
 
+    /**
+     * 체력 설정
+     *
+     * @param hp 설정할 체력
+     */
     public void setHP(final int hp) {
         this.hp = hp;
     }

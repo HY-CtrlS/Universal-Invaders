@@ -50,7 +50,6 @@ public final class Core {
         GameState gameState = new GameState(0, getStatusManager().getMaxHp(), 0, 0);
 
         do {
-
             switch (returnCode) {
                 case 1:
                     // Main menu.
@@ -93,7 +92,6 @@ public final class Core {
                 default:
                     break;
             }
-
         } while (returnCode != 0);
 
         close();
