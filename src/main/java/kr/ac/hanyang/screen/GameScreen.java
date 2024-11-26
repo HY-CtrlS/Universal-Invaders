@@ -204,7 +204,7 @@ public class GameScreen extends Screen {
     }
 
     /**
-     * Updates the elements on screen and checks for events.
+     * Updates the elem ents on screen and checks for events.
      */
     protected final void update() {
         super.update();
