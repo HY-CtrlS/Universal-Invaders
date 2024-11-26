@@ -5,13 +5,10 @@ import static kr.ac.hanyang.engine.Core.getStatusManager;
 import kr.ac.hanyang.Item.Item;
 import kr.ac.hanyang.Item.ItemList;
 
-import kr.ac.hanyang.engine.DrawManager;
-import kr.ac.hanyang.engine.ShipStatus;
 import kr.ac.hanyang.engine.StatusManager;
 
 import kr.ac.hanyang.entity.Entity.Direction;
 import kr.ac.hanyang.entity.Ship;
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +16,6 @@ import java.util.Set;
 
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
-import kr.ac.hanyang.engine.GameSettings;
 import kr.ac.hanyang.engine.GameState;
 import kr.ac.hanyang.entity.*;
 
@@ -48,8 +44,6 @@ public class GameScreen extends Screen {
     /** 아이템 선택 화면으로 넘어가는 경험치 기준 양 */
     private static final int EXPERIENCE_THRESHOLD = 100;
 
-    /** Current game difficulty settings. */
-    private GameSettings gameSettings;
     /** Current difficulty level number. */
     private int level;
     /** Formation of enemy ships. */
@@ -98,7 +92,8 @@ public class GameScreen extends Screen {
     private int currentExperience = 0;
     /** 플레이어의 현재 레벨 */
     private int playerLevel = 1;
-
+    /** 처음 게임 시작 시 적 생성 주기 (단위 : 밀리초)**/
+    private int enemySpawnInterval;
 
     /** Total survival time in milliseconds. */
     private int survivalTime;
@@ -114,17 +109,17 @@ public class GameScreen extends Screen {
      * Constructor, establishes the properties of the screen.
      *
      * @param gameState    Current game state.
-     * @param gameSettings Current game settings.
+     * @param enemySpawnInterval Current game settings.
      * @param width        Screen width.
      * @param height       Screen height.
      * @param fps          Frames per second, frame rate at which the game is run.
      */
     public GameScreen(final GameState gameState,
-        final GameSettings gameSettings,
+        final int enemySpawnInterval,
         final int width, final int height, final int fps, final int shipID) {
         super(width, height, fps);
 
-        this.gameSettings = gameSettings;
+        this.enemySpawnInterval = enemySpawnInterval;
         this.shipID = shipID;
 
         this.hp = gameState.getHp();
@@ -160,7 +155,7 @@ public class GameScreen extends Screen {
 
         this.ship = Ship.createShipByID(this.shipID, this.width / 2, this.height / 2);
         // 적 생성 쪽에서도 게임 진행 시간에 대한 정보를 받기 위해 게임 시작에 대한 정보 넘겨줌.
-        enemyShipSet = new EnemyShipSet(this.gameSettings, this.ship);
+        enemyShipSet = new EnemyShipSet(this.enemySpawnInterval, this.ship);
         enemyShipSet.attach(this);
 
         this.enemis = enemyShipSet.getEnemies();

@@ -7,7 +7,6 @@ import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.engine.DrawManager;
 import kr.ac.hanyang.engine.DrawManager.SpriteType;
-import kr.ac.hanyang.engine.GameSettings;
 import java.util.logging.Logger;
 
 public class EnemyShipSet {
@@ -24,20 +23,11 @@ public class EnemyShipSet {
     private Random random;
     // 아군 함선 참조를 위한 변수
     private Ship ship;
-    // 적 함선의 X 방향 속도
-    private double X_speed = 1.0;
-    // 적 함선의 Y 방향 속도
-    private double Y_speed = 1.0;
 
-    private int base_hp;
-    // 적 함선 끼리의 최소 거리
-    private final int MIN_DISTANCE = 5;
     // 로그 출력기
     private Logger logger;
     // 적 수 카운터
     private int enemyCounter;
-    // 적의 Hp를 깎는데 쓰이는 쿨타임
-    private Cooldown hpDecreaseCooldown;
 
     // 게임 진행 시간에 대한 정보를 위한 변수
     private boolean isLevelStarted;
@@ -47,9 +37,9 @@ public class EnemyShipSet {
     /**
      * 생성자 - 기본 set 초기화 및 스폰 준비
      */
-    public EnemyShipSet(GameSettings gameSettings, Ship ship) {
+    public EnemyShipSet(final int enemySpawnInterval, Ship ship) {
         this.enemies = new HashSet<>();
-        this.spawnCooldown = Core.getCooldown(gameSettings.getEnemySpawnInterval());
+        this.spawnCooldown = Core.getCooldown(enemySpawnInterval);
         this.drawManager = Core.getDrawManager();
         this.random = new Random();
         this.ship = ship;
@@ -131,7 +121,6 @@ public class EnemyShipSet {
         if (survivalTime < 100) {
             EnemyShip newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1);
             enemies.add(newEnemy);
-            this.logger.info("Basic Enemy Created!");
         }
         else if (survivalTime < 200) {
             int randomKey = random.nextInt(1000);
@@ -186,13 +175,15 @@ public class EnemyShipSet {
         enemies.removeAll(toRemove);
     }
 
-    //현재 화면 상에 생성되어 있는 적의 수를 반환합니다.
-    public int getEnemyCount() {
-        return enemies.size();
-    }
 
     // 게임이 시작했음을 알립니다.
     public void setLevelStarted(boolean isLevelStarted) {
         this.isLevelStarted = isLevelStarted;
+    }
+
+    // 적 생성 주기 설정
+    public void setSpawnInterval(final int spawnInterval) {
+        this.spawnCooldown = Core.getCooldown(spawnInterval);
+        this.spawnCooldown.reset();
     }
 }
