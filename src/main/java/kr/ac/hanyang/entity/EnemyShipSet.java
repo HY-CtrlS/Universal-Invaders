@@ -39,17 +39,19 @@ public class EnemyShipSet {
     // 게임 패턴 지속시간에 대한 변수
     private Cooldown waveOneCooldown;
 
+    private int enemySpawnInterval;
     /**
      * 생성자 - 기본 set 초기화 및 스폰 준비
      */
     public EnemyShipSet(final int enemySpawnInterval, Ship ship) {
         this.enemies = new HashSet<>();
-        this.spawnCooldown = Core.getCooldown(enemySpawnInterval);
         this.drawManager = Core.getDrawManager();
         this.random = new Random();
         this.ship = ship;
         this.logger = Core.getLogger();
         this.enemyCounter = 0;
+        this.enemySpawnInterval = enemySpawnInterval;
+        this.spawnCooldown = Core.getCooldown(this.enemySpawnInterval);
 
         // 게임 진행 시간 정보를 위한 초기화. 처음에는 -1초 그리고 시작 안한 상태
         // -1초로 초기화 하는 이유는 처음에 게임 시작시에 clock쿨다운이 이미 완료된 상태이기에 바로 1초가 더해짐. 그래서 0초부터 1초 씩 카운트하기 위해서 -1로 설정.
@@ -243,9 +245,9 @@ public class EnemyShipSet {
         this.isLevelStarted = isLevelStarted;
     }
 
-    // 적 생성 주기 설정
-    public void setSpawnInterval(final int spawnInterval) {
-        this.spawnCooldown = Core.getCooldown(spawnInterval);
-        this.spawnCooldown.reset();
+    // 스폰 주기 삭제
+    public void decreaseSpawnInterval(int amount) {
+        int check = this.enemySpawnInterval - amount;
+        this.spawnCooldown = (check > 500) ? Core.getCooldown(check) : spawnCooldown;
     }
 }

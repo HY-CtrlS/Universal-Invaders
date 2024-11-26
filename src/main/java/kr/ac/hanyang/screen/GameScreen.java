@@ -44,6 +44,8 @@ public class GameScreen extends Screen {
     private static final int SEPARATION_LINE_HEIGHT = 40;
     /** 아이템 선택 화면으로 넘어가는 경험치 기준 양 */
     private static final int EXPERIENCE_THRESHOLD = 100;
+    /** 기본 적 생성 간격 */
+    private static final int ENEMY_SPAWN_INTERVAL = 2000;
 
     /** Current difficulty level number. */
     private int level;
@@ -95,8 +97,6 @@ public class GameScreen extends Screen {
     private int currentExperience = 0;
     /** 플레이어의 현재 레벨 */
     private int playerLevel = 1;
-    /** 처음 게임 시작 시 적 생성 주기 (단위 : 밀리초) **/
-    private int enemySpawnInterval;
 
     /** Total survival time in milliseconds. */
     private int survivalTime;
@@ -113,17 +113,14 @@ public class GameScreen extends Screen {
      * Constructor, establishes the properties of the screen.
      *
      * @param gameState          Current game state.
-     * @param enemySpawnInterval Current game settings.
      * @param width              Screen width.
      * @param height             Screen height.
      * @param fps                Frames per second, frame rate at which the game is run.
      */
     public GameScreen(final GameState gameState,
-        final int enemySpawnInterval,
         final int width, final int height, final int fps, final int shipID) {
         super(width, height, fps);
 
-        this.enemySpawnInterval = enemySpawnInterval;
         this.shipID = shipID;
 
         this.hp = gameState.getHp();
@@ -159,7 +156,7 @@ public class GameScreen extends Screen {
 
         this.ship = Ship.createShipByID(this.shipID, this.width / 2, this.height / 2);
         // 적 생성 쪽에서도 게임 진행 시간에 대한 정보를 받기 위해 게임 시작에 대한 정보 넘겨줌.
-        enemyShipSet = new EnemyShipSet(this.enemySpawnInterval, this.ship);
+        enemyShipSet = new EnemyShipSet(ENEMY_SPAWN_INTERVAL, this.ship);
         enemyShipSet.attach(this);
 
         this.enemies = enemyShipSet.getEnemies();
@@ -387,7 +384,14 @@ public class GameScreen extends Screen {
             if (this.clockCooldown.checkFinished()) {
                 this.survivalTime += 1;
                 this.clockCooldown.reset();
+
+                // 10초마다 스폰 인터벌 50ms 감소
+                if (this.survivalTime % 10 == 0) {
+                    enemyShipSet.decreaseSpawnInterval(50);
+                }
             }
+
+
 
             if (this.ship.isUltActivated() && this.ultActivatedTime.checkFinished()) {
                 this.ship.stopUlt();

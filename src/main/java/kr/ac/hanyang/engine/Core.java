@@ -62,7 +62,7 @@ public final class Core {
                     int shipID = handleScreen(currentScreen, "ship select screen");
 
                     // 게임 화면 시작
-                    currentScreen = new GameScreen(gameState, 500, width, height, FPS,
+                    currentScreen = new GameScreen(gameState, width, height, FPS,
                         shipID);
                     int isQuit = handleScreen(currentScreen, "game screen");
 
