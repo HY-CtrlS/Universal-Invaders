@@ -87,7 +87,9 @@ public final class DrawManager {
         /** Destroyed enemy ship. */
         Explosion,
         // 공속증가 아이템
-        AttackSpeedUpItem
+        AttackSpeedUpItem,
+        // 장애물 스프라이트
+        Obstacle
     }
 
     /**
@@ -120,6 +122,8 @@ public final class DrawManager {
             spriteMap.put(SpriteType.Explosion, new boolean[1][13][7]);
             // 공속 증가 아이템 스프라이트
             spriteMap.put(SpriteType.AttackSpeedUpItem, new boolean[1][10][10]);
+            // 장애물 스프라이트
+            spriteMap.put(SpriteType.Obstacle, new boolean[2][10][10]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");

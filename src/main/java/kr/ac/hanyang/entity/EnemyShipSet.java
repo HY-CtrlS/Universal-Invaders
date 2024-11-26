@@ -34,6 +34,11 @@ public class EnemyShipSet {
     private int survivalTime;
     private Cooldown clockCooldown;
 
+    // 게임 패턴 카운터
+    private int waveOneCount = 0;
+    // 게임 패턴 지속시간에 대한 변수
+    private Cooldown waveOneCooldown;
+
     /**
      * 생성자 - 기본 set 초기화 및 스폰 준비
      */
@@ -76,6 +81,13 @@ public class EnemyShipSet {
         }
         cleanup();
 
+        // 첫 번째 웨이브 생성
+        if (this.survivalTime == 250 && waveOneCount == 0) {
+            spawnWaveOne(250, 5000);
+            waveOneCount++;
+        }
+
+        // 적의 기본적인 이동방식 계산
         double movement_X;
         double movement_Y;
         int deltaX;
@@ -141,6 +153,32 @@ public class EnemyShipSet {
         }
     }
 
+    private void spawnWaveOne(final int radius, final int time) {
+        // 패턴 지속 시간 설정
+        waveOneCooldown = Core.getCooldown(time);
+
+        // 아군 함선 위치 파악
+        int shipX = ship.getPositionX();
+        int shipY = ship.getPositionY();
+        // 스프라이트 생성 위치
+        int spriteX;
+        int spriteY;
+
+        double theta; // 라디안
+
+        // 원의 방정식을 사용해 함선의 위치가 x와 y일때, 반지름이 r인 원으로 그리기 위해서 x+rcos(theta), y+rsin(theta) 임을 이용
+        for (theta = 0; theta <= 2 * Math.PI; theta += Math.PI / 18.0) {
+            // 원에 맞는 스프라이트 생성 위치 계산
+            spriteX = shipX + (int)(radius*Math.cos(theta));
+            spriteY = shipY + (int)(radius*Math.sin(theta));
+
+            // 위치에 장애물 생성 후 추가
+            EnemyShip newObstacle = new EnemyShip(spriteX, spriteY, SpriteType.Obstacle);
+            enemies.add(newObstacle);
+        }
+        // 패턴 시작
+        waveOneCooldown.reset();
+    }
     /**
      * 생성된 적들을 draw하는 메소드
      */
@@ -172,7 +210,12 @@ public class EnemyShipSet {
         Set<EnemyShip> toRemove = new HashSet<>();
 
         for (EnemyShip enemy : enemies) {
+            // 파괴된 적 객체를 제거
             if (enemy.isDestroyed() && enemy.isFinishedCleanCooldown()) {
+                toRemove.add(enemy);
+            }
+            // 패턴이 끝난 장애물 객체를 제거
+            if (enemy.getSpriteType() == SpriteType.Obstacle && waveOneCooldown.checkFinished()) {
                 toRemove.add(enemy);
             }
         }

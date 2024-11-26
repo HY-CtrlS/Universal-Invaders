@@ -75,6 +75,7 @@ public class EnemyShip extends Entity {
                 this.maxHp = 10;
                 this.XSpeed = 1;
                 this.YSpeed = 1;
+                this.baseDamage = 5;
                 break;
             // B1은 체력이 많지만 느린 적임. hp = 100, 속도는 0.5로 설정
             case EnemyShipB1:
@@ -85,6 +86,7 @@ public class EnemyShip extends Entity {
                 this.XSpeed = 0.5;
                 this.YSpeed = 0.5;
                 this.setColor(new Color[]{new Color(0), new Color(0x8F623B)});
+                this.baseDamage = 10;
                 break;
             // C1은 체력은 없어서 한방에 죽지만 속도가 매우 빠른 적임. hp = 1, 속도는 4로 설정
             case EnemyShipC1:
@@ -95,6 +97,16 @@ public class EnemyShip extends Entity {
                 this.maxHp = 100;
                 this.XSpeed = 4;
                 this.YSpeed = 4;
+                this.baseDamage = 3;
+                break;
+            case Obstacle:
+                this.hp = 200;
+                this.maxHp = 200;
+                this.XSpeed = 0;
+                this.YSpeed = 0;
+                this.pointValue = 0;
+                this.baseDamage = 20;
+                this.setColor(new Color[]{new Color(0x776B00), new Color(0xFF0000)});
                 break;
             default:
                 this.pointValue = 0;
@@ -213,6 +225,11 @@ public class EnemyShip extends Entity {
 
     public double getYSpeed() {
         return YSpeed;
+    }
+
+    // 적 함선의 공격력
+    public int getBaseDamage() {
+        return baseDamage;
     }
 
     // 테스트를 위한 getter

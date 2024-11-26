@@ -5,6 +5,7 @@ import static kr.ac.hanyang.engine.Core.getStatusManager;
 import kr.ac.hanyang.Item.Item;
 import kr.ac.hanyang.Item.ItemList;
 
+import kr.ac.hanyang.engine.DrawManager.SpriteType;
 import kr.ac.hanyang.engine.StatusManager;
 
 import kr.ac.hanyang.entity.Entity.Direction;
@@ -471,8 +472,13 @@ public class GameScreen extends Screen {
                 if (!this.ship.isDestroyed() && !enemyShip.isDestroyed() && !levelFinished) {
                     //this.enemyShipSet.damage_Enemy(enemyShip, this.ship.getBaseDamage());
                     this.ship.destroy();
-                    this.hp = (this.hp - 5 > 0) ? this.hp - 5 : 0;
-                    this.logger.info("Hit on player ship, -5 HP");
+                    this.hp = (this.hp - enemyShip.getBaseDamage() > 0) ? this.hp - enemyShip.getBaseDamage() : 0;
+                    // 만약 부딪힌 적이 장애물이라면
+                    if (enemyShip.getSpriteType() == SpriteType.Obstacle) {
+                        // 해당 장애물은 바로 삭제
+                        this.enemyShipSet.damage_Enemy(enemyShip, 200);
+                    }
+                    this.logger.info("Hit on player ship, -" + enemyShip.getBaseDamage() + " Hp");
                     Core.getSoundManager().playDamageSound();
                     if (this.hp <= 0 && !this.isDestroyed) {
                         Core.getSoundManager().playExplosionSound();
