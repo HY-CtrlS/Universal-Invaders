@@ -57,7 +57,7 @@ public class EnemyShip extends Entity {
      */
     public EnemyShip(final int positionX, final int positionY,
         final SpriteType spriteType) {
-        super(positionX, positionY, 12 * 2, 8 * 2, Color.WHITE);
+        super(positionX, positionY, getWidth(spriteType), getHeight(spriteType), Color.WHITE);
 
         this.spriteType = spriteType;
         this.animationCooldown = Core.getCooldown(500);
@@ -111,6 +111,42 @@ public class EnemyShip extends Entity {
             default:
                 this.pointValue = 0;
                 break;
+        }
+    }
+
+    private static int getWidth(SpriteType spriteType) {
+        switch (spriteType) {
+            case EnemyShipA1:
+            case EnemyShipA2:
+                return 12 * 2; // A타입
+            case EnemyShipB1:
+            case EnemyShipB2:
+                return 24 * 2; // B타입
+            case EnemyShipC1:
+            case EnemyShipC2:
+                return 12 * 2; // C타입
+            case Obstacle:
+                return 10 * 2; // 장애물
+            default:
+                return 12 * 2; // 기본값
+        }
+    }
+
+    private static int getHeight(SpriteType spriteType) {
+        switch (spriteType) {
+            case EnemyShipA1:
+            case EnemyShipA2:
+                return 8 * 2; // A타입
+            case EnemyShipB1:
+            case EnemyShipB2:
+                return 16 * 2; // B타입
+            case EnemyShipC1:
+            case EnemyShipC2:
+                return 8 * 2; // C타입
+            case Obstacle:
+                return 10 * 2; // 장애물
+            default:
+                return 8 * 2; // 기본값
         }
     }
 
