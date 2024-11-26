@@ -1,0 +1,39 @@
+name: "버그 보고"
+description: "발생한 문제를 보고합니다."
+title: "[BUG] 문제 제목"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "### 문제 설명\n버그에 대한 간단한 설명."
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: "재현 상황"
+      description: "버그가 발생하는 상황을 설명하세요."
+      placeholder: "ex) GameScreen.java, update() 메소드 호출 후 등"
+
+  - type: input
+    id: expected
+    attributes:
+      label: "기대 결과"
+      placeholder: "예상한 동작을 간단히 설명하세요."
+
+  - type: input
+    id: actual
+    attributes:
+      label: "실제 결과"
+      placeholder: "실제로 발생한 동작을 설명하세요."
+
+  - type: input
+    id: environment
+    attributes:
+      label: "환경"
+      placeholder: "OS, Java 버전, 브랜치 등 환경 정보를 입력하세요."
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: "추가 정보"
+      description: "문제를 해결하는 데 필요한 추가 자료가 있다면 작성하세요."

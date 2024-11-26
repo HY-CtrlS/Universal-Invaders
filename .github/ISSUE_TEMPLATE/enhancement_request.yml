@@ -1,0 +1,28 @@
+name: "개선 요청"
+description: "기존 기능이나 구조를 개선합니다."
+title: "[ENHANCEMENT] 개선 제목"
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: "### 개선 내용\n개선하고자 하는 사항을 간단히 설명해주세요."
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: "이유"
+      description: "이 개선이 필요한 이유 또는 해결하려는 문제를 작성하세요."
+      placeholder: "예: 사용자 경험 개선, 성능 향상, 유지보수성 향상 등."
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "개선 방안"
+      description: "개선할 방법이나 대안을 작성하세요."
+      placeholder: "예: 구체적인 방법, 코드 구조 변경 등."
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: "추가 정보"
+      description: "개선 요청과 관련된 참고 자료가 있다면 작성하세요."
