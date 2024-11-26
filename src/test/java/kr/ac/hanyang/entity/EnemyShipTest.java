@@ -24,5 +24,10 @@ class EnemyShipTest {
         assertEquals(1, enemy.getHp());
         assertEquals(4, enemy.getXSpeed());
         assertEquals(4, enemy.getYSpeed());
+
+        enemy = new EnemyShip(50, 50, SpriteType.Obstacle);
+        assertEquals(200, enemy.getHp());
+        assertEquals(0, enemy.getXSpeed());
+        assertEquals(0, enemy.getYSpeed());
     }
 }
