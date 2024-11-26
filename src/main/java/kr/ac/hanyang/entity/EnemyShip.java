@@ -45,7 +45,8 @@ public class EnemyShip extends Entity {
     // 각 적 함선의 X, Y 축 속도
     private double XSpeed;
     private double YSpeed;
-
+    // 적 함선의 최대 체력
+    private double maxHp;
     /**
      * Constructor, establishes the ship's properties.
      *
@@ -53,13 +54,12 @@ public class EnemyShip extends Entity {
      * @param positionY  Initial position of the ship in the Y axis.
      * @param spriteType Sprite type, image corresponding to the ship.
      */
-    public EnemyShip(final int positionX, final int positionY, int level,
+    public EnemyShip(final int positionX, final int positionY,
         final SpriteType spriteType) {
         super(positionX, positionY, 12 * 2, 8 * 2, Color.WHITE);
 
         this.spriteType = spriteType;
         this.animationCooldown = Core.getCooldown(500);
-        this.level = level;
         this.isDestroyed = false;
         this.cleanUpCooldown = Core.getCooldown(500);
         this.cleanUpCooldown.reset();
@@ -72,6 +72,7 @@ public class EnemyShip extends Entity {
             case EnemyShipA2:
                 this.pointValue = A_TYPE_POINTS;
                 this.hp = 10;
+                this.maxHp = 10;
                 this.XSpeed = 1;
                 this.YSpeed = 1;
                 break;
@@ -80,6 +81,7 @@ public class EnemyShip extends Entity {
             case EnemyShipB2:
                 this.pointValue = B_TYPE_POINTS;
                 this.hp = 100;
+                this.maxHp = 100;
                 this.XSpeed = 0.5;
                 this.YSpeed = 0.5;
                 break;
@@ -88,6 +90,8 @@ public class EnemyShip extends Entity {
             case EnemyShipC2:
                 this.pointValue = C_TYPE_POINTS;
                 this.hp = 1;
+                // 처음 등장 시에 빨간색으로 표시하기 위해서 최대체력을 100으로 설정
+                this.maxHp = 100;
                 this.XSpeed = 4;
                 this.YSpeed = 4;
                 break;
@@ -157,7 +161,7 @@ public class EnemyShip extends Entity {
                     break;
             }
         }
-        float hpPercentage = (float) this.hp / this.level;
+        double hpPercentage = this.hp / this.maxHp;
         int nonRedHue = (int) (hpPercentage * 255);
         this.setColor(new Color[] { new Color(255, nonRedHue, nonRedHue) });
     }

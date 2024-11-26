@@ -126,7 +126,6 @@ public class GameScreen extends Screen {
 
         this.gameSettings = gameSettings;
         this.shipID = shipID;
-        this.level = gameState.getLevel();
 
         this.hp = gameState.getHp();
         this.bulletsShot = gameState.getBulletsShot();
@@ -154,7 +153,7 @@ public class GameScreen extends Screen {
         getStatusManager().resetDefaultStatus();
 
         this.ship = Ship.createShipByID(this.shipID, this.width / 2, this.height / 2);
-        enemyShipSet = new EnemyShipSet(this.gameSettings, this.level, this.ship);
+        enemyShipSet = new EnemyShipSet(this.gameSettings, this.ship);
         enemyShipSet.attach(this);
 
         this.enemis = enemyShipSet.getEnemies();
@@ -385,7 +384,7 @@ public class GameScreen extends Screen {
             int countdown = (int) ((INPUT_DELAY
                 - (System.currentTimeMillis()
                 - this.gameStartTime)) / 1000);
-            drawManager.drawCountDown(this, this.level, countdown);
+            drawManager.drawCountDown(this, countdown);
         }
 
         // 현재 levelTime 그리기
@@ -576,7 +575,7 @@ public class GameScreen extends Screen {
      * @return Current game state.
      */
     public final GameState getGameState() {
-        return new GameState(this.level, this.hp,
+        return new GameState(this.hp,
             this.bulletsShot, this.shipsDestroyed, this.survivalTime);
     }
 }

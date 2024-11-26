@@ -585,10 +585,9 @@ public final class DrawManager {
      * Countdown to game start.
      *
      * @param screen Screen to draw on.
-     * @param level  Game difficulty level.
      * @param number Countdown number.
      */
-    public void drawCountDown(final Screen screen, final int level, final int number) {
+    public void drawCountDown(final Screen screen, final int number) {
         int rectWidth = screen.getWidth();
         int rectHeight = screen.getHeight() / 6;
         backBufferGraphics.setColor(Color.BLACK);

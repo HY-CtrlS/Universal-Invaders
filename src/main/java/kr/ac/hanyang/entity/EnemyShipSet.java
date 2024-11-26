@@ -36,15 +36,13 @@ public class EnemyShipSet {
     private Logger logger;
     // 적 수 카운터
     private int enemyCounter;
-    // 이 적Set이 속해있는 레벨
-    private int game_Level;
     // 적의 Hp를 깎는데 쓰이는 쿨타임
     private Cooldown hpDecreaseCooldown;
 
     /**
      * 생성자 - 기본 set 초기화 및 스폰 준비
      */
-    public EnemyShipSet(GameSettings gameSettings, final int game_Level, Ship ship) {
+    public EnemyShipSet(GameSettings gameSettings, Ship ship) {
         this.enemies = new HashSet<>();
         this.spawnCooldown = Core.getCooldown(gameSettings.getEnemySpawnInterval());
         this.drawManager = Core.getDrawManager();
@@ -52,7 +50,6 @@ public class EnemyShipSet {
         this.ship = ship;
         this.logger = Core.getLogger();
         this.enemyCounter = 0;
-        this.game_Level = game_Level;
     }
 
     /**
@@ -88,19 +85,12 @@ public class EnemyShipSet {
                 // 거리가 0이 아닐때만 플레이어를 향해 이동
                 if (distance != 0.0) {
                     // X축과 Y축의 거리에 따른 비율을 이용하여 이동량 설정
-                    movement_X = X_speed * (deltaX / distance);
-                    movement_Y = Y_speed * (deltaY / distance);
+                    movement_X = enemy.getXSpeed() * (deltaX / distance);
+                    movement_Y = enemy.getYSpeed() * (deltaY / distance);
                     enemy.move(movement_X, movement_Y);
                 }
             }
         }
-    }
-
-    // 적의 체력을 설정해주는 메소드
-    private void setEnemyHp() {
-        //현재는 레벨이 곧 적의  hp가 되도록 설정
-        base_hp = game_Level;
-        logger.info("set Enemy's HP : " + base_hp);
     }
 
     /**
@@ -116,10 +106,8 @@ public class EnemyShipSet {
             spawnY = random.nextInt(screen.getHeight());
         } while (Math.hypot(spawnX - ship.getPositionX(), spawnY - ship.getPositionY())
             < minDistance);
-        // 생성 전에 해당 적의 HP 설정
-        setEnemyHp();
         // 적 생성
-        EnemyShip newEnemy = new EnemyShip(spawnX, spawnY, base_hp, SpriteType.EnemyShipA1);
+        EnemyShip newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1);
         // 생성된 적 객체를 Set에 추가
         enemies.add(newEnemy);
     }

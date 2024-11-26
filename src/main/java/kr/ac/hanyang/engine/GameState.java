@@ -7,8 +7,6 @@ package kr.ac.hanyang.engine;
  */
 public class GameState {
 
-    /** Current game level. */
-    private int level;
     /** Lives currently remaining. */
     private int hp;
     /** Bullets shot until now. */
@@ -21,27 +19,18 @@ public class GameState {
     /**
      * Constructor.
      *
-     * @param level          Current game level.
      * @param hp             Lives currently remaining.
      * @param bulletsShot    Bullets shot until now.
      * @param shipsDestroyed Ships destroyed until now.
      * @param survivalTime   Total seconds of survival.
      */
-    public GameState(final int level,
+    public GameState(
         final int hp, final int bulletsShot,
         final int shipsDestroyed, final int survivalTime) {
-        this.level = level;
         this.hp = hp;
         this.bulletsShot = bulletsShot;
         this.shipsDestroyed = shipsDestroyed;
         this.survivalTime = survivalTime;
-    }
-
-    /**
-     * @return the level
-     */
-    public final int getLevel() {
-        return level;
     }
 
     /**
