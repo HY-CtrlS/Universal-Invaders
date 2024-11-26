@@ -92,7 +92,7 @@ public class GameScreen extends Screen {
     private int currentExperience = 0;
     /** 플레이어의 현재 레벨 */
     private int playerLevel = 1;
-    /** 처음 게임 시작 시 적 생성 주기 (단위 : 밀리초)**/
+    /** 처음 게임 시작 시 적 생성 주기 (단위 : 밀리초) **/
     private int enemySpawnInterval;
 
     /** Total survival time in milliseconds. */
@@ -108,11 +108,11 @@ public class GameScreen extends Screen {
     /**
      * Constructor, establishes the properties of the screen.
      *
-     * @param gameState    Current game state.
+     * @param gameState          Current game state.
      * @param enemySpawnInterval Current game settings.
-     * @param width        Screen width.
-     * @param height       Screen height.
-     * @param fps          Frames per second, frame rate at which the game is run.
+     * @param width              Screen width.
+     * @param height             Screen height.
+     * @param fps                Frames per second, frame rate at which the game is run.
      */
     public GameScreen(final GameState gameState,
         final int enemySpawnInterval,
@@ -179,7 +179,6 @@ public class GameScreen extends Screen {
         this.gameStartTime = System.currentTimeMillis();
         this.inputDelay = Core.getCooldown(INPUT_DELAY);
         this.inputDelay.reset();
-
 
         // HP 리젠 쿨타임 생성 및 시작
         this.regenHpCooldown = Core.getCooldown(1000);

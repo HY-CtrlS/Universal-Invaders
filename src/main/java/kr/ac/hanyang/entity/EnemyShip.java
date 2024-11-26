@@ -47,6 +47,7 @@ public class EnemyShip extends Entity {
     private double YSpeed;
     // 적 함선의 최대 체력
     private double maxHp;
+
     /**
      * Constructor, establishes the ship's properties.
      *
@@ -64,7 +65,6 @@ public class EnemyShip extends Entity {
         this.cleanUpCooldown = Core.getCooldown(500);
         this.cleanUpCooldown.reset();
         this.logger = Core.getLogger();
-
 
         switch (this.spriteType) {
             // A1 은 가장 기본적인 적임. hp = 10, 속도는 1로 설정
@@ -207,9 +207,16 @@ public class EnemyShip extends Entity {
     }
 
     // 적 함선의 속도 getter
-    public double getXSpeed() {return XSpeed;}
-    public double getYSpeed() {return YSpeed;}
+    public double getXSpeed() {
+        return XSpeed;
+    }
+
+    public double getYSpeed() {
+        return YSpeed;
+    }
 
     // 테스트를 위한 getter
-    public int getHp() {return this.hp;}
+    public int getHp() {
+        return this.hp;
+    }
 }

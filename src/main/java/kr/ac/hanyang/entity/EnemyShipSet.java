@@ -61,7 +61,7 @@ public class EnemyShipSet {
         // 게임 진행 시간 저장
         if (this.isLevelStarted) {
             if (this.clockCooldown.checkFinished()) {
-                survivalTime ++;
+                survivalTime++;
                 clockCooldown.reset();
                 this.logger.info("Time : " + survivalTime);
             }
@@ -121,18 +121,22 @@ public class EnemyShipSet {
         if (survivalTime < 100) {
             EnemyShip newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1);
             enemies.add(newEnemy);
-        }
-        else if (survivalTime < 200) {
+        } else if (survivalTime < 200) {
             int randomKey = random.nextInt(1000);
             // 10분의 1의 확률로 탱커 생성 이외의 경우는 기본 적 생성
-            EnemyShip newEnemy = (randomKey > 900) ? new EnemyShip(spawnX,spawnY, SpriteType.EnemyShipB1) : new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1);
+            EnemyShip newEnemy =
+                (randomKey > 900) ? new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipB1)
+                    : new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1);
             enemies.add(newEnemy);
         }
         // 생존 시간이 150을 넘은 경우
         else {
             int randomKey = random.nextInt(2000);
             // 0.7의 확률로 기본 적 생성, 0.2의 확률로 탱커 생성, 0.1의 확률로 속도 빠른 적 생성.
-            EnemyShip newEnemy = (randomKey <= 1400) ? new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1) : ((randomKey <= 1800) ? new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipB1) : new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipC1));
+            EnemyShip newEnemy =
+                (randomKey <= 1400) ? new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1)
+                    : ((randomKey <= 1800) ? new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipB1)
+                        : new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipC1));
             enemies.add(newEnemy);
         }
     }
