@@ -116,8 +116,8 @@ public final class DrawManager {
             spriteMap.put(SpriteType.EnemyShipA2, new boolean[1][12][8]);
             spriteMap.put(SpriteType.EnemyShipB1, new boolean[2][24][16]);
             spriteMap.put(SpriteType.EnemyShipB2, new boolean[2][24][16]);
-            spriteMap.put(SpriteType.EnemyShipC1, new boolean[1][12][8]);
-            spriteMap.put(SpriteType.EnemyShipC2, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipC1, new boolean[1][8][8]);
+            spriteMap.put(SpriteType.EnemyShipC2, new boolean[1][8][8]);
             spriteMap.put(SpriteType.EnemyShipSpecial, new boolean[1][16][7]);
             spriteMap.put(SpriteType.Explosion, new boolean[1][13][7]);
             // 공속 증가 아이템 스프라이트

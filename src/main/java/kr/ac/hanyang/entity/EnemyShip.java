@@ -124,7 +124,7 @@ public class EnemyShip extends Entity {
                 return 24 * 2; // B타입
             case EnemyShipC1:
             case EnemyShipC2:
-                return 12 * 2; // C타입
+                return 8 * 2; // C타입
             case Obstacle:
                 return 10 * 2; // 장애물
             default:
