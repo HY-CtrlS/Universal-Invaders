@@ -14,6 +14,7 @@ import kr.ac.hanyang.entity.BulletPool;
 import kr.ac.hanyang.entity.Entity;
 import kr.ac.hanyang.entity.Entity.Direction;
 import kr.ac.hanyang.entity.Ship;
+import kr.ac.hanyang.entity.Boss;
 
 /**
  * 보스 스테이지의 화면을 정의하는 클래스
@@ -33,6 +34,8 @@ public class BossScreen extends Screen {
     private int phase;
     /** Player's ship. */
     private Ship ship;
+    /** 보스 객체 */
+    private Boss boss;
     /** Time from finishing the level to screen change. */
     private Cooldown screenFinishedCooldown;
     /** Set of all bullets fired by on screen ships. */
@@ -72,6 +75,7 @@ public class BossScreen extends Screen {
         super(width, height, fps);
 
         this.ship = ship;
+        this.boss = new Boss(width / 2, SEPARATION_LINE_HEIGHT + 50);
 
         this.returnCode = 1;
         this.status = status;
@@ -124,6 +128,9 @@ public class BossScreen extends Screen {
         }
 
         if (this.inputDelay.checkFinished() && !this.phaseFinished) {
+            // 보스의 공격 처리
+            this.boss.attack();
+            this.boss.checkPhase();
 
             // WASD - 함선 이동
             boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_D);
@@ -204,7 +211,7 @@ public class BossScreen extends Screen {
 
             // hp 자동 재생 기능 실행
             hpRegen(status.getRegenHp());
-            
+
             this.ship.update();
 
             // 1초마다 생존 시간 1씩 증가
