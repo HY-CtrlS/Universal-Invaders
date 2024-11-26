@@ -209,4 +209,7 @@ public class EnemyShip extends Entity {
     // 적 함선의 속도 getter
     public double getXSpeed() {return XSpeed;}
     public double getYSpeed() {return YSpeed;}
+
+    // 테스트를 위한 getter
+    public int getHp() {return this.hp;}
 }
