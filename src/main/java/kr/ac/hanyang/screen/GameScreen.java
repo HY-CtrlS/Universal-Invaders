@@ -152,7 +152,14 @@ public class GameScreen extends Screen {
         // 게임 시작 시 StatusManager의 status 객체를 res/status 의 값으로 초기화
         getStatusManager().resetDefaultStatus();
 
+        // GameScreen 이 시작될 땐 카운트 다운이 시작되므로
+        this.levelStarted = false;
+        this.survivalTime = 0;
+        this.clockCooldown = Core.getCooldown(1000);
+        this.clockCooldown.reset();
+
         this.ship = Ship.createShipByID(this.shipID, this.width / 2, this.height / 2);
+        // 적 생성 쪽에서도 게임 진행 시간에 대한 정보를 받기 위해 게임 시작에 대한 정보 넘겨줌.
         enemyShipSet = new EnemyShipSet(this.gameSettings, this.ship);
         enemyShipSet.attach(this);
 
@@ -178,11 +185,6 @@ public class GameScreen extends Screen {
         this.inputDelay = Core.getCooldown(INPUT_DELAY);
         this.inputDelay.reset();
 
-        // GameScreen 이 시작될 땐 카운트 다운이 시작되므로
-        this.levelStarted = false;
-        this.survivalTime = 0;
-        this.clockCooldown = Core.getCooldown(1000);
-        this.clockCooldown.reset();
 
         // HP 리젠 쿨타임 생성 및 시작
         this.regenHpCooldown = Core.getCooldown(1000);
@@ -212,6 +214,7 @@ public class GameScreen extends Screen {
         if (this.inputDelay.checkFinished() && !this.levelStarted) {
             this.clockCooldown.reset();
             this.levelStarted = true;
+            enemyShipSet.setLevelStarted(true);
         }
 
         if (this.inputDelay.checkFinished() && !this.levelFinished) {
