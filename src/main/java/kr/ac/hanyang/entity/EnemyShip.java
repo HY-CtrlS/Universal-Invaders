@@ -42,6 +42,9 @@ public class EnemyShip extends Entity {
     private double remainingMovementY = 0;
     // 적을 화면에서 없에도 되는지에 대한 쿨다운
     private Cooldown cleanUpCooldown;
+    // 각 적 함선의 X, Y 축 속도
+    private double XSpeed;
+    private double YSpeed;
 
     /**
      * Constructor, establishes the ship's properties.
@@ -62,38 +65,36 @@ public class EnemyShip extends Entity {
         this.cleanUpCooldown.reset();
         this.logger = Core.getLogger();
 
-        // 현재는 hp를 적의 레벨로 그대로 설정
-        this.hp = level;
 
         switch (this.spriteType) {
+            // A1 은 가장 기본적인 적임. hp = 10, 속도는 1로 설정
             case EnemyShipA1:
             case EnemyShipA2:
                 this.pointValue = A_TYPE_POINTS;
+                this.hp = 10;
+                this.XSpeed = 1;
+                this.YSpeed = 1;
                 break;
+            // B1은 체력이 많지만 느린 적임. hp = 100, 속도는 0.5로 설정
             case EnemyShipB1:
             case EnemyShipB2:
                 this.pointValue = B_TYPE_POINTS;
+                this.hp = 100;
+                this.XSpeed = 0.5;
+                this.YSpeed = 0.5;
                 break;
+            // C1은 체력은 없어서 한방에 죽지만 속도가 매우 빠른 적임. hp = 1, 속도는 4로 설정
             case EnemyShipC1:
             case EnemyShipC2:
                 this.pointValue = C_TYPE_POINTS;
+                this.hp = 1;
+                this.XSpeed = 4;
+                this.YSpeed = 4;
                 break;
             default:
                 this.pointValue = 0;
                 break;
         }
-    }
-
-    /**
-     * Constructor, establishes the ship's properties for a special ship, with known starting
-     * properties.
-     */
-    public EnemyShip() {
-        super(-32, 60, 16 * 2, 7 * 2, Color.RED);
-
-        this.spriteType = SpriteType.EnemyShipSpecial;
-        this.isDestroyed = false;
-        this.pointValue = BONUS_TYPE_POINTS;
     }
 
     /**
@@ -199,4 +200,8 @@ public class EnemyShip extends Entity {
         this.positionX = positionX;
         this.positionY = positionY;
     }
+
+    // 적 함선의 속도 getter
+    public double getXSpeed() {return XSpeed;}
+    public double getYSpeed() {return YSpeed;}
 }
