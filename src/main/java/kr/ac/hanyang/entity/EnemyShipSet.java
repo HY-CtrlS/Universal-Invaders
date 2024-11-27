@@ -53,27 +53,14 @@ public class EnemyShipSet {
         this.enemySpawnInterval = enemySpawnInterval;
         this.spawnCooldown = Core.getCooldown(this.enemySpawnInterval);
 
-        // 게임 진행 시간 정보를 위한 초기화. 처음에는 -1초 그리고 시작 안한 상태
-        // -1초로 초기화 하는 이유는 처음에 게임 시작시에 clock쿨다운이 이미 완료된 상태이기에 바로 1초가 더해짐. 그래서 0초부터 1초 씩 카운트하기 위해서 -1로 설정.
-        this.survivalTime = -1;
-        this.isLevelStarted = false;
-        this.clockCooldown = Core.getCooldown(1000);
-        this.clockCooldown.reset();
+        // 게임 진행 시간 정보 0초로 초기화
+        this.survivalTime = 0;
     }
 
     /**
      * 화면에 적 생성 후 이동하는 것 업데이트
      */
     public void update() {
-        // 게임 진행 시간 저장
-        if (this.isLevelStarted) {
-            if (this.clockCooldown.checkFinished()) {
-                survivalTime++;
-                clockCooldown.reset();
-                this.logger.info("Time : " + survivalTime);
-            }
-        }
-
         // 스폰 쿨타임이 다 돌았으면 생성
         if (this.spawnCooldown.checkFinished()) {
             this.spawnCooldown.reset();
@@ -249,5 +236,10 @@ public class EnemyShipSet {
     public void decreaseSpawnInterval(int amount) {
         int check = this.enemySpawnInterval - amount;
         this.spawnCooldown = (check > 500) ? Core.getCooldown(check) : spawnCooldown;
+    }
+
+    public void updateTime() {
+        this.survivalTime++;
+        this.logger.info("Time : " + survivalTime);
     }
 }

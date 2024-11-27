@@ -383,6 +383,8 @@ public class GameScreen extends Screen {
             // 1초마다 생존 시간 1씩 증가
             if (this.clockCooldown.checkFinished()) {
                 this.survivalTime += 1;
+                // enemyShipSet의 시간도 같이 증가
+                enemyShipSet.updateTime();
                 this.clockCooldown.reset();
 
                 // 10초마다 스폰 인터벌 50ms 감소
