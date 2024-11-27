@@ -52,6 +52,9 @@ public final class Core {
         int returnCode = 1;
         GameState gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0);
 
+        currentScreen = new SplashScreen(width, height, FPS);
+        returnCode = handleScreen(currentScreen, "splash screen");
+
         do {
 
             switch (returnCode) {

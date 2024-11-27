@@ -1,5 +1,6 @@
 package kr.ac.hanyang.engine;
 
+import javax.imageio.ImageIO;
 import kr.ac.hanyang.Item.Item;
 import kr.ac.hanyang.entity.Ship;
 import java.awt.Color;
@@ -49,6 +50,9 @@ public final class DrawManager {
 
     /** Sprite types mapped to their images. */
     private static Map<SpriteType, boolean[][][]> spriteMap;
+
+    /** 배경 이미지. */
+    private BufferedImage backgroundImage;
 
     /** Sprite types. */
     public static enum SpriteType {
@@ -1011,5 +1015,25 @@ public final class DrawManager {
         }
         drawCenteredRegularString(screen, shipColors[shipID - 1],
             screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+    }
+
+    public void setSplashImage() {
+        try {
+            // 고정된 splash 이미지 로드
+            backgroundImage = ImageIO.read(getClass().getResource("/splash_image.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Failed to load splash image.");
+        }
+    }
+
+    public void drawBackgroundImage(final Screen screen) {
+        if (backgroundImage != null) {
+            backBufferGraphics.drawImage(backgroundImage, 0, 0, screen.getWidth(), screen.getHeight(), null);
+        } else {
+            // Fallback 처리: 배경 이미지가 없을 경우 기본 색상으로 채움
+            backBufferGraphics.setColor(Color.BLACK);
+            backBufferGraphics.fillRect(0, 0, screen.getWidth(), screen.getHeight());
+        }
     }
 }
