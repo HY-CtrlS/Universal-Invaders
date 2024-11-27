@@ -87,7 +87,9 @@ public final class DrawManager {
         /** Destroyed enemy ship. */
         Explosion,
         // 공속증가 아이템
-        AttackSpeedUpItem
+        AttackSpeedUpItem,
+        // 다중 색 레이어 포탈
+        Portal
     }
 
     /**
@@ -120,7 +122,8 @@ public final class DrawManager {
             spriteMap.put(SpriteType.Explosion, new boolean[1][13][7]);
             // 공속 증가 아이템 스프라이트
             spriteMap.put(SpriteType.AttackSpeedUpItem, new boolean[1][10][10]);
-
+            // 포탈 스프라이트
+            spriteMap.put(SpriteType.Portal, new boolean[3][11][13]);
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
 
@@ -612,8 +615,8 @@ public final class DrawManager {
     /**
      * 현재 생존 시간을 화면에 그립니다.
      *
-     * @param screen        화면 객체
-     * @param survivalTime  현재 생존 시간
+     * @param screen       화면 객체
+     * @param survivalTime 현재 생존 시간
      */
     public void drawSurvivalTime(final Screen screen, final int survivalTime) {
         backBufferGraphics.setFont(fontRegular);
