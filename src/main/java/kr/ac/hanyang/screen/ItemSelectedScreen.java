@@ -63,10 +63,16 @@ public class ItemSelectedScreen extends Screen {
                 this.selectionCooldown.reset();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-                // 해당 아이템 효과 적용
-                item_num = items.get(selectedItem).activateItem();
-                // 화면 종료
-                this.isRunning = false;
+                // items가 존재하는 경우에만 적용
+                if (items.size() != 0) {
+                    // 해당 아이템 효과 적용
+                    item_num = items.get(selectedItem).activateItem();
+                    // 화면 종료
+                    this.isRunning = false;
+                } //items에 아이템이 없으면 스페이스바 누르면 그냥 넘어가도록 지정
+                else {
+                    this.isRunning = false;
+                }
             }
         }
     }
