@@ -87,7 +87,9 @@ public final class DrawManager {
         /** Destroyed enemy ship. */
         Explosion,
         // 공속증가 아이템
-        AttackSpeedUpItem
+        AttackSpeedUpItem,
+        // 장애물 스프라이트
+        Obstacle
     }
 
     /**
@@ -112,14 +114,16 @@ public final class DrawManager {
             spriteMap.put(SpriteType.EnemyBullet, new boolean[1][3][5]);
             spriteMap.put(SpriteType.EnemyShipA1, new boolean[1][12][8]);
             spriteMap.put(SpriteType.EnemyShipA2, new boolean[1][12][8]);
-            spriteMap.put(SpriteType.EnemyShipB1, new boolean[1][12][8]);
-            spriteMap.put(SpriteType.EnemyShipB2, new boolean[1][12][8]);
-            spriteMap.put(SpriteType.EnemyShipC1, new boolean[1][12][8]);
-            spriteMap.put(SpriteType.EnemyShipC2, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipB1, new boolean[2][24][16]);
+            spriteMap.put(SpriteType.EnemyShipB2, new boolean[2][24][16]);
+            spriteMap.put(SpriteType.EnemyShipC1, new boolean[1][8][8]);
+            spriteMap.put(SpriteType.EnemyShipC2, new boolean[1][8][8]);
             spriteMap.put(SpriteType.EnemyShipSpecial, new boolean[1][16][7]);
             spriteMap.put(SpriteType.Explosion, new boolean[1][13][7]);
             // 공속 증가 아이템 스프라이트
             spriteMap.put(SpriteType.AttackSpeedUpItem, new boolean[1][10][10]);
+            // 장애물 스프라이트
+            spriteMap.put(SpriteType.Obstacle, new boolean[2][10][10]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
@@ -598,10 +602,9 @@ public final class DrawManager {
      * Countdown to game start.
      *
      * @param screen Screen to draw on.
-     * @param level  Game difficulty level.
      * @param number Countdown number.
      */
-    public void drawCountDown(final Screen screen, final int level, final int number) {
+    public void drawCountDown(final Screen screen, final int number) {
         int rectWidth = screen.getWidth();
         int rectHeight = screen.getHeight() / 6;
         backBufferGraphics.setColor(Color.BLACK);

@@ -41,7 +41,7 @@ public class Entity {
         this.positionY = positionY;
         this.width = width;
         this.height = height;
-        this.color = new Color[] { color };
+        this.color = new Color[]{color};
         this.direction = Entity.Direction.UP;
     }
 
@@ -79,7 +79,7 @@ public class Entity {
         this.positionY = positionY;
         this.width = width;
         this.height = height;
-        this.color = new Color[] { color };
+        this.color = new Color[]{color};
         this.direction = direction;
     }
 
@@ -186,7 +186,14 @@ public class Entity {
         return color;
     }
 
-    public final void setColor(Color[] color) { this.color = color; }
+    public final void setColor(Color[] color) {
+        this.color = color;
+    }
+
+    // 해당 인덱스의 Color를 수정하는 메소드
+    public final void setColorIndex(Color color, int index) {
+        this.color[index] = color;
+    }
 
     /**
      * Getter for the X axis position of the entity.
