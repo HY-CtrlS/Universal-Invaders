@@ -306,6 +306,19 @@ public final class DrawManager {
     }
 
     /**
+     * Draws current ultimate skill gauge on screen.
+     *
+     * @param screen Screen to draw on.
+     * @param ship   Current player ship.
+     */
+    public void drawUltGauge(final Screen screen, final Ship ship) {
+        backBufferGraphics.setFont(fontRegular);
+        backBufferGraphics.setColor(Color.WHITE);
+        String scoreString = ship.getUltGauge() + " / " + ship.getUltThreshold() + " Ult";
+        backBufferGraphics.drawString(scoreString, screen.getWidth() - 250, 25);
+    }
+
+    /**
      * Draws number of remaining lives on screen.
      *
      * @param screen Screen to draw on.

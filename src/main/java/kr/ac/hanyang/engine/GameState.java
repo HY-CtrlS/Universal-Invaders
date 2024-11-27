@@ -27,9 +27,8 @@ public class GameState {
      * @param shipsDestroyed Ships destroyed until now.
      * @param survivalTime   Total seconds of survival.
      */
-    public GameState(final int level,
-        final int hp, final int bulletsShot,
-        final int shipsDestroyed, final int survivalTime) {
+    public GameState(final int level, final int hp, final int bulletsShot, final int shipsDestroyed,
+        final int survivalTime) {
         this.level = level;
         this.hp = hp;
         this.bulletsShot = bulletsShot;
@@ -51,6 +50,11 @@ public class GameState {
         return hp;
     }
 
+    /**
+     * 체력 설정
+     *
+     * @param hp 설정할 체력
+     */
     public void setHP(final int hp) {
         this.hp = hp;
     }
