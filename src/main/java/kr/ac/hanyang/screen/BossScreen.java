@@ -243,7 +243,7 @@ public class BossScreen extends Screen {
             int countdown = (int) ((INPUT_DELAY
                 - (System.currentTimeMillis()
                 - this.gameStartTime)) / 1000);
-            drawManager.drawCountDown(this, 12, countdown);
+            drawManager.drawCountDown(this, 12);
         }
 
         drawManager.completeDrawing(this);
