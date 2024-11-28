@@ -3,6 +3,7 @@ package kr.ac.hanyang.entity;
 import java.awt.Color;
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
+import kr.ac.hanyang.engine.DrawManager.SpriteType;
 
 /**
  * 보스를 구현하는 클래스 보스는 페이즈에 따라 여러 패턴으로 공격
@@ -37,12 +38,12 @@ public class Boss extends Entity {
      * @param positionY Initial Y position.
      */
     public Boss(int positionX, int positionY) {
-        super(positionX, positionY, 100, 60, PHASE_1_COLOR, Direction.DOWN);
+        super(positionX, positionY, 54 * 2, 25 * 2, PHASE_1_COLOR, Direction.DOWN);
 
         this.maxHp = PHASE_1_HP;
         this.currentHp = maxHp;
         this.phase = 1;
-
+        this.spriteType = SpriteType.Boss;
         this.attackCooldown = Core.getCooldown(ATTACK_COOLDOWN_1);
     }
 

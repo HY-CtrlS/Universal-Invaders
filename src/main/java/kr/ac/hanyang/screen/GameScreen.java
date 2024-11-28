@@ -219,8 +219,7 @@ public class GameScreen extends Screen {
         }
 
         // 포탈 객체 생성
-        this.portal = new Portal((this.width - this.portal.getWidth()) / 2,
-            (this.height - this.portal.getHeight()) / 2);
+        this.portal = new Portal(this.width / 2, this.height / 2);
         // 게임 오버 false로 초기화
         this.gameOver = false;
     }
@@ -381,7 +380,7 @@ public class GameScreen extends Screen {
 
             // 게임오버 상태면 적 생성 중단
             // Ship2 궁극기 활성화 여부에 따라 적 함선 이동 및 생성 여부 결정
-            if (this.gameOver) {
+            if (!this.gameOver) {
                 if (this.shipID == 2 && this.ship.isUltActivated()) {
                     this.enemyShipSet.noUpdate();
                     // TODO: 얼려진 적 스프라이트로 변경
@@ -419,7 +418,7 @@ public class GameScreen extends Screen {
             }
 
             // 게임 진행시간이 300초가 되면 화면 상의 적들을 모두 지우고 gameOver를 true로 전환
-            if (this.survivalTime == 300) {
+            if (this.survivalTime == 5) {
                 this.gameOver = true;
                 for (EnemyShip enemyShip : this.enemis) {
                     enemyShip.destroy();
@@ -429,6 +428,7 @@ public class GameScreen extends Screen {
                             // enemyShip의 너비는 13, 경험치의 너비는 7이므로 3을 더해줌
                             enemyShip.getPositionY(), enemyShip.getPointValue()));
                 }
+                this.portal.activate();
             }
         }
 
@@ -477,8 +477,10 @@ public class GameScreen extends Screen {
                 experience.getPositionY());
         }
 
-        enemyShipSet.draw();
-
+        if (!this.gameOver) {
+            enemyShipSet.draw();
+        }
+        
         // Interface.
         drawManager.drawLives(this, this.hp);
         drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
@@ -659,6 +661,7 @@ public class GameScreen extends Screen {
         // 포탈과 아군 함선의 충돌 처리
         if (this.portal.isVisible()) {
             if (checkCollision(this.ship, this.portal)) {
+                this.returnCode = 2;
                 this.levelFinished = true;
             }
         }

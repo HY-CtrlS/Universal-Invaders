@@ -82,9 +82,11 @@ public final class Core {
                     }
 
                     // 보스 스크린 시작
-                    currentScreen = new BossScreen(gameState.getStatus(), width, height, FPS,
-                        gameState.getShip());
-                    returnCode = handleScreen(currentScreen, "boss screen");
+                    if (isQuit == 2) {
+                        currentScreen = new BossScreen(gameState.getStatus(), width, height, FPS,
+                            gameState.getShip());
+                        returnCode = handleScreen(currentScreen, "boss screen");
+                    }
 
                     // 게임 종료 후 gameState의 정보를 이용하여 scoreScreen 생성
                     currentScreen = new ScoreScreen(width, height, FPS, gameState);

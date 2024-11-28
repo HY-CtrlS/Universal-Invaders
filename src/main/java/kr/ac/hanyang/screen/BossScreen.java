@@ -75,7 +75,6 @@ public class BossScreen extends Screen {
         super(width, height, fps);
 
         this.ship = ship;
-        this.boss = new Boss(width / 2, SEPARATION_LINE_HEIGHT + 50);
 
         this.returnCode = 1;
         this.status = status;
@@ -86,6 +85,8 @@ public class BossScreen extends Screen {
      */
     public final void initialize() {
         super.initialize();
+
+        this.boss = new Boss(this.width / 2, SEPARATION_LINE_HEIGHT + 50);
 
         this.screenFinishedCooldown = Core.getCooldown(SCREEN_CHANGE_INTERVAL);
         this.bullets = new HashSet<Bullet>();
@@ -220,10 +221,30 @@ public class BossScreen extends Screen {
                 this.clockCooldown.reset();
             }
         }
+
+        cleanBullets();
+        draw();
     }
 
     private void draw() {
         drawManager.initDrawing(this);
+
+        drawManager.drawEntity(this.ship, this.ship.getPositionX(),
+            this.ship.getPositionY());
+        drawManager.drawEntity(this.boss, this.boss.getPositionX(), this.boss.getPositionY());
+
+        for (Bullet bullet : this.bullets) {
+            drawManager.drawEntity(bullet, bullet.getPositionX(),
+                bullet.getPositionY());
+        }
+
+        // Countdown to game start.
+        if (!this.inputDelay.checkFinished()) {
+            int countdown = (int) ((INPUT_DELAY
+                - (System.currentTimeMillis()
+                - this.gameStartTime)) / 1000);
+            drawManager.drawCountDown(this, 12, countdown);
+        }
 
         drawManager.completeDrawing(this);
     }
