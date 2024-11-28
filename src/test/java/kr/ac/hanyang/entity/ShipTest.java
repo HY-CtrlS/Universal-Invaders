@@ -153,7 +153,7 @@ class ShipTest {
         assertEquals(ship.shootingInterval, Core.getStatusManager().getShootingInterval());
     }
 
-    /*@Test
+    @Test
     void testShoot() {
         this.bullets = new HashSet<>();
 
@@ -166,10 +166,10 @@ class ShipTest {
 
         // 추가된 총알이 올바르게 설정되었는지 확인
         Bullet bullet = bullets.iterator().next();  // 집합에서 첫 번째 총알을 가져옴
-        assertEquals(ship.getPositionX() + ship.getWidth() / 2, bullet.getPositionX()); // 총알 위치 x
+        assertEquals((ship.getPositionX() + ship.getWidth() / 2) - bullet.width / 2, bullet.getPositionX()); // 총알 위치 x
         assertEquals(ship.getPositionY() + ship.getHeight() / 2, bullet.getPositionY()); // 총알 위치 y
         assertEquals(ship.bulletSpeed, bullet.getSpeed());  // 총알 속도
         assertEquals(ship.baseDamage, bullet.getDamage());  // 총알 데미지
         assertEquals(ship.getDirection(), bullet.getDirection());  // 총알 방향
-    }*/
+    }
 }

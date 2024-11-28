@@ -148,7 +148,7 @@ public class Ship extends Entity {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, direction,
+                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, this.direction,
                 getShipID()));
             return true;
         }
@@ -233,24 +233,6 @@ public class Ship extends Entity {
      */
     public Direction getDirection() {
         return direction;
-    }
-
-    /**
-     * Getter for the ship's X position.
-     *
-     * @return The X coordinate of the ship.
-     */
-    public int getX() {
-        return this.positionX;
-    }
-
-    /**
-     * Getter for the ship's Y position.
-     *
-     * @return The Y coordinate of the ship.
-     */
-    public int getY() {
-        return this.positionY;
     }
 
     /**
