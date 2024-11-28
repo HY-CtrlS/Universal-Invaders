@@ -661,56 +661,63 @@ public final class DrawManager {
 
     public void drawSelectedItem(final Screen screen, final List<Item> itemList,
         final int selectedItem) {
-        if (itemList.size() < 3) {
-            String alarmString = "Only  " + itemList.size() + "  items left you can upgrade!!";
+        if (itemList.size() != 0) {
+            if (itemList.size() < 3) {
+                String alarmString = "Only  " + itemList.size() + "  items left you can upgrade!!";
+                drawCenteredRegularString(screen, alarmString,
+                    150);
+            }
+
+            // 첫 아이템 선택여부
+            if (selectedItem == 0) {
+                backBufferGraphics.setColor(Color.WHITE);
+                // 아이템 설명 출력
+                drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
+                    screen.getHeight() / 3 + 200);
+                drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
+                    screen.getHeight() / 3 + 300);
+                backBufferGraphics.setColor(Color.GREEN);
+            } else {
+                backBufferGraphics.setColor(Color.WHITE);
+            }
+            // 첫 아이템 그리기
+            drawItemBox((screen.getWidth() / 4) - 50, screen.getHeight() / 3);
+
+            // 두번째 아이템 선택여부
+            if (selectedItem == 1) {
+                backBufferGraphics.setColor(Color.WHITE);
+                // 아이템 설명 출력
+                drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
+                    screen.getHeight() / 3 + 200);
+                drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
+                    screen.getHeight() / 3 + 300);
+                backBufferGraphics.setColor(Color.GREEN);
+            } else {
+                backBufferGraphics.setColor(Color.WHITE);
+            }
+            // 두 번째 아이템 그리기
+            drawItemBox((screen.getWidth() * 2 / 4) - 50, screen.getHeight() / 3);
+
+            // 세번째 아이템 선택여부
+            if (selectedItem == 2) {
+                backBufferGraphics.setColor(Color.WHITE);
+                // 아이템 설명 출력
+                drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
+                    screen.getHeight() / 3 + 200);
+                drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
+                    screen.getHeight() / 3 + 300);
+                backBufferGraphics.setColor(Color.GREEN);
+            } else {
+                backBufferGraphics.setColor(Color.WHITE);
+            }
+            //세 번째 아이템 그리기
+            drawItemBox((screen.getWidth() * 3) / 4 - 50, screen.getHeight() / 3);
+        }
+        else {
+            String alarmString = "There are no items left";
             drawCenteredRegularString(screen, alarmString,
                 150);
         }
-
-        // 첫 아이템 선택여부
-        if (selectedItem == 0) {
-            backBufferGraphics.setColor(Color.WHITE);
-            // 아이템 설명 출력
-            drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
-                screen.getHeight() / 3 + 200);
-            drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
-                screen.getHeight() / 3 + 300);
-            backBufferGraphics.setColor(Color.GREEN);
-        } else {
-            backBufferGraphics.setColor(Color.WHITE);
-        }
-        // 첫 아이템 그리기
-        drawItemBox((screen.getWidth() / 4) - 50, screen.getHeight() / 3);
-
-        // 두번째 아이템 선택여부
-        if (selectedItem == 1) {
-            backBufferGraphics.setColor(Color.WHITE);
-            // 아이템 설명 출력
-            drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
-                screen.getHeight() / 3 + 200);
-            drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
-                screen.getHeight() / 3 + 300);
-            backBufferGraphics.setColor(Color.GREEN);
-        } else {
-            backBufferGraphics.setColor(Color.WHITE);
-        }
-        // 두 번째 아이템 그리기
-        drawItemBox((screen.getWidth() * 2 / 4) - 50, screen.getHeight() / 3);
-
-        // 세번째 아이템 선택여부
-        if (selectedItem == 2) {
-            backBufferGraphics.setColor(Color.WHITE);
-            // 아이템 설명 출력
-            drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
-                screen.getHeight() / 3 + 200);
-            drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
-                screen.getHeight() / 3 + 300);
-            backBufferGraphics.setColor(Color.GREEN);
-        } else {
-            backBufferGraphics.setColor(Color.WHITE);
-        }
-        //세 번째 아이템 그리기
-        drawItemBox((screen.getWidth() * 3) / 4 - 50, screen.getHeight() / 3);
     }
 
     // 각 아이템을 화면에 그리는 메소드
