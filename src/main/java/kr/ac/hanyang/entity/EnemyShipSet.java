@@ -40,6 +40,8 @@ public class EnemyShipSet {
     private Cooldown waveOneCooldown;
 
     private int enemySpawnInterval;
+
+    private int levelClearTime;
     /**
      * 생성자 - 기본 set 초기화 및 스폰 준비
      */
@@ -62,11 +64,14 @@ public class EnemyShipSet {
      */
     public void update() {
         // 스폰 쿨타임이 다 돌았으면 생성
-        if (this.spawnCooldown.checkFinished()) {
-            this.spawnCooldown.reset();
-            spawnEnemy();
-            enemyCounter++;
-            this.logger.info(enemyCounter + " Enemy Created!");
+        // 만약 300초에 다다르면 생성 중단
+        if (survivalTime < levelClearTime) {
+            if (this.spawnCooldown.checkFinished()) {
+                this.spawnCooldown.reset();
+                spawnEnemy();
+                enemyCounter++;
+                this.logger.info(enemyCounter + " Enemy Created!");
+            }
         }
         cleanup();
 
@@ -241,5 +246,10 @@ public class EnemyShipSet {
     public void updateTime() {
         this.survivalTime++;
         this.logger.info("Time : " + survivalTime);
+    }
+
+    public void initializeTime(final int time, final int clearTime) {
+        this.survivalTime = time;
+        this.levelClearTime = clearTime;
     }
 }

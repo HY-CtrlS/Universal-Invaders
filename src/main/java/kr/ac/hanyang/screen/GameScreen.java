@@ -46,6 +46,8 @@ public class GameScreen extends Screen {
     private static final int EXPERIENCE_THRESHOLD = 100;
     /** 기본 적 생성 간격 */
     private static final int ENEMY_SPAWN_INTERVAL = 2000;
+    // 레벨 클리어 조건 시간
+    private static final int LEVEL_CLEAR_TIME = 5;
 
     /** Current difficulty level number. */
     private int level;
@@ -111,7 +113,7 @@ public class GameScreen extends Screen {
     // 보스 스테이지 이동용 포탈
     private Portal portal;
     // 제한시간을 넘겼는지 확인하는 변수
-    private boolean gameOver;
+    private boolean isClear;
 
     /**
      * Constructor, establishes the properties of the screen.
@@ -162,6 +164,8 @@ public class GameScreen extends Screen {
         // 적 생성 쪽에서도 게임 진행 시간에 대한 정보를 받기 위해 게임 시작에 대한 정보 넘겨줌.
         enemyShipSet = new EnemyShipSet(ENEMY_SPAWN_INTERVAL, this.ship);
         enemyShipSet.attach(this);
+        // EnemyShipSet 의 시간설정과 클리어 시간 설정
+        enemyShipSet.initializeTime(survivalTime, LEVEL_CLEAR_TIME);
 
         this.enemies = enemyShipSet.getEnemies();
         // Appears each 10-30 seconds.
@@ -216,7 +220,7 @@ public class GameScreen extends Screen {
         // 포탈 객체 생성
         this.portal = new Portal(this.width / 2, this.height / 2);
         // 게임 오버 false로 초기화
-        this.gameOver = false;
+        this.isClear = false;
     }
 
     /**
@@ -374,16 +378,14 @@ public class GameScreen extends Screen {
 
             this.ship.update();
 
-            // 게임오버 상태면 적 생성 중단
             // Ship2 궁극기 활성화 여부에 따라 적 함선 이동 및 생성 여부 결정
-            if (!this.gameOver) {
-                if (this.shipID == 2 && this.ship.isUltActivated()) {
-                    this.enemyShipSet.noUpdate();
-                    // TODO: 얼려진 적 스프라이트로 변경
-                } else {
-                    this.enemyShipSet.update();
-                }
+            if (this.shipID == 2 && this.ship.isUltActivated()) {
+                this.enemyShipSet.noUpdate();
+                // TODO: 얼려진 적 스프라이트로 변경
+            } else {
+                this.enemyShipSet.update();
             }
+
 
             // Ship4 궁극기 활성화 여부에 따라 경험치 자석 효과 결정
             if (this.shipID == 4 && this.ship.isUltActivated()) {
@@ -393,7 +395,7 @@ public class GameScreen extends Screen {
             }
 
             // 1초마다 생존 시간 1씩 증가, 게임오버 상태면 300초에서 시간 증가 정지
-            if (this.clockCooldown.checkFinished() && !this.gameOver) {
+            if (this.clockCooldown.checkFinished() && !this.isClear) {
                 this.survivalTime += 1;
                 // enemyShipSet의 시간도 같이 증가
                 enemyShipSet.updateTime();
@@ -422,9 +424,9 @@ public class GameScreen extends Screen {
                 }
             }
 
-            // 게임 진행시간이 300초가 되면 화면 상의 적들을 모두 지우고 gameOver를 true로 전환
-            if (this.survivalTime == 5) {
-                this.gameOver = true;
+            // 게임 진행시간이 300초가 되면 화면 상의 적들을 모두 지우고 isClear를 true로 전환
+            if (this.survivalTime == LEVEL_CLEAR_TIME && !this.isClear) {
+                this.isClear = true;
                 for (EnemyShip enemyShip : this.enemies) {
                     enemyShip.destroy();
                     this.shipsDestroyed++;
@@ -482,7 +484,7 @@ public class GameScreen extends Screen {
                 experience.getPositionY());
         }
 
-        if (!this.gameOver) {
+        if (!this.isClear) {
             enemyShipSet.draw();
         }
 
