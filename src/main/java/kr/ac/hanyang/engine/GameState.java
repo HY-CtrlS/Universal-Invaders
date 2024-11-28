@@ -10,8 +10,6 @@ import kr.ac.hanyang.entity.Ship;
  */
 public class GameState {
 
-    /** Current game level. */
-    private int level;
     /** Lives currently remaining. */
     private int hp;
     /** Bullets shot until now. */
@@ -20,36 +18,22 @@ public class GameState {
     private int shipsDestroyed;
     /** Total seconds of survival. */
     private int survivalTime;
-    // 함선의 status
-    private StatusManager status;
-    // 아군 함선
-    private Ship ship;
 
     /**
      * Constructor.
      *
-     * @param level          Current game level.
      * @param hp             Lives currently remaining.
      * @param bulletsShot    Bullets shot until now.
      * @param shipsDestroyed Ships destroyed until now.
      * @param survivalTime   Total seconds of survival.
      */
-    public GameState(final int level, final int hp, final int bulletsShot, final int shipsDestroyed,
-        final int survivalTime, final StatusManager status, final Ship ship) {
-        this.level = level;
+    public GameState(
+        final int hp, final int bulletsShot,
+        final int shipsDestroyed, final int survivalTime) {
         this.hp = hp;
         this.bulletsShot = bulletsShot;
         this.shipsDestroyed = shipsDestroyed;
         this.survivalTime = survivalTime;
-        this.status = status;
-        this.ship = ship;
-    }
-
-    /**
-     * @return the level
-     */
-    public final int getLevel() {
-        return level;
     }
 
     /**
@@ -87,13 +71,5 @@ public class GameState {
      */
     public final int getSurvivalTime() {
         return survivalTime;
-    }
-
-    public final StatusManager getStatus() {
-        return status;
-    }
-
-    public final Ship getShip() {
-        return ship;
     }
 }

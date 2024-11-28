@@ -26,8 +26,7 @@ public final class Core {
     private static final int HEIGHT = WIDTH + 80;
     /** Max fps of current screen. */
     private static final int FPS = 60;
-    /** 게임 난이도 설정 */
-    private static final GameSettings GAME_SETTING = new GameSettings(10, 500);
+
     /** Frame to draw the screen on. */
     private static Frame frame;
     /** Screen currently shown. */
@@ -52,8 +51,7 @@ public final class Core {
         int height = frame.getHeight();
 
         int returnCode = 1;
-        GameState gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0,
-            getStatusManager(), new Ship(0, 0, Entity.Direction.DOWN, Color.GREEN, 1));
+        GameState gameState = new GameState(0, getStatusManager().getMaxHp(), 0, 0);
 
         do {
             switch (returnCode) {
@@ -68,7 +66,7 @@ public final class Core {
                     int shipID = handleScreen(currentScreen, "ship select screen");
 
                     // 게임 화면 시작
-                    currentScreen = new GameScreen(gameState, GAME_SETTING, width, height, FPS,
+                    currentScreen = new GameScreen(gameState, width, height, FPS,
                         shipID);
                     int isQuit = handleScreen(currentScreen, "game screen");
 

@@ -42,6 +42,11 @@ public class EnemyShip extends Entity {
     private double remainingMovementY = 0;
     // 적을 화면에서 없에도 되는지에 대한 쿨다운
     private Cooldown cleanUpCooldown;
+    // 각 적 함선의 X, Y 축 속도
+    private double XSpeed;
+    private double YSpeed;
+    // 적 함선의 최대 체력
+    private double maxHp;
 
     /**
      * Constructor, establishes the ship's properties.
@@ -50,33 +55,58 @@ public class EnemyShip extends Entity {
      * @param positionY  Initial position of the ship in the Y axis.
      * @param spriteType Sprite type, image corresponding to the ship.
      */
-    public EnemyShip(final int positionX, final int positionY, int level,
+    public EnemyShip(final int positionX, final int positionY,
         final SpriteType spriteType) {
-        super(positionX, positionY, 12 * 2, 8 * 2, Color.WHITE);
+        super(positionX, positionY, getWidth(spriteType), getHeight(spriteType), Color.WHITE);
 
         this.spriteType = spriteType;
         this.animationCooldown = Core.getCooldown(500);
-        this.level = level;
         this.isDestroyed = false;
         this.cleanUpCooldown = Core.getCooldown(500);
         this.cleanUpCooldown.reset();
         this.logger = Core.getLogger();
 
-        // 현재는 hp를 적의 레벨로 그대로 설정
-        this.hp = level;
-
         switch (this.spriteType) {
+            // A1 은 가장 기본적인 적임. hp = 10, 속도는 1로 설정
             case EnemyShipA1:
             case EnemyShipA2:
                 this.pointValue = A_TYPE_POINTS;
+                this.hp = 10;
+                this.maxHp = 10;
+                this.XSpeed = 1;
+                this.YSpeed = 1;
+                this.baseDamage = 5;
                 break;
+            // B1은 체력이 많지만 느린 적임. hp = 100, 속도는 0.5로 설정
             case EnemyShipB1:
             case EnemyShipB2:
                 this.pointValue = B_TYPE_POINTS;
+                this.hp = 100;
+                this.maxHp = 100;
+                this.XSpeed = 0.5;
+                this.YSpeed = 0.5;
+                this.setColor(new Color[]{new Color(0), new Color(0x8F623B)});
+                this.baseDamage = 10;
                 break;
+            // C1은 체력은 없어서 한방에 죽지만 속도가 매우 빠른 적임. hp = 1, 속도는 4로 설정
             case EnemyShipC1:
             case EnemyShipC2:
                 this.pointValue = C_TYPE_POINTS;
+                this.hp = 1;
+                // 처음 등장 시에 빨간색으로 표시하기 위해서 최대체력을 100으로 설정
+                this.maxHp = 100;
+                this.XSpeed = 4;
+                this.YSpeed = 4;
+                this.baseDamage = 3;
+                break;
+            case Obstacle:
+                this.hp = 200;
+                this.maxHp = 200;
+                this.XSpeed = 0;
+                this.YSpeed = 0;
+                this.pointValue = 0;
+                this.baseDamage = 20;
+                this.setColor(new Color[]{new Color(0x776B00), new Color(0xFF0000)});
                 break;
             default:
                 this.pointValue = 0;
@@ -84,16 +114,40 @@ public class EnemyShip extends Entity {
         }
     }
 
-    /**
-     * Constructor, establishes the ship's properties for a special ship, with known starting
-     * properties.
-     */
-    public EnemyShip() {
-        super(-32, 60, 16 * 2, 7 * 2, Color.RED);
+    private static int getWidth(SpriteType spriteType) {
+        switch (spriteType) {
+            case EnemyShipA1:
+            case EnemyShipA2:
+                return 12 * 2; // A타입
+            case EnemyShipB1:
+            case EnemyShipB2:
+                return 24 * 2; // B타입
+            case EnemyShipC1:
+            case EnemyShipC2:
+                return 8 * 2; // C타입
+            case Obstacle:
+                return 10 * 2; // 장애물
+            default:
+                return 12 * 2; // 기본값
+        }
+    }
 
-        this.spriteType = SpriteType.EnemyShipSpecial;
-        this.isDestroyed = false;
-        this.pointValue = BONUS_TYPE_POINTS;
+    private static int getHeight(SpriteType spriteType) {
+        switch (spriteType) {
+            case EnemyShipA1:
+            case EnemyShipA2:
+                return 8 * 2; // A타입
+            case EnemyShipB1:
+            case EnemyShipB2:
+                return 16 * 2; // B타입
+            case EnemyShipC1:
+            case EnemyShipC2:
+                return 8 * 2; // C타입
+            case Obstacle:
+                return 10 * 2; // 장애물
+            default:
+                return 8 * 2; // 기본값
+        }
     }
 
     /**
@@ -156,9 +210,9 @@ public class EnemyShip extends Entity {
                     break;
             }
         }
-        float hpPercentage = (float) this.hp / this.level;
+        double hpPercentage = this.hp / this.maxHp;
         int nonRedHue = (int) (hpPercentage * 255);
-        this.setColor(new Color[] { new Color(255, nonRedHue, nonRedHue) });
+        this.setColorIndex(new Color(255, nonRedHue, nonRedHue), 0);
     }
 
     // 피해 입은 만큼 hp 감소시키고 0 이하가 되면 파괴.
@@ -198,5 +252,24 @@ public class EnemyShip extends Entity {
     public void setPosition(int positionX, int positionY) {
         this.positionX = positionX;
         this.positionY = positionY;
+    }
+
+    // 적 함선의 속도 getter
+    public double getXSpeed() {
+        return XSpeed;
+    }
+
+    public double getYSpeed() {
+        return YSpeed;
+    }
+
+    // 적 함선의 공격력
+    public int getBaseDamage() {
+        return baseDamage;
+    }
+
+    // 테스트를 위한 getter
+    public int getHp() {
+        return this.hp;
     }
 }
