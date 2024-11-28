@@ -53,6 +53,8 @@ public class SplashScreen extends Screen {
         drawManager.setSplashImage();
         drawManager.drawBackgroundImage(this);
 
+        drawManager.drawGameTitle(this);
+
         drawManager.drawEntity(superShip, superShip.getX(), superShip.getY());
 
         drawManager.completeDrawing(this);
