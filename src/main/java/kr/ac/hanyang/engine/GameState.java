@@ -1,5 +1,8 @@
 package kr.ac.hanyang.engine;
 
+import kr.ac.hanyang.engine.StatusManager;
+import kr.ac.hanyang.entity.Ship;
+
 /**
  * Implements an object that stores the state of the game between levels.
  *
@@ -17,6 +20,10 @@ public class GameState {
     private int shipsDestroyed;
     /** Total seconds of survival. */
     private int survivalTime;
+    // 함선의 status
+    private StatusManager status;
+    // 아군 함선
+    private Ship ship;
 
     /**
      * Constructor.
@@ -28,12 +35,14 @@ public class GameState {
      * @param survivalTime   Total seconds of survival.
      */
     public GameState(final int level, final int hp, final int bulletsShot, final int shipsDestroyed,
-        final int survivalTime) {
+        final int survivalTime, final StatusManager status, final Ship ship) {
         this.level = level;
         this.hp = hp;
         this.bulletsShot = bulletsShot;
         this.shipsDestroyed = shipsDestroyed;
         this.survivalTime = survivalTime;
+        this.status = status;
+        this.ship = ship;
     }
 
     /**
@@ -78,5 +87,13 @@ public class GameState {
      */
     public final int getSurvivalTime() {
         return survivalTime;
+    }
+
+    public final StatusManager getStatus() {
+        return status;
+    }
+
+    public final Ship getShip() {
+        return ship;
     }
 }

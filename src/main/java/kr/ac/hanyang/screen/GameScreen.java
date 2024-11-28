@@ -110,6 +110,10 @@ public class GameScreen extends Screen {
     private static ItemList items = new ItemList();
     // 아이템 리스트 참조하기 위한 배열
     private static List<Item> itemList;
+    // 보스 스테이지 이동용 포탈
+    private Portal portal;
+    // 제한시간을 넘겼는지 확인하는 변수
+    private boolean gameOver;
 
     /**
      * Constructor, establishes the properties of the screen.
@@ -213,6 +217,12 @@ public class GameScreen extends Screen {
                 this.ultActivatedTime.reset();
                 break;
         }
+
+        // 포탈 객체 생성
+        this.portal = new Portal((this.width - this.portal.getWidth()) / 2,
+            (this.height - this.portal.getHeight()) / 2);
+        // 게임 오버 false로 초기화
+        this.gameOver = false;
     }
 
     /**
@@ -369,12 +379,15 @@ public class GameScreen extends Screen {
 
             this.ship.update();
 
+            // 게임오버 상태면 적 생성 중단
             // Ship2 궁극기 활성화 여부에 따라 적 함선 이동 및 생성 여부 결정
-            if (this.shipID == 2 && this.ship.isUltActivated()) {
-                this.enemyShipSet.noUpdate();
-                // TODO: 얼려진 적 스프라이트로 변경
-            } else {
-                this.enemyShipSet.update();
+            if (this.gameOver) {
+                if (this.shipID == 2 && this.ship.isUltActivated()) {
+                    this.enemyShipSet.noUpdate();
+                    // TODO: 얼려진 적 스프라이트로 변경
+                } else {
+                    this.enemyShipSet.update();
+                }
             }
 
             // Ship4 궁극기 활성화 여부에 따라 경험치 자석 효과 결정
@@ -384,8 +397,8 @@ public class GameScreen extends Screen {
                 ExperiencePool.update(this.experiences);
             }
 
-            // 1초마다 생존 시간 1씩 증가
-            if (this.clockCooldown.checkFinished()) {
+            // 1초마다 생존 시간 1씩 증가, 게임오버 상태면 300초에서 시간 증가 정지
+            if (this.clockCooldown.checkFinished() && !this.gameOver) {
                 this.survivalTime += 1;
                 this.clockCooldown.reset();
             }
@@ -405,6 +418,18 @@ public class GameScreen extends Screen {
                 }
             }
 
+            // 게임 진행시간이 300초가 되면 화면 상의 적들을 모두 지우고 gameOver를 true로 전환
+            if (this.survivalTime == 300) {
+                this.gameOver = true;
+                for (EnemyShip enemyShip : this.enemis) {
+                    enemyShip.destroy();
+                    this.shipsDestroyed++;
+                    this.experiences.add(
+                        ExperiencePool.getExperience(enemyShip.getPositionX() + 3 * 2,
+                            // enemyShip의 너비는 13, 경험치의 너비는 7이므로 3을 더해줌
+                            enemyShip.getPositionY(), enemyShip.getPointValue()));
+                }
+            }
         }
 
         // Quit시에(!isRunning) GameScreen 그려지지 않도록 함
@@ -473,6 +498,11 @@ public class GameScreen extends Screen {
 
         // 현재 levelTime 그리기
         drawManager.drawSurvivalTime(this, survivalTime);
+
+        if (this.portal.isVisible()) {
+            drawManager.drawEntity(this.portal, this.portal.getPositionX(),
+                this.portal.getPositionY());
+        }
 
         drawManager.completeDrawing(this);
     }
@@ -625,6 +655,13 @@ public class GameScreen extends Screen {
         // 충돌한 경험치 제거 및 반환
         this.experiences.removeAll(collectedExperiences);
         ExperiencePool.recycle(collectedExperiences);
+
+        // 포탈과 아군 함선의 충돌 처리
+        if (this.portal.isVisible()) {
+            if (checkCollision(this.ship, this.portal)) {
+                this.levelFinished = true;
+            }
+        }
     }
 
 
@@ -683,6 +720,6 @@ public class GameScreen extends Screen {
      */
     public final GameState getGameState() {
         return new GameState(this.level, this.hp, this.bulletsShot, this.shipsDestroyed,
-            this.survivalTime);
+            this.survivalTime, this.status, this.ship);
     }
 }

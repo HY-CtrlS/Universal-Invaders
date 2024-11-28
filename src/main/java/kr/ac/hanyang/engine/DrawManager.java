@@ -89,7 +89,9 @@ public final class DrawManager {
         // 공속증가 아이템
         AttackSpeedUpItem,
         // 다중 색 레이어 포탈
-        Portal
+        Portal,
+        // 보스
+        Boss;
     }
 
     /**
@@ -124,6 +126,7 @@ public final class DrawManager {
             spriteMap.put(SpriteType.AttackSpeedUpItem, new boolean[1][10][10]);
             // 포탈 스프라이트
             spriteMap.put(SpriteType.Portal, new boolean[3][11][13]);
+            spriteMap.put(SpriteType.Boss, new boolean[1][25][54]);
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
 

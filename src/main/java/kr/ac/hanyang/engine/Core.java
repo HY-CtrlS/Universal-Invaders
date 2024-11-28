@@ -1,11 +1,15 @@
 package kr.ac.hanyang.engine;
 
+import java.awt.Color;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import kr.ac.hanyang.entity.Entity;
+import kr.ac.hanyang.entity.Entity.Direction;
+import kr.ac.hanyang.entity.Ship;
 import kr.ac.hanyang.screen.*;
 import kr.ac.hanyang.Item.*;
 
@@ -48,7 +52,8 @@ public final class Core {
         int height = frame.getHeight();
 
         int returnCode = 1;
-        GameState gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0);
+        GameState gameState = new GameState(1, 0, getStatusManager().getMaxHp(), 0, 0,
+            getStatusManager(), new Ship(0, 0, Entity.Direction.DOWN, Color.GREEN, 1));
 
         do {
             switch (returnCode) {
@@ -75,6 +80,11 @@ public final class Core {
                         returnCode = 1;
                         break;
                     }
+
+                    // 보스 스크린 시작
+                    currentScreen = new BossScreen(gameState.getStatus(), width, height, FPS,
+                        gameState.getShip());
+                    returnCode = handleScreen(currentScreen, "boss screen");
 
                     // 게임 종료 후 gameState의 정보를 이용하여 scoreScreen 생성
                     currentScreen = new ScoreScreen(width, height, FPS, gameState);
