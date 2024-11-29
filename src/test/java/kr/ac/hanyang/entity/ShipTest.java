@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
 import kr.ac.hanyang.engine.Core;
+import kr.ac.hanyang.engine.DrawManager.SpriteType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -177,5 +178,79 @@ class ShipTest {
         assertEquals(ship.bulletSpeed, bullet.getSpeed());  // 총알 속도
         assertEquals(ship.baseDamage, bullet.getDamage());  // 총알 데미지
         assertEquals(ship.getDirection(), bullet.getDirection());  // 총알 방향
+    }
+
+    @Test
+    void testUpdate() {
+        // direction이 대각선으로 바뀌고 스프라이트가 변경되는지 테스트
+        ship.setDirection(Entity.Direction.UP_RIGHT);
+        // update 호출 전에는 기본 스프라이트
+        assertEquals(SpriteType.Ship, ship.getSpriteType());
+        ship.update();
+        assertEquals(SpriteType.ShipDiagonal, ship.getSpriteType());
+
+        // direction이 대각선이 아닌 경우 기본 스프라이트로 변경되는지 테스트
+        ship.setDirection(Entity.Direction.UP);
+        // update 호출 전에는 대각선 스프라이트
+        assertEquals(SpriteType.ShipDiagonal, ship.getSpriteType());
+        ship.update();
+        assertEquals(SpriteType.Ship, ship.getSpriteType());
+
+        // 함선이 파괴되면 파괴 스프라이트로 변경되는지 테스트
+        ship.destroy();
+        assertTrue(ship.isDestroyed());
+        // update 호출 전에는 기본 스프라이트
+        assertEquals(SpriteType.Ship, ship.getSpriteType());
+        ship.update();
+        assertEquals(SpriteType.ShipDestroyed, ship.getSpriteType());
+
+        // 파괴 상태에서는 파괴 스프라이트 유지
+        ship.update();
+        assertEquals(SpriteType.ShipDestroyed, ship.getSpriteType());
+
+        // 파괴 상태에서 파괴 시간이 지나면 기본 스프라이트로 변경
+        ship.destructionCooldown.forceFinish();
+        ship.update();
+        assertEquals(SpriteType.Ship, ship.getSpriteType());
+
+        // 대각선 상태에서 파괴될 경우
+        ship.setDirection(Entity.Direction.UP_RIGHT);
+        ship.destroy();
+        assertTrue(ship.isDestroyed());
+        ship.update();
+        assertEquals(SpriteType.ShipDiagonalDestroyed, ship.getSpriteType());
+
+        // 파괴된 상태에서 방향 전환할 경우
+        ship.setDirection(Entity.Direction.UP);
+        ship.update();
+        assertEquals(SpriteType.ShipDestroyed, ship.getSpriteType());
+    }
+
+    // createShipByID 메소드 테스트
+    @Test
+    void testCreateShipByID() {
+        // ShipID가 1인 경우
+        Ship ship1 = Ship.createShipByID(1, 0, 0);
+        assertEquals(1, ship1.getShipID());
+
+        // ShipID가 2인 경우
+        Ship ship2 = Ship.createShipByID(2, 0, 0);
+        assertEquals(2, ship2.getShipID());
+
+        // ShipID가 3인 경우
+        Ship ship3 = Ship.createShipByID(3, 0, 0);
+        assertEquals(3, ship3.getShipID());
+
+        // ShipID가 4인 경우
+        Ship ship0 = Ship.createShipByID(4, 0, 0);
+        assertEquals(4, ship0.getShipID());
+
+        // 잘못된 ShipID인 경우
+        int invalidShipID = -1; // 유효하지 않은 shipID
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            Ship.createShipByID(invalidShipID, 0, 0);
+        });
+        // 예외 메시지 확인
+        assertEquals("Invalid shipID: " + invalidShipID, exception.getMessage());
     }
 }
