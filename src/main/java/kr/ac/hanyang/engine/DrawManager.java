@@ -1,8 +1,8 @@
 package kr.ac.hanyang.engine;
 
 import kr.ac.hanyang.Item.Item;
-import kr.ac.hanyang.entity.Boss;
-import kr.ac.hanyang.entity.Ship;
+import kr.ac.hanyang.entity.boss.Boss;
+import kr.ac.hanyang.entity.ship.Ship;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;

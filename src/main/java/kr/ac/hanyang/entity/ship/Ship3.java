@@ -1,9 +1,11 @@
-package kr.ac.hanyang.entity;
+package kr.ac.hanyang.entity.ship;
 
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
 import java.awt.Color;
 import java.util.Set;
+import kr.ac.hanyang.entity.Bullet;
+import kr.ac.hanyang.entity.BulletPool;
 
 public class Ship3 extends Ship {
 

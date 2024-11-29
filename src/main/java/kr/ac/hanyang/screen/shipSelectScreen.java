@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
+import kr.ac.hanyang.entity.ship.Ship;
 
 /**
  * 함선 선택 화면을 구현하는 클래스

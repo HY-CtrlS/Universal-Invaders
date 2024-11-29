@@ -1,10 +1,11 @@
-package kr.ac.hanyang.entity;
+package kr.ac.hanyang.entity.boss;
 
 import java.awt.Color;
 import java.util.logging.Logger;
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.engine.DrawManager.SpriteType;
+import kr.ac.hanyang.entity.Entity;
 
 /**
  * 보스를 구현하는 클래스 보스는 페이즈에 따라 여러 패턴으로 공격

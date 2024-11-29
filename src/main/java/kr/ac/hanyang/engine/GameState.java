@@ -1,8 +1,6 @@
 package kr.ac.hanyang.engine;
 
-import jdk.jshell.Snippet.Status;
-import kr.ac.hanyang.engine.StatusManager;
-import kr.ac.hanyang.entity.Ship;
+import kr.ac.hanyang.entity.ship.Ship;
 
 /**
  * Implements an object that stores the state of the game between levels.

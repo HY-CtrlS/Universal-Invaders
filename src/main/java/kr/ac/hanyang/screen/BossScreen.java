@@ -8,17 +8,13 @@ import java.util.HashSet;
 import java.util.Set;
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
-import kr.ac.hanyang.engine.DrawManager.SpriteType;
 import kr.ac.hanyang.engine.StatusManager;
 import kr.ac.hanyang.entity.Bullet;
 import kr.ac.hanyang.entity.BulletPool;
-import kr.ac.hanyang.entity.EnemyShip;
 import kr.ac.hanyang.entity.Entity;
 import kr.ac.hanyang.entity.Entity.Direction;
-import kr.ac.hanyang.entity.Experience;
-import kr.ac.hanyang.entity.ExperiencePool;
-import kr.ac.hanyang.entity.Ship;
-import kr.ac.hanyang.entity.Boss;
+import kr.ac.hanyang.entity.ship.Ship;
+import kr.ac.hanyang.entity.boss.Boss;
 
 /**
  * 보스 스테이지의 화면을 정의하는 클래스

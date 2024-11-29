@@ -9,7 +9,7 @@ import kr.ac.hanyang.engine.DrawManager.SpriteType;
 import kr.ac.hanyang.engine.StatusManager;
 
 import kr.ac.hanyang.entity.Entity.Direction;
-import kr.ac.hanyang.entity.Ship;
+import kr.ac.hanyang.entity.ship.Ship;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.List;

@@ -7,11 +7,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import kr.ac.hanyang.entity.Entity;
 import kr.ac.hanyang.entity.Entity.Direction;
-import kr.ac.hanyang.entity.Ship;
+import kr.ac.hanyang.entity.ship.Ship;
 import kr.ac.hanyang.screen.*;
-import kr.ac.hanyang.Item.*;
 
 /**
  * Implements core game logic.

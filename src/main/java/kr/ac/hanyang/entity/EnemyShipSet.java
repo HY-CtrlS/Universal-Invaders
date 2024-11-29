@@ -2,6 +2,7 @@ package kr.ac.hanyang.entity;
 
 import java.util.*;
 
+import kr.ac.hanyang.entity.ship.Ship;
 import kr.ac.hanyang.screen.Screen;
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;

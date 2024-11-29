@@ -1,4 +1,4 @@
-package kr.ac.hanyang.entity;
+package kr.ac.hanyang.entity.ship;
 
 import java.awt.Color;
 import java.util.Set;
@@ -7,7 +7,9 @@ import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.engine.DrawManager.SpriteType;
 import kr.ac.hanyang.engine.StatusManager;
-import kr.ac.hanyang.screen.GameScreen;
+import kr.ac.hanyang.entity.Bullet;
+import kr.ac.hanyang.entity.BulletPool;
+import kr.ac.hanyang.entity.Entity;
 
 /**
  * Implements a ship, to be controlled by the player.

@@ -6,6 +6,11 @@ import java.awt.Color;
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.entity.Entity.Direction;
+import kr.ac.hanyang.entity.ship.Ship;
+import kr.ac.hanyang.entity.ship.Ship1;
+import kr.ac.hanyang.entity.ship.Ship2;
+import kr.ac.hanyang.entity.ship.Ship3;
+import kr.ac.hanyang.entity.ship.Ship4;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
