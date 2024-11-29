@@ -48,6 +48,10 @@ public class BossScreen extends Screen {
     private double remainingRegenHp;
     /** HP 리젠되는 쿨타임 생성 **/
     private Cooldown regenHpCooldown;
+    /** 궁극기 게이지 자동 상승 쿨타임 생성 **/
+    private Cooldown increUltCooldown;
+    /** 궁극기 활성화 시간 */
+    protected Cooldown ultActivatedTime;
     /** Total bullets shot by the player. */
     private int bulletsShot;
     /** Moment the game starts. */
@@ -64,8 +68,6 @@ public class BossScreen extends Screen {
     private int survivalTime;
     /** 현재 함선의 status **/
     private StatusManager status;
-    /** 현재 함선의 ID */
-    private int shipID;
 
     /**
      * 생성자, 화면의 속성을 설정
@@ -103,6 +105,28 @@ public class BossScreen extends Screen {
 
         this.regenHpCooldown = Core.getCooldown(1000);
         this.regenHpCooldown.reset();
+
+        this.increUltCooldown = Core.getCooldown(1000);
+        this.increUltCooldown.reset();
+
+        switch (this.ship.getShipID()) {
+            case 1:
+                this.ultActivatedTime = Core.getCooldown(1000);
+                this.ultActivatedTime.reset();
+                break;
+            case 2:
+                this.ultActivatedTime = Core.getCooldown(4000);
+                this.ultActivatedTime.reset();
+                break;
+            case 3:
+                this.ultActivatedTime = Core.getCooldown(4000);
+                this.ultActivatedTime.reset();
+                break;
+            case 4:
+                this.ultActivatedTime = Core.getCooldown(3000);
+                this.ultActivatedTime.reset();
+                break;
+        }
     }
 
     /**
@@ -130,19 +154,40 @@ public class BossScreen extends Screen {
 
         if (this.inputDelay.checkFinished() && !this.phaseFinished) {
             // 보스의 공격 처리
-            this.boss.attack();
+            if (this.ship.getShipID() == 2 && this.ship.isUltActivated()) {
+                // Ship2 궁극기 활성화 여부에 따라 보스 공격 무력화 결정
+            } else {
+                this.boss.attack();
+            }
             this.boss.checkPhase();
 
             // WASD - 함선 이동
-            boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_D);
-            boolean moveLeft = inputManager.isKeyDown(KeyEvent.VK_A);
-            boolean moveUp = inputManager.isKeyDown(KeyEvent.VK_W);
-            boolean moveDown = inputManager.isKeyDown(KeyEvent.VK_S);
+            boolean moveRight, moveLeft, moveUp, moveDown;
             // 방향키 - 에임
-            boolean aimRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT);
-            boolean aimLeft = inputManager.isKeyDown(KeyEvent.VK_LEFT);
-            boolean aimUp = inputManager.isKeyDown(KeyEvent.VK_UP);
-            boolean aimDown = inputManager.isKeyDown(KeyEvent.VK_DOWN);
+            boolean aimRight, aimLeft, aimUp, aimDown;
+
+            // Ship1 궁극기 활성화 여부에 따라 이동 및 발사 가능 여부 결정
+            if (this.ship.getShipID() == 1 && this.ship.isUltActivated()) {
+                moveRight = false;
+                moveLeft = false;
+                moveUp = false;
+                moveDown = false;
+
+                aimRight = false;
+                aimLeft = false;
+                aimUp = false;
+                aimDown = false;
+            } else {
+                moveRight = inputManager.isKeyDown(KeyEvent.VK_D);
+                moveLeft = inputManager.isKeyDown(KeyEvent.VK_A);
+                moveUp = inputManager.isKeyDown(KeyEvent.VK_W);
+                moveDown = inputManager.isKeyDown(KeyEvent.VK_S);
+
+                aimRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT);
+                aimLeft = inputManager.isKeyDown(KeyEvent.VK_LEFT);
+                aimUp = inputManager.isKeyDown(KeyEvent.VK_UP);
+                aimDown = inputManager.isKeyDown(KeyEvent.VK_DOWN);
+            }
 
             boolean isRightBorder = this.ship.getPositionX()
                 + this.ship.getWidth() + this.ship.getSpeed() > this.width - 1;
@@ -191,7 +236,7 @@ public class BossScreen extends Screen {
             }
 
             if (aimUp || aimDown || aimRight || aimLeft) {
-                if (this.shipID == 3) {
+                if (this.ship.getShipID() == 3) {
                     this.ship.startBurstShooting();
                 } else {
                     if (this.ship.shoot(this.bullets)) {
@@ -206,12 +251,21 @@ public class BossScreen extends Screen {
                 }
             }
 
-            if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-                // 추후 궁극기 추가
+            if (inputManager.isKeyDown(KeyEvent.VK_F)) {
+                if (this.ship.isUltReady()) {
+                    this.ultActivatedTime.reset();
+                    this.ship.useUlt();
+                    this.logger.info("Ultimate Skill!");
+                }
             }
 
-            // hp 자동 재생 기능 실행
-            hpRegen(status.getRegenHp());
+            // Ship4 궁극기 활성화 여부에 따라 체력 회복량 결정
+            if (this.ship.getShipID() == 4 && this.ship.isUltActivated()) {
+                hpRegen(status.getRegenHp() * 10.0);
+            } else {
+                hpRegen(status.getRegenHp());
+            }
+            increaseUltGauge();
 
             this.ship.update();
 
@@ -219,6 +273,14 @@ public class BossScreen extends Screen {
             if (this.clockCooldown.checkFinished()) {
                 this.survivalTime += 1;
                 this.clockCooldown.reset();
+            }
+
+            if (this.ship.isUltActivated() && this.ultActivatedTime.checkFinished()) {
+                this.ship.stopUlt();
+                this.ultActivatedTime.reset();
+                if (this.ship.getShipID() == 1) {
+                    // TODO: 현재 모든 보스의 탄환, 미사일 파괴 + (보스에게 일정 데미지)
+                }
             }
         }
 
@@ -271,6 +333,10 @@ public class BossScreen extends Screen {
      */
     private void manageCollisions() {
         Set<Bullet> recyclable = new HashSet<Bullet>();
+
+        if (this.ship.getShipID() == 3 && this.ship.isUltActivated()) {
+            // 아군 Ship은 무적이라 모든 공격과 충돌 무시
+        }
     }
 
     /**
@@ -308,6 +374,16 @@ public class BossScreen extends Screen {
             // HP 리젠율이 최대체력을 초과하는 경우, 최대체력을 초과해서 회복되지 않도록 설정
             this.hp = (this.maxHp - this.hp < int_regenHp) ? maxHp : this.hp + int_regenHp;
             this.regenHpCooldown.reset();
+        }
+    }
+
+    /**
+     * increUltCooldown이 끝날 때마다 궁극기 게이지 1씩 증가시킴.
+     */
+    private void increaseUltGauge() {
+        if (this.increUltCooldown.checkFinished() && !this.ship.isUltReady()) {
+            this.ship.increaseUltGauge();
+            this.increUltCooldown.reset();
         }
     }
 }
