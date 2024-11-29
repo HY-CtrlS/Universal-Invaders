@@ -103,15 +103,19 @@ class ShipTest {
     @Test
     void testDirection() {
         assertEquals(ship.getDirection(), Entity.Direction.UP);
+        assertFalse(ship.isDiagonal());
 
         ship.setDirection(Entity.Direction.RIGHT);
         assertEquals(ship.getDirection(), Entity.Direction.RIGHT);
+        assertFalse(ship.isDiagonal());
 
         ship.setDirection(Entity.Direction.DOWN);
         assertEquals(ship.getDirection(), Entity.Direction.DOWN);
+        assertFalse(ship.isDiagonal());
 
         ship.setDirection(Entity.Direction.LEFT);
         assertEquals(ship.getDirection(), Entity.Direction.LEFT);
+        assertFalse(ship.isDiagonal());
 
         ship.setDirection(Entity.Direction.UP_RIGHT);
         assertEquals(ship.getDirection(), Entity.Direction.UP_RIGHT);
@@ -159,6 +163,8 @@ class ShipTest {
 
         // shoot 메소드 호출
         boolean result = ship.shoot(bullets);
+        // Shoot 직후 shoot 을 호출하면 false 를 반환해야 함
+        assertFalse(ship.shoot(bullets));
 
         // shoot이 성공했다면 bullets 집합에 총알이 추가되어야 함
         assertTrue(result);  // shoot 메소드가 true를 반환했는지 확인
