@@ -383,6 +383,6 @@ public class Ship extends Entity {
         this.baseDamage = statusManager.getBaseDamage();
         this.range = statusManager.getRange();
         this.speed = statusManager.getSpeed();
-
+        this.regenUltra = statusManager.getRegenUltra();
     }
 }
