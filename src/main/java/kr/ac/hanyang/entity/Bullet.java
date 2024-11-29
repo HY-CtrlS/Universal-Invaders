@@ -17,6 +17,7 @@ public class Bullet extends Entity {
     private int speed;
     // 총알의 데미지
     private int damage;
+    // 총알의 사정거리 계수
     private int range;
     // 총알의 뱡향
     private Direction direction;

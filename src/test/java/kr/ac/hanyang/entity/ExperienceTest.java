@@ -30,15 +30,14 @@ class ExperienceTest {
         // 애니메이션 변경 전 초기 상태 확인
         assertEquals(SpriteType.ExperienceA, experience.getSpriteType(), "Initial spriteType should be ExperienceA.");
 
-        // Cooldown 시간이 지나도록 대기
-        Thread.sleep(500); // Cooldown 시간 (500ms)
+        // 애니메이션 쿨다운 강제로 완료
+        experience.animationCooldown.forceFinish();
 
-        // update 호출 후 상태 확인
         experience.update();
         assertEquals(SpriteType.ExperienceB, experience.getSpriteType(), "SpriteType should switch to ExperienceB.");
 
-        // Cooldown 시간이 다시 지나도록 대기
-        Thread.sleep(500);
+        // 애니메이션 쿨다운 강제로 완료
+        experience.animationCooldown.forceFinish();
 
         // update 호출 후 상태 확인
         experience.update();
