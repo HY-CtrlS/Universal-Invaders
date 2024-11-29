@@ -65,4 +65,11 @@ public class Cooldown {
                 * (this.variance + this.variance));
         }
     }
+
+    /**
+     * 쿨다운이 강제로 끝나도록 함.
+     */
+    public final void forceFinish() {
+        this.time = 0;
+    }
 }
