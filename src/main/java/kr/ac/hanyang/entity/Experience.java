@@ -8,7 +8,9 @@ import kr.ac.hanyang.engine.DrawManager.SpriteType;
 public class Experience extends Entity {
 
     private int value;
-
+    // 플레이어를 지속적으로 추적하는데 필요한 변수
+    private double remainingMovementX = 0;
+    private double remainingMovementY = 0;
     private Cooldown animationCooldown;
 
     public Experience(int positionX, int positionY, int value) {
@@ -35,6 +37,27 @@ public class Experience extends Entity {
                 this.spriteType = SpriteType.ExperienceA;
             }
         }
+    }
+
+    /**
+     * Moves the Exp the specified distance.
+     *
+     * @param distanceX Distance to move in the X axis.
+     * @param distanceY Distance to move in the Y axis.
+     */
+    // 이동 잔량을 남기어 최소 단위인 1 이상만큼이 누적되면 누적된 정수만큼 이동후 이동 잔량에서 뺄셈.
+    public final void move(final double distanceX, final double distanceY) {
+        this.remainingMovementX += distanceX;
+        this.remainingMovementY += distanceY;
+
+        int intMoveX = (int) remainingMovementX;
+        int intMoveY = (int) remainingMovementY;
+
+        remainingMovementX -= intMoveX;
+        remainingMovementY -= intMoveY;
+
+        this.positionX += intMoveX;
+        this.positionY += intMoveY;
     }
 
     public int getValue() {

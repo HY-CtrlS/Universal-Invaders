@@ -87,7 +87,9 @@ public final class DrawManager {
         /** Destroyed enemy ship. */
         Explosion,
         // 공속증가 아이템
-        AttackSpeedUpItem
+        AttackSpeedUpItem,
+        // 장애물 스프라이트
+        Obstacle
     }
 
     /**
@@ -112,14 +114,16 @@ public final class DrawManager {
             spriteMap.put(SpriteType.EnemyBullet, new boolean[1][3][5]);
             spriteMap.put(SpriteType.EnemyShipA1, new boolean[1][12][8]);
             spriteMap.put(SpriteType.EnemyShipA2, new boolean[1][12][8]);
-            spriteMap.put(SpriteType.EnemyShipB1, new boolean[1][12][8]);
-            spriteMap.put(SpriteType.EnemyShipB2, new boolean[1][12][8]);
-            spriteMap.put(SpriteType.EnemyShipC1, new boolean[1][12][8]);
-            spriteMap.put(SpriteType.EnemyShipC2, new boolean[1][12][8]);
+            spriteMap.put(SpriteType.EnemyShipB1, new boolean[2][24][16]);
+            spriteMap.put(SpriteType.EnemyShipB2, new boolean[2][24][16]);
+            spriteMap.put(SpriteType.EnemyShipC1, new boolean[1][8][8]);
+            spriteMap.put(SpriteType.EnemyShipC2, new boolean[1][8][8]);
             spriteMap.put(SpriteType.EnemyShipSpecial, new boolean[1][16][7]);
             spriteMap.put(SpriteType.Explosion, new boolean[1][13][7]);
             // 공속 증가 아이템 스프라이트
             spriteMap.put(SpriteType.AttackSpeedUpItem, new boolean[1][10][10]);
+            // 장애물 스프라이트
+            spriteMap.put(SpriteType.Obstacle, new boolean[2][10][10]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
@@ -300,6 +304,19 @@ public final class DrawManager {
         for (int j = 0; j < screen.getWidth() - 1; j += 2) {
             backBufferGraphics.drawLine(j, 0, j, screen.getHeight() - 1);
         }
+    }
+
+    /**
+     * Draws current ultimate skill gauge on screen.
+     *
+     * @param screen Screen to draw on.
+     * @param ship   Current player ship.
+     */
+    public void drawUltGauge(final Screen screen, final Ship ship) {
+        backBufferGraphics.setFont(fontRegular);
+        backBufferGraphics.setColor(Color.WHITE);
+        String scoreString = ship.getUltGauge() + " / " + ship.getUltThreshold() + " Ult";
+        backBufferGraphics.drawString(scoreString, screen.getWidth() - 250, 25);
     }
 
     /**
@@ -585,10 +602,9 @@ public final class DrawManager {
      * Countdown to game start.
      *
      * @param screen Screen to draw on.
-     * @param level  Game difficulty level.
      * @param number Countdown number.
      */
-    public void drawCountDown(final Screen screen, final int level, final int number) {
+    public void drawCountDown(final Screen screen, final int number) {
         int rectWidth = screen.getWidth();
         int rectHeight = screen.getHeight() / 6;
         backBufferGraphics.setColor(Color.BLACK);
@@ -612,8 +628,8 @@ public final class DrawManager {
     /**
      * 현재 생존 시간을 화면에 그립니다.
      *
-     * @param screen        화면 객체
-     * @param survivalTime  현재 생존 시간
+     * @param screen       화면 객체
+     * @param survivalTime 현재 생존 시간
      */
     public void drawSurvivalTime(final Screen screen, final int survivalTime) {
         backBufferGraphics.setFont(fontRegular);
@@ -645,56 +661,63 @@ public final class DrawManager {
 
     public void drawSelectedItem(final Screen screen, final List<Item> itemList,
         final int selectedItem) {
-        if (itemList.size() < 3) {
-            String alarmString = "Only  " + itemList.size() + "  items left you can upgrade!!";
+        if (itemList.size() != 0) {
+            if (itemList.size() < 3) {
+                String alarmString = "Only  " + itemList.size() + "  items left you can upgrade!!";
+                drawCenteredRegularString(screen, alarmString,
+                    150);
+            }
+
+            // 첫 아이템 선택여부
+            if (selectedItem == 0) {
+                backBufferGraphics.setColor(Color.WHITE);
+                // 아이템 설명 출력
+                drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
+                    screen.getHeight() / 3 + 200);
+                drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
+                    screen.getHeight() / 3 + 300);
+                backBufferGraphics.setColor(Color.GREEN);
+            } else {
+                backBufferGraphics.setColor(Color.WHITE);
+            }
+            // 첫 아이템 그리기
+            drawItemBox((screen.getWidth() / 4) - 50, screen.getHeight() / 3);
+
+            // 두번째 아이템 선택여부
+            if (selectedItem == 1) {
+                backBufferGraphics.setColor(Color.WHITE);
+                // 아이템 설명 출력
+                drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
+                    screen.getHeight() / 3 + 200);
+                drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
+                    screen.getHeight() / 3 + 300);
+                backBufferGraphics.setColor(Color.GREEN);
+            } else {
+                backBufferGraphics.setColor(Color.WHITE);
+            }
+            // 두 번째 아이템 그리기
+            drawItemBox((screen.getWidth() * 2 / 4) - 50, screen.getHeight() / 3);
+
+            // 세번째 아이템 선택여부
+            if (selectedItem == 2) {
+                backBufferGraphics.setColor(Color.WHITE);
+                // 아이템 설명 출력
+                drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
+                    screen.getHeight() / 3 + 200);
+                drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
+                    screen.getHeight() / 3 + 300);
+                backBufferGraphics.setColor(Color.GREEN);
+            } else {
+                backBufferGraphics.setColor(Color.WHITE);
+            }
+            //세 번째 아이템 그리기
+            drawItemBox((screen.getWidth() * 3) / 4 - 50, screen.getHeight() / 3);
+        }
+        else {
+            String alarmString = "There are no items left";
             drawCenteredRegularString(screen, alarmString,
                 150);
         }
-
-        // 첫 아이템 선택여부
-        if (selectedItem == 0) {
-            backBufferGraphics.setColor(Color.WHITE);
-            // 아이템 설명 출력
-            drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
-                screen.getHeight() / 3 + 200);
-            drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
-                screen.getHeight() / 3 + 300);
-            backBufferGraphics.setColor(Color.GREEN);
-        } else {
-            backBufferGraphics.setColor(Color.WHITE);
-        }
-        // 첫 아이템 그리기
-        drawItemBox((screen.getWidth() / 4) - 50, screen.getHeight() / 3);
-
-        // 두번째 아이템 선택여부
-        if (selectedItem == 1) {
-            backBufferGraphics.setColor(Color.WHITE);
-            // 아이템 설명 출력
-            drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
-                screen.getHeight() / 3 + 200);
-            drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
-                screen.getHeight() / 3 + 300);
-            backBufferGraphics.setColor(Color.GREEN);
-        } else {
-            backBufferGraphics.setColor(Color.WHITE);
-        }
-        // 두 번째 아이템 그리기
-        drawItemBox((screen.getWidth() * 2 / 4) - 50, screen.getHeight() / 3);
-
-        // 세번째 아이템 선택여부
-        if (selectedItem == 2) {
-            backBufferGraphics.setColor(Color.WHITE);
-            // 아이템 설명 출력
-            drawCenteredRegularString(screen, itemList.get(selectedItem).getItemDescription(),
-                screen.getHeight() / 3 + 200);
-            drawCenteredBigString(screen, itemList.get(selectedItem).getItemEffectDescription(),
-                screen.getHeight() / 3 + 300);
-            backBufferGraphics.setColor(Color.GREEN);
-        } else {
-            backBufferGraphics.setColor(Color.WHITE);
-        }
-        //세 번째 아이템 그리기
-        drawItemBox((screen.getWidth() * 3) / 4 - 50, screen.getHeight() / 3);
     }
 
     // 각 아이템을 화면에 그리는 메소드

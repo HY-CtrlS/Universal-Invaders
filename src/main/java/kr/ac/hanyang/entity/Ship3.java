@@ -14,11 +14,14 @@ public class Ship3 extends Ship {
     /** 총 점사 횟수 (삼점사). */
     private static final int maxBurstShots = 3;
 
+    // Yellow
     public Ship3(final int positionX, final int positionY, final Direction direction, Color color,
         final int shipID) {
         super(positionX, positionY, direction, color, shipID);
         this.burstCooldown = Core.getCooldown(100);
         this.burstShotCount = 0;
+
+        ultThreshold = 150;
     }
 
     /**
@@ -57,7 +60,7 @@ public class Ship3 extends Ship {
         Bullet bullet = BulletPool.getBullet(
             this.positionX + this.width / 2, // 함선의 중앙
             this.positionY + this.height / 2,                   // 함선의 상단
-            this.bulletSpeed, this.baseDamage, this.direction, getShipID());
+            this.bulletSpeed, this.baseDamage, this.range, this.direction, getShipID());
         bullets.add(bullet);
     }
 
@@ -66,5 +69,12 @@ public class Ship3 extends Ship {
             isBurstShooting = true;
             this.burstShotCount = 0; // 점사 초기화
         }
+    }
+
+    /**
+     * 짧은 시간 동안 무적, 토글형.
+     */
+    public final void useUlt() {
+        super.useUlt();
     }
 }

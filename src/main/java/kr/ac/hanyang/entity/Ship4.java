@@ -5,9 +5,12 @@ import java.util.Set;
 
 public class Ship4 extends Ship {
 
+    // Red
     public Ship4(final int positionX, final int positionY, final Direction direction, Color color,
         final int shipID) {
         super(positionX, positionY, direction, color, shipID);
+
+        ultThreshold = 100;
     }
 
     /**
@@ -23,11 +26,18 @@ public class Ship4 extends Ship {
             // 관통 총알 발사
             Bullet bullet = BulletPool.getBullet(
                 positionX + this.width / 2, positionY + this.height / 2,
-                this.bulletSpeed, this.baseDamage, direction, getShipID());
+                this.bulletSpeed, this.baseDamage, this.range, direction, getShipID());
             bullets.add(bullet);
 
             return true;
         }
         return false;
+    }
+
+    /**
+     * 자석 (화면상 모든 경험치 끌어오기), 토글형.
+     */
+    public final void useUlt() {
+        super.useUlt();
     }
 }

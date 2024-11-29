@@ -5,9 +5,12 @@ import java.util.Set;
 
 public class Ship2 extends Ship {
 
+    // Blue
     public Ship2(final int positionX, final int positionY, final Direction direction, Color color,
         final int shipID) {
         super(positionX, positionY, direction, color, shipID);
+
+        ultThreshold = 150;
     }
 
     /**
@@ -20,16 +23,24 @@ public class Ship2 extends Ship {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY + this.height / 2, this.bulletSpeed, this.baseDamage,
+                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, this.range,
                 Direction.getOffsetDirection(direction, -1), getShipID()));
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, direction,
+                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, this.range,
+                direction,
                 getShipID()));
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY + this.height / 2, this.bulletSpeed, this.baseDamage,
+                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, this.range,
                 Direction.getOffsetDirection(direction, 1), getShipID()));
             return true;
         }
         return false;
+    }
+
+    /**
+     * 현재 모든 적 함선 프리징 + 적 생성X, 토글형.
+     */
+    public final void useUlt() {
+        super.useUlt();
     }
 }

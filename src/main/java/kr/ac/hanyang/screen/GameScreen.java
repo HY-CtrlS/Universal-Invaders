@@ -5,13 +5,11 @@ import static kr.ac.hanyang.engine.Core.getStatusManager;
 import kr.ac.hanyang.Item.Item;
 import kr.ac.hanyang.Item.ItemList;
 
-import kr.ac.hanyang.engine.DrawManager;
-import kr.ac.hanyang.engine.ShipStatus;
+import kr.ac.hanyang.engine.DrawManager.SpriteType;
 import kr.ac.hanyang.engine.StatusManager;
 
 import kr.ac.hanyang.entity.Entity.Direction;
 import kr.ac.hanyang.entity.Ship;
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +17,6 @@ import java.util.Set;
 
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
-import kr.ac.hanyang.engine.GameSettings;
 import kr.ac.hanyang.engine.GameState;
 import kr.ac.hanyang.entity.*;
 
@@ -47,15 +44,15 @@ public class GameScreen extends Screen {
     private static final int SEPARATION_LINE_HEIGHT = 40;
     /** 아이템 선택 화면으로 넘어가는 경험치 기준 양 */
     private static final int EXPERIENCE_THRESHOLD = 100;
+    /** 기본 적 생성 간격 */
+    private static final int ENEMY_SPAWN_INTERVAL = 2000;
 
-    /** Current game difficulty settings. */
-    private GameSettings gameSettings;
     /** Current difficulty level number. */
     private int level;
     /** Formation of enemy ships. */
     private EnemyShipSet enemyShipSet;
     /** 적을 갖고 있는 set */
-    private Set<EnemyShip> enemis;
+    private Set<EnemyShip> enemies;
     /** Player's ship. */
     private Ship ship;
     /** Bonus enemy ship that appears sometimes. */
@@ -78,6 +75,8 @@ public class GameScreen extends Screen {
     private double remainingRegenHp;
     /** HP 리젠되는 쿨타임 생성 **/
     private Cooldown regenHpCooldown;
+    /** 궁극기 게이지 자동 상승 쿨타임 생성 **/
+    private Cooldown increUltCooldown;
     /** Total bullets shot by the player. */
     private int bulletsShot;
     /** Total ships destroyed by the player. */
@@ -99,12 +98,12 @@ public class GameScreen extends Screen {
     /** 플레이어의 현재 레벨 */
     private int playerLevel = 1;
 
-
     /** Total survival time in milliseconds. */
     private int survivalTime;
-
+    /** 함선의 ID */
     private int shipID;
-
+    /** 궁극기 활성화 시간 */
+    protected Cooldown ultActivatedTime;
     // 아이템 리스트 객체 생성
     private static ItemList items = new ItemList();
     // 아이템 리스트 참조하기 위한 배열
@@ -113,20 +112,16 @@ public class GameScreen extends Screen {
     /**
      * Constructor, establishes the properties of the screen.
      *
-     * @param gameState    Current game state.
-     * @param gameSettings Current game settings.
-     * @param width        Screen width.
-     * @param height       Screen height.
-     * @param fps          Frames per second, frame rate at which the game is run.
+     * @param gameState Current game state.
+     * @param width     Screen width.
+     * @param height    Screen height.
+     * @param fps       Frames per second, frame rate at which the game is run.
      */
     public GameScreen(final GameState gameState,
-        final GameSettings gameSettings,
         final int width, final int height, final int fps, final int shipID) {
         super(width, height, fps);
 
-        this.gameSettings = gameSettings;
         this.shipID = shipID;
-        this.level = gameState.getLevel();
 
         this.hp = gameState.getHp();
         this.bulletsShot = gameState.getBulletsShot();
@@ -153,11 +148,18 @@ public class GameScreen extends Screen {
         // 게임 시작 시 StatusManager의 status 객체를 res/status 의 값으로 초기화
         getStatusManager().resetDefaultStatus();
 
+        // GameScreen 이 시작될 땐 카운트 다운이 시작되므로
+        this.levelStarted = false;
+        this.survivalTime = 0;
+        this.clockCooldown = Core.getCooldown(1000);
+        this.clockCooldown.reset();
+
         this.ship = Ship.createShipByID(this.shipID, this.width / 2, this.height / 2);
-        enemyShipSet = new EnemyShipSet(this.gameSettings, this.level, this.ship);
+        // 적 생성 쪽에서도 게임 진행 시간에 대한 정보를 받기 위해 게임 시작에 대한 정보 넘겨줌.
+        enemyShipSet = new EnemyShipSet(ENEMY_SPAWN_INTERVAL, this.ship);
         enemyShipSet.attach(this);
 
-        this.enemis = enemyShipSet.getEnemies();
+        this.enemies = enemyShipSet.getEnemies();
         // Appears each 10-30 seconds.
         this.enemyShipSpecialCooldown = Core.getVariableCooldown(
             BONUS_SHIP_INTERVAL, BONUS_SHIP_VARIANCE);
@@ -179,15 +181,33 @@ public class GameScreen extends Screen {
         this.inputDelay = Core.getCooldown(INPUT_DELAY);
         this.inputDelay.reset();
 
-        // GameScreen 이 시작될 땐 카운트 다운이 시작되므로
-        this.levelStarted = false;
-        this.survivalTime = 0;
-        this.clockCooldown = Core.getCooldown(1000);
-        this.clockCooldown.reset();
-
         // HP 리젠 쿨타임 생성 및 시작
         this.regenHpCooldown = Core.getCooldown(1000);
         this.regenHpCooldown.reset();
+
+        // 궁극기 게이지 상승 쿨타임 생성 및 시작
+        this.increUltCooldown = Core.getCooldown(1000);
+        this.increUltCooldown.reset();
+
+        // 궁극기 효과 지속시간 쿨타임 생성 및 시작
+        switch (this.shipID) {
+            case 1:
+                this.ultActivatedTime = Core.getCooldown(1500);
+                this.ultActivatedTime.reset();
+                break;
+            case 2:
+                this.ultActivatedTime = Core.getCooldown(4000);
+                this.ultActivatedTime.reset();
+                break;
+            case 3:
+                this.ultActivatedTime = Core.getCooldown(3000);
+                this.ultActivatedTime.reset();
+                break;
+            case 4:
+                this.ultActivatedTime = Core.getCooldown(5000);
+                this.ultActivatedTime.reset();
+                break;
+        }
     }
 
     /**
@@ -213,20 +233,38 @@ public class GameScreen extends Screen {
         if (this.inputDelay.checkFinished() && !this.levelStarted) {
             this.clockCooldown.reset();
             this.levelStarted = true;
+            enemyShipSet.setLevelStarted(true);
         }
 
         if (this.inputDelay.checkFinished() && !this.levelFinished) {
 
             // WASD - 함선 이동
-            boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_D);
-            boolean moveLeft = inputManager.isKeyDown(KeyEvent.VK_A);
-            boolean moveUp = inputManager.isKeyDown(KeyEvent.VK_W);
-            boolean moveDown = inputManager.isKeyDown(KeyEvent.VK_S);
+            boolean moveRight, moveLeft, moveUp, moveDown;
             // 방향키 - 에임
-            boolean aimRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT);
-            boolean aimLeft = inputManager.isKeyDown(KeyEvent.VK_LEFT);
-            boolean aimUp = inputManager.isKeyDown(KeyEvent.VK_UP);
-            boolean aimDown = inputManager.isKeyDown(KeyEvent.VK_DOWN);
+            boolean aimRight, aimLeft, aimUp, aimDown;
+
+            // Ship1 궁극기 활성화 여부에 따라 이동 및 발사 가능 여부 결정
+            if (this.shipID == 1 && this.ship.isUltActivated()) {
+                moveRight = false;
+                moveLeft = false;
+                moveUp = false;
+                moveDown = false;
+
+                aimRight = false;
+                aimLeft = false;
+                aimUp = false;
+                aimDown = false;
+            } else {
+                moveRight = inputManager.isKeyDown(KeyEvent.VK_D);
+                moveLeft = inputManager.isKeyDown(KeyEvent.VK_A);
+                moveUp = inputManager.isKeyDown(KeyEvent.VK_W);
+                moveDown = inputManager.isKeyDown(KeyEvent.VK_S);
+
+                aimRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT);
+                aimLeft = inputManager.isKeyDown(KeyEvent.VK_LEFT);
+                aimUp = inputManager.isKeyDown(KeyEvent.VK_UP);
+                aimDown = inputManager.isKeyDown(KeyEvent.VK_DOWN);
+            }
 
             boolean isRightBorder = this.ship.getPositionX()
                 + this.ship.getWidth() + this.ship.getSpeed() > this.width - 1;
@@ -290,8 +328,12 @@ public class GameScreen extends Screen {
                 }
             }
 
-            if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-                // 추후 궁극기 추가
+            if (inputManager.isKeyDown(KeyEvent.VK_F)) {
+                if (this.ship.isUltReady()) {
+                    this.ultActivatedTime.reset();
+                    this.ship.useUlt();
+                    this.logger.info("Ultimate Skill!");
+                }
             }
 
             // esc키를 눌렀을 때 일시정지 화면으로 전환
@@ -299,7 +341,13 @@ public class GameScreen extends Screen {
                 this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
                     + " pause screen at " + this.fps + " fps.");
                 Screen pause = new PauseScreen(this.getWidth(), this.getHeight(), this.fps);
+                if (this.ship.isUltActivated()) {
+                    this.ultActivatedTime.pause();
+                }
                 int check = pause.run();
+                if (this.ultActivatedTime.isPaused()) {
+                    this.ultActivatedTime.resume();
+                }
                 this.logger.info("Closing pause screen.");
                 // 일시정지 화면에서 quit를 누른 경우 현재 라운드 종료
                 if (check == 2) {
@@ -313,14 +361,51 @@ public class GameScreen extends Screen {
 
             // hp 자동 재생 기능 실행
             hpRegen(status.getRegenHp());
+            increaseUltGauge();
 
             this.ship.update();
-            this.enemyShipSet.update();
-            ExperiencePool.update(this.experiences);
+
+            // Ship2 궁극기 활성화 여부에 따라 적 함선 이동 및 생성 여부 결정
+            if (this.shipID == 2 && this.ship.isUltActivated()) {
+                this.enemyShipSet.noUpdate();
+                // TODO: 얼려진 적 스프라이트로 변경
+            } else {
+                this.enemyShipSet.update();
+            }
+
+            // Ship4 궁극기 활성화 여부에 따라 경험치 자석 효과 결정
+            if (this.shipID == 4 && this.ship.isUltActivated()) {
+                ExperiencePool.move(this.experiences, this.ship);
+            } else {
+                ExperiencePool.update(this.experiences);
+            }
+
             // 1초마다 생존 시간 1씩 증가
             if (this.clockCooldown.checkFinished()) {
                 this.survivalTime += 1;
+                // enemyShipSet의 시간도 같이 증가
+                enemyShipSet.updateTime();
                 this.clockCooldown.reset();
+
+                // 10초마다 스폰 인터벌 50ms 감소
+                if (this.survivalTime % 10 == 0) {
+                    enemyShipSet.decreaseSpawnInterval(50);
+                }
+            }
+
+            if (this.ship.isUltActivated() && this.ultActivatedTime.checkFinished()) {
+                this.ship.stopUlt();
+                this.ultActivatedTime.reset();
+                if (this.shipID == 1) {
+                    for (EnemyShip enemyShip : this.enemies) {
+                        enemyShip.destroy();
+                        this.shipsDestroyed++;
+                        this.experiences.add(
+                            ExperiencePool.getExperience(enemyShip.getPositionX() + 3 * 2,
+                                // enemyShip의 너비는 13, 경험치의 너비는 7이므로 3을 더해줌
+                                enemyShip.getPositionY(), enemyShip.getPointValue()));
+                    }
+                }
             }
 
         }
@@ -379,13 +464,14 @@ public class GameScreen extends Screen {
         drawManager.drawHorizontalLine(this, this.height - EXPERIENCE_BAR_HEIGHT - 1);
         drawManager.drawExperienceBar(this, this.currentExperience,
             EXPERIENCE_THRESHOLD, EXPERIENCE_BAR_HEIGHT); // 경험치 바 그리기
+        drawManager.drawUltGauge(this, this.ship); // 궁극기 게이지 그리기
 
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {
             int countdown = (int) ((INPUT_DELAY
                 - (System.currentTimeMillis()
                 - this.gameStartTime)) / 1000);
-            drawManager.drawCountDown(this, this.level, countdown);
+            drawManager.drawCountDown(this, countdown);
         }
 
         // 현재 levelTime 그리기
@@ -401,11 +487,15 @@ public class GameScreen extends Screen {
         Set<Bullet> recyclable = new HashSet<Bullet>();
         for (Bullet bullet : this.bullets) {
             bullet.update();
+            bullet.setRange(this.ship.getRange());
             if (bullet.getPositionY() < SEPARATION_LINE_HEIGHT
-                || bullet.getPositionY() > this.height || bullet.getPositionX() < 0
-                || bullet.getPositionX() > this.width) {
+                || bullet.getPositionY() > this.height - EXPERIENCE_BAR_HEIGHT - 1
+                || bullet.getPositionX() < 0
+                || bullet.getPositionX() > this.width
+                || bullet.getcurDistance() > bullet.getMaxDistance()) {
                 recyclable.add(bullet);
             }
+
         }
         this.bullets.removeAll(recyclable);
         BulletPool.recycle(recyclable);
@@ -433,7 +523,7 @@ public class GameScreen extends Screen {
                 }
             } else { //아군 총알인 경우 실행되는 부분
 
-                for (EnemyShip enemyShip : enemis) {
+                for (EnemyShip enemyShip : enemies) {
                     if (!enemyShip.isDestroyed()
                         && checkCollision(bullet, enemyShip)) {
                         this.shipsDestroyed++;
@@ -446,8 +536,9 @@ public class GameScreen extends Screen {
                         }
                         Core.getSoundManager().playBulletHitSound();
 
-                        // 적 함선이 파괴되었을 때 경험치 생성
+                        // 적 함선이 파괴되었을 때 경험치 생성, 궁극기 게이지 증가
                         if (enemyShip.isDestroyed()) {
+                            this.ship.increaseUltGauge();
                             this.experiences.add(
                                 ExperiencePool.getExperience(enemyShip.getPositionX() + 3 * 2,
                                     // enemyShip의 너비는 13, 경험치의 너비는 7이므로 3을 더해줌
@@ -469,18 +560,31 @@ public class GameScreen extends Screen {
         }
         this.bullets.removeAll(recyclable);
         BulletPool.recycle(recyclable);
-        // 적과 아군 함선의 충돌 체크
-        for (EnemyShip enemyShip : enemis) {
-            if (checkCollision(this.ship, enemyShip)) {
-                if (!this.ship.isDestroyed() && !enemyShip.isDestroyed() && !levelFinished) {
-                    //this.enemyShipSet.damage_Enemy(enemyShip, this.ship.getBaseDamage());
-                    this.ship.destroy();
-                    this.hp = (this.hp - 5 > 0) ? this.hp - 5 : 0;
-                    this.logger.info("Hit on player ship, -5 HP");
-                    Core.getSoundManager().playDamageSound();
-                    if (this.hp <= 0 && !this.isDestroyed) {
-                        Core.getSoundManager().playExplosionSound();
-                        this.isDestroyed = true;
+
+        // Ship3 궁극기 활성화 여부에 따라 무적(충돌 무시) 여부 결정
+        if (this.shipID == 3 && this.ship.isUltActivated()) {
+            // 아군 Ship은 무적이라 충돌 무시
+        } else {
+            // 적과 아군 함선의 충돌 체크
+            for (EnemyShip enemyShip : enemies) {
+                if (checkCollision(this.ship, enemyShip)) {
+                    if (!this.ship.isDestroyed() && !enemyShip.isDestroyed() && !levelFinished) {
+                        //this.enemyShipSet.damage_Enemy(enemyShip, this.ship.getBaseDamage());
+                        this.ship.destroy();
+                        this.hp = (this.hp - enemyShip.getBaseDamage() > 0) ? this.hp
+                            - enemyShip.getBaseDamage() : 0;
+                        // 만약 부딪힌 적이 장애물이라면
+                        if (enemyShip.getSpriteType() == SpriteType.Obstacle) {
+                            // 해당 장애물은 바로 삭제
+                            this.enemyShipSet.damage_Enemy(enemyShip, 200);
+                        }
+                        this.logger.info(
+                            "Hit on player ship, -" + enemyShip.getBaseDamage() + " Hp");
+                        Core.getSoundManager().playDamageSound();
+                        if (this.hp <= 0 && !this.isDestroyed) {
+                            Core.getSoundManager().playExplosionSound();
+                            this.isDestroyed = true;
+                        }
                     }
                 }
             }
@@ -509,7 +613,13 @@ public class GameScreen extends Screen {
                             + this.fps + " fps.");
                     ItemSelectedScreen currentScreen = new ItemSelectedScreen(
                         items.getSelectedItemList(), width, height, this.fps, playerLevel);
+                    if (this.ship.isUltActivated()) {
+                        this.ultActivatedTime.pause();
+                    }
                     selectedItem = currentScreen.run();
+                    if (this.ultActivatedTime.isPaused()) {
+                        this.ultActivatedTime.resume();
+                    }
                     this.logger.info("Closing Item Selecting Screen.");
                     // 최대 체력 증가 아이템을 선택한 경우, 현재 체력 또한 증가된 체력만큼 올려줌.
                     if (selectedItem == 1) {
@@ -569,6 +679,15 @@ public class GameScreen extends Screen {
         }
     }
 
+    /**
+     * increUltCooldown이 끝날 때마다 궁극기 게이지 1씩 증가시킴.
+     */
+    private void increaseUltGauge() {
+        if (this.increUltCooldown.checkFinished() && !this.ship.isUltReady()) {
+            this.ship.increaseUltGauge();
+            this.increUltCooldown.reset();
+        }
+    }
 
     /**
      * Returns a GameState object representing the status of the game.
@@ -576,7 +695,7 @@ public class GameScreen extends Screen {
      * @return Current game state.
      */
     public final GameState getGameState() {
-        return new GameState(this.level, this.hp,
+        return new GameState(this.hp,
             this.bulletsShot, this.shipsDestroyed, this.survivalTime);
     }
 }

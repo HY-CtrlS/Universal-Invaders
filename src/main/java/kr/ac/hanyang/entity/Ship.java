@@ -7,6 +7,7 @@ import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.engine.DrawManager.SpriteType;
 import kr.ac.hanyang.engine.StatusManager;
+import kr.ac.hanyang.screen.GameScreen;
 
 /**
  * Implements a ship, to be controlled by the player.
@@ -23,12 +24,18 @@ public class Ship extends Entity {
     protected int speed;
     /** 함선의 기본 데미지 */
     protected int baseDamage;
+
+    protected int range;
     /** 함선의 에임 뱡향 */
     protected Direction direction;
     /** 축 방향 속도의 소수 부분을 저장 및 누적 */
     protected double remainingMovement = 0;
     /** 축 방향 속도의 정수 부분 (실제 이동량) */
     protected int movement = 0;
+    /** 궁극기 게이지 */
+    protected int ultGauge;
+    /** 궁극기 차는 양 */
+    protected double regenUltra;
     /** Minimum time between shots. */
     protected Cooldown shootingCooldown;
     /** Time spent inactive between hits. */
@@ -37,6 +44,12 @@ public class Ship extends Entity {
     protected int shipID;
     /** 점사 여부 확인 변수 */
     public boolean isBurstShooting;
+    /** 토글형 궁극기 활성화 여부 */
+    protected boolean isUltActv;
+    /** 궁극기를 사용할 수 있는 게이지 기준 양 */
+    protected int ultThreshold;
+    /** 궁극기 게이지의 소수 부분 누적 */
+    private double ultRemainder = 0.0;
 
     /**
      * Constructor, establishes the ship's properties.
@@ -44,10 +57,12 @@ public class Ship extends Entity {
      * @param positionX Initial position of the ship in the X axis.
      * @param positionY Initial position of the ship in the Y axis.
      * @param direction 함선의 초기 에임 방향.
+     * @param color     함선의 색상.
+     * @param shipID    함선의 ID.
      */
     public Ship(final int positionX, final int positionY, final Direction direction, Color color,
         final int shipID) {
-        super(positionX, positionY, 13 * 2, 13 * 2, new Color[] {color, Color.WHITE}, direction);
+        super(positionX, positionY, 13 * 2, 13 * 2, new Color[]{color, Color.WHITE}, direction);
 
         this.spriteType = SpriteType.Ship;
 
@@ -55,11 +70,15 @@ public class Ship extends Entity {
         this.shootingInterval = statusManager.getShootingInterval();
         this.bulletSpeed = statusManager.getBulletSpeed();
         this.baseDamage = statusManager.getBaseDamage();
+        this.range = statusManager.getRange();
         this.speed = statusManager.getSpeed();
+        this.regenUltra = statusManager.getRegenUltra();
 
         this.shootingCooldown = Core.getCooldown(this.shootingInterval);
         this.destructionCooldown = Core.getCooldown(200);
 
+        this.ultGauge = 0;
+        this.isUltActv = false;
         this.direction = direction;
         this.shipID = shipID;
         this.isBurstShooting = false;
@@ -148,11 +167,80 @@ public class Ship extends Entity {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, this.direction,
+                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, this.range,
+                this.direction,
                 getShipID()));
             return true;
         }
         return false;
+    }
+
+    /**
+     * 궁극기 사용.
+     */
+    public void useUlt() {
+        isUltActv = true;
+        ultGauge = 0;
+    }
+
+    /**
+     * 궁극기 게이지 1 + regenUltra + ultRemainder 증가.
+     */
+    public void increaseUltGauge() {
+        if (ultGauge < ultThreshold) {
+            // shipStatus에서 궁극기 게이지 증가량을 가져와서 증가
+            double totalRegen = 1 + regenUltra + ultRemainder;
+            ultGauge += (int) totalRegen; // 정수 부분만 증가
+            ultRemainder = totalRegen - (int) totalRegen; // 남은 실수 부분 저장
+
+            if (ultGauge >= ultThreshold) {
+                ultGauge = ultThreshold; // 최대치를 초과하지 않도록 제한
+                // TODO 궁극기 사용 가능 알림 효과음 추가
+            }
+        }
+    }
+
+    /**
+     * 궁극기 게이지가 모두 차 사용 가능한 상태인지 체크.
+     *
+     * @return 궁극기 게이지가 ultThreshold면 True.
+     */
+    public boolean isUltReady() {
+        return ultGauge == ultThreshold;
+    }
+
+    /**
+     * 토글형 궁극기가 현재 활성화 중인지 체크.
+     *
+     * @return 토글형 궁극기 스킬이 실행 중이면 True.
+     */
+    public final boolean isUltActivated() {
+        return isUltActv;
+    }
+
+    /**
+     * 궁극기 효과 중지.
+     */
+    public final void stopUlt() {
+        isUltActv = false;
+    }
+
+    /**
+     * 현재 궁극기 게이지 값을 얻는 Getter.
+     *
+     * @return 현재 궁극기 게이지.
+     */
+    public final int getUltGauge() {
+        return ultGauge;
+    }
+
+    /**
+     * 궁극기 사용 가능 게이지 기준을 얻는 Getter.
+     *
+     * @return 궁극기 사용 가능 기준.
+     */
+    public final int getUltThreshold() {
+        return ultThreshold;
     }
 
     /**
@@ -217,6 +305,10 @@ public class Ship extends Entity {
         return this.baseDamage;
     }
 
+    public int getRange() {
+        return this.range;
+    }
+
     /**
      * 함선의 에임 방향을 설정하는 Setter.
      *
@@ -274,6 +366,8 @@ public class Ship extends Entity {
         this.shootingInterval = statusManager.getShootingInterval();
         this.bulletSpeed = statusManager.getBulletSpeed();
         this.baseDamage = statusManager.getBaseDamage();
+        this.range = statusManager.getRange();
         this.speed = statusManager.getSpeed();
+        this.regenUltra = statusManager.getRegenUltra();
     }
 }
