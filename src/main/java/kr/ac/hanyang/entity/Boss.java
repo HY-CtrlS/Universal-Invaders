@@ -91,13 +91,13 @@ public class Boss extends Entity {
             phase = 2;
             maxHp = PHASE_2_HP;
             currentHp = maxHp;
-            attackCooldown = Core.getCooldown(PHASE_2_HP);
+            attackCooldown = Core.getCooldown(ATTACK_COOLDOWN_2);
             setColor(PHASE_2_COLOR);
         } else if (currentHp <= 0 && phase == 2) {
             phase = 3;
             maxHp = PHASE_3_HP;
             currentHp = maxHp;
-            attackCooldown = Core.getCooldown(PHASE_3_HP);
+            attackCooldown = Core.getCooldown(ATTACK_COOLDOWN_3);
             setColor(PHASE_3_COLOR);
         }
     }
