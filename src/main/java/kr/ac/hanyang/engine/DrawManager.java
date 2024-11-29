@@ -94,7 +94,12 @@ public final class DrawManager {
         // 다중 색 레이어 포탈
         Portal,
         // 보스
-        Boss;
+        Boss,
+        // 레이저
+        Laser,
+        // 레이저 위치 경고용
+        WarningLaser;
+
     }
 
     /**
@@ -133,6 +138,8 @@ public final class DrawManager {
             spriteMap.put(SpriteType.Portal, new boolean[3][11][13]);
             // 보스 스프라이트
             spriteMap.put(SpriteType.Boss, new boolean[2][40][46]);
+            spriteMap.put(SpriteType.Laser, new boolean[2][15][720]);
+            spriteMap.put(SpriteType.WarningLaser, new boolean[1][15][720]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");

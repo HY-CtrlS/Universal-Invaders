@@ -10,11 +10,14 @@ import java.util.Set;
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.engine.GameState;
+import kr.ac.hanyang.engine.DrawManager.SpriteType;
 import kr.ac.hanyang.engine.StatusManager;
 import kr.ac.hanyang.entity.Bullet;
 import kr.ac.hanyang.entity.BulletPool;
 import kr.ac.hanyang.entity.Entity;
 import kr.ac.hanyang.entity.Entity.Direction;
+import kr.ac.hanyang.entity.boss.Laser;
+import kr.ac.hanyang.entity.boss.LaserPool;
 import kr.ac.hanyang.entity.ship.Ship;
 import kr.ac.hanyang.entity.boss.Boss;
 
@@ -72,12 +75,16 @@ public class BossScreen extends Screen {
     private StatusManager status;
     // gameState
     private GameState gameState;
+    private Cooldown createLaserCooldown;
+    private LaserPool laserPool;
+    private Set<Laser> lasers;
 
     //임시 쿨다운 변수
     private Cooldown bossBasicBullet;
     private int basicAttackCount;
 
     Random random = new Random();
+
     /**
      * 생성자, 화면의 속성을 설정
      */
@@ -89,7 +96,6 @@ public class BossScreen extends Screen {
         this.hp = gameState.getHp();
         this.status = gameState.getStatus();
         this.ship = ship;
-
 
         this.returnCode = 1;
         this.status = status;
@@ -106,6 +112,8 @@ public class BossScreen extends Screen {
 
         this.screenFinishedCooldown = Core.getCooldown(SCREEN_CHANGE_INTERVAL);
         this.bullets = new HashSet<Bullet>();
+        this.laserPool = new LaserPool(this.ship);
+        this.lasers = laserPool.getLasers();
 
         // Special input delay / countdown.
         this.gameStartTime = System.currentTimeMillis();
@@ -147,6 +155,9 @@ public class BossScreen extends Screen {
         this.bossBasicBullet.reset();
 
         this.basicAttackCount = 0;
+
+        this.createLaserCooldown = Core.getCooldown(5000);
+        this.createLaserCooldown.reset();
     }
 
     /**
@@ -289,6 +300,7 @@ public class BossScreen extends Screen {
             increaseUltGauge();
 
             this.ship.update();
+            this.laserPool.update();
 
             // 1초마다 생존 시간 1씩 증가
             if (this.clockCooldown.checkFinished()) {
@@ -310,7 +322,8 @@ public class BossScreen extends Screen {
                 double range = randomKey * 5.0;
                 int bulletNum = randomKey - 2;
                 // 공격이 완료되면 false 반환, 아닌 경우 true 반환
-                basicAttackCount += this.boss.spreadBullet(this.bullets, getBulletDirection(), range, bulletNum);
+                basicAttackCount += this.boss.spreadBullet(this.bullets, getBulletDirection(),
+                    range, bulletNum);
                 // 3발을 발사하면 보스 기본공격 쿨타임 시작
                 if (basicAttackCount == 3) {
                     bossBasicBullet.reset();
@@ -318,11 +331,16 @@ public class BossScreen extends Screen {
                     basicAttackCount = 0;
                 }
             }
-        }
 
-        manageCollisions();
-        cleanBullets();
-        draw();
+            if (this.createLaserCooldown.checkFinished()) {
+                laserPool.createLaser();
+                this.createLaserCooldown.reset();
+            }
+
+            manageCollisions();
+            cleanBullets();
+            draw();
+        }
     }
 
     private void draw() {
@@ -336,6 +354,8 @@ public class BossScreen extends Screen {
             drawManager.drawEntity(bullet, bullet.getPositionX(),
                 bullet.getPositionY());
         }
+
+        laserPool.draw();
 
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {
@@ -393,8 +413,10 @@ public class BossScreen extends Screen {
                             //아군 함선 파괴로 업데이트
                             this.ship.destroy();
                             //아군 함선의 체력 보스 총알의 데미지 만큼 감소
-                            this.hp = (this.hp - bullet.getDamage() > 0) ? this.hp - bullet.getDamage() : 0;
-                            this.logger.info("Hit on BossBullet, -" + bullet.getDamage() + " Hp");
+                            this.hp = (this.hp - bullet.getDamage() > 0) ? this.hp
+                                - bullet.getDamage() : 0;
+                            this.logger.info(
+                                "Hit on BossBullet, -" + bullet.getDamage() + " Hp");
                             //충돌한 총알 재활용할 총알로 추가
                             recyclable.add(bullet);
                             // 맞으면 효과음 출력
@@ -410,6 +432,25 @@ public class BossScreen extends Screen {
         }
         this.bullets.removeAll(recyclable);
         BulletPool.recycle(recyclable);
+
+        // 레이저의 경우
+        for (Laser laser : this.lasers) {
+            if (checkCollision(this.ship, laser) && laser.getSpriteType() == SpriteType.Laser) {
+                if (!this.ship.isDestroyed()) {
+                    //아군 함선 파괴로 업데이트
+                    this.ship.destroy();
+                    //아군 함선의 체력을 레이저의 데미지 만큼 감소
+                    this.hp = (this.hp - laser.getDamage() > 0) ? this.hp - laser.getDamage() : 0;
+                    this.logger.info("Hit on player ship, -" + laser.getDamage() + " Hp");
+                    // 맞으면 효과음 출력
+                    Core.getSoundManager().playDamageSound();
+                    if (this.hp <= 0 && !this.isDestroyed) {
+                        Core.getSoundManager().playExplosionSound();
+                        this.isDestroyed = true;
+                    }
+                }
+            }
+        }
         // 아군 3번 함선의 궁극기
         if (this.ship.getShipID() == 3 && this.ship.isUltActivated()) {
             // 아군 Ship은 무적이라 모든 공격과 충돌 무시
@@ -465,8 +506,12 @@ public class BossScreen extends Screen {
     }
 
     private double getBulletDirection() {
-        int dx = (this.ship.getPositionX() + this.ship.getWidth() / 2) - (this.boss.getPositionX() + this.boss.getWidth() / 2);
-        int dy = (this.ship.getPositionY() + this.ship.getHeight() / 2) - (this.boss.getPositionY() + this.boss.getHeight());
+        int dx =
+            (this.ship.getPositionX() + this.ship.getWidth() / 2) - (this.boss.getPositionX()
+                + this.boss.getWidth() / 2);
+        int dy =
+            (this.ship.getPositionY() + this.ship.getHeight() / 2) - (this.boss.getPositionY()
+                + this.boss.getHeight());
         // 빗변 길이 계산
         double length = Math.sqrt(dx * dx + dy * dy);
         // 코사인 값 계산 (인접변 / 빗변)
