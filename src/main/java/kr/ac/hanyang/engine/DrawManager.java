@@ -334,11 +334,11 @@ public final class DrawManager {
      * @param screen Screen to draw on.
      * @param lives  Current lives.
      */
-    public void drawLives(final Screen screen, final int lives) {
+    public void drawLives(final Screen screen, final int X, final int Y, final int lives) {
         backBufferGraphics.setFont(fontRegular);
 
-        int barX = 10; // 체력 바의 X 좌표
-        int barY = 10; // 체력 바의 Y 좌표
+        int barX = X; // 체력 바의 X 좌표
+        int barY = Y; // 체력 바의 Y 좌표
         int barWidth = 200; // 체력 바의 최대 너비
         int barHeight = 20; // 체력 바의 높이
         int hp = Core.getStatusManager().getMaxHp(); // 최대 체력

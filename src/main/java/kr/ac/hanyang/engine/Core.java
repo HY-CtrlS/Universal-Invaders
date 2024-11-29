@@ -79,7 +79,7 @@ public final class Core {
 
                     // 보스 스크린 시작
                     if (isQuit == 2) {
-                        currentScreen = new BossScreen(gameState.getStatus(), width, height, FPS,
+                        currentScreen = new BossScreen(gameState, width, height, FPS,
                             gameState.getShip());
                         returnCode = handleScreen(currentScreen, "boss screen");
                     }

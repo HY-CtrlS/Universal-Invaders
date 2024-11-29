@@ -1,6 +1,7 @@
 package kr.ac.hanyang.entity.boss;
 
 import java.awt.Color;
+import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
 import kr.ac.hanyang.engine.Cooldown;
@@ -34,7 +35,7 @@ public class Boss extends Entity {
     private int phase;
 
     private Cooldown attackCooldown;
-    private Cooldown attackPhaseOne;
+    private Cooldown basicBulletInterval;
     private Logger logger;
 
     private Set<Bullet> bullets;
@@ -53,7 +54,11 @@ public class Boss extends Entity {
         this.phase = 1;
         this.spriteType = SpriteType.Boss;
         this.attackCooldown = Core.getCooldown(ATTACK_COOLDOWN_1);
-        this.attackPhaseOne = Core.getCooldown(1000);
+
+        //보스의 탄막 기본공격 간격
+        this.basicBulletInterval = Core.getCooldown(700);
+        this.basicBulletInterval.reset();
+
         this.logger = Core.getLogger();
     }
 
@@ -78,25 +83,33 @@ public class Boss extends Entity {
         }
     }
 
-    public boolean attackPhaseOne(final Set<Bullet> bullets, final double direction) {
+    /**
+     * 총알을 지정한 파라미터에 맞게 부채꼴 모양으로 공격
+     *
+     * @param bullets 스크린에서 관리하는 총알 Set
+     * @param direction 부채꼴 공격을 발사할 방향 (90 = 90도(아래방향))
+     * @param spreadAngle 부채꼴의 폭을 설정하는 변수, 각도를 정수로 제시(120 = 120도)
+     * @param bulletNum 설정한 부채꼴에서 발사할 총알의 개수
+     **/
+    public int spreadBullet(final Set<Bullet> bullets, final double direction, final double spreadAngle, final int bulletNum) {
         // Phase 1 attack logic (부채꼴 모양의 총알 발사)
-        if (this.attackPhaseOne.checkFinished()) {
-            this.attackPhaseOne.reset();
+        if (this.basicBulletInterval.checkFinished()) {
+            this.basicBulletInterval.reset();
             // 부채꼴 중심 각도와 각도 간격
             double centerAngle = direction; // 중심 각도 (90도 = 아래쪽)
-            double angleSpread = 45; // 부채꼴 범위
-            int bulletCount = 4;     // 발사할 총알 개수
+            double angleSpread = spreadAngle; // 부채꼴 범위
+            int bulletCount = bulletNum;     // 발사할 총알 개수
 
             // 각도 계산 후 총알 발사
             for (int i = 0; i < bulletCount; i++) {
                 double angle =
                     centerAngle - (angleSpread / 2) + (i * (angleSpread / (bulletCount - 1)));
-                bullets.add(BulletPool.getBossBullet(positionX, positionY, 5, 10, angle));
+                bullets.add(BulletPool.getBossBullet(positionX + getWidth()/2, positionY + getHeight(), 1, 10, angle));
                 this.logger.info("Bullet fired at angle: " + angle);
             }
-            return true;
+            return 1;
         } else {
-            return false;
+            return 0;
         }
     }
 

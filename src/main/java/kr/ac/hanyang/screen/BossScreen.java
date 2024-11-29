@@ -5,9 +5,11 @@ import static kr.ac.hanyang.engine.Core.getStatusManager;
 
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
+import kr.ac.hanyang.engine.GameState;
 import kr.ac.hanyang.engine.StatusManager;
 import kr.ac.hanyang.entity.Bullet;
 import kr.ac.hanyang.entity.BulletPool;
@@ -68,18 +70,26 @@ public class BossScreen extends Screen {
     private int survivalTime;
     /** 현재 함선의 status **/
     private StatusManager status;
-
+    // gameState
+    private GameState gameState;
 
     //임시 쿨다운 변수
-    private Cooldown cooltime;
+    private Cooldown bossBasicBullet;
+    private int basicAttackCount;
+
+    Random random = new Random();
     /**
      * 생성자, 화면의 속성을 설정
      */
-    public BossScreen(final StatusManager status,
+    public BossScreen(final GameState gameState,
         final int width, final int height, final int fps, final Ship ship) {
         super(width, height, fps);
 
+        this.gameState = gameState;
+        this.hp = gameState.getHp();
+        this.status = gameState.getStatus();
         this.ship = ship;
+
 
         this.returnCode = 1;
         this.status = status;
@@ -91,7 +101,7 @@ public class BossScreen extends Screen {
     public final void initialize() {
         super.initialize();
 
-        this.boss = new Boss(this.width / 2, SEPARATION_LINE_HEIGHT + 50);
+        this.boss = new Boss(this.width / 2 - 40, SEPARATION_LINE_HEIGHT + 50);
         this.boss.setDirection(Direction.RIGHT);
 
         this.screenFinishedCooldown = Core.getCooldown(SCREEN_CHANGE_INTERVAL);
@@ -132,8 +142,11 @@ public class BossScreen extends Screen {
                 this.ultActivatedTime.reset();
                 break;
         }
+        // 보스의 기본 공격 쿨타임
+        this.bossBasicBullet = Core.getVariableCooldown(5000, 2500);
+        this.bossBasicBullet.reset();
 
-        this.cooltime = Core.getCooldown(2000);
+        this.basicAttackCount = 0;
     }
 
     /**
@@ -257,6 +270,7 @@ public class BossScreen extends Screen {
                     this.bulletsShot++;
                 }
             }
+
             //궁극기 기능 추가
             if (inputManager.isKeyDown(KeyEvent.VK_F)) {
                 if (this.ship.isUltReady()) {
@@ -290,9 +304,19 @@ public class BossScreen extends Screen {
                 }
             }
 
-            // 보스 패턴 발동 메소드
-            if (cooltime.checkFinished()) {
-                boss.attackPhaseOne(this.bullets, 90);
+            // 보스 패턴A 발동 메소드
+            if (bossBasicBullet.checkFinished()) {
+                int randomKey = random.nextInt(7) + 6;
+                double range = randomKey * 5.0;
+                int bulletNum = randomKey - 2;
+                // 공격이 완료되면 false 반환, 아닌 경우 true 반환
+                basicAttackCount += this.boss.spreadBullet(this.bullets, getBulletDirection(), range, bulletNum);
+                // 3발을 발사하면 보스 기본공격 쿨타임 시작
+                if (basicAttackCount == 3) {
+                    bossBasicBullet.reset();
+                    // 다시 공격 횟수를 0으로 초기화
+                    basicAttackCount = 0;
+                }
             }
         }
 
@@ -323,7 +347,8 @@ public class BossScreen extends Screen {
 
         // 보스의 체력바 그리기
         drawManager.drawBossHp(this, boss.getCurrentHp(), this.boss);
-
+        // 아군 함선의 체력바 그리기
+        drawManager.drawLives(this, 10, this.getHeight() - 50, this.hp);
 
         drawManager.completeDrawing(this);
     }
@@ -356,6 +381,30 @@ public class BossScreen extends Screen {
                 if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
                     recyclable.add(bullet);
                     this.boss.getDamaged(status.getBaseDamage());
+                }
+            } else {
+                // 적 총알인 경우
+                // 아군 3번 함선이 궁극기 킨 경우 충돌 무시
+                if (this.ship.getShipID() != 3 || !this.ship.isUltActivated()) {
+                    // 적 총알과 충돌하고 아직 보스가 안죽은 경우
+                    if (checkCollision(bullet, this.ship) && this.boss.getCurrentHp() > 0) {
+                        // 아군 함선이 안부서져 있는 상태인 경우
+                        if (!this.ship.isDestroyed()) {
+                            //아군 함선 파괴로 업데이트
+                            this.ship.destroy();
+                            //아군 함선의 체력 보스 총알의 데미지 만큼 감소
+                            this.hp = (this.hp - bullet.getDamage() > 0) ? this.hp - bullet.getDamage() : 0;
+                            this.logger.info("Hit on BossBullet, -" + bullet.getDamage() + " Hp");
+                            //충돌한 총알 재활용할 총알로 추가
+                            recyclable.add(bullet);
+                            // 맞으면 효과음 출력
+                            Core.getSoundManager().playDamageSound();
+                            if (this.hp <= 0 && !this.isDestroyed) {
+                                Core.getSoundManager().playExplosionSound();
+                                this.isDestroyed = true;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -413,5 +462,20 @@ public class BossScreen extends Screen {
             this.ship.increaseUltGauge();
             this.increUltCooldown.reset();
         }
+    }
+
+    private double getBulletDirection() {
+        int dx = (this.ship.getPositionX() + this.ship.getWidth() / 2) - (this.boss.getPositionX() + this.boss.getWidth() / 2);
+        int dy = (this.ship.getPositionY() + this.ship.getHeight() / 2) - (this.boss.getPositionY() + this.boss.getHeight());
+        // 빗변 길이 계산
+        double length = Math.sqrt(dx * dx + dy * dy);
+        // 코사인 값 계산 (인접변 / 빗변)
+        double cosTheta = dx / length;
+        // 역코사인으로 각도 계산 (라디안 값을 반환)
+        double thetaRad = Math.acos(cosTheta);
+        // 라디안을 각도로 변환
+        double thetaDeg = Math.toDegrees(thetaRad);
+        // 각도를 보정하여 180에서 뺀 값으로 반환
+        return (thetaDeg) % 360;
     }
 }

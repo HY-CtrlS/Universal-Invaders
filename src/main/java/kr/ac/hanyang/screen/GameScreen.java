@@ -489,7 +489,7 @@ public class GameScreen extends Screen {
         }
 
         // Interface.
-        drawManager.drawLives(this, this.hp);
+        drawManager.drawLives(this,10,10, this.hp);
         drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
         drawManager.drawLevel(this, this.playerLevel); // 현재 레벨 그리기
         drawManager.drawHorizontalLine(this, this.height - EXPERIENCE_BAR_HEIGHT - 1);
@@ -580,15 +580,6 @@ public class GameScreen extends Screen {
 
                     }
                 }
-                if (this.enemyShipSpecial != null
-                    && !this.enemyShipSpecial.isDestroyed()
-                    && checkCollision(bullet, this.enemyShipSpecial)) {
-                    this.shipsDestroyed++;
-                    this.enemyShipSpecial.destroy();
-                    this.enemyShipSpecialExplosionCooldown.reset();
-                    recyclable.add(bullet);
-                }
-
             }
         }
         this.bullets.removeAll(recyclable);
