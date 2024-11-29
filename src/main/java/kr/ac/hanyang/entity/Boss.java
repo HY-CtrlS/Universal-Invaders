@@ -1,6 +1,7 @@
 package kr.ac.hanyang.entity;
 
 import java.awt.Color;
+import java.util.logging.Logger;
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.engine.DrawManager.SpriteType;
@@ -30,6 +31,7 @@ public class Boss extends Entity {
 
     private Cooldown attackCooldown;
 
+    private Logger logger;
     /**
      * Constructor for Boss entity. Initializes the Boss with the first phase and sets the initial
      * health.
@@ -38,13 +40,14 @@ public class Boss extends Entity {
      * @param positionY Initial Y position.
      */
     public Boss(int positionX, int positionY) {
-        super(positionX, positionY, 54 * 2, 25 * 2, PHASE_1_COLOR, Direction.DOWN);
+        super(positionX, positionY, 40 * 2, 46 * 2, PHASE_1_COLOR, Direction.DOWN);
 
         this.maxHp = PHASE_1_HP;
         this.currentHp = maxHp;
         this.phase = 1;
         this.spriteType = SpriteType.Boss;
         this.attackCooldown = Core.getCooldown(ATTACK_COOLDOWN_1);
+        this.logger = Core.getLogger();
     }
 
     public void attack() {
@@ -112,5 +115,23 @@ public class Boss extends Entity {
 
     public int getMaxHp() {
         return maxHp;
+    }
+
+    public void getDamaged(final int value) {
+        this.currentHp -= value;
+        this.logger.info("Boss get damaged! : -" + value + "Hp");
+    }
+
+    public Color getHpColor() {
+        Color hpColor = (phase == 1) ? Color.CYAN : ((phase == 2) ? Color.PINK : Color.RED);
+        return hpColor;
+    }
+
+    public Color getPreviousHpColor() {
+        Color hpColor = null;
+        if (phase == 1) {hpColor = Color.PINK;}
+        else if (phase == 2) {hpColor = Color.RED;}
+        else if (phase == 3) {hpColor = null;}
+        return hpColor;
     }
 }

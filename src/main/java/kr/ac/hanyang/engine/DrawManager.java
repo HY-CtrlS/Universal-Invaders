@@ -1,6 +1,7 @@
 package kr.ac.hanyang.engine;
 
 import kr.ac.hanyang.Item.Item;
+import kr.ac.hanyang.entity.Boss;
 import kr.ac.hanyang.entity.Ship;
 import java.awt.Color;
 import java.awt.Font;
@@ -131,7 +132,7 @@ public final class DrawManager {
             // 포탈 스프라이트
             spriteMap.put(SpriteType.Portal, new boolean[3][11][13]);
             // 보스 스프라이트
-            spriteMap.put(SpriteType.Boss, new boolean[2][25][54]);
+            spriteMap.put(SpriteType.Boss, new boolean[2][40][46]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
@@ -1042,5 +1043,46 @@ public final class DrawManager {
         }
         drawCenteredRegularString(screen, shipColors[shipID - 1],
             screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+    }
+
+    //보스 HP바 표시
+    public void drawBossHp(Screen screen, final int lives, Boss boss) {
+        backBufferGraphics.setFont(fontRegular);
+
+        int barX = 10; // 체력 바의 X 좌표
+        int barY = 30; // 체력 바의 Y 좌표
+        int barWidth = 680; // 체력 바의 최대 너비
+        int barHeight = 20; // 체력 바의 높이
+        int hp = boss.getMaxHp(); // 최대 체력
+        // 체력 바위 보스 이름과 보스 정보 출력
+        backBufferGraphics.setColor(Color.RED);
+        drawCenteredRegularString(screen, "Boss Name, Phase : " + boss.getPhase(),
+            1 + fontRegularMetrics.getHeight());
+
+
+        // 체력 바의 테두리 그리기
+        backBufferGraphics.setColor(Color.GRAY);
+        backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
+
+        // 현재 체력에 따른 바의 너비 계산
+        int healthWidth = (int) ((double) lives / hp * barWidth);
+
+        // 체력 바 채우기
+        backBufferGraphics.setColor(boss.getHpColor()); // 체력 바의 색상
+        backBufferGraphics.fillRect(barX + 1, barY + 1, healthWidth - 1, barHeight - 1);
+        // 다음 페이즈가 존재하는 경우
+        if (boss.getPreviousHpColor() != null) {
+            // 다음페이즈의 색으로 체력바 색깔 지정
+            backBufferGraphics.setColor(boss.getPreviousHpColor());
+            backBufferGraphics.fillRect(barX+healthWidth+1, barY + 1, barWidth-healthWidth -1, barHeight - 1);
+        }
+
+        // 체력 수치 표시
+        backBufferGraphics.setColor(Color.WHITE);
+        String hpText = +lives + "/" + hp;
+        int textX = barX + (barWidth - fontRegularMetrics.stringWidth(hpText)) / 2;
+        int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2)
+            + fontRegularMetrics.getAscent();
+        backBufferGraphics.drawString(hpText, textX, textY);
     }
 }

@@ -8,11 +8,15 @@ import java.util.HashSet;
 import java.util.Set;
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
+import kr.ac.hanyang.engine.DrawManager.SpriteType;
 import kr.ac.hanyang.engine.StatusManager;
 import kr.ac.hanyang.entity.Bullet;
 import kr.ac.hanyang.entity.BulletPool;
+import kr.ac.hanyang.entity.EnemyShip;
 import kr.ac.hanyang.entity.Entity;
 import kr.ac.hanyang.entity.Entity.Direction;
+import kr.ac.hanyang.entity.Experience;
+import kr.ac.hanyang.entity.ExperiencePool;
 import kr.ac.hanyang.entity.Ship;
 import kr.ac.hanyang.entity.Boss;
 
@@ -89,6 +93,7 @@ public class BossScreen extends Screen {
         super.initialize();
 
         this.boss = new Boss(this.width / 2, SEPARATION_LINE_HEIGHT + 50);
+        this.boss.setDirection(Direction.RIGHT);
 
         this.screenFinishedCooldown = Core.getCooldown(SCREEN_CHANGE_INTERVAL);
         this.bullets = new HashSet<Bullet>();
@@ -109,6 +114,7 @@ public class BossScreen extends Screen {
         this.increUltCooldown = Core.getCooldown(1000);
         this.increUltCooldown.reset();
 
+        // 아군 함선 궁극기 기능 연결
         switch (this.ship.getShipID()) {
             case 1:
                 this.ultActivatedTime = Core.getCooldown(1000);
@@ -153,7 +159,7 @@ public class BossScreen extends Screen {
         }
 
         if (this.inputDelay.checkFinished() && !this.phaseFinished) {
-            // 보스의 공격 처리
+            // 보스의 공격 처리 & 궁극기 효과 적용
             if (this.ship.getShipID() == 2 && this.ship.isUltActivated()) {
                 // Ship2 궁극기 활성화 여부에 따라 보스 공격 무력화 결정
             } else {
@@ -250,7 +256,7 @@ public class BossScreen extends Screen {
                     this.bulletsShot++;
                 }
             }
-
+            //궁극기 기능 추가
             if (inputManager.isKeyDown(KeyEvent.VK_F)) {
                 if (this.ship.isUltReady()) {
                     this.ultActivatedTime.reset();
@@ -284,6 +290,7 @@ public class BossScreen extends Screen {
             }
         }
 
+        manageCollisions();
         cleanBullets();
         draw();
     }
@@ -307,6 +314,10 @@ public class BossScreen extends Screen {
                 - this.gameStartTime)) / 1000);
             drawManager.drawCountDown(this, 12);
         }
+
+        // 보스의 체력바 그리기
+        drawManager.drawBossHp(this, boss.getCurrentHp(), this.boss);
+
 
         drawManager.completeDrawing(this);
     }
@@ -333,7 +344,18 @@ public class BossScreen extends Screen {
      */
     private void manageCollisions() {
         Set<Bullet> recyclable = new HashSet<Bullet>();
-
+        for (Bullet bullet : this.bullets) {
+            // 아군 함선의 총알인 경우
+            if (bullet.getClassify() != 0) {
+                if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
+                    recyclable.add(bullet);
+                    this.boss.getDamaged(status.getBaseDamage());
+                }
+            }
+        }
+        this.bullets.removeAll(recyclable);
+        BulletPool.recycle(recyclable);
+        // 아군 3번 함선의 궁극기
         if (this.ship.getShipID() == 3 && this.ship.isUltActivated()) {
             // 아군 Ship은 무적이라 모든 공격과 충돌 무시
         }
