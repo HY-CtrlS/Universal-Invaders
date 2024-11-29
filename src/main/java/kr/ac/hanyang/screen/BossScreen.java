@@ -69,6 +69,9 @@ public class BossScreen extends Screen {
     /** 현재 함선의 status **/
     private StatusManager status;
 
+
+    //임시 쿨다운 변수
+    private Cooldown cooltime;
     /**
      * 생성자, 화면의 속성을 설정
      */
@@ -129,6 +132,8 @@ public class BossScreen extends Screen {
                 this.ultActivatedTime.reset();
                 break;
         }
+
+        this.cooltime = Core.getCooldown(2000);
     }
 
     /**
@@ -283,6 +288,11 @@ public class BossScreen extends Screen {
                 if (this.ship.getShipID() == 1) {
                     // TODO: 현재 모든 보스의 탄환, 미사일 파괴 + (보스에게 일정 데미지)
                 }
+            }
+
+            // 보스 패턴 발동 메소드
+            if (cooltime.checkFinished()) {
+                boss.attackPhaseOne(this.bullets, 90);
             }
         }
 

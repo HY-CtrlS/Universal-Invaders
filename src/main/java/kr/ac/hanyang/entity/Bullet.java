@@ -28,6 +28,16 @@ public class Bullet extends Entity {
     // 총알의 적 관통 여부를 표시
     private boolean isPiercing = false;
 
+    // 보스 총알인 경우의 속도
+    private double speedX;
+    private double speedY;
+
+    // 보스 총알의 각 축 방향 속도의 소수 부분 저장 및 누적
+    private double remainingMovementX;
+    private double remainingMovementY;
+    // 보스 총알의 각 축 방향 속도의 정수 부분
+    private int movementX;
+    private int movementY;
     /**
      * Constructor, establishes the bullet's properties.
      *
@@ -49,6 +59,19 @@ public class Bullet extends Entity {
         setSprite();
     }
 
+    public Bullet(final int positionX, final int positionY, final int speed, int damage,
+        double angle) {
+        super(positionX, positionY, 3 * 2, 5 * 2, Color.RED);
+
+        this.classify = 0;
+        this.speedX = speed * Math.cos(Math.toRadians(angle));
+        this.speedY = speed * Math.sin(Math.toRadians(angle));
+        this.damage = damage;
+        // 방향은 null 이 안되도록 일단 up으로 설정
+        this.direction = Direction.UP;
+        setSprite();
+    }
+
     /**
      * 함선이 대각선 방향으로 총알을 발사했는지 체크
      *
@@ -65,7 +88,7 @@ public class Bullet extends Entity {
      * Sets correct sprite for the bullet, based on classify and direction.
      */
     public final void setSprite() {
-        if (this.classify == 0) {
+        if (this.classify != 0) {
             if (isDiagonal()) {
                 this.spriteType = SpriteType.BulletDiagonal;
             } else {
@@ -85,40 +108,58 @@ public class Bullet extends Entity {
         remainingMovement -= movement; // 소수 부분
     }
 
+    // 보스 총알의 움직임 계산
+    private void calculateBossBulletMovement() {
+        remainingMovementX += speedX;
+        remainingMovementY += speedY;
+
+        movementX = (int) remainingMovementX;
+        movementY = (int) remainingMovementY;
+
+        remainingMovementX -= movementX;
+        remainingMovementY -= movementY;
+    }
     /**
      * Updates the bullet's position.
      */
     public final void update() {
-        calculateMovement();
-        switch (direction) {
-            case UP:
-                this.positionY -= this.speed;
-                break;
-            case DOWN:
-                this.positionY += this.speed;
-                break;
-            case RIGHT:
-                this.positionX += this.speed;
-                break;
-            case LEFT:
-                this.positionX -= this.speed;
-                break;
-            case UP_RIGHT:
-                this.positionY -= movement;
-                this.positionX += movement;
-                break;
-            case UP_LEFT:
-                this.positionY -= movement;
-                this.positionX -= movement;
-                break;
-            case DOWN_RIGHT:
-                this.positionY += movement;
-                this.positionX += movement;
-                break;
-            case DOWN_LEFT:
-                this.positionY += movement;
-                this.positionX -= movement;
-                break;
+        if (classify != 0) {
+            calculateMovement();
+            switch (direction) {
+                case UP:
+                    this.positionY -= this.speed;
+                    break;
+                case DOWN:
+                    this.positionY += this.speed;
+                    break;
+                case RIGHT:
+                    this.positionX += this.speed;
+                    break;
+                case LEFT:
+                    this.positionX -= this.speed;
+                    break;
+                case UP_RIGHT:
+                    this.positionY -= movement;
+                    this.positionX += movement;
+                    break;
+                case UP_LEFT:
+                    this.positionY -= movement;
+                    this.positionX -= movement;
+                    break;
+                case DOWN_RIGHT:
+                    this.positionY += movement;
+                    this.positionX += movement;
+                    break;
+                case DOWN_LEFT:
+                    this.positionY += movement;
+                    this.positionX -= movement;
+                    break;
+            }
+        } else {
+            // Boss의 총알인 경우
+            calculateBossBulletMovement();
+            this.positionX += movementX;
+            this.positionY += movementY;
         }
     }
 
@@ -131,6 +172,9 @@ public class Bullet extends Entity {
         this.speed = speed;
     }
 
+    // 보스 총알인 경우에는 X축 Y축 속도 설정
+    public final void setSpeedX(final double speed) {this.speedX = speed;}
+    public final void setSpeedY(final double speed) {this.speedY = speed;}
     /**
      * Getter for the speed of the bullet.
      *

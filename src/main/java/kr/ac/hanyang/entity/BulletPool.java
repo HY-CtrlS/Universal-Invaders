@@ -2,6 +2,7 @@ package kr.ac.hanyang.entity;
 
 import java.util.HashSet;
 import java.util.Set;
+import kr.ac.hanyang.entity.Entity.Direction;
 
 /**
  * Implements a pool of recyclable bullets.
@@ -56,6 +57,29 @@ public final class BulletPool {
             bullet.setPiercing(true);
         } else {
             bullet.setPiercing(false);
+        }
+
+        return bullet;
+    }
+    //보스 총알인 경우의 getBullet
+    public static Bullet getBossBullet(final int positionX,
+        final int positionY, final int speed, int damage, double angle) {
+        Bullet bullet;
+        if (!pool.isEmpty()) {
+            bullet = pool.iterator().next();
+            pool.remove(bullet);
+            bullet.setPositionX(positionX - bullet.getWidth() / 2);
+            bullet.setPositionY(positionY);
+            bullet.setSpeedX(speed * Math.cos(Math.toRadians(angle)));
+            bullet.setSpeedY(speed * Math.sin(Math.toRadians(angle)));
+            bullet.setDamage(damage);
+            bullet.setSprite();
+            bullet.setDirection(Direction.UP);
+            bullet.setClassify(0);
+
+        } else {
+            bullet = new Bullet(positionX, positionY, speed, damage, angle);
+            bullet.setPositionX(positionX - bullet.getWidth() / 2);
         }
 
         return bullet;
