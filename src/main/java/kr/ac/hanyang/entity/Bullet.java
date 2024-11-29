@@ -100,41 +100,34 @@ public class Bullet extends Entity {
         switch (direction) {
             case UP:
                 this.positionY -= this.speed;
-                this.curDistance += this.speed;
                 break;
             case DOWN:
                 this.positionY += this.speed;
-                this.curDistance += this.speed;
                 break;
             case RIGHT:
                 this.positionX += this.speed;
-                this.curDistance += this.speed;
                 break;
             case LEFT:
                 this.positionX -= this.speed;
-                this.curDistance += this.speed;
                 break;
             case UP_RIGHT:
                 this.positionY -= movement;
                 this.positionX += movement;
-                this.curDistance += movement;
                 break;
             case UP_LEFT:
                 this.positionY -= movement;
                 this.positionX -= movement;
-                this.curDistance += movement;
                 break;
             case DOWN_RIGHT:
                 this.positionY += movement;
                 this.positionX += movement;
-                this.curDistance += movement;
                 break;
             case DOWN_LEFT:
                 this.positionY += movement;
                 this.positionX -= movement;
-                this.curDistance += movement;
                 break;
         }
+        this.curDistance += this.speed;
     }
 
     /**
