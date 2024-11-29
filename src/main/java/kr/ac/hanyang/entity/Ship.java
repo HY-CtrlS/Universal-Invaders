@@ -24,6 +24,8 @@ public class Ship extends Entity {
     protected int speed;
     /** 함선의 기본 데미지 */
     protected int baseDamage;
+
+    protected int range;
     /** 함선의 에임 뱡향 */
     protected Direction direction;
     /** 축 방향 속도의 소수 부분을 저장 및 누적 */
@@ -32,6 +34,8 @@ public class Ship extends Entity {
     protected int movement = 0;
     /** 궁극기 게이지 */
     protected int ultGauge;
+    /** 궁극기 차는 양*/
+    protected double regenUltra;
     /** Minimum time between shots. */
     protected Cooldown shootingCooldown;
     /** Time spent inactive between hits. */
@@ -64,7 +68,9 @@ public class Ship extends Entity {
         this.shootingInterval = statusManager.getShootingInterval();
         this.bulletSpeed = statusManager.getBulletSpeed();
         this.baseDamage = statusManager.getBaseDamage();
+        this.range = statusManager.getRange();
         this.speed = statusManager.getSpeed();
+        this.regenUltra = statusManager.getRegenUltra();
 
         this.shootingCooldown = Core.getCooldown(this.shootingInterval);
         this.destructionCooldown = Core.getCooldown(200);
@@ -159,7 +165,7 @@ public class Ship extends Entity {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, direction,
+                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, this.range, direction,
                 getShipID()));
             return true;
         }
@@ -179,7 +185,8 @@ public class Ship extends Entity {
      */
     public void increaseUltGauge() {
         if (ultGauge < ultThreshold) {
-            ultGauge += 1;
+            ultGauge += 1 + regenUltra;
+
             if (ultGauge == ultThreshold) {
                 // TODO 궁극기 사용 가능 알림 효과음 추가
             }
@@ -291,6 +298,8 @@ public class Ship extends Entity {
         return this.baseDamage;
     }
 
+    public int getRange() {return this.range;}
+
     /**
      * 함선의 에임 방향을 설정하는 Setter.
      *
@@ -366,6 +375,8 @@ public class Ship extends Entity {
         this.shootingInterval = statusManager.getShootingInterval();
         this.bulletSpeed = statusManager.getBulletSpeed();
         this.baseDamage = statusManager.getBaseDamage();
+        this.range = statusManager.getRange();
         this.speed = statusManager.getSpeed();
+
     }
 }

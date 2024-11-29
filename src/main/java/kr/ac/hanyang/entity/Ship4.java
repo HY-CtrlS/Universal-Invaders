@@ -26,7 +26,7 @@ public class Ship4 extends Ship {
             // 관통 총알 발사
             Bullet bullet = BulletPool.getBullet(
                 positionX + this.width / 2, positionY + this.height / 2,
-                this.bulletSpeed, this.baseDamage, direction, getShipID());
+                this.bulletSpeed, this.baseDamage, this.range, direction, getShipID());
             bullets.add(bullet);
 
             return true;

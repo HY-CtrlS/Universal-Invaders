@@ -60,7 +60,7 @@ public class Ship3 extends Ship {
         Bullet bullet = BulletPool.getBullet(
             this.positionX + this.width / 2, // 함선의 중앙
             this.positionY + this.height / 2,                   // 함선의 상단
-            this.bulletSpeed, this.baseDamage, this.direction, getShipID());
+            this.bulletSpeed, this.baseDamage, this.range, this.direction, getShipID());
         bullets.add(bullet);
     }
 

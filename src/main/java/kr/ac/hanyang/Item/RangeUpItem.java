@@ -6,7 +6,7 @@ import kr.ac.hanyang.engine.StatusManager;
 import java.awt.Color;
 import java.util.logging.Logger;
 
-public class AttackPowerUpItem implements Item {
+public class RangeUpItem implements Item {
 
     // 이속증가 아이템의 최대 레벨
     private static final int MAX_LEVEL = 5;
@@ -24,7 +24,7 @@ public class AttackPowerUpItem implements Item {
     private Color color;
 
     // 공속증가 아이템 객체 생성자
-    public AttackPowerUpItem(final int level) {
+    public RangeUpItem(final int level) {
         logger = Core.getLogger();
         this.level = level;
         status = Core.getStatusManager();
@@ -38,7 +38,7 @@ public class AttackPowerUpItem implements Item {
 
     @Override
     public String getItemEffectDescription() {
-        return "Attack Power : + 1";
+        return "Range : + 1";
     }
 
     @Override
@@ -74,10 +74,10 @@ public class AttackPowerUpItem implements Item {
     @Override
     public int activateItem() {
         if (level < MAX_LEVEL) {
-            status.setBaseDamage(status.getBaseDamage() + 1);
-            this.logger.info("Attack Power Up!! + 1");
+            status.setRange(status.getRange() + 1);
+            this.logger.info("Range Up!! + 1");
             increaseLevel();
-            this.logger.info("Attack Power Level : " + getLevel());
+            this.logger.info("Range Level : " + getLevel());
         }
         return 0;
     }
