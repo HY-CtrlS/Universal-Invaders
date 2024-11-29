@@ -43,7 +43,7 @@ public class UltRegenItem implements Item {
 
     @Override
     public String getItemName() {
-        return "Super Bandage";
+        return "Super Energy Cell";
     }
 
     @Override
@@ -75,9 +75,9 @@ public class UltRegenItem implements Item {
     public int activateItem() {
         if (level < MAX_LEVEL) {
             status.setRegenUltra(status.getRegenUltra() + 0.2);
-            this.logger.info("Hp_regen!! + 0.2");
+            this.logger.info("Ult_regen!! + 0.2");
             increaseLevel();
-            this.logger.info("Hp_regen" + getLevel());
+            this.logger.info("Ult_regen" + getLevel());
         }
         return 6;
     }
