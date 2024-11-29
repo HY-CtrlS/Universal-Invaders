@@ -48,6 +48,8 @@ public class Ship extends Entity {
     protected boolean isUltActv;
     /** 궁극기를 사용할 수 있는 게이지 기준 양 */
     protected int ultThreshold;
+    /** 궁극기 게이지의 소수 부분 누적 */
+    private double ultRemainder = 0.0;
 
     /**
      * Constructor, establishes the ship's properties.
@@ -181,13 +183,17 @@ public class Ship extends Entity {
     }
 
     /**
-     * 궁극기 게이지 1 증가.
+     * 궁극기 게이지 1 + regenUltra + ultRemainder 증가.
      */
     public void increaseUltGauge() {
         if (ultGauge < ultThreshold) {
-            ultGauge += 1 + regenUltra;
+            // shipStatus에서 궁극기 게이지 증가량을 가져와서 증가
+            double totalRegen = 1 + regenUltra + ultRemainder;
+            ultGauge += (int) totalRegen; // 정수 부분만 증가
+            ultRemainder = totalRegen - (int) totalRegen; // 남은 실수 부분 저장
 
-            if (ultGauge == ultThreshold) {
+            if (ultGauge >= ultThreshold) {
+                ultGauge = ultThreshold; // 최대치를 초과하지 않도록 제한
                 // TODO 궁극기 사용 가능 알림 효과음 추가
             }
         }
