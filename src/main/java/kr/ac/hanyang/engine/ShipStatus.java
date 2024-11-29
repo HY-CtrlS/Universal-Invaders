@@ -12,7 +12,8 @@ public class ShipStatus {
     private double regen_ultra;
 
 
-    public ShipStatus(int shootingInterval, int bulletSpeed, int speed, int baseDamage, int range, int hp, double regen_hp, double regen_ultra) {
+    public ShipStatus(int shootingInterval, int bulletSpeed, int speed, int baseDamage, int range,
+        int hp, double regen_hp, double regen_ultra) {
         this.shootingInterval = shootingInterval;
         this.bulletSpeed = bulletSpeed;
         this.speed = speed;
@@ -47,27 +48,44 @@ public class ShipStatus {
         this.speed = speed;
     }
 
-    public int getMaxHp() {return hp;}
+    public int getMaxHp() {
+        return hp;
+    }
 
     public void setMaxHp(int hp) {
         this.hp = hp;
     }
 
-    public int getBaseDamage() {return baseDamage;}
+    public int getBaseDamage() {
+        return baseDamage;
+    }
 
-    public void setBaseDamage(int baseDamage) {this.baseDamage = baseDamage;}
+    public void setBaseDamage(int baseDamage) {
+        this.baseDamage = baseDamage;
+    }
 
-    public int getRange() {return range;}
+    public int getRange() {
+        return range;
+    }
 
-    public void setRange(int range) {this.range = range;}
+    public void setRange(int range) {
+        this.range = range;
+    }
 
 
+    public double getRegen_hp() {
+        return regen_hp;
+    }
 
-    public double getRegen_hp() {return regen_hp;}
+    public void setRegen_hp(double regenHp) {
+        this.regen_hp = regenHp;
+    }
 
-    public void setRegen_hp(double regenHp) {this.regen_hp = regenHp;}
+    public double getRegen_ultra() {
+        return regen_ultra;
+    }
 
-    public double getRegen_ultra() {return regen_ultra;}
-
-    public void setRegen_ultra(double regenUltra) {this.regen_ultra = regenUltra;}
+    public void setRegen_ultra(double regenUltra) {
+        this.regen_ultra = regenUltra;
+    }
 }

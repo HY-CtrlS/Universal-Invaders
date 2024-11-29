@@ -34,7 +34,7 @@ public class Ship extends Entity {
     protected int movement = 0;
     /** 궁극기 게이지 */
     protected int ultGauge;
-    /** 궁극기 차는 양*/
+    /** 궁극기 차는 양 */
     protected double regenUltra;
     /** Minimum time between shots. */
     protected Cooldown shootingCooldown;
@@ -167,7 +167,8 @@ public class Ship extends Entity {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
-                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, this.range, direction,
+                positionY + this.height / 2, this.bulletSpeed, this.baseDamage, this.range,
+                direction,
                 getShipID()));
             return true;
         }
@@ -304,7 +305,9 @@ public class Ship extends Entity {
         return this.baseDamage;
     }
 
-    public int getRange() {return this.range;}
+    public int getRange() {
+        return this.range;
+    }
 
     /**
      * 함선의 에임 방향을 설정하는 Setter.

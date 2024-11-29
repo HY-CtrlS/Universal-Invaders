@@ -57,9 +57,12 @@ public class StatusManager {
     }
 
 
-    public int getRange() {return status.getRange();
+    public int getRange() {
+        return status.getRange();
     }
-    public void setRange(int range) {status.setRange(range);
+
+    public void setRange(int range) {
+        status.setRange(range);
     }
 
     public int getMaxHp() {
@@ -70,13 +73,21 @@ public class StatusManager {
         status.setMaxHp(hp);
     }
 
-    public double getRegenHp() {return status.getRegen_hp();}
+    public double getRegenHp() {
+        return status.getRegen_hp();
+    }
 
-    public void setRegenHp(final double regenHp) {status.setRegen_hp(regenHp);}
+    public void setRegenHp(final double regenHp) {
+        status.setRegen_hp(regenHp);
+    }
 
-    public double getRegenUltra() {return status.getRegen_ultra();}
+    public double getRegenUltra() {
+        return status.getRegen_ultra();
+    }
 
-    public void setRegenUltra(final double regenUltra) {status.setRegen_ultra(regenUltra);}
+    public void setRegenUltra(final double regenUltra) {
+        status.setRegen_ultra(regenUltra);
+    }
 
     private void saveStatus() {
         try {

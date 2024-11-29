@@ -289,7 +289,8 @@ public final class FileManager {
             double regenHp = Double.parseDouble(bufferedReader.readLine());
             double regenUltra = Double.parseDouble(bufferedReader.readLine());
 
-            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, range, maxHp,
+            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, range,
+                maxHp,
                 regenHp, regenUltra);
 
         } finally {
@@ -332,7 +333,8 @@ public final class FileManager {
             double regenHP = Double.parseDouble((bufferedReader.readLine()));
             double regenUltra = Double.parseDouble((bufferedReader.readLine()));
 
-            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, range, maxHp,
+            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, range,
+                maxHp,
                 regenHP, regenUltra);
 
         } catch (FileNotFoundException e) {

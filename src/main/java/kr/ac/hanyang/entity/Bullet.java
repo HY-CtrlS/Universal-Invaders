@@ -165,18 +165,29 @@ public class Bullet extends Entity {
         this.range = range;
         setMaxDistance(this.range);
     }
+
     public final int getRange() {
         return this.range;
     }
 
     /**
-    * @return 현재 거리, 최대 거리를 설정 또는 반환함.
-    * */
-    public final void setcurDistance(int distance){this.curDistance = 0;}
-    public final double getcurDistance(){return this.curDistance;}
+     * @return 현재 거리, 최대 거리를 설정 또는 반환함.
+     */
+    public final void setcurDistance(int distance) {
+        this.curDistance = 0;
+    }
 
-    public final void  setMaxDistance(int range){this.maxDistance = range * 20;}
-    public final double getMaxDistance(){return this.maxDistance;}
+    public final double getcurDistance() {
+        return this.curDistance;
+    }
+
+    public final void setMaxDistance(int range) {
+        this.maxDistance = range * 20;
+    }
+
+    public final double getMaxDistance() {
+        return this.maxDistance;
+    }
 
     /**
      * 총알의 방향을 설정하는 Setter.
@@ -195,8 +206,6 @@ public class Bullet extends Entity {
     public Direction getDirection() {
         return this.direction;
     }
-
-
 
 
     /**
