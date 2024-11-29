@@ -1,12 +1,12 @@
 package kr.ac.hanyang.Item;
 
+import java.awt.Color;
+import java.util.logging.Logger;
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.engine.DrawManager.SpriteType;
 import kr.ac.hanyang.engine.StatusManager;
-import java.awt.Color;
-import java.util.logging.Logger;
 
-public class AttackPowerUpItem implements Item {
+public class UltRegenItem implements Item {
 
     // 이속증가 아이템의 최대 레벨
     private static final int MAX_LEVEL = 5;
@@ -24,26 +24,26 @@ public class AttackPowerUpItem implements Item {
     private Color color;
 
     // 공속증가 아이템 객체 생성자
-    public AttackPowerUpItem(final int level) {
+    public UltRegenItem(final int level) {
         logger = Core.getLogger();
         this.level = level;
         status = Core.getStatusManager();
-        this.color = Color.RED;
+        this.color = Color.cyan;
     }
 
     @Override
     public String getItemDescription() {
-        return "Upgrade your Weapon";
+        return "You can regenerate ULT more faster!";
     }
 
     @Override
     public String getItemEffectDescription() {
-        return "Attack Power : + 1";
+        return "ULT regen = +0.2 /s";
     }
 
     @Override
     public String getItemName() {
-        return "Heavy Missile";
+        return "Super Energy Cell";
     }
 
     @Override
@@ -74,12 +74,12 @@ public class AttackPowerUpItem implements Item {
     @Override
     public int activateItem() {
         if (level < MAX_LEVEL) {
-            status.setBaseDamage(status.getBaseDamage() + 1);
-            this.logger.info("Attack Power Up!! + 1");
+            status.setRegenUltra(status.getRegenUltra() + 0.2);
+            this.logger.info("Ult_regen!! + 0.2");
             increaseLevel();
-            this.logger.info("Attack Power Level : " + getLevel());
+            this.logger.info("Ult_regen" + getLevel());
         }
-        return 0;
+        return 6;
     }
 
     @Override
@@ -105,7 +105,7 @@ public class AttackPowerUpItem implements Item {
     }
 
     @Override
-    // 미사용
+    //미사용
     public int getChangedValue() {
         return 0;
     }

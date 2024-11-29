@@ -112,10 +112,10 @@ public class GameScreen extends Screen {
     /**
      * Constructor, establishes the properties of the screen.
      *
-     * @param gameState          Current game state.
-     * @param width              Screen width.
-     * @param height             Screen height.
-     * @param fps                Frames per second, frame rate at which the game is run.
+     * @param gameState Current game state.
+     * @param width     Screen width.
+     * @param height    Screen height.
+     * @param fps       Frames per second, frame rate at which the game is run.
      */
     public GameScreen(final GameState gameState,
         final int width, final int height, final int fps, final int shipID) {
@@ -393,8 +393,6 @@ public class GameScreen extends Screen {
                 }
             }
 
-
-
             if (this.ship.isUltActivated() && this.ultActivatedTime.checkFinished()) {
                 this.ship.stopUlt();
                 this.ultActivatedTime.reset();
@@ -489,12 +487,15 @@ public class GameScreen extends Screen {
         Set<Bullet> recyclable = new HashSet<Bullet>();
         for (Bullet bullet : this.bullets) {
             bullet.update();
+            bullet.setRange(this.ship.getRange());
             if (bullet.getPositionY() < SEPARATION_LINE_HEIGHT
                 || bullet.getPositionY() > this.height - EXPERIENCE_BAR_HEIGHT - 1
                 || bullet.getPositionX() < 0
-                || bullet.getPositionX() > this.width) {
+                || bullet.getPositionX() > this.width
+                || bullet.getcurDistance() > bullet.getMaxDistance()) {
                 recyclable.add(bullet);
             }
+
         }
         this.bullets.removeAll(recyclable);
         BulletPool.recycle(recyclable);
@@ -570,13 +571,15 @@ public class GameScreen extends Screen {
                     if (!this.ship.isDestroyed() && !enemyShip.isDestroyed() && !levelFinished) {
                         //this.enemyShipSet.damage_Enemy(enemyShip, this.ship.getBaseDamage());
                         this.ship.destroy();
-                        this.hp = (this.hp - enemyShip.getBaseDamage() > 0) ? this.hp - enemyShip.getBaseDamage() : 0;
+                        this.hp = (this.hp - enemyShip.getBaseDamage() > 0) ? this.hp
+                            - enemyShip.getBaseDamage() : 0;
                         // 만약 부딪힌 적이 장애물이라면
                         if (enemyShip.getSpriteType() == SpriteType.Obstacle) {
                             // 해당 장애물은 바로 삭제
                             this.enemyShipSet.damage_Enemy(enemyShip, 200);
                         }
-                        this.logger.info("Hit on player ship, -" + enemyShip.getBaseDamage() + " Hp");
+                        this.logger.info(
+                            "Hit on player ship, -" + enemyShip.getBaseDamage() + " Hp");
                         Core.getSoundManager().playDamageSound();
                         if (this.hp <= 0 && !this.isDestroyed) {
                             Core.getSoundManager().playExplosionSound();
