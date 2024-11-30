@@ -36,6 +36,7 @@ public class Boss extends Entity {
     private int maxHp;
     private int currentHp;
     private int phase;
+    private boolean isInvincible;
 
     private Cooldown attackCooldown;
     private Cooldown basicBulletInterval;
@@ -56,6 +57,7 @@ public class Boss extends Entity {
         this.currentHp = maxHp;
         this.phase = 1;
         this.spriteType = SpriteType.Boss;
+        this.isInvincible = false;
         this.attackCooldown = Core.getCooldown(ATTACK_COOLDOWN_1);
 
         //보스의 탄막 기본공격 간격
@@ -124,13 +126,6 @@ public class Boss extends Entity {
         // Phase 3 attack logic (laser path and shot)
     }
 
-    public void takeDamage(int damage) {
-        this.currentHp -= damage;
-        if (this.currentHp <= 0) {
-            this.currentHp = 0;
-        }
-    }
-
     public void checkPhase() {
         if (currentHp <= 0 && phase == 1) {
             phase = 2;
@@ -177,5 +172,13 @@ public class Boss extends Entity {
         else if (phase == 2) {hpColor = PHASE_3_HPCOLOR;}
         else if (phase == 3) {hpColor = null;}
         return hpColor;
+    }
+
+    public final boolean isInvincible() {
+        return this.isInvincible;
+    }
+
+    public final void setInvincible(final boolean invincible) {
+        this.isInvincible = invincible;
     }
 }

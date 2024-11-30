@@ -3,7 +3,6 @@ package kr.ac.hanyang.entity.boss;
 import java.awt.Color;
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
-import kr.ac.hanyang.engine.DrawManager;
 import kr.ac.hanyang.engine.DrawManager.SpriteType;
 import kr.ac.hanyang.entity.Entity;
 

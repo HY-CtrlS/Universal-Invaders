@@ -101,7 +101,9 @@ public final class DrawManager {
         // 레이저 위치 경고용
         WarningLaser,
         // 미사일
-        Missile;
+        Missile,
+        // 무적 크리스탈
+        Crystal;
     }
 
     /**
@@ -143,6 +145,7 @@ public final class DrawManager {
             spriteMap.put(SpriteType.Laser, new boolean[3][12][720]);
             spriteMap.put(SpriteType.WarningLaser, new boolean[1][12][720]);
             spriteMap.put(SpriteType.Missile, new boolean[1][7][9]);
+            spriteMap.put(SpriteType.Crystal, new boolean[2][20][20]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");

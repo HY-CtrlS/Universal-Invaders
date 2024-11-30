@@ -16,6 +16,7 @@ import kr.ac.hanyang.entity.Bullet;
 import kr.ac.hanyang.entity.BulletPool;
 import kr.ac.hanyang.entity.Entity;
 import kr.ac.hanyang.entity.Entity.Direction;
+import kr.ac.hanyang.entity.boss.Crystal;
 import kr.ac.hanyang.entity.boss.Laser;
 import kr.ac.hanyang.entity.boss.LaserPool;
 import kr.ac.hanyang.entity.boss.Missile;
@@ -83,6 +84,8 @@ public class BossScreen extends Screen {
     private Cooldown createMissileCooldown;
     private MissilePool missilePool;
     private Set<Missile> missiles;
+    private Cooldown createCrystalCooldown;
+    private Crystal crystal;
 
     //임시 쿨다운 변수
     private Cooldown bossBasicBullet;
@@ -168,6 +171,9 @@ public class BossScreen extends Screen {
 
         this.createMissileCooldown = Core.getCooldown(10000);
         this.createMissileCooldown.reset();
+
+        this.createCrystalCooldown = Core.getCooldown(25000);
+        this.createCrystalCooldown.reset();
     }
 
     /**
@@ -353,6 +359,19 @@ public class BossScreen extends Screen {
                     this.boss.getPositionY() + this.boss.getHeight() / 2);
                 this.createMissileCooldown.reset();
             }
+
+            if (!this.boss.isInvincible()) {
+                if (this.createCrystalCooldown.checkFinished()) {
+                    createCrystal();
+                    this.boss.setInvincible(true);
+                    this.createCrystalCooldown.reset();
+                }
+            } else {
+                if (this.crystal.isBroken()) {
+                    this.boss.setInvincible(false);
+                    this.createCrystalCooldown.reset();
+                }
+            }
         }
         manageCollisions();
         cleanBullets();
@@ -377,6 +396,11 @@ public class BossScreen extends Screen {
             for (Bullet bullet : this.bullets) {
                 drawManager.drawEntity(bullet, bullet.getPositionX(),
                     bullet.getPositionY());
+            }
+
+            if (this.boss.isInvincible()) {
+                drawManager.drawEntity(this.crystal, this.crystal.getPositionX(),
+                    this.crystal.getPositionY());
             }
 
             laserPool.draw();
@@ -418,9 +442,15 @@ public class BossScreen extends Screen {
         for (Bullet bullet : this.bullets) {
             // 아군 함선의 총알인 경우
             if (bullet.getClassify() != 0) {
-                if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
-                    recyclable.add(bullet);
-                    this.boss.getDamaged(status.getBaseDamage());
+                if (this.boss.isInvincible()) {
+                    if (checkCollision(bullet, this.crystal) && this.crystal.getHp() > 0) {
+                        this.crystal.getDamaged(status.getBaseDamage());
+                    }
+                } else {
+                    if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
+                        recyclable.add(bullet);
+                        this.boss.getDamaged(status.getBaseDamage());
+                    }
                 }
             } else {
                 // 적 총알인 경우
@@ -595,5 +625,28 @@ public class BossScreen extends Screen {
         );
         // 계산된 거리가 미사일의 폭발 반경 이내인지 확인
         return distance <= missile.getExplosionRadius();
+    }
+
+    public void createCrystal() {
+        int positionX;
+        int positionY;
+        boolean up = this.ship.getPositionY() <= this.height - (this.height - 110) / 2;
+        boolean right = this.ship.getPositionX() >= this.width / 2;
+
+        if (up && right) {
+            positionX = 40;
+            positionY = this.height - 100;
+        } else if (up && !right) {
+            positionX = this.width - 20 - 40;
+            positionY = this.height - 100;
+        } else if (!up && right) {
+            positionX = 40;
+            positionY = SEPARATION_LINE_HEIGHT + 110;
+        } else {
+            positionX = this.width - 20 - 40;
+            positionY = SEPARATION_LINE_HEIGHT + 110;
+        }
+
+        this.crystal = new Crystal(positionX, positionY);
     }
 }
