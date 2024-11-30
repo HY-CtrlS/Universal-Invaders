@@ -124,6 +124,7 @@ public class BossScreen extends Screen {
         this.lasers = laserPool.getLasers();
         this.missilePool = new MissilePool(this.ship);
         this.missiles = missilePool.getMissiles();
+        this.crystal = new Crystal(0, 0);
 
         // Special input delay / countdown.
         this.gameStartTime = System.currentTimeMillis();
@@ -206,7 +207,6 @@ public class BossScreen extends Screen {
             } else {
                 this.boss.attack();
             }
-            this.boss.checkPhase();
 
             // WASD - 함선 이동
             boolean moveRight, moveLeft, moveUp, moveDown;
@@ -318,6 +318,9 @@ public class BossScreen extends Screen {
             this.ship.update();
             this.laserPool.update();
             this.missilePool.update();
+            if (this.boss.getCurrentHp() <= 0) {
+                this.boss.changeBossState();
+            }
 
             // 1초마다 생존 시간 1씩 증가
             if (this.clockCooldown.checkFinished()) {
@@ -332,44 +335,52 @@ public class BossScreen extends Screen {
                     // TODO: 현재 모든 보스의 탄환, 미사일 파괴 + (보스에게 일정 데미지)
                 }
             }
-
-            // 보스 패턴A 발동 메소드
-            if (bossBasicBullet.checkFinished()) {
-                int randomKey = random.nextInt(7) + 6;
-                double range = randomKey * 5.0;
-                int bulletNum = randomKey - 2;
-                // 공격이 완료되면 false 반환, 아닌 경우 true 반환
-                basicAttackCount += this.boss.spreadBullet(this.bullets, getBulletDirection(),
-                    range, bulletNum);
-                // 3발을 발사하면 보스 기본공격 쿨타임 시작
-                if (basicAttackCount == 3) {
-                    bossBasicBullet.reset();
-                    // 다시 공격 횟수를 0으로 초기화
-                    basicAttackCount = 0;
-                }
-            }
-
-            if (this.createLaserCooldown.checkFinished()) {
-                laserPool.createLaser();
-                this.createLaserCooldown.reset();
-            }
-
-            if (this.createMissileCooldown.checkFinished()) {
-                missilePool.createMissile(this.boss.getPositionX() + this.boss.getWidth() / 2,
-                    this.boss.getPositionY() + this.boss.getHeight() / 2);
-                this.createMissileCooldown.reset();
-            }
-
-            if (!this.boss.isInvincible()) {
-                if (this.createCrystalCooldown.checkFinished()) {
-                    createCrystal();
-                    this.boss.setInvincible(true);
-                    this.createCrystalCooldown.reset();
-                }
+            if (this.boss.isPattern()) {
+                // 패턴별 공격 구현 예정
             } else {
-                if (this.crystal.isBroken()) {
-                    this.boss.setInvincible(false);
-                    this.createCrystalCooldown.reset();
+                // 보스 패턴A 발동 메소드
+                if (bossBasicBullet.checkFinished()) {
+                    int randomKey = random.nextInt(7) + 6;
+                    double range = randomKey * 5.0;
+                    int bulletNum = randomKey - 2;
+                    // 공격이 완료되면 false 반환, 아닌 경우 true 반환
+                    basicAttackCount += this.boss.spreadBullet(this.bullets, getBulletDirection(),
+                        range, bulletNum);
+                    // 3발을 발사하면 보스 기본공격 쿨타임 시작
+                    if (basicAttackCount == 3) {
+                        bossBasicBullet.reset();
+                        // 다시 공격 횟수를 0으로 초기화
+                        basicAttackCount = 0;
+                    }
+                }
+
+                if (this.createMissileCooldown.checkFinished()) {
+                    missilePool.createMissile(this.boss.getPositionX() + this.boss.getWidth() / 2,
+                        this.boss.getPositionY() + this.boss.getHeight() / 2);
+                    this.createMissileCooldown.reset();
+                }
+
+                if (this.boss.getPhase() > 1 && this.createLaserCooldown.checkFinished()) {
+                    laserPool.createLaser();
+                    this.createLaserCooldown.reset();
+                }
+                if (this.boss.getPhase() > 2) {
+                    if (!this.boss.isInvincible()) {
+                        if (this.createCrystalCooldown.checkFinished()) {
+                            createCrystal();
+                            this.boss.setInvincible(true);
+                            this.createCrystalCooldown.reset();
+                        }
+                    } else {
+                        if (this.crystal.isBroken()) {
+                            this.boss.setInvincible(false);
+                            this.createCrystalCooldown.reset();
+                        }
+                    }
+                }
+
+                if (this.boss.getPhase() > 2) {
+                    this.boss.move();
                 }
             }
         }
@@ -496,7 +507,8 @@ public class BossScreen extends Screen {
                         //아군 함선 파괴로 업데이트
                         this.ship.destroy();
                         //아군 함선의 체력을 레이저의 데미지 만큼 감소
-                        this.hp = (this.hp - laser.getDamage() > 0) ? this.hp - laser.getDamage() : 0;
+                        this.hp =
+                            (this.hp - laser.getDamage() > 0) ? this.hp - laser.getDamage() : 0;
                         this.logger.info("Hit on player ship, -" + laser.getDamage() + " Hp");
                         // 맞으면 효과음 출력
                         Core.getSoundManager().playDamageSound();
