@@ -1,7 +1,6 @@
 package kr.ac.hanyang.entity.boss;
 
 import java.awt.Color;
-import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
 import kr.ac.hanyang.engine.Cooldown;
@@ -29,6 +28,10 @@ public class Boss extends Entity {
     private static final Color[] PHASE_1_COLOR = {new Color(255, 255, 0), Color.WHITE};
     private static final Color[] PHASE_2_COLOR = {new Color(255, 165, 0), Color.WHITE};
     private static final Color[] PHASE_3_COLOR = {new Color(255, 0, 0), Color.WHITE};
+
+    protected static final Color PHASE_1_HPCOLOR = new Color(0xFF9E9E);
+    protected static final Color PHASE_2_HPCOLOR = new Color(0xFF5757);
+    protected static final Color PHASE_3_HPCOLOR = new Color(0xFF0000);
 
     private int maxHp;
     private int currentHp;
@@ -157,19 +160,21 @@ public class Boss extends Entity {
     }
 
     public void getDamaged(final int value) {
-        this.currentHp -= value;
-        this.logger.info("Boss get damaged! : -" + value + "Hp");
+        if (value >= 0) {
+            this.currentHp -= value;
+            this.logger.info("Boss get damaged! : -" + value + "Hp");
+        }
     }
 
     public Color getHpColor() {
-        Color hpColor = (phase == 1) ? Color.CYAN : ((phase == 2) ? Color.PINK : Color.RED);
+        Color hpColor = (phase == 1) ? PHASE_1_HPCOLOR : ((phase == 2) ? PHASE_2_HPCOLOR : PHASE_3_HPCOLOR);
         return hpColor;
     }
 
-    public Color getPreviousHpColor() {
+    public Color getNextHpColor() {
         Color hpColor = null;
-        if (phase == 1) {hpColor = Color.PINK;}
-        else if (phase == 2) {hpColor = Color.RED;}
+        if (phase == 1) {hpColor = PHASE_2_HPCOLOR;}
+        else if (phase == 2) {hpColor = PHASE_3_HPCOLOR;}
         else if (phase == 3) {hpColor = null;}
         return hpColor;
     }

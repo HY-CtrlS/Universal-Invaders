@@ -1078,9 +1078,9 @@ public final class DrawManager {
         backBufferGraphics.setColor(boss.getHpColor()); // 체력 바의 색상
         backBufferGraphics.fillRect(barX + 1, barY + 1, healthWidth - 1, barHeight - 1);
         // 다음 페이즈가 존재하는 경우
-        if (boss.getPreviousHpColor() != null) {
+        if (boss.getNextHpColor() != null) {
             // 다음페이즈의 색으로 체력바 색깔 지정
-            backBufferGraphics.setColor(boss.getPreviousHpColor());
+            backBufferGraphics.setColor(boss.getNextHpColor());
             backBufferGraphics.fillRect(barX+healthWidth+1, barY + 1, barWidth-healthWidth -1, barHeight - 1);
         }
 
