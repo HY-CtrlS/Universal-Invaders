@@ -334,23 +334,43 @@ public final class DrawManager {
     /**
      * Draws current ultimate skill gauge on screen.
      *
-     * @param screen Screen to draw on.
      * @param ship   Current player ship.
      */
-    public void drawUltGauge(final Screen screen, final Ship ship) {
+    public void drawUltGauge(final Ship ship, final int X, final int Y) {
         backBufferGraphics.setFont(fontRegular);
+
+        int barX = X; // 궁극기 바의 X 좌표
+        int barY = Y; // 궁극기 바의 Y 좌표
+        int barWidth = 200; // 궁극기 바의 최대 너비
+        int barHeight = 20; // 궁극기 바의 높이
+        int ult = ship.getUltThreshold(); // 궁극기 가능 기준치
+
+        // 궁극기 바의 테두리 그리기
+        backBufferGraphics.setColor(Color.GRAY);
+        backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
+
+        // 현재 궁극기 게이지에 따른 바의 너비 계산
+        int ultWidth = (int) ((double) ship.getUltGauge() / ult * barWidth);
+
+        // 궁극기 바 채우기
+        backBufferGraphics.setColor(Color.BLUE); // 궁극기 바의 색상
+        backBufferGraphics.fillRect(barX + 1, barY + 1, ultWidth - 1, barHeight - 1);
+
+        // 궁극기 게이지 표시
         backBufferGraphics.setColor(Color.WHITE);
-        String scoreString = ship.getUltGauge() + " / " + ship.getUltThreshold() + " Ult";
-        backBufferGraphics.drawString(scoreString, screen.getWidth() - 250, 25);
+        String ultText = +ship.getUltGauge() + "/" + ult;
+        int textX = barX + (barWidth - fontRegularMetrics.stringWidth(ultText)) / 2;
+        int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2)
+            + fontRegularMetrics.getAscent();
+        backBufferGraphics.drawString(ultText, textX, textY);
     }
 
     /**
      * Draws number of remaining lives on screen.
      *
-     * @param screen Screen to draw on.
      * @param lives  Current lives.
      */
-    public void drawLives(final Screen screen, final int X, final int Y, final int lives) {
+    public void drawLives(final int X, final int Y, final int lives) {
         backBufferGraphics.setFont(fontRegular);
 
         int barX = X; // 체력 바의 X 좌표

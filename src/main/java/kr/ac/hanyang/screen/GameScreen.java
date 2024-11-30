@@ -118,10 +118,10 @@ public class GameScreen extends Screen {
     /**
      * Constructor, establishes the properties of the screen.
      *
-     * @param gameState          Current game state.
-     * @param width              Screen width.
-     * @param height             Screen height.
-     * @param fps                Frames per second, frame rate at which the game is run.
+     * @param gameState Current game state.
+     * @param width     Screen width.
+     * @param height    Screen height.
+     * @param fps       Frames per second, frame rate at which the game is run.
      */
     public GameScreen(final GameState gameState,
         final int width, final int height, final int fps, final int shipID) {
@@ -386,7 +386,6 @@ public class GameScreen extends Screen {
                 this.enemyShipSet.update();
             }
 
-
             // Ship4 궁극기 활성화 여부에 따라 경험치 자석 효과 결정
             if (this.shipID == 4 && this.ship.isUltActivated()) {
                 ExperiencePool.move(this.experiences, this.ship);
@@ -406,8 +405,6 @@ public class GameScreen extends Screen {
                     enemyShipSet.decreaseSpawnInterval(50);
                 }
             }
-
-
 
             if (this.ship.isUltActivated() && this.ultActivatedTime.checkFinished()) {
                 this.ship.stopUlt();
@@ -489,13 +486,13 @@ public class GameScreen extends Screen {
         }
 
         // Interface.
-        drawManager.drawLives(this,10,10, this.hp);
+        drawManager.drawLives(10, 10, this.hp);
+        drawManager.drawUltGauge(this.ship, this.getWidth() - 300, 10);
         drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
         drawManager.drawLevel(this, this.playerLevel); // 현재 레벨 그리기
         drawManager.drawHorizontalLine(this, this.height - EXPERIENCE_BAR_HEIGHT - 1);
         drawManager.drawExperienceBar(this, this.currentExperience,
             EXPERIENCE_THRESHOLD, EXPERIENCE_BAR_HEIGHT); // 경험치 바 그리기
-        drawManager.drawUltGauge(this, this.ship); // 궁극기 게이지 그리기
 
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {
@@ -595,13 +592,15 @@ public class GameScreen extends Screen {
                     if (!this.ship.isDestroyed() && !enemyShip.isDestroyed() && !levelFinished) {
                         //this.enemyShipSet.damage_Enemy(enemyShip, this.ship.getBaseDamage());
                         this.ship.destroy();
-                        this.hp = (this.hp - enemyShip.getBaseDamage() > 0) ? this.hp - enemyShip.getBaseDamage() : 0;
+                        this.hp = (this.hp - enemyShip.getBaseDamage() > 0) ? this.hp
+                            - enemyShip.getBaseDamage() : 0;
                         // 만약 부딪힌 적이 장애물이라면
                         if (enemyShip.getSpriteType() == SpriteType.Obstacle) {
                             // 해당 장애물은 바로 삭제
                             this.enemyShipSet.damage_Enemy(enemyShip, 200);
                         }
-                        this.logger.info("Hit on player ship, -" + enemyShip.getBaseDamage() + " Hp");
+                        this.logger.info(
+                            "Hit on player ship, -" + enemyShip.getBaseDamage() + " Hp");
                         Core.getSoundManager().playDamageSound();
                         if (this.hp <= 0 && !this.isDestroyed) {
                             Core.getSoundManager().playExplosionSound();

@@ -106,7 +106,7 @@ public class BossScreen extends Screen {
         this.ship = ship;
         // 아군 함선의 위치 변경 (화면 중앙 아래 부분)
         this.ship.setPositionX(this.getWidth() / 2 - this.ship.getWidth() / 2);
-        this.ship.setPositionY(this.getHeight()*3 / 4 - this.ship.getHeight() / 2);
+        this.ship.setPositionY(this.getHeight() * 3 / 4 - this.ship.getHeight() / 2);
 
         this.returnCode = 1;
         this.status = status;
@@ -343,11 +343,14 @@ public class BossScreen extends Screen {
                 // 1페이즈 -> 2페이즈 패턴인 경우
                 if (this.boss.getPhase() == 2) {
                     // 보스가 다 이동했는지 확인을 위한 변수
-                    int checkX = (this.getWidth() / 2 - this.boss.getWidth() / 2) - this.boss.getPositionX();
-                    int checkY = (this.getHeight() / 2 - this.boss.getHeight() / 2) - this.boss.getPositionY();
+                    int checkX =
+                        (this.getWidth() / 2 - this.boss.getWidth() / 2) - this.boss.getPositionX();
+                    int checkY = (this.getHeight() / 2 - this.boss.getHeight() / 2)
+                        - this.boss.getPositionY();
                     if (!(checkX < 2 && checkX > -2 && checkY < 2 && checkY > -2)) {
                         // 보스가 화면 가운데로 이동
-                        this.boss.phaseOneMove(this.getWidth() / 2 - this.boss.getWidth() / 2, this.getHeight() / 2 - this.boss.getHeight() / 2);
+                        this.boss.phaseOneMove(this.getWidth() / 2 - this.boss.getWidth() / 2,
+                            this.getHeight() / 2 - this.boss.getHeight() / 2);
                     }
                     // 보스의 이동이 완료된 경우 실행되는 부분
                     else {
@@ -448,7 +451,9 @@ public class BossScreen extends Screen {
             // 보스의 체력바 그리기
             drawManager.drawBossHp(this, boss.getCurrentHp(), this.boss);
             // 아군 함선의 체력바 그리기
-            drawManager.drawLives(this, 10, this.getHeight() - 50, this.hp);
+            drawManager.drawLives(10, this.getHeight() - 50, this.hp);
+            // 아군 함선의 궁극기바 그리기
+            drawManager.drawUltGauge(this.ship, this.getWidth() - 210, this.getHeight() - 50);
 
         }
 
