@@ -10,7 +10,7 @@ public class Crystal extends Entity {
     private boolean isBroken;
 
     public Crystal(final int positionX, final int positionY) {
-        super(positionX, positionY, 20, 20, new Color[]{Color.CYAN, Color.ORANGE});
+        super(positionX, positionY, 20 * 2, 20 * 2, new Color[]{Color.CYAN, Color.ORANGE});
 
         this.positionX = positionX;
         this.positionY = positionY;
