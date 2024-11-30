@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 
 class BossTest {
-    Boss boss = new Boss(1,1);
+    Boss boss;
 
     @Test
     void spreadBulletTest() {
@@ -41,16 +41,31 @@ class BossTest {
     }
 
     @Test
-    void getPhase() {
-        boss.checkPhase();
+    void setPhase() {
+        boss = new Boss(1,1);
 
-        if (boss.getMaxHp() == 300) {
-            assertEquals(1, boss.getPhase());
-        } else if (boss.getMaxHp() == 500) {
-            assertEquals(2, boss.getPhase());
-        } else {
-            assertEquals(3, boss.getPhase());
-        }
+        boss.setPhase(1);
+        assertEquals(300,boss.getMaxHp());
+
+        boss.setPhase(2);
+        assertEquals(500, boss.getMaxHp());
+
+        boss.setPhase(3);
+        assertEquals(700, boss.getMaxHp());
+    }
+
+
+    @Test
+    void getPhase() {
+        boss = new Boss(1,1);
+
+        boss.setPhase(1);
+        assertEquals(1, boss.getPhase());
+        boss.setPhase(2);
+        assertEquals(2, boss.getPhase());
+        boss.setPhase(3);
+        assertEquals(3, boss.getPhase());
+
     }
 
     @Test
@@ -95,16 +110,12 @@ class BossTest {
         assertEquals(Boss.PHASE_2_HPCOLOR, boss.getNextHpColor());
 
         //페이즈 전환
-        boss.getDamaged(400);
-        boss.checkPhase();
-
+        boss.setPhase(2);
         // 페이즈 2인 경우 3번째 페이즈 색을 출력함
         assertEquals(Boss.PHASE_3_HPCOLOR, boss.getNextHpColor());
 
         //페이즈 전환
-        boss.getDamaged(600);
-        boss.checkPhase();
-
+        boss.setPhase(3);
         // null값을 반환
         assertNull(boss.getNextHpColor());
     }
