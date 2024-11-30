@@ -353,28 +353,14 @@ public class BossScreen extends Screen {
                     this.boss.getPositionY() + this.boss.getHeight() / 2);
                 this.createMissileCooldown.reset();
             }
-
-            manageCollisions();
-            cleanBullets();
-            draw();
         }
+        manageCollisions();
+        cleanBullets();
+        draw();
     }
 
     private void draw() {
         drawManager.initDrawing(this);
-
-        drawManager.drawEntity(this.ship, this.ship.getPositionX(),
-            this.ship.getPositionY());
-        drawManager.drawEntity(this.boss, this.boss.getPositionX(), this.boss.getPositionY());
-
-        for (Bullet bullet : this.bullets) {
-            drawManager.drawEntity(bullet, bullet.getPositionX(),
-                bullet.getPositionY());
-        }
-
-        laserPool.draw();
-
-        missilePool.draw();
 
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {
@@ -383,11 +369,26 @@ public class BossScreen extends Screen {
                 - this.gameStartTime)) / 1000);
             drawManager.drawCountDown(this, countdown);
         }
+        if (this.inputDelay.checkFinished()) {
+            drawManager.drawEntity(this.ship, this.ship.getPositionX(),
+                this.ship.getPositionY());
+            drawManager.drawEntity(this.boss, this.boss.getPositionX(), this.boss.getPositionY());
 
-        // 보스의 체력바 그리기
-        drawManager.drawBossHp(this, boss.getCurrentHp(), this.boss);
-        // 아군 함선의 체력바 그리기
-        drawManager.drawLives(this, 10, this.getHeight() - 50, this.hp);
+            for (Bullet bullet : this.bullets) {
+                drawManager.drawEntity(bullet, bullet.getPositionX(),
+                    bullet.getPositionY());
+            }
+
+            laserPool.draw();
+
+            missilePool.draw();
+
+            // 보스의 체력바 그리기
+            drawManager.drawBossHp(this, boss.getCurrentHp(), this.boss);
+            // 아군 함선의 체력바 그리기
+            drawManager.drawLives(this, 10, this.getHeight() - 50, this.hp);
+
+        }
 
         drawManager.completeDrawing(this);
     }
