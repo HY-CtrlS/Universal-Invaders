@@ -1,5 +1,6 @@
 package kr.ac.hanyang.engine;
 
+import java.awt.Graphics2D;
 import javax.imageio.ImageIO;
 import kr.ac.hanyang.Item.Item;
 import kr.ac.hanyang.entity.Ship;
@@ -1055,7 +1056,7 @@ public final class DrawManager {
         }
     }
 
-    public void drawBackgroundImage(final Screen screen) {
+    public void drawBackgroundImage(final Screen screen, int offsetY) {
         if (backgroundImage != null) {
             // 이미지 크기
             int imageWidth = backgroundImage.getWidth();
@@ -1065,12 +1066,20 @@ public final class DrawManager {
             int screenWidth = screen.getWidth();
             int screenHeight = screen.getHeight();
 
-            // 이미지를 중앙에 배치하기 위한 좌표 계산
-            int x = (screenWidth - imageWidth) / 2; // 화면 중앙의 X 좌표
-            int y = (screenHeight - imageHeight) / 2; // 화면 중앙의 Y 좌표
+            // 스케일 설정 (1.0 이하로 설정하면 축소됨)
+            double scale = 0.7; // 이미지 크기를 50%로 축소
 
-            // 이미지를 실제 크기로 그리고, 중앙에 배치
-            backBufferGraphics.drawImage(backgroundImage, x, y, null);
+            // 스케일링된 이미지 크기
+            int scaledWidth = (int) (imageWidth * scale);
+            int scaledHeight = (int) (imageHeight * scale);
+
+            // 이미지를 중앙에 배치하기 위한 좌표 계산
+            int x = (screenWidth - scaledWidth) / 2; // 화면 중앙의 X 좌표
+            int y = (screenHeight - scaledHeight) / 2 + offsetY; // 화면 중앙의 Y 좌표에 오프셋 추가
+
+            // Graphics2D를 사용하여 스케일링된 이미지 그리기
+            Graphics2D g2d = (Graphics2D) backBufferGraphics;
+            g2d.drawImage(backgroundImage, x, y, scaledWidth, scaledHeight, null);
         } else {
             // 배경 이미지가 없을 경우 기본 색상으로 화면 채움
             backBufferGraphics.setColor(Color.BLACK);

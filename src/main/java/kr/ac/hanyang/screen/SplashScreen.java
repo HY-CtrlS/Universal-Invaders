@@ -10,12 +10,19 @@ import kr.ac.hanyang.entity.Ship;
 public class SplashScreen extends Screen {
 
     private static Ship superShip;
+    private int backgroundOffsetY = 0; // 배경화면 Y축 오프셋
+    private final int backgroundScrollSpeed = 2; // 배경화면 이동 속도 (픽셀/프레임)
+    private long startTime; // 시작 시간 기록
+    private boolean hasPlayedSound; // 사운드 호출 여부
 
     public SplashScreen(final int width, final int height, final int fps) {
         super(width, height, fps);
 
         this.returnCode = 1;
+        Core.getStatusManager().setSpeed(10);
         superShip = new Ship(this.width / 2, this.height, Direction.UP, Color.GREEN, 1);
+        this.startTime = System.currentTimeMillis(); // 화면 시작 시간 기록
+        this.hasPlayedSound = false; // 사운드 호출 여부를 false로 초기화
     }
 
     /**
@@ -35,8 +42,23 @@ public class SplashScreen extends Screen {
     protected final void update() {
         super.update();
 
-        superShip.moveUp();
+        // 1초 동안 배경화면 아래로 이동
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        if (elapsedTime <= 1500) { // 1초 이내
+            backgroundOffsetY += backgroundScrollSpeed; // 배경화면 이동
+        }
+        else{
+            superShip.moveUp();
+
+            // 최초 1회만 사운드 호출
+            if (!hasPlayedSound) {
+                Core.getSoundManager().playPlaySound();
+                hasPlayedSound = true; // 사운드 호출 여부를 true로 변경
+            }
+        }
+
         draw();
+
         if (inputManager.isKeyDown(KeyEvent.VK_SPACE)
             && this.inputDelay.checkFinished()) {
             this.isRunning = false;
@@ -51,9 +73,11 @@ public class SplashScreen extends Screen {
         drawManager.initDrawing(this);
 
         drawManager.setSplashImage();
-        drawManager.drawBackgroundImage(this);
+        drawManager.drawBackgroundImage(this, backgroundOffsetY); // 오프셋 적용
 
-        drawManager.drawGameTitle(this);
+        if (superShip.getPositionY() < 0) {
+            drawManager.drawGameTitle(this);
+        }
 
         drawManager.drawEntity(superShip, superShip.getPositionX(), superShip.getPositionY());
 
