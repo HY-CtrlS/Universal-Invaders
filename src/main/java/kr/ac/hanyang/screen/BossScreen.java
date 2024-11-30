@@ -16,6 +16,8 @@ import kr.ac.hanyang.entity.Bullet;
 import kr.ac.hanyang.entity.BulletPool;
 import kr.ac.hanyang.entity.Entity;
 import kr.ac.hanyang.entity.Entity.Direction;
+import kr.ac.hanyang.entity.boss.Asteroid;
+import kr.ac.hanyang.entity.boss.AsteroidPool;
 import kr.ac.hanyang.entity.boss.Crystal;
 import kr.ac.hanyang.entity.boss.Laser;
 import kr.ac.hanyang.entity.boss.LaserPool;
@@ -86,6 +88,8 @@ public class BossScreen extends Screen {
     private Set<Missile> missiles;
     private Cooldown createCrystalCooldown;
     private Crystal crystal;
+    private AsteroidPool asteroidPool;
+    private Set<Asteroid> asteroids;
 
     //임시 쿨다운 변수
     private Cooldown bossBasicBullet;
@@ -128,6 +132,8 @@ public class BossScreen extends Screen {
         this.missilePool = new MissilePool(this.ship);
         this.missiles = missilePool.getMissiles();
         this.crystal = new Crystal(0, 0);
+        this.asteroidPool = new AsteroidPool(this);
+        this.asteroids = asteroidPool.getAsteroids();
 
         // Special input delay / countdown.
         this.gameStartTime = System.currentTimeMillis();
@@ -239,15 +245,29 @@ public class BossScreen extends Screen {
                 aimDown = inputManager.isKeyDown(KeyEvent.VK_DOWN);
             }
 
-            boolean isRightBorder = this.ship.getPositionX()
-                + this.ship.getWidth() + this.ship.getSpeed() > this.width - 1;
-            boolean isLeftBorder = this.ship.getPositionX()
-                - this.ship.getSpeed() < 1;
-            boolean isTopBorder = this.ship.getPositionY()
-                - this.ship.getSpeed() < 1 + SEPARATION_LINE_HEIGHT;
-            boolean isBottomBorder = this.ship.getPositionY()
-                + this.ship.getHeight() + this.ship.getSpeed()
-                > this.height - 1;
+            boolean isRightBorder, isLeftBorder, isTopBorder, isBottomBorder;
+
+            if (this.boss.getPhase() == 4) {
+                isRightBorder =
+                    this.ship.getPositionX() + this.ship.getWidth() + this.ship.getSpeed()
+                        > this.width - 120 - 1;
+                isLeftBorder = this.ship.getPositionX() - this.ship.getSpeed() < 120 + 1;
+                isTopBorder =
+                    this.ship.getPositionY() - this.ship.getSpeed() < this.height - 512 + 1;
+                isBottomBorder =
+                    this.ship.getPositionY() + this.ship.getHeight() + this.ship.getSpeed()
+                        > this.height - 168 - 1;
+            } else {
+                isRightBorder =
+                    this.ship.getPositionX() + this.ship.getWidth() + this.ship.getSpeed()
+                        > this.width - 1;
+                isLeftBorder = this.ship.getPositionX() - this.ship.getSpeed() < 1;
+                isTopBorder =
+                    this.ship.getPositionY() - this.ship.getSpeed() < 1 + SEPARATION_LINE_HEIGHT;
+                isBottomBorder =
+                    this.ship.getPositionY() + this.ship.getHeight() + this.ship.getSpeed()
+                        > this.height - 1;
+            }
 
             if (moveUp && moveRight && !isTopBorder && !isRightBorder) {
                 this.ship.moveUpRight();
