@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import kr.ac.hanyang.engine.AnimationManager.AnimationType;
 import kr.ac.hanyang.engine.DrawManager.SpriteType;
 
 /**
@@ -49,7 +50,7 @@ public final class FileManager {
      *
      * @return Shared instance of FileManager.
      */
-    protected static FileManager getInstance() {
+    public static FileManager getInstance() {
         if (instance == null) {
             instance = new FileManager();
         }
@@ -95,6 +96,28 @@ public final class FileManager {
         } finally {
             if (inputStream != null) {
                 inputStream.close();
+            }
+        }
+    }
+
+    public void loadAnimationFrame(final Map<AnimationType, Animation> animationMap) throws IOException {
+        ClassLoader cl = AnimationManager.class.getClassLoader();
+        InputStream inputStream = null;
+
+        for (AnimationType animName : AnimationType.values()) {
+            try {
+                inputStream = cl.getResourceAsStream(
+                    "animation/".concat(animName.toString()));
+
+                byte[] bytes = inputStream.readAllBytes();
+                Animation anim = AnimationManager.animationMap.get(animName);
+                anim.loadAnimation(bytes);
+            } catch (NullPointerException e) {
+                System.out.println("Couldn't load animations!");
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
             }
         }
     }
