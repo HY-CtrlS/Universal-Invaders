@@ -59,6 +59,9 @@ public final class DrawManager {
     private int titleTypingIndex = 0; // 현재 출력된 글자 수
     private long lastUpdateTime = 0; // 마지막 글자 업데이트 시점
     private static final long TYPING_DELAY = 80; // 글자 간 출력 지연 (밀리초)
+    private boolean showStartMessage = true; // 메시지 표시 여부
+    private long lastBlinkTime = 0;          // 마지막 깜빡임 시간
+    private static final int BLINK_DELAY = 1000; // 메시지 깜빡임 주기 (1초)
 
     /** Sprite types. */
     public static enum SpriteType {
@@ -1087,14 +1090,14 @@ public final class DrawManager {
         }
     }
 
-    public void drawGameTitle(final Screen screen) {
+    public boolean drawGameTitle(final Screen screen) {
         // 타이틀 문자
         String titleString = "Universal Invaders";
 
         // 현재 시간
         long currentTime = System.currentTimeMillis();
 
-        // 글자 업데이트 조건 확인
+        // 타이틀 글자 업데이트 조건 확인
         if (currentTime - lastUpdateTime >= TYPING_DELAY) {
             if (titleTypingIndex < titleString.length()) {
                 titleTypingIndex++; // 다음 글자로 넘어감
@@ -1105,8 +1108,28 @@ public final class DrawManager {
         // 현재까지의 글자만 출력
         String partialTitle = titleString.substring(0, titleTypingIndex);
 
-        // 새 텍스트 그리기
+        // 타이틀 출력
         backBufferGraphics.setColor(Color.GREEN);
-        drawCenteredBigString(screen, partialTitle, screen.getHeight() / 5);
+        drawCenteredBigString(screen, partialTitle, screen.getHeight() / 6);
+
+        // 타이틀 글자가 모두 출력되었는지 반환
+        return titleTypingIndex == titleString.length();
+    }
+
+    public void drawStartMessage(final Screen screen) {
+        // 현재 시간
+        long currentTime = System.currentTimeMillis();
+
+        // 메시지 깜빡임 로직
+        if (currentTime - lastBlinkTime >= BLINK_DELAY) {
+            showStartMessage = !showStartMessage; // 흰색 ↔ 회색 토글
+            lastBlinkTime = currentTime;         // 마지막 깜빡임 시간 갱신
+        }
+
+        // 메시지 색상 설정
+        backBufferGraphics.setColor(showStartMessage ? Color.WHITE : Color.GRAY);
+
+        // 메시지 그리기
+        drawCenteredRegularString(screen, "PRESS ENTER/SPACE TO START", screen.getHeight() / 2);
     }
 }

@@ -18,11 +18,12 @@ public class SplashScreen extends Screen {
     public SplashScreen(final int width, final int height, final int fps) {
         super(width, height, fps);
 
-        this.returnCode = 1;
-        Core.getStatusManager().setSpeed(10);
-        superShip = new Ship(this.width / 2, this.height, Direction.UP, Color.GREEN, 1);
+        this.returnCode = 1; // 다음 화면 코드를 1로 설정
         this.startTime = System.currentTimeMillis(); // 화면 시작 시간 기록
         this.hasPlayedSound = false; // 사운드 호출 여부를 false로 초기화
+
+        Core.getStatusManager().setSpeed(10);
+        superShip = new Ship(this.width / 2, this.height, Direction.UP, Color.GREEN, 1);
     }
 
     /**
@@ -44,7 +45,7 @@ public class SplashScreen extends Screen {
 
         // 1초 동안 배경화면 아래로 이동
         long elapsedTime = System.currentTimeMillis() - startTime;
-        if (elapsedTime <= 1500) { // 1초 이내
+        if (elapsedTime <= 1500) { // 1.5초 이내
             backgroundOffsetY += backgroundScrollSpeed; // 배경화면 이동
         }
         else{
@@ -70,13 +71,19 @@ public class SplashScreen extends Screen {
      * Draws the elements associated with the screen.
      */
     private void draw() {
+        boolean isTitleComplete = false;
         drawManager.initDrawing(this);
 
         drawManager.setSplashImage();
         drawManager.drawBackgroundImage(this, backgroundOffsetY); // 오프셋 적용
 
         if (superShip.getPositionY() < 0) {
-            drawManager.drawGameTitle(this);
+            isTitleComplete = drawManager.drawGameTitle(this);
+        }
+
+        // 타이틀이 완료되었으면 메시지 출력
+        if (isTitleComplete) {
+            drawManager.drawStartMessage(this);
         }
 
         drawManager.drawEntity(superShip, superShip.getPositionX(), superShip.getPositionY());
