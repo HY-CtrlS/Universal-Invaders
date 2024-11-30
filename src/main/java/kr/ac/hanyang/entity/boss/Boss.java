@@ -41,14 +41,11 @@ public class Boss extends Entity {
     private int currentHp;
     private int phase;
     private boolean isInvincible;
-    private int pattern;
     private boolean isPattern;
 
     private Cooldown attackCooldown;
     private Cooldown basicBulletInterval;
     private Logger logger;
-
-    private Set<Bullet> bullets;
 
     private int speed; // 현재 이동 속도
     private boolean movingRight; // 이동 방향 (true: 오른쪽, false: 왼쪽)
@@ -67,14 +64,13 @@ public class Boss extends Entity {
         this.maxHp = PHASE_1_HP;
         this.currentHp = maxHp;
         this.phase = 1;
-        this.pattern = 1;
         this.spriteType = SpriteType.Boss;
         this.isInvincible = false;
         this.attackCooldown = Core.getCooldown(ATTACK_COOLDOWN_1);
         this.isPattern = false;
 
         //보스의 탄막 기본공격 간격
-        this.basicBulletInterval = Core.getCooldown(700);
+        this.basicBulletInterval = Core.getVariableCooldown(1400, 500);
         this.basicBulletInterval.reset();
 
         this.logger = Core.getLogger();
@@ -138,6 +134,25 @@ public class Boss extends Entity {
         }
     }
 
+    // 1페이즈 -> 2페이즈 패턴 시작시 보스가 목적로 한 번 이동
+    public void phaseOneMove(final int positionX, final int positionY) {
+        // 목표 이동 지점
+        // X축 방향 보스 이동 먼저 맞추기
+        if (this.positionX < positionX) {
+            this.positionX += 1;
+        } else {
+            this.positionX -= 1;
+        }
+
+        // Y축 방향 보스 이동 맞추기
+        if (this.positionY < positionY) {
+            this.positionY += 1;
+        } else {
+            this.positionY -= 1;
+        }
+    }
+
+
     // 보스의 좌우 이동을 구현하는 메소드
     public void move() {
         // 보스가 화면의 오른쪽 경계에 도달했는지 확인
@@ -164,24 +179,18 @@ public class Boss extends Entity {
         // Phase 3 attack logic (laser path and shot)
     }
 
-    public void setPattern(final int pattern) {
-        this.pattern = pattern;
-    }
-
-    public int getPattern() {
-        return pattern;
-    }
-
     public void setPhase(final int phase) {
         this.phase = phase;
         switch (phase) {
             case 2:
+                this.maxHp = PHASE_2_HP;
                 this.currentHp = PHASE_2_HP;
                 setColor(PHASE_2_COLOR);
                 getNextHpColor();
                 this.attackCooldown = Core.getCooldown(ATTACK_COOLDOWN_2);
                 break;
             case 3:
+                this.maxHp = PHASE_3_HP;
                 this.currentHp = PHASE_3_HP;
                 setColor(PHASE_3_COLOR);
                 getNextHpColor();
@@ -239,21 +248,24 @@ public class Boss extends Entity {
         return this.isPattern;
     }
 
-    public final void changeBossState() {
-        if (isPattern()) {
-            this.isPattern = false;
-            if (this.phase == 1) {
-                setPhase(2);
-            } else if (this.phase == 2) {
-                setPhase(3);
-            }
-        } else {
-            this.isPattern = true;
-            if (this.pattern == 1) {
-                setPattern(2);
-            } else if (this.pattern == 2) {
-                setPattern(3);
-            }
+    public void setPattern(boolean value) {
+        this.isPattern = value;
+    }
+    public final void changeBossPhase() {
+        // 보스가 현재 1페이즈라면
+        if (this.phase == 1) {
+            // 2페이즈로 변경
+            setPhase(2);
+        }
+        // 보스가 현재 2페이즈 라면
+        else if (this.phase == 2) {
+            // 3페이즈로 변경
+            setPhase(3);
+        }
+        // 보스가 현재 3페이즈인 경우
+        else if (this.phase == 3) {
+            // 발악 패턴으로 변경
+            setPhase(4);
         }
     }
 

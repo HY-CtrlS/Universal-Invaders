@@ -104,6 +104,9 @@ public class BossScreen extends Screen {
         this.hp = gameState.getHp();
         this.status = gameState.getStatus();
         this.ship = ship;
+        // 아군 함선의 위치 변경 (화면 중앙 아래 부분)
+        this.ship.setPositionX(this.getWidth() / 2 - this.ship.getWidth() / 2);
+        this.ship.setPositionY(this.getHeight()*3 / 4 - this.ship.getHeight() / 2);
 
         this.returnCode = 1;
         this.status = status;
@@ -193,7 +196,7 @@ public class BossScreen extends Screen {
      */
     protected final void update() {
         super.update();
-
+        /// 화면 기본 업데이트 시작
         // phase가 처음 시작될 때 clockCooldown, hpRegenCooldown reset
         if (this.inputDelay.checkFinished() && !this.phaseStarted) {
             this.clockCooldown.reset();
@@ -332,18 +335,31 @@ public class BossScreen extends Screen {
                     // TODO: 현재 모든 보스의 탄환, 미사일 파괴 + (보스에게 일정 데미지)
                 }
             }
-            if (this.boss.isPattern()) {
-                // 패턴별 공격 구현 예정
-            } else {
-                if (this.boss.getCurrentHp() <= 0) {
-                    this.boss.changeBossState();
-                }
+            /// 화면 기본 업데이트 끝
 
+            /// 보스 관련 업데이트 시작
+            // 보스가 패턴을 쓸건지 짤패턴 중인지 설정
+            if (this.boss.isPattern()) {
+                // 1페이즈 -> 2페이즈 패턴인 경우
+                if (this.boss.getPhase() == 2) {
+                    // 보스가 다 이동했는지 확인을 위한 변수
+                    int checkX = (this.getWidth() / 2 - this.boss.getWidth() / 2) - this.boss.getPositionX();
+                    int checkY = (this.getHeight() / 2 - this.boss.getHeight() / 2) - this.boss.getPositionY();
+                    if (!(checkX < 2 && checkX > -2 && checkY < 2 && checkY > -2)) {
+                        // 보스가 화면 가운데로 이동
+                        this.boss.phaseOneMove(this.getWidth() / 2 - this.boss.getWidth() / 2, this.getHeight() / 2 - this.boss.getHeight() / 2);
+                    }
+                    // 보스의 이동이 완료된 경우 실행되는 부분
+                    else {
+
+                    }
+                }
+            } else {
                 // 보스 패턴A 발동 메소드
                 if (bossBasicBullet.checkFinished()) {
                     int randomKey = random.nextInt(8) + 10;
                     double range = randomKey * 5.0;
-                    int bulletNum = randomKey - (random.nextInt(4) + 4);
+                    int bulletNum = randomKey - (random.nextInt(4) + 5);
                     // 공격이 완료되면 false 반환, 아닌 경우 true 반환
                     basicAttackCount += this.boss.spreadBullet(this.bullets, getBulletDirection(),
                         range, bulletNum);
@@ -382,6 +398,16 @@ public class BossScreen extends Screen {
 
                 if (this.boss.getPhase() > 2) {
                     this.boss.move();
+                }
+
+                // 보스 체력에 따른 페이즈 설정(맨 마지막 부분에 설정하여 페이즈가 변하면서 바로 짤패턴이 적용되는 경우를 제외_)
+                if (this.boss.getCurrentHp() <= 0) {
+                    // 보스 페이즈 변환
+                    this.boss.changeBossPhase();
+                    // 보스 패턴 시행
+                    this.boss.setPattern(true);
+                    // 보스 무적
+                    this.boss.setInvincible(true);
                 }
             }
         }
