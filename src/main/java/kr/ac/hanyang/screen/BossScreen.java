@@ -341,9 +341,9 @@ public class BossScreen extends Screen {
 
                 // 보스 패턴A 발동 메소드
                 if (bossBasicBullet.checkFinished()) {
-                    int randomKey = random.nextInt(7) + 6;
+                    int randomKey = random.nextInt(8) + 10;
                     double range = randomKey * 5.0;
-                    int bulletNum = randomKey - 2;
+                    int bulletNum = randomKey - (random.nextInt(4) + 4);
                     // 공격이 완료되면 false 반환, 아닌 경우 true 반환
                     basicAttackCount += this.boss.spreadBullet(this.bullets, getBulletDirection(),
                         range, bulletNum);

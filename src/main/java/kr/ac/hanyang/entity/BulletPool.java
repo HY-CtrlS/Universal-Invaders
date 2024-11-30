@@ -1,5 +1,6 @@
 package kr.ac.hanyang.entity;
 
+import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
 import kr.ac.hanyang.entity.Entity.Direction;
@@ -43,9 +44,10 @@ public final class BulletPool {
             bullet.setPositionY(positionY);
             bullet.setSpeed(speed);
             bullet.setDamage(damage);
-            bullet.setSprite();
             bullet.setDirection(direction);
             bullet.setClassify(classify);
+            bullet.setColor(new Color[]{Color.WHITE});
+            bullet.setSprite();
 
         } else {
             bullet = new Bullet(positionX, positionY, speed, damage, direction, classify);
@@ -73,9 +75,10 @@ public final class BulletPool {
             bullet.setSpeedX(speed * Math.cos(Math.toRadians(angle)));
             bullet.setSpeedY(speed * Math.sin(Math.toRadians(angle)));
             bullet.setDamage(damage);
-            bullet.setSprite();
             bullet.setDirection(Direction.UP);
             bullet.setClassify(0);
+            bullet.setColor(new Color[]{Color.RED});
+            bullet.setSprite();
 
         } else {
             bullet = new Bullet(positionX, positionY, speed, damage, angle);
