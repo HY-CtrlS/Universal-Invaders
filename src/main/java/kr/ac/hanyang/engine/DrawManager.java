@@ -140,8 +140,8 @@ public final class DrawManager {
             spriteMap.put(SpriteType.Portal, new boolean[3][11][13]);
             // 보스 스프라이트
             spriteMap.put(SpriteType.Boss, new boolean[2][40][46]);
-            spriteMap.put(SpriteType.Laser, new boolean[2][15][720]);
-            spriteMap.put(SpriteType.WarningLaser, new boolean[1][15][720]);
+            spriteMap.put(SpriteType.Laser, new boolean[3][12][720]);
+            spriteMap.put(SpriteType.WarningLaser, new boolean[1][12][720]);
             spriteMap.put(SpriteType.Missile, new boolean[1][7][9]);
 
             fileManager.loadSprite(spriteMap);

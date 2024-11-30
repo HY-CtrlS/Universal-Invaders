@@ -163,7 +163,7 @@ public class BossScreen extends Screen {
 
         this.basicAttackCount = 0;
 
-        this.createLaserCooldown = Core.getCooldown(5000);
+        this.createLaserCooldown = Core.getCooldown(4000);
         this.createLaserCooldown.reset();
 
         this.createMissileCooldown = Core.getCooldown(10000);

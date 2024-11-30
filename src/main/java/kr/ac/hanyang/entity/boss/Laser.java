@@ -18,8 +18,8 @@ public class Laser extends Entity {
 
     public Laser(final int positionX, final int positionY) {
         super(positionX, positionY, 720, 15,
-            new Color[]{new Color(255, 255, 255, 128), new Color(161, 86, 213, 128)},
-            Direction.LEFT);
+            new Color[]{new Color(255, 255, 255, 128), new Color(189, 102, 255, 128),
+            new Color(94, 255, 250, 128)}, Direction.LEFT);
 
         this.positionX = positionX;
         this.positionY = positionY;
@@ -29,9 +29,9 @@ public class Laser extends Entity {
         this.isAct = false;
         this.isDone = false;
 
-        this.ready = Core.getCooldown(1500);
+        this.ready = Core.getCooldown(800);
         this.ready.reset();
-        this.act = Core.getCooldown(1000);
+        this.act = Core.getCooldown(800);
     }
 
     public final void update() {
