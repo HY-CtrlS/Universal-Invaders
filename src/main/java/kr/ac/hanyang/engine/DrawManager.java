@@ -1,5 +1,6 @@
 package kr.ac.hanyang.engine;
 
+import javax.imageio.ImageIO;
 import kr.ac.hanyang.Item.Item;
 import kr.ac.hanyang.entity.Ship;
 import java.awt.Color;
@@ -49,6 +50,14 @@ public final class DrawManager {
 
     /** Sprite types mapped to their images. */
     private static Map<SpriteType, boolean[][][]> spriteMap;
+
+    /** 배경 이미지. */
+    private BufferedImage backgroundImage;
+
+    // DrawManager 클래스의 전역 변수 추가
+    private int titleTypingIndex = 0; // 현재 출력된 글자 수
+    private long lastUpdateTime = 0; // 마지막 글자 업데이트 시점
+    private static final long TYPING_DELAY = 80; // 글자 간 출력 지연 (밀리초)
 
     /** Sprite types. */
     public static enum SpriteType {
@@ -1034,5 +1043,61 @@ public final class DrawManager {
         }
         drawCenteredRegularString(screen, shipColors[shipID - 1],
             screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+    }
+
+    public void setSplashImage() {
+        try {
+            // 고정된 splash 이미지 로드
+            backgroundImage = ImageIO.read(getClass().getResource("/splash_image.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Failed to load splash image.");
+        }
+    }
+
+    public void drawBackgroundImage(final Screen screen) {
+        if (backgroundImage != null) {
+            // 이미지 크기
+            int imageWidth = backgroundImage.getWidth();
+            int imageHeight = backgroundImage.getHeight();
+
+            // 화면 크기
+            int screenWidth = screen.getWidth();
+            int screenHeight = screen.getHeight();
+
+            // 이미지를 중앙에 배치하기 위한 좌표 계산
+            int x = (screenWidth - imageWidth) / 2; // 화면 중앙의 X 좌표
+            int y = (screenHeight - imageHeight) / 2; // 화면 중앙의 Y 좌표
+
+            // 이미지를 실제 크기로 그리고, 중앙에 배치
+            backBufferGraphics.drawImage(backgroundImage, x, y, null);
+        } else {
+            // 배경 이미지가 없을 경우 기본 색상으로 화면 채움
+            backBufferGraphics.setColor(Color.BLACK);
+            backBufferGraphics.fillRect(0, 0, screen.getWidth(), screen.getHeight());
+        }
+    }
+
+    public void drawGameTitle(final Screen screen) {
+        // 타이틀 문자
+        String titleString = "Universal Invaders";
+
+        // 현재 시간
+        long currentTime = System.currentTimeMillis();
+
+        // 글자 업데이트 조건 확인
+        if (currentTime - lastUpdateTime >= TYPING_DELAY) {
+            if (titleTypingIndex < titleString.length()) {
+                titleTypingIndex++; // 다음 글자로 넘어감
+            }
+            lastUpdateTime = currentTime; // 마지막 업데이트 시간 갱신
+        }
+
+        // 현재까지의 글자만 출력
+        String partialTitle = titleString.substring(0, titleTypingIndex);
+
+        // 새 텍스트 그리기
+        backBufferGraphics.setColor(Color.GREEN);
+        drawCenteredBigString(screen, partialTitle, screen.getHeight() / 5);
     }
 }
