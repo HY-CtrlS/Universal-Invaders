@@ -447,6 +447,9 @@ public class BossScreen extends Screen {
                         recyclable.add(bullet);
                         this.crystal.getDamaged(status.getBaseDamage());
                     }
+                    if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
+                        recyclable.add(bullet);
+                    }
                 } else {
                     if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
                         recyclable.add(bullet);
@@ -484,20 +487,23 @@ public class BossScreen extends Screen {
         this.bullets.removeAll(recyclable);
         BulletPool.recycle(recyclable);
 
-        // 레이저의 경우
-        for (Laser laser : this.lasers) {
-            if (checkCollision(this.ship, laser) && laser.getSpriteType() == SpriteType.Laser) {
-                if (!this.ship.isDestroyed()) {
-                    //아군 함선 파괴로 업데이트
-                    this.ship.destroy();
-                    //아군 함선의 체력을 레이저의 데미지 만큼 감소
-                    this.hp = (this.hp - laser.getDamage() > 0) ? this.hp - laser.getDamage() : 0;
-                    this.logger.info("Hit on player ship, -" + laser.getDamage() + " Hp");
-                    // 맞으면 효과음 출력
-                    Core.getSoundManager().playDamageSound();
-                    if (this.hp <= 0 && !this.isDestroyed) {
-                        Core.getSoundManager().playExplosionSound();
-                        this.isDestroyed = true;
+        // 아군 3번 함선이 궁극기 킨 경우 충돌 무시
+        if (this.ship.getShipID() != 3 || !this.ship.isUltActivated()) {
+            // 레이저의 경우
+            for (Laser laser : this.lasers) {
+                if (checkCollision(this.ship, laser) && laser.getSpriteType() == SpriteType.Laser) {
+                    if (!this.ship.isDestroyed()) {
+                        //아군 함선 파괴로 업데이트
+                        this.ship.destroy();
+                        //아군 함선의 체력을 레이저의 데미지 만큼 감소
+                        this.hp = (this.hp - laser.getDamage() > 0) ? this.hp - laser.getDamage() : 0;
+                        this.logger.info("Hit on player ship, -" + laser.getDamage() + " Hp");
+                        // 맞으면 효과음 출력
+                        Core.getSoundManager().playDamageSound();
+                        if (this.hp <= 0 && !this.isDestroyed) {
+                            Core.getSoundManager().playExplosionSound();
+                            this.isDestroyed = true;
+                        }
                     }
                 }
             }
@@ -505,28 +511,31 @@ public class BossScreen extends Screen {
 
         // 미사일의 경우
         for (Missile missile : this.missiles) {
-            // 폭발 중이고 아직 완료되지 않은 미사일 처리
-            if (missile.hasExploded() && !missile.isDestroyed()) {
-                // 아군 함선이 폭발 반경 내에 있는지 확인
-                if (isWithinExplosionRadius(this.ship, missile)) {
-                    if (!this.ship.isDestroyed()) {
-                        //아군 함선 파괴로 업데이트
-                        this.ship.destroy();
+            // 아군 3번 함선이 궁극기 킨 경우 충돌 무시
+            if (this.ship.getShipID() != 3 || !this.ship.isUltActivated()) {
+                // 폭발 중이고 아직 완료되지 않은 미사일 처리
+                if (missile.hasExploded() && !missile.isDestroyed()) {
+                    // 아군 함선이 폭발 반경 내에 있는지 확인
+                    if (isWithinExplosionRadius(this.ship, missile)) {
+                        if (!this.ship.isDestroyed()) {
+                            //아군 함선 파괴로 업데이트
+                            this.ship.destroy();
 
-                        // 거리 기반 데미지 계산
-                        int damage = missile.calculateDamage(this.ship);
+                            // 거리 기반 데미지 계산
+                            int damage = missile.calculateDamage(this.ship);
 
-                        // 아군 체력 감소 처리
-                        this.hp = (this.hp - damage > 0) ? this.hp - damage : 0;
-                        this.logger.info("Missile explosion hit! -" + damage + " Hp");
+                            // 아군 체력 감소 처리
+                            this.hp = (this.hp - damage > 0) ? this.hp - damage : 0;
+                            this.logger.info("Missile explosion hit! -" + damage + " Hp");
 
-                        // 맞으면 효과음 출력
-                        Core.getSoundManager().playDamageSound();
+                            // 맞으면 효과음 출력
+                            Core.getSoundManager().playDamageSound();
 
-                        if (this.hp <= 0 && !this.isDestroyed) {
-                            // 체력이 0 이하로 떨어지면 파괴 처리
-                            Core.getSoundManager().playExplosionSound();
-                            this.isDestroyed = true;
+                            if (this.hp <= 0 && !this.isDestroyed) {
+                                // 체력이 0 이하로 떨어지면 파괴 처리
+                                Core.getSoundManager().playExplosionSound();
+                                this.isDestroyed = true;
+                            }
                         }
                     }
                 }
@@ -536,11 +545,6 @@ public class BossScreen extends Screen {
             if (missile.isDestroyed()) {
                 this.missiles.remove(missile);
             }
-        }
-
-        // 아군 3번 함선의 궁극기
-        if (this.ship.getShipID() == 3 && this.ship.isUltActivated()) {
-            // 아군 Ship은 무적이라 모든 공격과 충돌 무시
         }
     }
 
