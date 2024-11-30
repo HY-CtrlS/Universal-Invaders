@@ -444,6 +444,7 @@ public class BossScreen extends Screen {
             if (bullet.getClassify() != 0) {
                 if (this.boss.isInvincible()) {
                     if (checkCollision(bullet, this.crystal) && this.crystal.getHp() > 0) {
+                        recyclable.add(bullet);
                         this.crystal.getDamaged(status.getBaseDamage());
                     }
                 } else {
