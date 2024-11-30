@@ -652,17 +652,17 @@ public class BossScreen extends Screen {
         boolean right = this.ship.getPositionX() >= this.width / 2;
 
         if (up && right) {
-            positionX = 40;
-            positionY = this.height - 100;
+            positionX = 30;
+            positionY = this.height - 120;
         } else if (up && !right) {
-            positionX = this.width - 20 - 40;
-            positionY = this.height - 100;
+            positionX = this.width - 40 - 30;
+            positionY = this.height - 120;
         } else if (!up && right) {
-            positionX = 40;
-            positionY = SEPARATION_LINE_HEIGHT + 110;
+            positionX = 30;
+            positionY = SEPARATION_LINE_HEIGHT + 160;
         } else {
-            positionX = this.width - 20 - 40;
-            positionY = SEPARATION_LINE_HEIGHT + 110;
+            positionX = this.width - 40 - 30;
+            positionY = SEPARATION_LINE_HEIGHT + 160;
         }
 
         this.crystal = new Crystal(positionX, positionY);

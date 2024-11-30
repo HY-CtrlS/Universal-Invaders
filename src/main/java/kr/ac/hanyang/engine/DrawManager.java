@@ -103,7 +103,9 @@ public final class DrawManager {
         // 미사일
         Missile,
         // 무적 크리스탈
-        Crystal;
+        Crystal,
+        // 배리어용 소행성
+        Asteroid;
     }
 
     /**
@@ -146,6 +148,7 @@ public final class DrawManager {
             spriteMap.put(SpriteType.WarningLaser, new boolean[1][12][720]);
             spriteMap.put(SpriteType.Missile, new boolean[1][7][9]);
             spriteMap.put(SpriteType.Crystal, new boolean[2][20][20]);
+            spriteMap.put(SpriteType.Asteroid, new boolean[2][10][10]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
