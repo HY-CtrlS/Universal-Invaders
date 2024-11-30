@@ -15,6 +15,7 @@ public class SplashScreen extends Screen {
     private long startTime; // 시작 시간 기록
     private boolean hasPlayedSound; // 사운드 호출 여부
     private final int backgroundMoveDistance = 170; // 배경화면 이동 거리 (픽셀)
+    private boolean readyToStart; // 시작 준비 여부
 
     public SplashScreen(final int width, final int height, final int fps) {
         super(width, height, fps);
@@ -22,6 +23,7 @@ public class SplashScreen extends Screen {
         this.returnCode = 1; // 다음 화면 코드를 1로 설정
         this.startTime = System.currentTimeMillis(); // 화면 시작 시간 기록
         this.hasPlayedSound = false; // 사운드 호출 여부를 false로 초기화
+        this.readyToStart = false; // 시작 준비 여부를 false로 초기화
 
         Core.getStatusManager().setSpeed(10);
         superShip = new Ship(this.width / 2, this.height, Direction.UP, Color.GREEN, 1);
@@ -59,8 +61,9 @@ public class SplashScreen extends Screen {
         draw();
 
         // 스페이스 키 입력 처리
-        if (inputManager.isKeyDown(KeyEvent.VK_SPACE)
-            && this.inputDelay.checkFinished()) {
+        if (this.inputDelay.checkFinished() && this.readyToStart &&
+            (inputManager.isKeyDown(KeyEvent.VK_SPACE) || inputManager.isKeyDown(
+                KeyEvent.VK_ENTER))) {
             this.isRunning = false;
             Core.getSoundManager().playButtonSound();
         }
@@ -70,18 +73,17 @@ public class SplashScreen extends Screen {
      * Draws the elements associated with the screen.
      */
     private void draw() {
-        boolean isTitleComplete = false;
         drawManager.initDrawing(this);
 
         drawManager.setSplashImage();
         drawManager.drawBackgroundImage(this, backgroundOffsetY); // 오프셋 적용
 
         if (superShip.getPositionY() < 0) {
-            isTitleComplete = drawManager.drawGameTitle(this);
+            readyToStart = drawManager.drawGameTitle(this);
         }
 
         // 타이틀이 완료되었으면 메시지 출력
-        if (isTitleComplete) {
+        if (readyToStart) {
             drawManager.drawStartMessage(this);
         }
 
