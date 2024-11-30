@@ -18,6 +18,8 @@ import kr.ac.hanyang.entity.Entity;
 import kr.ac.hanyang.entity.Entity.Direction;
 import kr.ac.hanyang.entity.boss.Laser;
 import kr.ac.hanyang.entity.boss.LaserPool;
+import kr.ac.hanyang.entity.boss.Missile;
+import kr.ac.hanyang.entity.boss.MissilePool;
 import kr.ac.hanyang.entity.ship.Ship;
 import kr.ac.hanyang.entity.boss.Boss;
 
@@ -78,6 +80,9 @@ public class BossScreen extends Screen {
     private Cooldown createLaserCooldown;
     private LaserPool laserPool;
     private Set<Laser> lasers;
+    private Cooldown createMissileCooldown;
+    private MissilePool missilePool;
+    private Set<Missile> missiles;
 
     //임시 쿨다운 변수
     private Cooldown bossBasicBullet;
@@ -114,6 +119,8 @@ public class BossScreen extends Screen {
         this.bullets = new HashSet<Bullet>();
         this.laserPool = new LaserPool(this.ship);
         this.lasers = laserPool.getLasers();
+        this.missilePool = new MissilePool(this.ship);
+        this.missiles = missilePool.getMissiles();
 
         // Special input delay / countdown.
         this.gameStartTime = System.currentTimeMillis();
@@ -158,6 +165,9 @@ public class BossScreen extends Screen {
 
         this.createLaserCooldown = Core.getCooldown(5000);
         this.createLaserCooldown.reset();
+
+        this.createMissileCooldown = Core.getCooldown(10000);
+        this.createMissileCooldown.reset();
     }
 
     /**
@@ -301,6 +311,7 @@ public class BossScreen extends Screen {
 
             this.ship.update();
             this.laserPool.update();
+            this.missilePool.update();
 
             // 1초마다 생존 시간 1씩 증가
             if (this.clockCooldown.checkFinished()) {
@@ -337,6 +348,12 @@ public class BossScreen extends Screen {
                 this.createLaserCooldown.reset();
             }
 
+            if (this.createMissileCooldown.checkFinished()) {
+                missilePool.createMissile(this.boss.getPositionX() + this.boss.getWidth() / 2,
+                    this.boss.getPositionY() + this.boss.getHeight() / 2);
+                this.createMissileCooldown.reset();
+            }
+
             manageCollisions();
             cleanBullets();
             draw();
@@ -357,12 +374,14 @@ public class BossScreen extends Screen {
 
         laserPool.draw();
 
+        missilePool.draw();
+
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {
             int countdown = (int) ((INPUT_DELAY
                 - (System.currentTimeMillis()
                 - this.gameStartTime)) / 1000);
-            drawManager.drawCountDown(this, 12);
+            drawManager.drawCountDown(this, countdown);
         }
 
         // 보스의 체력바 그리기
@@ -451,6 +470,42 @@ public class BossScreen extends Screen {
                 }
             }
         }
+
+        // 미사일의 경우
+        for (Missile missile : this.missiles) {
+            // 폭발 중이고 아직 완료되지 않은 미사일 처리
+            if (missile.hasExploded() && !missile.isDestroyed()) {
+                // 아군 함선이 폭발 반경 내에 있는지 확인
+                if (isWithinExplosionRadius(this.ship, missile)) {
+                    if (!this.ship.isDestroyed()) {
+                        //아군 함선 파괴로 업데이트
+                        this.ship.destroy();
+
+                        // 거리 기반 데미지 계산
+                        int damage = missile.calculateDamage(this.ship);
+
+                        // 아군 체력 감소 처리
+                        this.hp = (this.hp - damage > 0) ? this.hp - damage : 0;
+                        this.logger.info("Missile explosion hit! -" + damage + " Hp");
+
+                        // 맞으면 효과음 출력
+                        Core.getSoundManager().playDamageSound();
+
+                        if (this.hp <= 0 && !this.isDestroyed) {
+                            // 체력이 0 이하로 떨어지면 파괴 처리
+                            Core.getSoundManager().playExplosionSound();
+                            this.isDestroyed = true;
+                        }
+                    }
+                }
+            }
+
+            // 미사일이 완료되었으면 삭제
+            if (missile.isDestroyed()) {
+                this.missiles.remove(missile);
+            }
+        }
+
         // 아군 3번 함선의 궁극기
         if (this.ship.getShipID() == 3 && this.ship.isUltActivated()) {
             // 아군 Ship은 무적이라 모든 공격과 충돌 무시
@@ -522,5 +577,22 @@ public class BossScreen extends Screen {
         double thetaDeg = Math.toDegrees(thetaRad);
         // 각도를 보정하여 180에서 뺀 값으로 반환
         return (thetaDeg) % 360;
+    }
+
+    /**
+     * 주어진 엔티티가 미사일의 폭발 반경 내에 있는지 확인.
+     *
+     * @param entity  폭발 반경 내에 있는지 확인할 대상 엔티티 (예: 아군 함선).
+     * @param missile 폭발을 발생시킨 미사일 객체.
+     * @return 대상 엔티티가 폭발 반경 내에 있으면 true, 아니면 false.
+     */
+    private boolean isWithinExplosionRadius(Entity entity, Missile missile) {
+        // 대상 엔티티의 중심 좌표와 미사일의 중심 좌표 간의 거리 계산
+        double distance = Math.hypot(
+            entity.getPositionX() + entity.getWidth() / 2 - missile.getPositionX(),
+            entity.getPositionY() + entity.getHeight() / 2 - missile.getPositionY()
+        );
+        // 계산된 거리가 미사일의 폭발 반경 이내인지 확인
+        return distance <= missile.getExplosionRadius();
     }
 }

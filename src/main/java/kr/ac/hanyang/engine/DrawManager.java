@@ -2,6 +2,7 @@ package kr.ac.hanyang.engine;
 
 import kr.ac.hanyang.Item.Item;
 import kr.ac.hanyang.entity.boss.Boss;
+import kr.ac.hanyang.entity.boss.Missile;
 import kr.ac.hanyang.entity.ship.Ship;
 import java.awt.Color;
 import java.awt.Font;
@@ -98,8 +99,9 @@ public final class DrawManager {
         // 레이저
         Laser,
         // 레이저 위치 경고용
-        WarningLaser;
-
+        WarningLaser,
+        // 미사일
+        Missile;
     }
 
     /**
@@ -140,6 +142,7 @@ public final class DrawManager {
             spriteMap.put(SpriteType.Boss, new boolean[2][40][46]);
             spriteMap.put(SpriteType.Laser, new boolean[2][15][720]);
             spriteMap.put(SpriteType.WarningLaser, new boolean[1][15][720]);
+            spriteMap.put(SpriteType.Missile, new boolean[1][7][9]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
@@ -728,8 +731,7 @@ public final class DrawManager {
             }
             //세 번째 아이템 그리기
             drawItemBox((screen.getWidth() * 3) / 4 - 50, screen.getHeight() / 3);
-        }
-        else {
+        } else {
             String alarmString = "There are no items left";
             drawCenteredRegularString(screen, alarmString,
                 150);
@@ -1066,7 +1068,6 @@ public final class DrawManager {
         drawCenteredRegularString(screen, "Boss Name, Phase : " + boss.getPhase(),
             1 + fontRegularMetrics.getHeight());
 
-
         // 체력 바의 테두리 그리기
         backBufferGraphics.setColor(Color.GRAY);
         backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
@@ -1091,5 +1092,17 @@ public final class DrawManager {
         int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2)
             + fontRegularMetrics.getAscent();
         backBufferGraphics.drawString(hpText, textX, textY);
+    }
+
+    // 미사일 폭발 반경 표시
+    public void drawExplosionRadius(Missile missile) {
+        backBufferGraphics.setColor(new Color(255, 69, 0, 128)); // 반투명 주황색
+        int radius = missile.getExplosionRadius();
+        backBufferGraphics.fillOval(
+            missile.getPositionX() + missile.getWidth() / 2 - radius,
+            missile.getPositionY() + missile.getHeight() / 2 - radius,
+            radius * 2,
+            radius * 2
+        );
     }
 }
