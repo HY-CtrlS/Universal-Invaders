@@ -14,6 +14,7 @@ public class SplashScreen extends Screen {
     private final int backgroundScrollSpeed = 2; // 배경화면 이동 속도 (픽셀/프레임)
     private long startTime; // 시작 시간 기록
     private boolean hasPlayedSound; // 사운드 호출 여부
+    private final int backgroundMoveDistance = 170; // 배경화면 이동 거리 (픽셀)
 
     public SplashScreen(final int width, final int height, final int fps) {
         super(width, height, fps);
@@ -39,18 +40,13 @@ public class SplashScreen extends Screen {
         return this.returnCode;
     }
 
-    /**
-     * Updates the elements on screen and checks for events.
-     */
     protected final void update() {
         super.update();
 
-        // 1초 동안 배경화면 아래로 이동
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        if (elapsedTime <= 1500) { // 1.5초 이내
+        // 배경화면이 최대 거리만큼 이동할 때까지 처리
+        if (backgroundOffsetY < backgroundMoveDistance) {
             backgroundOffsetY += backgroundScrollSpeed; // 배경화면 이동
-        }
-        else{
+        } else {
             superShip.moveUp();
 
             // 최초 1회만 사운드 호출
@@ -62,6 +58,7 @@ public class SplashScreen extends Screen {
 
         draw();
 
+        // 스페이스 키 입력 처리
         if (inputManager.isKeyDown(KeyEvent.VK_SPACE)
             && this.inputDelay.checkFinished()) {
             this.isRunning = false;
