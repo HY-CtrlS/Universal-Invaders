@@ -9,59 +9,88 @@ import kr.ac.hanyang.entity.Ship;
 
 public class SplashScreen extends Screen {
 
+    private static final int BACKGROUND_SCROLL_SPEED = 2; // 배경화면 이동 속도 (픽셀/프레임)
+    private static final int BACKGROUND_MOVE_DISTANCE = 170; // 배경화면 이동 거리 (픽셀)
+
     private static Ship superShip;
     private int backgroundOffsetY = 0; // 배경화면 Y축 오프셋
-    private final int backgroundScrollSpeed = 2; // 배경화면 이동 속도 (픽셀/프레임)
-    private long startTime; // 시작 시간 기록
-    private boolean hasPlayedSound; // 사운드 호출 여부
-    private final int backgroundMoveDistance = 170; // 배경화면 이동 거리 (픽셀)
-    private boolean readyToStart; // 시작 준비 여부
+    private boolean hasPlayedSound = false; // 사운드 호출 여부
+    private boolean readyToStart = false; // 시작 준비 여부
 
     public SplashScreen(final int width, final int height, final int fps) {
         super(width, height, fps);
+        this.returnCode = 1; // 다음 화면 코드 설정
 
-        this.returnCode = 1; // 다음 화면 코드를 1로 설정
-        this.startTime = System.currentTimeMillis(); // 화면 시작 시간 기록
-        this.hasPlayedSound = false; // 사운드 호출 여부를 false로 초기화
-        this.readyToStart = false; // 시작 준비 여부를 false로 초기화
-
-        Core.getStatusManager().setSpeed(10);
-        superShip = new Ship(this.width / 2, this.height, Direction.UP, Color.GREEN, 1);
-
-        Core.getSoundManager().playLobbyBGM(); // 로비 배경음악 재생
+        initializeShip();
+        initializeSounds();
     }
 
     /**
-     * Starts the action.
+     * 플레이어의 함선을 초기화합니다.
+     */
+    private void initializeShip() {
+        Core.getStatusManager().setSpeed(10);
+        superShip = new Ship(this.width / 2, this.height, Direction.UP, Color.GREEN, 1);
+    }
+
+    /**
+     * 스플래시 화면의 배경음악을 초기화합니다.
+     */
+    private void initializeSounds() {
+        Core.getSoundManager().playLobbyBGM();
+    }
+
+    /**
+     * 스플래시 화면 동작을 시작합니다.
      *
-     * @return Next screen code.
+     * @return 다음 화면 코드
      */
     public final int run() {
         super.run();
-
         return this.returnCode;
     }
 
+    /**
+     * 스플래시 화면의 로직과 요소를 업데이트합니다.
+     */
     protected final void update() {
         super.update();
 
-        // 배경화면이 최대 거리만큼 이동할 때까지 처리
-        if (backgroundOffsetY < backgroundMoveDistance) {
-            backgroundOffsetY += backgroundScrollSpeed; // 배경화면 이동
-        } else {
-            superShip.moveUp();
-
-            // 최초 1회만 사운드 호출
-            if (!hasPlayedSound) {
-                Core.getSoundManager().playPlaySound();
-                hasPlayedSound = true; // 사운드 호출 여부를 true로 변경
-            }
-        }
+        updateBackground();
+        updateShipMovement();
+        handleInput();
 
         draw();
+    }
 
-        // 스페이스 키 입력 처리
-        if (this.inputDelay.checkFinished() && this.readyToStart &&
+    /**
+     * 배경화면 스크롤을 업데이트합니다.
+     */
+    private void updateBackground() {
+        if (backgroundOffsetY < BACKGROUND_MOVE_DISTANCE) {
+            backgroundOffsetY += BACKGROUND_SCROLL_SPEED;
+        }
+    }
+
+    /**
+     * 플레이어의 함선 움직임을 업데이트하고, 사운드 효과를 한 번만 재생합니다.
+     */
+    private void updateShipMovement() {
+        if (backgroundOffsetY >= BACKGROUND_MOVE_DISTANCE) {
+            superShip.moveUp();
+
+            if (!hasPlayedSound) {
+                Core.getSoundManager().playPlaySound();
+                hasPlayedSound = true;
+            }
+        }
+    }
+
+    /**
+     * 게임 시작 입력을 처리합니다.
+     */
+    private void handleInput() {
+        if (inputDelay.checkFinished() && readyToStart &&
             (inputManager.isKeyDown(KeyEvent.VK_SPACE) || inputManager.isKeyDown(
                 KeyEvent.VK_ENTER))) {
             this.isRunning = false;
@@ -70,25 +99,43 @@ public class SplashScreen extends Screen {
     }
 
     /**
-     * Draws the elements associated with the screen.
+     * 스플래시 화면과 관련된 요소를 그립니다.
      */
     private void draw() {
         drawManager.initDrawing(this);
 
-        drawManager.setSplashImage();
-        drawManager.drawBackgroundImage(this, backgroundOffsetY); // 오프셋 적용
+        drawBackground();
+        drawTitleAndMessages();
+        drawShip();
 
+        drawManager.completeDrawing(this);
+    }
+
+    /**
+     * 배경화면을 스크롤을 적용하여 그립니다.
+     */
+    private void drawBackground() {
+        drawManager.setSplashImage();
+        drawManager.drawBackgroundImage(this, backgroundOffsetY);
+    }
+
+    /**
+     * 타이틀과 메시지를 그립니다.
+     */
+    private void drawTitleAndMessages() {
         if (superShip.getPositionY() < 0) {
             readyToStart = drawManager.drawGameTitle(this);
         }
 
-        // 타이틀이 완료되었으면 메시지 출력
         if (readyToStart) {
             drawManager.drawStartMessage(this);
         }
+    }
 
+    /**
+     * 플레이어의 함선을 그립니다.
+     */
+    private void drawShip() {
         drawManager.drawEntity(superShip, superShip.getPositionX(), superShip.getPositionY());
-
-        drawManager.completeDrawing(this);
     }
 }

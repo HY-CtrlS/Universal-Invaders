@@ -725,8 +725,7 @@ public final class DrawManager {
             }
             //세 번째 아이템 그리기
             drawItemBox((screen.getWidth() * 3) / 4 - 50, screen.getHeight() / 3);
-        }
-        else {
+        } else {
             String alarmString = "There are no items left";
             drawCenteredRegularString(screen, alarmString,
                 150);
