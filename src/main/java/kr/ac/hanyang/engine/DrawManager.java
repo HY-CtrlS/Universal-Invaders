@@ -386,16 +386,16 @@ public final class DrawManager {
      * @param screen Screen to draw on.
      */
     public void drawTitle(final Screen screen) {
-        String titleString = "Invaders";
+        String titleString = "Universal Invaders";
         String instructionsString =
             "select with w+s / arrows, confirm with space";
 
         backBufferGraphics.setColor(Color.GRAY);
         drawCenteredRegularString(screen, instructionsString,
-            screen.getHeight() / 2);
+            screen.getHeight() / 4);
 
         backBufferGraphics.setColor(Color.GREEN);
-        drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
+        drawCenteredBigString(screen, titleString, screen.getHeight() / 6);
     }
 
     /**
@@ -415,7 +415,7 @@ public final class DrawManager {
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
-        drawCenteredRegularString(screen, playString, screen.getHeight() / 3 * 2);
+        drawCenteredRegularString(screen, playString, screen.getHeight() / 5 * 2);
 
         if (option == 3) {
             backBufferGraphics.setColor(Color.GREEN);
@@ -423,7 +423,7 @@ public final class DrawManager {
             backBufferGraphics.setColor(Color.WHITE);
         }
         drawCenteredRegularString(screen, highScoresString,
-            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+            screen.getHeight() / 5 * 2 + fontRegularMetrics.getHeight() * 2);
 
         if (option == 4) {
             backBufferGraphics.setColor(Color.GREEN);
@@ -431,7 +431,7 @@ public final class DrawManager {
             backBufferGraphics.setColor(Color.WHITE);
         }
         drawCenteredRegularString(screen, settingsString,
-            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+            screen.getHeight() / 5 * 2 + fontRegularMetrics.getHeight() * 4);
 
         if (option == 0) {
             backBufferGraphics.setColor(Color.GREEN);
@@ -439,7 +439,7 @@ public final class DrawManager {
             backBufferGraphics.setColor(Color.WHITE);
         }
         drawCenteredRegularString(screen, exitString,
-            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 6);
+            screen.getHeight() / 5 * 2 + fontRegularMetrics.getHeight() * 6);
     }
 
     /**
