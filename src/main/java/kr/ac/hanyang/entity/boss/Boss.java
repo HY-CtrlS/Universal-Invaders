@@ -241,12 +241,14 @@ public class Boss extends Entity {
 
     public final void changeBossState() {
         if (isPattern()) {
+            this.isPattern = false;
             if (this.phase == 1) {
                 setPhase(2);
             } else if (this.phase == 2) {
                 setPhase(3);
             }
         } else {
+            this.isPattern = true;
             if (this.pattern == 1) {
                 setPattern(2);
             } else if (this.pattern == 2) {

@@ -318,9 +318,6 @@ public class BossScreen extends Screen {
             this.ship.update();
             this.laserPool.update();
             this.missilePool.update();
-            if (this.boss.getCurrentHp() <= 0) {
-                this.boss.changeBossState();
-            }
 
             // 1초마다 생존 시간 1씩 증가
             if (this.clockCooldown.checkFinished()) {
@@ -338,6 +335,10 @@ public class BossScreen extends Screen {
             if (this.boss.isPattern()) {
                 // 패턴별 공격 구현 예정
             } else {
+                if (this.boss.getCurrentHp() <= 0) {
+                    this.boss.changeBossState();
+                }
+
                 // 보스 패턴A 발동 메소드
                 if (bossBasicBullet.checkFinished()) {
                     int randomKey = random.nextInt(7) + 6;
