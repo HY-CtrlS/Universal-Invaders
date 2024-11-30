@@ -24,6 +24,8 @@ public class SplashScreen extends Screen {
 
         Core.getStatusManager().setSpeed(10);
         superShip = new Ship(this.width / 2, this.height, Direction.UP, Color.GREEN, 1);
+
+        Core.getSoundManager().playLobbyBGM(); // 로비 배경음악 재생
     }
 
     /**
