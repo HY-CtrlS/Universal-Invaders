@@ -22,6 +22,11 @@ public class EndingScreen extends Screen {
 
         initializeShip();
         initializeSounds();
+
+        if (Core.getSoundManager().isBackgroundMusicPlaying()) {
+            Core.getSoundManager().stopBackgroundMusic();
+        }
+        Core.getSoundManager().playEndingBGM();
     }
 
     /**
@@ -50,6 +55,7 @@ public class EndingScreen extends Screen {
      */
     public final int run() {
         super.run();
+        Core.getSoundManager().stopBackgroundMusic();
         return this.returnCode;
     }
 

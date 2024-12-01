@@ -306,4 +306,11 @@ public class SoundManager {
     public void playLobbyBGM() {
         playBackgroundMusic("sounds/lobby.wav");
     }
+
+    /**
+     * 엔딩 배경음악을 재생합니다.
+     */
+    public void playEndingBGM() {
+        playBackgroundMusic("sounds/ending.wav");
+    }
 }
