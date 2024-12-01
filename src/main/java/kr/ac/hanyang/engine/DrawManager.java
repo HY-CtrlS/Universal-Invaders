@@ -1,6 +1,8 @@
 package kr.ac.hanyang.engine;
 
 import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import javax.imageio.ImageIO;
 import kr.ac.hanyang.Item.Item;
 import kr.ac.hanyang.entity.Ship;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import kr.ac.hanyang.screen.GameScreen;
 import kr.ac.hanyang.screen.Screen;
 import kr.ac.hanyang.entity.Entity;
 
@@ -222,7 +225,6 @@ public final class DrawManager {
 //        backBufferGraphics.setColor(entity.getColor());
         Entity.Direction direction = entity.getDirection();
 
-        // TODO: Ship 이외의 스프라이트들 깨짐 해결
         switch (direction) {
             case UP:
             case UP_LEFT:
@@ -326,45 +328,65 @@ public final class DrawManager {
      * @param ship   Current player ship.
      */
     public void drawUltGauge(final Screen screen, final Ship ship) {
-        backBufferGraphics.setFont(fontRegular);
+        int X_POS = screen.getWidth() - 175;
+        int Y_POS = screen.getHeight() - 175;
+        int ULT_THRESHOLD = ship.getUltThreshold();
+        int ULT_GAUGE = ship.getUltGauge();
+        float ULT_RATIO = (float) ULT_GAUGE / (float) ULT_THRESHOLD;
+        int ULT_PERCENTAGE = (int) (ULT_RATIO * 100);
+        int RECT_SIZE = 150;
+        int RECT_FILLED = (int) (ULT_RATIO * RECT_SIZE);
+        int RECT_UNFILLED = RECT_SIZE - RECT_FILLED;
+
+        backBufferGraphics.drawOval(X_POS, Y_POS, RECT_SIZE, RECT_SIZE);
+
+        Graphics2D g2d = (Graphics2D) backBufferGraphics;
+        Shape shape = new Ellipse2D.Double(X_POS, Y_POS, RECT_SIZE, RECT_SIZE);
+        g2d.setClip(shape);
+
+        g2d.setColor(Color.GREEN);
+        g2d.fillRect(X_POS, Y_POS + RECT_UNFILLED, RECT_SIZE, RECT_FILLED);
+//        logger.info("Ult Gauge: " + ULT_GAUGE + " / " + ULT_THRESHOLD + " (" + ULT_PERCENTAGE + "%)");
+//        logger.info("Ult Gauge: " + ULT_RATIO);
+        g2d.setClip(null);
+
+        final String ULT_TEXT = ULT_PERCENTAGE + "%";
+        backBufferGraphics.setFont(fontBig);
         backBufferGraphics.setColor(Color.WHITE);
-        String scoreString = ship.getUltGauge() + " / " + ship.getUltThreshold() + " Ult";
-        backBufferGraphics.drawString(scoreString, screen.getWidth() - 250, 25);
+        backBufferGraphics.drawString(ULT_TEXT, X_POS + 75
+            - fontBigMetrics.stringWidth(ULT_TEXT) / 2, Y_POS + 75 + backBufferGraphics.getFontMetrics().getAscent() / 2);
     }
 
     /**
      * Draws number of remaining lives on screen.
      *
      * @param screen Screen to draw on.
-     * @param lives  Current lives.
      */
-    public void drawLives(final Screen screen, final int lives) {
+    public void drawLives(final Screen screen, final int HP, final int MAX_HP, final int X, final int Y) {
         backBufferGraphics.setFont(fontRegular);
 
-        int barX = 10; // 체력 바의 X 좌표
-        int barY = 10; // 체력 바의 Y 좌표
-        int barWidth = 200; // 체력 바의 최대 너비
-        int barHeight = 20; // 체력 바의 높이
-        int hp = Core.getStatusManager().getMaxHp(); // 최대 체력
+        final int WIDTH = 20; // 체력 바의 최대 너비
+        final int HEIGHT = 150; // 체력 바의 높이
 
         // 체력 바의 테두리 그리기
-        backBufferGraphics.setColor(Color.GRAY);
-        backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
+        backBufferGraphics.setColor(Color.GREEN);
+        backBufferGraphics.drawRect(X, Y, WIDTH, HEIGHT);
 
         // 현재 체력에 따른 바의 너비 계산
-        int healthWidth = (int) ((double) lives / hp * barWidth);
+        final int HP_HEIGHT = (int) ((double) HP / MAX_HP * HEIGHT);
+        final int HP_BLANK_HEIGHT = HEIGHT - HP_HEIGHT;
 
         // 체력 바 채우기
         backBufferGraphics.setColor(Color.RED); // 체력 바의 색상
-        backBufferGraphics.fillRect(barX + 1, barY + 1, healthWidth - 1, barHeight - 1);
+        backBufferGraphics.fillRect(X + 1, Y + HP_BLANK_HEIGHT + 1, WIDTH - 1, HP_HEIGHT - 1);
 
         // 체력 수치 표시
-        backBufferGraphics.setColor(Color.WHITE);
-        String hpText = +lives + "/" + hp;
-        int textX = barX + (barWidth - fontRegularMetrics.stringWidth(hpText)) / 2;
-        int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2)
-            + fontRegularMetrics.getAscent();
-        backBufferGraphics.drawString(hpText, textX, textY);
+//        backBufferGraphics.setColor(Color.WHITE);
+//        String hpText = HP + "/" + MAX_HP;
+//        int textX = X + (WIDTH - fontRegularMetrics.stringWidth(hpText)) / 2;
+//        int textY = Y + ((HEIGHT - fontRegularMetrics.getHeight()) / 2)
+//            + fontRegularMetrics.getAscent();
+//        backBufferGraphics.drawString(hpText, textX, textY);
     }
 
     /**
@@ -644,11 +666,12 @@ public final class DrawManager {
      * @param screen       화면 객체
      * @param survivalTime 현재 생존 시간
      */
-    public void drawSurvivalTime(final Screen screen, final int survivalTime) {
+    public void drawSurvivalTime(final GameScreen gameScreen, final int X, final int Y) {
+        final int SURVIVAL_TIME = gameScreen.getSurvivalTime();
         backBufferGraphics.setFont(fontRegular);
         backBufferGraphics.setColor(Color.WHITE);
-        String survivalTimeString = String.format("%d S", survivalTime);
-        backBufferGraphics.drawString(survivalTimeString, screen.getWidth() - 60, 25);
+        String survivalTimeString = String.format("%d Sec", SURVIVAL_TIME);
+        backBufferGraphics.drawString(survivalTimeString, X, Y);
     }
 
     public void drawItemBox(final int position_X, final int position_Y) {
@@ -937,15 +960,16 @@ public final class DrawManager {
      * @param screen Screen to draw on.
      * @param level  Current level of the player.
      */
-    public void drawLevel(final Screen screen, final int level) {
+    public void drawLevel(final GameScreen gameScreen, final int X, final int Y) {
+        final int LEVEL = gameScreen.getPlayerLevel();
+
         backBufferGraphics.setFont(fontRegular);
-        String levelText = "LV. " + level; // 표시할 텍스트
+        String levelText = "Ship LV. " + LEVEL; // 표시할 텍스트
 
         // 텍스트 색상 설정
         backBufferGraphics.setColor(Color.WHITE);
 
-        // 텍스트를 화면에 그리기
-        drawCenteredRegularString(screen, levelText, 25);
+        backBufferGraphics.drawString(levelText, X, Y);
     }
 
     /**
@@ -956,35 +980,36 @@ public final class DrawManager {
      * @param experienceThreshold Experience threshold for the next level.
      */
     public void drawExperienceBar(final Screen screen, final int currentExperience,
-        final int experienceThreshold, final int barHeight) {
+        final int experienceThreshold, final int yPosition) {
         backBufferGraphics.setFont(fontRegular);
-
-        // 경험치 바의 위치와 크기 설정
-        int barX = 0; // 화면 왼쪽
-        int barY = screen.getHeight() - barHeight; // 화면 하단에서 경험치 바 크기 위
-        int barWidth = screen.getWidth(); // 화면 전체 너비
+        final int BAR_WIDTH = screen.getWidth();
+        final int BAR_HEIGHT = 30;
+        final int X_POSITION = 0;
+        final int Y_POSITION = yPosition - BAR_HEIGHT;
 
         // 경험치 비율 계산
         double experienceRatio = (double) currentExperience / experienceThreshold;
-        int filledWidth = (int) (experienceRatio * barWidth);
+        int filledWidth = (int) (experienceRatio * BAR_WIDTH);
 
         // 경험치 바 배경 (검은색으로 전체 채우기)
         backBufferGraphics.setColor(Color.BLACK);
-        backBufferGraphics.fillRect(barX, barY + 1, barWidth, barHeight - 1);
+        backBufferGraphics.fillRect(X_POSITION, Y_POSITION, BAR_WIDTH, BAR_HEIGHT);
 
         // 경험치 바 채워진 부분 (초록색)
         backBufferGraphics.setColor(Color.GREEN);
-        backBufferGraphics.fillRect(barX, barY, filledWidth, barHeight);
+        backBufferGraphics.fillRect(X_POSITION, Y_POSITION, filledWidth, BAR_HEIGHT);
 
         // 경험치 텍스트 (중앙에 표시)
         String expText = currentExperience + " / " + experienceThreshold + " EXP";
-        int textX = barX + (barWidth - fontRegularMetrics.stringWidth(expText)) / 2;
-        int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2)
-            + fontRegularMetrics.getAscent();
+        int textX = X_POSITION + (BAR_WIDTH - fontRegularMetrics.stringWidth(expText)) / 2;
+        int textY = Y_POSITION + (BAR_HEIGHT + fontRegularMetrics.getAscent()) / 2;
 
         // 경험치 텍스트 색상
         backBufferGraphics.setColor(Color.WHITE);
         backBufferGraphics.drawString(expText, textX, textY);
+
+        // 게임 화면과 분리하는 수평선 그리기
+        drawHorizontalLine(screen, Y_POSITION - 2);
     }
 
     /**
@@ -1130,5 +1155,63 @@ public final class DrawManager {
 
         // 메시지 그리기
         drawCenteredRegularString(screen, "PRESS ENTER/SPACE TO START", screen.getHeight() / 2);
+    }
+
+    public void drawIngameUI(GameScreen gameScreen, Ship ship, int maxHp, int hp, int shipsDestroyed, StatusManager status, int currentExperience, int experienceThreshold,
+        int playerLevel, int survivalTime, int shipID) {
+        final int UI_HEIGHT = 200;
+        final int SCREEN_WIDTH = gameScreen.getWidth();
+        final int SCREEN_HEIGHT = gameScreen.getHeight();
+
+        backBufferGraphics.setColor(Color.BLACK);
+        backBufferGraphics.fillRect(0, SCREEN_HEIGHT - UI_HEIGHT, SCREEN_WIDTH, UI_HEIGHT);
+        drawHorizontalLine(gameScreen, SCREEN_HEIGHT - UI_HEIGHT - 2);
+        drawExperienceBar(gameScreen, currentExperience, experienceThreshold, SCREEN_HEIGHT - UI_HEIGHT - 2);
+        drawUltGauge(gameScreen, ship);
+        drawLives(gameScreen, hp, maxHp, 25 + 100 + 25, SCREEN_HEIGHT - UI_HEIGHT + 25);
+        backBufferGraphics.setColor(Color.GREEN);
+//        backBufferGraphics.drawLine(25 + 100 + 25 + 20 + 25, SCREEN_HEIGHT - UI_HEIGHT, 25 + 100+ 25 + 20 + 25, SCREEN_HEIGHT);
+//        backBufferGraphics.drawLine(25 + 100 + 25 + 20 + 25 + 1, SCREEN_HEIGHT - UI_HEIGHT, 25 + 100+ 25 + 20 + 25 + 1, SCREEN_HEIGHT);
+//        backBufferGraphics.drawLine(SCREEN_WIDTH - (25 + 150 + 25), SCREEN_HEIGHT - UI_HEIGHT, SCREEN_WIDTH - (25 + 150 + 25), SCREEN_HEIGHT);
+//        backBufferGraphics.drawLine(SCREEN_WIDTH - (25 + 150 + 25 + 1), SCREEN_HEIGHT - UI_HEIGHT, SCREEN_WIDTH - (25 + 150 + 25 + 1), SCREEN_HEIGHT);
+// 195 | 225 -> 720 - 420 = 300
+        drawLevel(gameScreen, 30, SCREEN_HEIGHT - 25);
+        drawSurvivalTime(gameScreen, 30, SCREEN_HEIGHT - 50);
+
+        // 함선 그리기
+        backBufferGraphics.setColor(Color.GREEN);
+        backBufferGraphics.drawRect(25, SCREEN_HEIGHT - UI_HEIGHT + 25, 100, 100);
+        drawStats(gameScreen, 195, SCREEN_HEIGHT - UI_HEIGHT + 25);
+    }
+
+    public void drawStats(GameScreen gameScreen, final int X, final int Y) {
+        List<Item> items = gameScreen.getItemList().getItems();
+        int rangeUpItemLvl = items.get(0).getLevel();
+        int healthUpItemLvl = items.get(1).getLevel();
+        int AttackSpeedUpItemLvl = items.get(2).getLevel();
+        int BulletSpeedUpItemLvl = items.get(3).getLevel();
+        int MoveSpeedUpItemLvl = items.get(4).getLevel();
+        int HpRegenItemLvl = items.get(5).getLevel();
+        int UltRegenItemLvl = items.get(6).getLevel();
+
+        int[] itemLvls = { rangeUpItemLvl, AttackSpeedUpItemLvl, BulletSpeedUpItemLvl, MoveSpeedUpItemLvl };
+
+//        backBufferGraphics.setColor(Color.PINK);
+//        backBufferGraphics.fillRect(X + 40, Y, 270, 150);
+        backBufferGraphics.setColor(Color.GREEN);
+
+        int count = 0;
+        for (int itemLvl : itemLvls) {
+            backBufferGraphics.drawRect(X, Y + (30 + 10) * count, 30, 30);
+
+            for (int i = 0; i < 10; i++) {
+                if (i <= itemLvl) {
+                    backBufferGraphics.fillRect(X + 40 + (18 + 10) * i, Y + 40 * count, 18, 30); // 채워진 박스
+                } else {
+                    backBufferGraphics.drawRect(X + 40 + (18 + 10) * i, Y + 40 * count, 18, 30); // 빈 박스
+                }
+            }
+            count++;
+        }
     }
 }

@@ -458,13 +458,14 @@ public class GameScreen extends Screen {
         enemyShipSet.draw();
 
         // Interface.
-        drawManager.drawLives(this, this.hp);
-        drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
-        drawManager.drawLevel(this, this.playerLevel); // 현재 레벨 그리기
-        drawManager.drawHorizontalLine(this, this.height - EXPERIENCE_BAR_HEIGHT - 1);
-        drawManager.drawExperienceBar(this, this.currentExperience,
-            EXPERIENCE_THRESHOLD, EXPERIENCE_BAR_HEIGHT); // 경험치 바 그리기
-        drawManager.drawUltGauge(this, this.ship); // 궁극기 게이지 그리기
+//        drawManager.drawLives(this, this.hp);
+//        drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
+//        drawManager.drawLevel(this, this.playerLevel); // 현재 레벨 그리기
+//        drawManager.drawHorizontalLine(this, this.height - EXPERIENCE_BAR_HEIGHT - 1);
+//        drawManager.drawExperienceBar(this, this.currentExperience,
+//            EXPERIENCE_THRESHOLD, EXPERIENCE_BAR_HEIGHT); // 경험치 바 그리기
+//        drawManager.drawUltGauge(this, this.ship); // 궁극기 게이지 그리기
+        drawManager.drawIngameUI(this, this.ship, this.maxHp, this.hp, this.shipsDestroyed, this.status, this.currentExperience, EXPERIENCE_THRESHOLD, this.playerLevel, this.survivalTime, this.shipID); // UI 그리기
 
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {
@@ -475,7 +476,7 @@ public class GameScreen extends Screen {
         }
 
         // 현재 levelTime 그리기
-        drawManager.drawSurvivalTime(this, survivalTime);
+//        drawManager.drawSurvivalTime(this, survivalTime);
 
         drawManager.completeDrawing(this);
     }
@@ -697,5 +698,17 @@ public class GameScreen extends Screen {
     public final GameState getGameState() {
         return new GameState(this.hp,
             this.bulletsShot, this.shipsDestroyed, this.survivalTime);
+    }
+
+    public final ItemList getItemList() {
+        return GameScreen.items;
+    }
+
+    public final int getPlayerLevel() {
+        return this.playerLevel;
+    }
+
+    public final int getSurvivalTime() {
+        return this.survivalTime;
     }
 }
