@@ -364,20 +364,25 @@ public class BossScreen extends Screen {
             if (this.boss.isPattern()) {
                 /// 1페이즈 -> 2페이즈 패턴
                 if (this.boss.getPhase() == 2) {
-                    // 보스가 첫 번째 패턴중임을 설정
-                    this.boss.setPhaseOnePattern(true);
-                    // 보스가 다 이동했는지 확인을 위한 변수
-                    int checkX =
-                        (this.getWidth() / 2 - this.boss.getWidth() / 2) - this.boss.getPositionX();
-                    int checkY = (this.getHeight() / 2 - this.boss.getHeight() / 2)
-                        - this.boss.getPositionY();
-                    if (!(checkX < 2 && checkX > -2 && checkY < 2 && checkY > -2)) {
-                        // 보스가 화면 가운데로 이동
+                    // 보스가 다 이동을 안했다면
+                    if (!this.boss.isPhaseOneMoveFinished()) {
+                            // 보스가 화면 가운데로 이동
                         this.boss.phaseOneMove(this.getWidth() / 2 - this.boss.getWidth() / 2,
                             this.getHeight() / 2 - this.boss.getHeight() / 2);
+
+                        int checkX =
+                            (this.getWidth() / 2 - this.boss.getWidth() / 2)
+                                - this.boss.getPositionX();
+                        int checkY = (this.getHeight() / 2 - this.boss.getHeight() / 2)
+                            - this.boss.getPositionY();
+                        if (checkX < 2 && checkX > -2 && checkY < 2 && checkY > -2) {
+                            // 보스가 다 이동했으면 이동한 것으로 설정
+                            this.boss.setPhaseOneMoveFinished(true);
+                        }
                     }
                     // 보스의 이동이 완료된 경우 실행되는 부분
                     else {
+                        this.logger.info(""+ phaseOneCounter);
                         // 보스가 첫 번째 패턴중인 상태면 실행되는 부분
                         if (this.boss.isPhaseOnePattern()) {
                             if (this.phaseOneCounter == 0 || this.phaseOneCounter == 2 || this.phaseOneCounter == 4) {
@@ -402,15 +407,46 @@ public class BossScreen extends Screen {
                                 }
                             } else {
                                 // phaseOneCounter가 6 이상이 된 경우 실행되는 부분
-
+                                if (phaseOneCounter == 6) {
+                                    // 한번만 쿨타임을 설정
+                                    this.boss.setBasicBulletInterval(200);
+                                    phaseOneCounter++;
+                                }
+                                if (phaseOneCounter < 50) {
+                                    // 플레이어를 향해 총알을 난사
+                                    phaseOneCounter += this.boss.shootBullet(this.bullets, getBulletDirection());
+                                } else {
+                                    // 페이즈1에서 2페이즈 패턴 종료
+                                    this.boss.setPhaseOnePattern(false);
+                                }
                             }
                         }
                         // 보스가 첫 번째 패턴을 끝난 직후 실행되는 부분
                         else {
+                            //보스 원위치로 이동
+                            int checkX =
+                                (this.width / 2 - this.boss.getWidth() / 2) - this.boss.getPositionX();
+                            int checkY = (SEPARATION_LINE_HEIGHT - this.boss.getHeight() / 2)
+                                - this.boss.getPositionY();
 
+                            // 아직 원위치로 다 이동 안했으면
+                            if (!(checkX < 2 && checkX > -2 && checkY < 2 && checkY > -2)) {
+                                // 보스가 원위치로 이동
+                                this.boss.phaseOneMove(this.width / 2 - this.boss.getWidth() / 2,
+                                    SEPARATION_LINE_HEIGHT - this.boss.getHeight() / 2);
+                            } else {
+                                // 원위치로 모두 이동했으면 패턴 상태 종료
+                                this.boss.setPattern(false);
+                                // 기본공격 쿨다운 정상화
+                                this.boss.setBasicBulletInterval();
+                                // 보스 무적 상태 해제
+                                this.boss.setInvincible(false);
+                            }
                         }
                     }
-                }
+                } /// 1페이즈 -> 2페이즈 패턴 종료
+
+
             } else {
                 // 보스 패턴A 발동 메소드
                 if (bossBasicBullet.checkFinished()) {
@@ -465,6 +501,13 @@ public class BossScreen extends Screen {
                     this.boss.setPattern(true);
                     // 보스 무적
                     this.boss.setInvincible(true);
+                    if (this.boss.getPhase() == 2) {
+                        // 2페이즈면 첫번째 큰 패턴 시작
+                        this.boss.setPhaseOnePattern(true);
+                    } else if (this.boss.getPhase() == 3) {
+                        // 3페이즈면 두번째 큰 패턴 시작
+
+                    }
                 }
             }
         }
@@ -701,16 +744,19 @@ public class BossScreen extends Screen {
         int dy =
             (this.ship.getPositionY() + this.ship.getHeight() / 2) - (this.boss.getPositionY()
                 + this.boss.getHeight());
-        // 빗변 길이 계산
-        double length = Math.sqrt(dx * dx + dy * dy);
-        // 코사인 값 계산 (인접변 / 빗변)
-        double cosTheta = dx / length;
-        // 역코사인으로 각도 계산 (라디안 값을 반환)
-        double thetaRad = Math.acos(cosTheta);
+
+        // 라디안 단위로 방향 계산
+        double thetaRad = Math.atan2(dy, dx);
+
         // 라디안을 각도로 변환
         double thetaDeg = Math.toDegrees(thetaRad);
-        // 각도를 보정하여 180에서 뺀 값으로 반환
-        return (thetaDeg) % 360;
+
+        // 각도를 0~360도 범위로 변환
+        if (thetaDeg < 0) {
+            thetaDeg += 360;
+        }
+
+        return thetaDeg;
     }
 
     /**

@@ -55,6 +55,7 @@ public class Boss extends Entity {
     private Random random; // 랜덤 속도 생성기
 
     private boolean isPhaseOnePattern;
+    private boolean isPhaseOneMoveFinished;
 
     /**
      * Constructor for Boss entity. Initializes the Boss with the first phase and sets the initial
@@ -76,6 +77,7 @@ public class Boss extends Entity {
 
         // 각 패턴 발동중인지에 대한 부분 false로 초기화
         this.isPhaseOnePattern = false;
+        this.isPhaseOneMoveFinished = false;
 
         //보스의 탄막 기본공격 간격
         this.basicBulletInterval = Core.getVariableCooldown(1400, 500);
@@ -158,7 +160,7 @@ public class Boss extends Entity {
             for (int i = 1; i <= 18; i++) { // 1부터 시작하여 일정 간격 배치
                 int bulletX = i * 42; // 각 총알의 X 좌표
                 // 총알 생성
-                bullets.add(BulletPool.getBossBullet(bulletX, 50, 1.5, 10, 90));
+                bullets.add(BulletPool.getBossBullet(bulletX, 50, 2.5, 10, 90));
                 this.logger.info("Horizontal Bullet Creation!");
             }
 
@@ -176,13 +178,24 @@ public class Boss extends Entity {
             for (int i = 1; i <= 18; i++) { // 1부터 시작하여 일정 간격 배치
                 int bulletY = i * 45; // 각 총알의 X 좌표
                 // 총알 생성
-                bullets.add(BulletPool.getBossBullet(20, bulletY, 1, 10, 0));
+                bullets.add(BulletPool.getBossBullet(20, bulletY, 2, 10, 0));
                 this.logger.info("Vertical Bullet Creation!");
             }
 
             return 1; // 성공적으로 발사
         } else {
             return 0; // 쿨타임 중
+        }
+    }
+
+    public int shootBullet(final Set<Bullet> bullets, final double direction) {
+        if (this.basicBulletInterval.checkFinished()) {
+            this.basicBulletInterval.reset();
+
+            bullets.add(BulletPool.getBossBullet(positionX + getWidth() / 2, positionY + getHeight(), 4, 10, direction));
+            return 1;
+        } else {
+            return 0;
         }
     }
 
@@ -222,6 +235,12 @@ public class Boss extends Entity {
         }
 
     }
+    //보스가 1페이즈 큰 패턴에서 다 이동했는지에 대한 메소드
+    public boolean isPhaseOneMoveFinished() {
+        return this.isPhaseOneMoveFinished;
+    }
+
+    public void setPhaseOneMoveFinished(boolean value) {this.isPhaseOneMoveFinished = value;}
 
     private void attackPhase2() {
         // Phase 2 attack logic (missile launch)
