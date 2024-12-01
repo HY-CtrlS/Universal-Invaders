@@ -413,7 +413,7 @@ public class BossScreen extends Screen {
                                 // phaseOneCounter가 6 이상이 된 경우 실행되는 부분
                                 if (phaseOneCounter == 6) {
                                     // 한번만 쿨타임을 설정
-                                    this.boss.setBasicBulletInterval(200);
+                                    this.boss.setShootInterval(200, 0);
                                     phaseOneCounter++;
                                 }
                                 if (phaseOneCounter < 50) {
@@ -432,19 +432,17 @@ public class BossScreen extends Screen {
                             int checkX =
                                 (this.width / 2 - this.boss.getWidth() / 2)
                                     - this.boss.getPositionX();
-                            int checkY = (SEPARATION_LINE_HEIGHT - this.boss.getHeight() / 2)
+                            int checkY = (SEPARATION_LINE_HEIGHT + 50)
                                 - this.boss.getPositionY();
 
                             // 아직 원위치로 다 이동 안했으면
                             if (!(checkX < 2 && checkX > -2 && checkY < 2 && checkY > -2)) {
                                 // 보스가 원위치로 이동
                                 this.boss.phaseOneMove(this.width / 2 - this.boss.getWidth() / 2,
-                                    SEPARATION_LINE_HEIGHT - this.boss.getHeight() / 2);
+                                    SEPARATION_LINE_HEIGHT + 50);
                             } else {
                                 // 원위치로 모두 이동했으면 패턴 상태 종료
                                 this.boss.setPattern(false);
-                                // 기본공격 쿨다운 정상화
-                                this.boss.setBasicBulletInterval();
                                 // 보스 무적 상태 해제
                                 this.boss.setInvincible(false);
                                 // PhaseCounter 초기화
@@ -478,8 +476,51 @@ public class BossScreen extends Screen {
                     else {
                         this.logger.info("" + phaseOneCounter);
                         // 보스가 두 번째 패턴중인 상태면 실행되는 부분
-                        if (this.boss.isPhaseOnePattern()) {
+                        if (this.boss.isPhaseTwoPattern()) {
+                            if (phaseOneCounter == 0) {
+                                // 패턴중 기본공격 속도 설정
+                                this.boss.setShootInterval(2100, 1000);
+                                // 페이즈 카운터 증가
+                                phaseOneCounter++;
+                            }
 
+                            //각 조건마다 격자로 총알 생성
+                            if (phaseOneCounter == 7) {
+                                this.boss.createHorizontalBullets(this.bullets);
+                                phaseOneCounter += this.boss.createHorizontalBulletsTwo(this.bullets);
+                                // 마지막 공격 발사 했으면 페이즈 카운터 증가
+                            } else if (phaseOneCounter == 26) {
+                                this.boss.createHorizontalBulletsTwo(this.bullets);
+                                phaseOneCounter +=  this.boss.createVerticalBullets(this.bullets);
+                                // 마지막 공격 발사 했으면 페이즈 카운터 증가
+                            } else if (phaseOneCounter == 21) {
+                                this.boss.createVerticalBulletsTwo(this.bullets);
+                                phaseOneCounter +=  this.boss.createHorizontalBullets(this.bullets);
+                                // 마지막 공격 발사 했으면 페이즈 카운터 증가
+                            } else if (phaseOneCounter == 14) {
+                                this.boss.createVerticalBullets(this.bullets);
+                                phaseOneCounter +=  this.boss.createHorizontalBullets(this.bullets);
+                                // 마지막 공격 발사 했으면 페이즈 카운터 증가
+                            } else if (phaseOneCounter < 27 && phaseOneCounter % 3 == 0) {
+                                // 페이즈 카운터가 3의 배수일 때, 원형 공격 발사
+                                phaseOneCounter += this.boss.spreadBullet(this.bullets, phaseOneCounter, 360, random.nextInt(4) + 16);
+                                // 발사했으면 페이즈 카운터 증가
+                            } else {
+                                // 위 경우가 아닌 경우에는 기본 공격함 0.7초에서 2.7초 간격으로 빠른 공격을 발사함
+                                phaseOneCounter += this.boss.shootBullet(this.bullets, getBulletDirection());
+                            }
+
+                            if (phaseOneCounter == 27) {
+                                // 페이즈 카운터가 27일 때, 공격속도 조정
+                                this.boss.setBasicBulletInterval(600, 300);
+                            }
+                            if (phaseOneCounter < 40) {
+                                // 페이즈 카운터가 40이 될때까지 원형공격 시작
+                                phaseOneCounter += this.boss.spreadBullet(this.bullets, phaseOneCounter, 360, random.nextInt(12) + 8);
+                            } else {
+                                // 2번 큰 패턴 종료
+                                this.boss.setPhaseTwoPattern(false);
+                            }
                         }
                         // 보스가 두 번째 패턴을 끝난 직후 실행되는 부분
                         else {
@@ -487,17 +528,19 @@ public class BossScreen extends Screen {
                             int checkX =
                                 (this.width / 2 - this.boss.getWidth() / 2)
                                     - this.boss.getPositionX();
-                            int checkY = (SEPARATION_LINE_HEIGHT - this.boss.getHeight() / 2)
+                            int checkY = (SEPARATION_LINE_HEIGHT + 50)
                                 - this.boss.getPositionY();
 
                             // 아직 원위치로 다 이동 안했으면
                             if (!(checkX < 2 && checkX > -2 && checkY < 2 && checkY > -2)) {
                                 // 보스가 원위치로 이동
                                 this.boss.phaseOneMove(this.width / 2 - this.boss.getWidth() / 2,
-                                    SEPARATION_LINE_HEIGHT - this.boss.getHeight() / 2);
+                                    SEPARATION_LINE_HEIGHT + 50);
                             } else {
                                 // 원위치로 모두 이동했으면 패턴 상태 종료
                                 this.boss.setPattern(false);
+                                // 기본공격속도 정상화
+                                this.boss.setBasicBulletInterval();
                                 // 보스 무적 상태 해제
                                 this.boss.setInvincible(false);
                                 // PhaseCounter 초기화

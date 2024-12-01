@@ -47,6 +47,9 @@ public class Boss extends Entity {
     private Cooldown basicBulletInterval;
     private Cooldown horizontalBulletCooldown;
     private Cooldown verticalBulletCooldown;
+    private Cooldown horizontalBulletTwoCooldown;
+    private Cooldown verticalBulletTwoCooldown;
+    private Cooldown shootInterval;
 
     private Logger logger;
 
@@ -87,13 +90,21 @@ public class Boss extends Entity {
         this.basicBulletInterval = Core.getVariableCooldown(1400, 500);
         this.basicBulletInterval.reset();
 
+        // 보스의 단일 탄막 공격 간격
+        this.shootInterval = Core.getCooldown(200);
+        this.shootInterval.reset();
+
         //보스의 가로 탄막 공격 쿨타임
-        this.horizontalBulletCooldown = Core.getCooldown(2000);
+        this.horizontalBulletCooldown = Core.getCooldown(1000);
         this.horizontalBulletCooldown.reset();
+        this.horizontalBulletTwoCooldown = Core.getCooldown(1000);
+        this.horizontalBulletTwoCooldown.reset();
 
         //보스의 세로 탄막 공격 쿨타임
-        this.verticalBulletCooldown = Core.getCooldown(2000);
+        this.verticalBulletCooldown = Core.getCooldown(1000);
         this.verticalBulletCooldown.reset();
+        this.verticalBulletTwoCooldown = Core.getCooldown(1000);
+        this.verticalBulletTwoCooldown.reset();
 
         this.logger = Core.getLogger();
 
@@ -174,13 +185,31 @@ public class Boss extends Entity {
         }
     }
 
+    // 화면 아래에 가로로 총알을 생성하는 메소드
+    public int createHorizontalBulletsTwo(final Set<Bullet> bullets) {
+        if (this.horizontalBulletTwoCooldown.checkFinished()) {
+            this.horizontalBulletTwoCooldown.reset();
+
+            for (int i = 0; i < 18; i++) { // 1부터 시작하여 일정 간격 배치
+                int bulletX = i * 42 + 21; // 각 총알의 X 좌표
+                // 총알 생성
+                bullets.add(BulletPool.getBossBullet(bulletX, 750, 2.5, 10, 270));
+                this.logger.info("Horizontal Bullet two Creation!");
+            }
+
+            return 1; // 성공적으로 발사
+        } else {
+            return 0; // 쿨타임 중
+        }
+    }
+
     // 화면 왼쪽에 세로로 총알을 22개 생성하는 메소드
     public int createVerticalBullets(final Set<Bullet> bullets) {
         if (this.verticalBulletCooldown.checkFinished()) {
             this.verticalBulletCooldown.reset();
 
             for (int i = 1; i <= 18; i++) { // 1부터 시작하여 일정 간격 배치
-                int bulletY = i * 45; // 각 총알의 X 좌표
+                int bulletY = i * 46; // 각 총알의 Y 좌표
                 // 총알 생성
                 bullets.add(BulletPool.getBossBullet(20, bulletY, 2, 10, 0));
                 this.logger.info("Vertical Bullet Creation!");
@@ -192,9 +221,27 @@ public class Boss extends Entity {
         }
     }
 
+    // 화면 오른쪽에 세로로 총알을 22개 생성하는 메소드
+    public int createVerticalBulletsTwo(final Set<Bullet> bullets) {
+        if (this.verticalBulletTwoCooldown.checkFinished()) {
+            this.verticalBulletTwoCooldown.reset();
+
+            for (int i = 0; i < 18; i++) { // 1부터 시작하여 일정 간격 배치
+                int bulletY = i * 45 + 22; // 각 총알의 Y 좌표
+                // 총알 생성
+                bullets.add(BulletPool.getBossBullet(700, bulletY, 2, 10, 180));
+                this.logger.info("Vertical Bullet Creation!");
+            }
+
+            return 1; // 성공적으로 발사
+        } else {
+            return 0; // 쿨타임 중
+        }
+    }
+
     public int shootBullet(final Set<Bullet> bullets, final double direction) {
-        if (this.basicBulletInterval.checkFinished()) {
-            this.basicBulletInterval.reset();
+        if (this.shootInterval.checkFinished()) {
+            this.shootInterval.reset();
 
             bullets.add(
                 BulletPool.getBossBullet(positionX + getWidth() / 2, positionY + getHeight(), 4, 10,
@@ -393,9 +440,19 @@ public class Boss extends Entity {
         return this.movingRight;
     }
 
+    // value로 고정된 단일 탄막 쿨타임으로 변경
+    public void setShootInterval(int value, int variance) {
+        if (variance != 0) {
+            this.shootInterval = Core.getVariableCooldown(value, variance);
+        } else {
+            this.shootInterval = Core.getCooldown(value);
+        }
+        this.shootInterval.reset();
+    }
+
     // value로 고정된 쿨타임으로 변경
-    public void setBasicBulletInterval(int value) {
-        this.basicBulletInterval = Core.getCooldown(value);
+    public void setBasicBulletInterval(int value, int variance) {
+        this.basicBulletInterval = Core.getVariableCooldown(value, variance);
         this.basicBulletInterval.reset();
     }
 
