@@ -1118,7 +1118,7 @@ public final class DrawManager {
         return titleTypingIndex == titleString.length();
     }
 
-    public void drawStartMessage(final Screen screen) {
+    public void drawStartMessage(final Screen screen, String message) {
         // 현재 시간
         long currentTime = System.currentTimeMillis();
 
@@ -1132,6 +1132,6 @@ public final class DrawManager {
         backBufferGraphics.setColor(showStartMessage ? Color.WHITE : Color.GRAY);
 
         // 메시지 그리기
-        drawCenteredRegularString(screen, "PRESS ENTER/SPACE TO START", screen.getHeight() / 2);
+        drawCenteredRegularString(screen, message, screen.getHeight() / 2);
     }
 }

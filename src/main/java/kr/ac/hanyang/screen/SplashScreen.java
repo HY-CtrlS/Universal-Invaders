@@ -128,7 +128,7 @@ public class SplashScreen extends Screen {
         }
 
         if (readyToStart) {
-            drawManager.drawStartMessage(this);
+            drawManager.drawStartMessage(this, "Press SPACE or ENTER to start");
         }
     }
 
