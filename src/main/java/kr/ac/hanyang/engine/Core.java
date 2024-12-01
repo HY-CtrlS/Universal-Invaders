@@ -92,6 +92,11 @@ public final class Core {
                     currentScreen = new SettingScreen(width, height, FPS);
                     returnCode = handleScreen(currentScreen, "setting screen");
                     break;
+                case 5:
+                    // 엔딩 화면
+                    currentScreen = new EndingScreen(width, height, FPS);
+                    returnCode = handleScreen(currentScreen, "ending screen");
+                    break;
                 default:
                     break;
             }
