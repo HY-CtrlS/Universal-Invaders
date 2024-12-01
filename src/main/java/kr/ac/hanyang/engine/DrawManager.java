@@ -346,23 +346,19 @@ public final class DrawManager {
 
         g2d.setColor(Color.GREEN);
         g2d.fillRect(X_POS, Y_POS + RECT_UNFILLED, RECT_SIZE, RECT_FILLED);
-//        logger.info("Ult Gauge: " + ULT_GAUGE + " / " + ULT_THRESHOLD + " (" + ULT_PERCENTAGE + "%)");
-//        logger.info("Ult Gauge: " + ULT_RATIO);
         g2d.setClip(null);
 
         final String ULT_TEXT = ULT_PERCENTAGE + "%";
         backBufferGraphics.setFont(fontBig);
         backBufferGraphics.setColor(Color.WHITE);
-        backBufferGraphics.drawString(ULT_TEXT, X_POS + 75
-            - fontBigMetrics.stringWidth(ULT_TEXT) / 2, Y_POS + 75 + backBufferGraphics.getFontMetrics().getAscent() / 2);
+        backBufferGraphics.drawString(ULT_TEXT, X_POS + RECT_SIZE / 2
+            - fontBigMetrics.stringWidth(ULT_TEXT) / 2, Y_POS + RECT_SIZE / 2 + backBufferGraphics.getFontMetrics().getAscent() / 2);
     }
 
     /**
      * Draws number of remaining lives on screen.
-     *
-     * @param screen Screen to draw on.
      */
-    public void drawLives(final Screen screen, final int HP, final int MAX_HP, final int X, final int Y) {
+    public void drawLives(final int HP, final int MAX_HP, final int X, final int Y) {
         backBufferGraphics.setFont(fontRegular);
 
         final int WIDTH = 20; // 체력 바의 최대 너비
@@ -662,9 +658,6 @@ public final class DrawManager {
 
     /**
      * 현재 생존 시간을 화면에 그립니다.
-     *
-     * @param screen       화면 객체
-     * @param survivalTime 현재 생존 시간
      */
     public void drawSurvivalTime(final GameScreen gameScreen, final int X, final int Y) {
         final int SURVIVAL_TIME = gameScreen.getSurvivalTime();
@@ -956,9 +949,6 @@ public final class DrawManager {
 
     /**
      * Draws the player's current level on screen.
-     *
-     * @param screen Screen to draw on.
-     * @param level  Current level of the player.
      */
     public void drawLevel(final GameScreen gameScreen, final int X, final int Y) {
         final int LEVEL = gameScreen.getPlayerLevel();
@@ -966,9 +956,7 @@ public final class DrawManager {
         backBufferGraphics.setFont(fontRegular);
         String levelText = "Ship LV. " + LEVEL; // 표시할 텍스트
 
-        // 텍스트 색상 설정
         backBufferGraphics.setColor(Color.WHITE);
-
         backBufferGraphics.drawString(levelText, X, Y);
     }
 
@@ -1162,26 +1150,25 @@ public final class DrawManager {
         final int UI_HEIGHT = 200;
         final int SCREEN_WIDTH = gameScreen.getWidth();
         final int SCREEN_HEIGHT = gameScreen.getHeight();
+        final int MARGIN = 25;
+        final int SHIP_SPRITE_BOX_SIZE = 100;
+        final int HP_BAR_WIDTH = 20;
 
+        // UI 검정 배경 채우기
         backBufferGraphics.setColor(Color.BLACK);
         backBufferGraphics.fillRect(0, SCREEN_HEIGHT - UI_HEIGHT, SCREEN_WIDTH, UI_HEIGHT);
+        // UI 경계선 그리기
         drawHorizontalLine(gameScreen, SCREEN_HEIGHT - UI_HEIGHT - 2);
+        // 구성 요소들 그리기
         drawExperienceBar(gameScreen, currentExperience, experienceThreshold, SCREEN_HEIGHT - UI_HEIGHT - 2);
         drawUltGauge(gameScreen, ship);
-        drawLives(gameScreen, hp, maxHp, 25 + 100 + 25, SCREEN_HEIGHT - UI_HEIGHT + 25);
+        drawLives(hp, maxHp, MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN, SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
+        drawLevel(gameScreen, MARGIN + 5, SCREEN_HEIGHT - 25);          // 텍스트의 경우 미관 상 마진에 5픽셀을 더함
+        drawSurvivalTime(gameScreen, MARGIN + 5, SCREEN_HEIGHT - 50);
+        // 함선 스프라이트가 들어갈 박스 그리기
         backBufferGraphics.setColor(Color.GREEN);
-//        backBufferGraphics.drawLine(25 + 100 + 25 + 20 + 25, SCREEN_HEIGHT - UI_HEIGHT, 25 + 100+ 25 + 20 + 25, SCREEN_HEIGHT);
-//        backBufferGraphics.drawLine(25 + 100 + 25 + 20 + 25 + 1, SCREEN_HEIGHT - UI_HEIGHT, 25 + 100+ 25 + 20 + 25 + 1, SCREEN_HEIGHT);
-//        backBufferGraphics.drawLine(SCREEN_WIDTH - (25 + 150 + 25), SCREEN_HEIGHT - UI_HEIGHT, SCREEN_WIDTH - (25 + 150 + 25), SCREEN_HEIGHT);
-//        backBufferGraphics.drawLine(SCREEN_WIDTH - (25 + 150 + 25 + 1), SCREEN_HEIGHT - UI_HEIGHT, SCREEN_WIDTH - (25 + 150 + 25 + 1), SCREEN_HEIGHT);
-// 195 | 225 -> 720 - 420 = 300
-        drawLevel(gameScreen, 30, SCREEN_HEIGHT - 25);
-        drawSurvivalTime(gameScreen, 30, SCREEN_HEIGHT - 50);
-
-        // 함선 그리기
-        backBufferGraphics.setColor(Color.GREEN);
-        backBufferGraphics.drawRect(25, SCREEN_HEIGHT - UI_HEIGHT + 25, 100, 100);
-        drawStats(gameScreen, 195, SCREEN_HEIGHT - UI_HEIGHT + 25);
+        backBufferGraphics.drawRect(MARGIN, SCREEN_HEIGHT - UI_HEIGHT + MARGIN, SHIP_SPRITE_BOX_SIZE, SHIP_SPRITE_BOX_SIZE);
+        drawStats(gameScreen, MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN + HP_BAR_WIDTH + MARGIN, SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
     }
 
     public void drawStats(GameScreen gameScreen, final int X, final int Y) {
@@ -1194,14 +1181,12 @@ public final class DrawManager {
         int HpRegenItemLvl = items.get(5).getLevel();
         int UltRegenItemLvl = items.get(6).getLevel();
 
-        int[] itemLvls = { rangeUpItemLvl, AttackSpeedUpItemLvl, BulletSpeedUpItemLvl, MoveSpeedUpItemLvl };
+        int[] itemLevels = { rangeUpItemLvl, AttackSpeedUpItemLvl, BulletSpeedUpItemLvl, MoveSpeedUpItemLvl };
 
-//        backBufferGraphics.setColor(Color.PINK);
-//        backBufferGraphics.fillRect(X + 40, Y, 270, 150);
+        // 아이템 각각의 레벨을 10칸의 게이지로 표현
         backBufferGraphics.setColor(Color.GREEN);
-
         int count = 0;
-        for (int itemLvl : itemLvls) {
+        for (int itemLvl : itemLevels) {
             backBufferGraphics.drawRect(X, Y + (30 + 10) * count, 30, 30);
 
             for (int i = 0; i < 10; i++) {

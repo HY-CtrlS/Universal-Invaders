@@ -457,14 +457,7 @@ public class GameScreen extends Screen {
 
         enemyShipSet.draw();
 
-        // Interface.
-//        drawManager.drawLives(this, this.hp);
-//        drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
-//        drawManager.drawLevel(this, this.playerLevel); // 현재 레벨 그리기
-//        drawManager.drawHorizontalLine(this, this.height - EXPERIENCE_BAR_HEIGHT - 1);
-//        drawManager.drawExperienceBar(this, this.currentExperience,
-//            EXPERIENCE_THRESHOLD, EXPERIENCE_BAR_HEIGHT); // 경험치 바 그리기
-//        drawManager.drawUltGauge(this, this.ship); // 궁극기 게이지 그리기
+        // 인게임 UI 그리기
         drawManager.drawIngameUI(this, this.ship, this.maxHp, this.hp, this.shipsDestroyed, this.status, this.currentExperience, EXPERIENCE_THRESHOLD, this.playerLevel, this.survivalTime, this.shipID); // UI 그리기
 
         // Countdown to game start.
@@ -474,9 +467,6 @@ public class GameScreen extends Screen {
                 - this.gameStartTime)) / 1000);
             drawManager.drawCountDown(this, countdown);
         }
-
-        // 현재 levelTime 그리기
-//        drawManager.drawSurvivalTime(this, survivalTime);
 
         drawManager.completeDrawing(this);
     }
