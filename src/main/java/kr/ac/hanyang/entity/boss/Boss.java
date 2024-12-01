@@ -196,7 +196,9 @@ public class Boss extends Entity {
         if (this.basicBulletInterval.checkFinished()) {
             this.basicBulletInterval.reset();
 
-            bullets.add(BulletPool.getBossBullet(positionX + getWidth() / 2, positionY + getHeight(), 4, 10, direction));
+            bullets.add(
+                BulletPool.getBossBullet(positionX + getWidth() / 2, positionY + getHeight(), 4, 10,
+                    direction));
             return 1;
         } else {
             return 0;
@@ -225,7 +227,7 @@ public class Boss extends Entity {
     // 보스의 좌우 이동을 구현하는 메소드
     public void move() {
         // 보스가 화면의 오른쪽 경계에 도달했는지 확인
-        boolean isRightBorder = this.positionX + this.width + this.speed > 720;
+        boolean isRightBorder = this.positionX + this.width + this.speed > 680;
         // 보스가 화면의 왼쪽 경계에 도달했는지 확인
         boolean isLeftBorder = this.positionX - this.speed < 0;
 
@@ -239,12 +241,15 @@ public class Boss extends Entity {
         }
 
     }
+
     //보스가 1페이즈 큰 패턴에서 다 이동했는지에 대한 메소드
     public boolean isPhaseMoveFinished() {
         return this.isPhaseMoveFinished;
     }
 
-    public void setPhaseMoveFinished(boolean value) {this.isPhaseMoveFinished = value;}
+    public void setPhaseMoveFinished(boolean value) {
+        this.isPhaseMoveFinished = value;
+    }
 
     private void attackPhase2() {
         // Phase 2 attack logic (missile launch)
@@ -322,10 +327,12 @@ public class Boss extends Entity {
     public final boolean isPattern() {
         return this.isPattern;
     }
+
     // 1페이즈 -> 2페이즈 패턴 중인지 판단
-    public final boolean isPhaseOnePattern () {
+    public final boolean isPhaseOnePattern() {
         return this.isPhaseOnePattern;
     }
+
     // 1페이즈 -> 2페이즈 패턴중인지를 설정
     public void setPhaseOnePattern(final boolean value) {
         this.isPhaseOnePattern = value;
@@ -342,6 +349,7 @@ public class Boss extends Entity {
     public void setPattern(boolean value) {
         this.isPattern = value;
     }
+
     public final void changeBossPhase() {
         // 보스가 현재 1페이즈라면
         if (this.phase == 1) {
