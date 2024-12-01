@@ -23,10 +23,10 @@ public class Crystal extends Entity {
     }
 
     public void update() {
-        final int minX = 30;
-        final int maxX = 650;
-        final int minY = 200;
-        final int maxY = 680;
+        final int minX = 49;
+        final int maxX = 611;
+        final int minY = 214;
+        final int maxY = 672;
 
         boolean up = this.positionY == minY;
         boolean down = this.positionY == maxY;

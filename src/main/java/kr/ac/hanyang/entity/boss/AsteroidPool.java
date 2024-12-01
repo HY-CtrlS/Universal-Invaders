@@ -30,27 +30,27 @@ public final class AsteroidPool {
 
     public void createAsteroid(final BossScreen screen) {
         Direction[] directions = {Direction.UP, Direction.DOWN, Direction.RIGHT, Direction.LEFT};
-        int positionX = 100;
-        int positionY = screen.getHeight() - 532;
+        int positionX = 138;
+        int positionY = screen.getHeight() - 462;
         for (int i = 1; i <= 2; i++) {
-            for (int j = 1; j <= 21; j++) {
+            for (int j = 1; j <= 17; j++) {
                 Direction direction = directions[random.nextInt(directions.length)];
                 asteroids.add(new Asteroid(positionX, positionY, direction));
-                positionX += 25;
+                positionX += 26;
             }
-            positionX = 100;
-            positionY = screen.getHeight() - 168;
+            positionX = 138;
+            positionY = screen.getHeight() - 176;
         }
 
-        positionY = screen.getHeight() - 506;
+        positionY = screen.getHeight() - 436;
         for (int i = 1; i <= 2; i++) {
-            for (int j = 1; j <= 13; j++) {
+            for (int j = 1; j <= 11; j++) {
                 Direction direction = directions[random.nextInt(directions.length)];
                 asteroids.add(new Asteroid(positionX, positionY, direction));
                 positionY += 26;
             }
-            positionX = screen.getWidth() - 120;
-            positionY = screen.getHeight() - 506;
+            positionX = 138 + 416;
+            positionY = screen.getHeight() - 436;
         }
     }
 

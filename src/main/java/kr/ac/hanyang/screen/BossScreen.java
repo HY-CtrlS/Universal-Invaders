@@ -89,7 +89,6 @@ public class BossScreen extends Screen {
     private Cooldown createCrystalCooldown;
     private Crystal crystal;
     private AsteroidPool asteroidPool;
-    private Set<Asteroid> asteroids;
 
     //임시 쿨다운 변수
     private Cooldown bossBasicBullet;
@@ -133,7 +132,6 @@ public class BossScreen extends Screen {
         this.missiles = missilePool.getMissiles();
         this.crystal = new Crystal(0, 0);
         this.asteroidPool = new AsteroidPool(this);
-        this.asteroids = asteroidPool.getAsteroids();
 
         // Special input delay / countdown.
         this.gameStartTime = System.currentTimeMillis();
@@ -250,13 +248,12 @@ public class BossScreen extends Screen {
             if (this.boss.getPhase() == 4) {
                 isRightBorder =
                     this.ship.getPositionX() + this.ship.getWidth() + this.ship.getSpeed()
-                        > this.width - 120 - 1;
-                isLeftBorder = this.ship.getPositionX() - this.ship.getSpeed() < 120 + 1;
-                isTopBorder =
-                    this.ship.getPositionY() - this.ship.getSpeed() < this.height - 512 + 1;
+                        > 542 - 1;
+                isLeftBorder = this.ship.getPositionX() - this.ship.getSpeed() < 158 + 1;
+                isTopBorder = this.ship.getPositionY() - this.ship.getSpeed() < 323 + 1;
                 isBottomBorder =
                     this.ship.getPositionY() + this.ship.getHeight() + this.ship.getSpeed()
-                        > this.height - 168 - 1;
+                        > 603 - 1;
             } else {
                 isRightBorder =
                     this.ship.getPositionX() + this.ship.getWidth() + this.ship.getSpeed()
