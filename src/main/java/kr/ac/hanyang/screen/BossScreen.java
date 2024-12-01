@@ -592,13 +592,8 @@ public class BossScreen extends Screen {
                 }
 
                 if (this.boss.getPhase() > 1 && this.createLaserCooldown.checkFinished()) {
-                    int randomY = (int) (Math.random() * 100) - 50;
-                    double direction = Math.random() * 2 - 1;
-                    if (direction > 0) {
-                        laserPool.createHorizontalLaser(this.ship.getPositionY() + randomY);
-                    } else {
-                        laserPool.createHorizontalLaser(this.ship.getPositionY() - randomY);
-                    }
+                    int randomValue = random.nextInt(this.height - 80) + 40;
+                    laserPool.createHorizontalLaser(randomValue);
                     this.createLaserCooldown.reset();
                 }
                 if (this.boss.getPhase() > 2) {
