@@ -15,11 +15,11 @@ public final class AsteroidPool {
     Random random = new Random();
 
 
-    public AsteroidPool(final BossScreen screen) {
+    public AsteroidPool() {
         this.asteroids = new HashSet<>();
         this.drawManager = Core.getDrawManager();
 
-        createAsteroid(screen);
+        createAsteroid();
     }
 
     public void draw() {
@@ -28,10 +28,10 @@ public final class AsteroidPool {
         }
     }
 
-    public void createAsteroid(final BossScreen screen) {
+    public void createAsteroid() {
         Direction[] directions = {Direction.UP, Direction.DOWN, Direction.RIGHT, Direction.LEFT};
         int positionX = 138;
-        int positionY = screen.getHeight() - 462;
+        int positionY = 303;
         for (int i = 1; i <= 2; i++) {
             for (int j = 1; j <= 17; j++) {
                 Direction direction = directions[random.nextInt(directions.length)];
@@ -39,10 +39,10 @@ public final class AsteroidPool {
                 positionX += 26;
             }
             positionX = 138;
-            positionY = screen.getHeight() - 176;
+            positionY = 589;
         }
 
-        positionY = screen.getHeight() - 436;
+        positionY = 303 + 26;
         for (int i = 1; i <= 2; i++) {
             for (int j = 1; j <= 11; j++) {
                 Direction direction = directions[random.nextInt(directions.length)];
@@ -50,7 +50,7 @@ public final class AsteroidPool {
                 positionY += 26;
             }
             positionX = 138 + 416;
-            positionY = screen.getHeight() - 436;
+            positionY = 303 + 26;
         }
     }
 

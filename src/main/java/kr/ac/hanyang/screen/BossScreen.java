@@ -131,7 +131,7 @@ public class BossScreen extends Screen {
         this.missilePool = new MissilePool(this.ship);
         this.missiles = missilePool.getMissiles();
         this.crystal = new Crystal(0, 0);
-        this.asteroidPool = new AsteroidPool(this);
+        this.asteroidPool = new AsteroidPool();
 
         // Special input delay / countdown.
         this.gameStartTime = System.currentTimeMillis();
