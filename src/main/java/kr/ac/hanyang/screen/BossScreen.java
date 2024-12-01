@@ -358,7 +358,12 @@ public class BossScreen extends Screen {
                 this.ship.stopUlt();
                 this.ultActivatedTime.reset();
                 if (this.ship.getShipID() == 1) {
-                    // TODO: 현재 모든 보스의 탄환, 미사일 파괴 + (보스에게 일정 데미지)
+                    // Ship1 궁극기로 보스의 총알과 미사일 파괴, 크리스탈 파괴, 보스에게 일정 데미지
+                    destroyAllAmmo();
+                    if (!this.isPhase4Ready) {
+                        this.boss.getDamaged(30);
+                        this.crystals.clear();
+                    }
                 }
             }
             /// 화면 기본 업데이트 끝
@@ -592,7 +597,11 @@ public class BossScreen extends Screen {
                             this.createLaserCooldown.reset();
                         }
                     }
-                } /// 2페이즈 -> 3페이즈 패턴 끝
+
+                    if (this.boss.getCurrentHp() <= 0) {
+                        // 보스를 최종적으로 클리어 했을 시
+                    }
+                }
 
             } else {
                 // 보스 패턴A 발동 메소드
@@ -646,6 +655,9 @@ public class BossScreen extends Screen {
                 if (this.boss.getCurrentHp() <= 0) {
                     // 보스 페이즈 변환
                     this.boss.changeBossPhase();
+                    if (this.boss.getPhase() == 4) {
+                        destroyAllAmmo();
+                    }
                     // 보스 패턴 시행
                     this.boss.setPattern(true);
                     // 보스 무적
@@ -934,5 +946,10 @@ public class BossScreen extends Screen {
 
     public Cooldown changeCooldown(int ms) {
         return Core.getCooldown(ms);
+    }
+
+    public void destroyAllAmmo() {
+        this.bullets.clear();
+        this.missiles.clear();
     }
 }
