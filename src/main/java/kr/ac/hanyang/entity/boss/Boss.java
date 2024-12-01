@@ -317,9 +317,15 @@ public class Boss extends Entity {
     }
 
     public Color getHpColor() {
-        Color hpColor =
-            (phase == 1) ? PHASE_1_HPCOLOR : ((phase == 2) ? PHASE_2_HPCOLOR : PHASE_3_HPCOLOR);
-        return hpColor;
+        if (phase == 1) {
+            return PHASE_1_HPCOLOR;
+        } else if (phase == 2) {
+            return PHASE_2_HPCOLOR;
+        } else if (phase == 3) {
+            return PHASE_3_HPCOLOR;
+        } else {
+            return PHASE_4_HPCOLOR;
+        }
     }
 
     public Color getNextHpColor() {

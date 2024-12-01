@@ -42,7 +42,7 @@ public final class LaserPool {
 
     // Y좌표에 가로 레이저 생성
     public void createHorizontalLaser(int positionY) {
-        Laser laser = new Laser(this.ship.getPositionX(), positionY, Direction.LEFT);
+        Laser laser = new Laser(0, positionY, Direction.LEFT);
         lasers.add(laser);
         this.logger.info("Create Laser on Y :" + positionY);
     }

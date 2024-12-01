@@ -576,6 +576,9 @@ public class BossScreen extends Screen {
                         } else if (this.ship.isCenter()) {
                             // 이동 끝나면 소행성과 크리스탈 생성
                             this.crystalPool.createFinalCrystal();
+                            // 레이저 생성 쿨타임 1초로 변경
+                            this.createLaserCooldown = changeCooldown(1000);
+                            this.createLaserCooldown.reset();
                             this.isPhase4Ready = true;
                         }
                     } else {
@@ -583,6 +586,11 @@ public class BossScreen extends Screen {
                         // 레이저 발사, 크리스탈 회전
                         this.boss.setInvincible(true);
                         this.crystalPool.move();
+                        if (this.createLaserCooldown.checkFinished()) {
+                            int randomY = (int) (Math.random() * 262) + 323;
+                            laserPool.createHorizontalLaser(randomY);
+                            this.createLaserCooldown.reset();
+                        }
                     }
                 } /// 2페이즈 -> 3페이즈 패턴 끝
 
@@ -610,8 +618,8 @@ public class BossScreen extends Screen {
                 }
 
                 if (this.boss.getPhase() > 1 && this.createLaserCooldown.checkFinished()) {
-                    int randomValue = random.nextInt(this.height - 80) + 40;
-                    laserPool.createHorizontalLaser(randomValue);
+                    int randomY = (int) (Math.random() * 76) - 40;
+                    laserPool.createHorizontalLaser(this.ship.getPositionY() + randomY);
                     this.createLaserCooldown.reset();
                 }
 
@@ -726,13 +734,14 @@ public class BossScreen extends Screen {
         for (Bullet bullet : this.bullets) {
             // 아군 함선의 총알인 경우
             if (bullet.getClassify() != 0) {
+                // 보스와의 충돌
                 if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
                     recyclable.add(bullet);
                     if (!this.boss.isInvincible()) {
                         this.boss.getDamaged(status.getBaseDamage());
                     }
                 }
-                // 크리스탈과 아군 총알의 충돌
+                // 크리스탈과의 충돌
                 for (Crystal crystal : crystals) {
                     if (checkCollision(bullet, crystal) && crystal.getHp() > 0) {
                         recyclable.add(bullet);
@@ -921,5 +930,9 @@ public class BossScreen extends Screen {
         );
         // 계산된 거리가 미사일의 폭발 반경 이내인지 확인
         return distance <= missile.getExplosionRadius();
+    }
+
+    public Cooldown changeCooldown(int ms) {
+        return Core.getCooldown(ms);
     }
 }

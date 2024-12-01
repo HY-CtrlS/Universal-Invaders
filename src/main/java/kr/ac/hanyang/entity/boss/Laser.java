@@ -30,7 +30,7 @@ public class Laser extends Entity {
 
         this.ready = Core.getCooldown(800);
         this.ready.reset();
-        this.act = Core.getCooldown(800);
+        this.act = Core.getCooldown(500);
     }
 
     public final void update() {
