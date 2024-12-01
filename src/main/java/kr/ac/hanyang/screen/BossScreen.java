@@ -471,9 +471,9 @@ public class BossScreen extends Screen {
             // 보스의 체력바 그리기
             drawManager.drawBossHp(this, boss.getCurrentHp(), this.boss);
             // 아군 함선의 체력바 그리기
-            drawManager.drawLives(10, this.getHeight() - 50, this.hp);
+            drawManager.drawLives(10, this.getHeight() - 30, this.hp);
             // 아군 함선의 궁극기바 그리기
-            drawManager.drawUltGauge(this.ship, this.getWidth() - 210, this.getHeight() - 50);
+            drawManager.drawUltGauge(this.ship, this.getWidth() - 210, this.getHeight() - 30);
 
         }
 
