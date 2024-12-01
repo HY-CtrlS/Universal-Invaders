@@ -320,4 +320,18 @@ public class SoundManager {
     public void playInGameBGM() {
         playBackgroundMusic("sounds/in_game.wav");
     }
+
+    /**
+     * 로비 배경음악을 재생합니다.
+     */
+    public void playLobbyBGM() {
+        playBackgroundMusic("sounds/lobby.wav");
+    }
+
+    /**
+     * 엔딩 배경음악을 재생합니다.
+     */
+    public void playEndingBGM() {
+        playBackgroundMusic("sounds/ending.wav");
+    }
 }

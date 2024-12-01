@@ -34,7 +34,7 @@ public final class BulletPool {
      * @return Requested bullet.
      */
     public static Bullet getBullet(final int positionX,
-        final int positionY, final int speed, int damage, Entity.Direction direction,
+        final int positionY, final int speed, int damage, int range, Entity.Direction direction,
         int classify) {
         Bullet bullet;
         if (!pool.isEmpty()) {
@@ -44,13 +44,17 @@ public final class BulletPool {
             bullet.setPositionY(positionY);
             bullet.setSpeed(speed);
             bullet.setDamage(damage);
+
+            bullet.setRange(range);
+            bullet.setcurDistance(0);
+
             bullet.setDirection(direction);
             bullet.setClassify(classify);
             bullet.setColor(new Color[]{Color.WHITE});
             bullet.setSprite();
 
         } else {
-            bullet = new Bullet(positionX, positionY, speed, damage, direction, classify);
+            bullet = new Bullet(positionX, positionY, speed, damage, range, direction, classify);
             bullet.setPositionX(positionX - bullet.getWidth() / 2);
         }
 

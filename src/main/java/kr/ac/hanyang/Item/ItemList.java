@@ -21,7 +21,7 @@ public class ItemList {
         items = new ArrayList<>();
         // 아이템 새로 추가시에 items에 초기 레벨로 추가하는 코드를 추가해주세요.
         // 0번 아이템
-        items.add(new AttackPowerUpItem(0));
+        items.add(new RangeUpItem(0));
         // 1번 아이템
         items.add(new HealthUpItem(0));
         // 2번 아이템
@@ -32,6 +32,8 @@ public class ItemList {
         items.add(new MoveSpeedUpItem(0));
         // 5번 아이템
         items.add(new HpRegenItem(0));
+        // 6번 아이템
+        items.add(new UltRegenItem(0));
 
         return items;
     }

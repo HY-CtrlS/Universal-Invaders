@@ -51,6 +51,9 @@ public final class Core {
         int returnCode = 1;
         GameState gameState = new GameState(0, getStatusManager().getMaxHp(), 0, 0, getStatusManager(), new Ship(0,0, Direction.DOWN, Color.GREEN, 1));
 
+        currentScreen = new SplashScreen(width, height, FPS);
+        returnCode = handleScreen(currentScreen, "splash screen");
+
         do {
             switch (returnCode) {
                 case 1:
@@ -97,6 +100,11 @@ public final class Core {
                     // 설정 화면
                     currentScreen = new SettingScreen(width, height, FPS);
                     returnCode = handleScreen(currentScreen, "setting screen");
+                    break;
+                case 5:
+                    // 엔딩 화면
+                    currentScreen = new EndingScreen(width, height, FPS);
+                    returnCode = handleScreen(currentScreen, "ending screen");
                     break;
                 default:
                     break;

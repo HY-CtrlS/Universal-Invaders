@@ -11,7 +11,7 @@ public class Experience extends Entity {
     // 플레이어를 지속적으로 추적하는데 필요한 변수
     private double remainingMovementX = 0;
     private double remainingMovementY = 0;
-    private Cooldown animationCooldown;
+    protected Cooldown animationCooldown;
 
     public Experience(int positionX, int positionY, int value) {
         super(positionX, positionY, 7, 7, Color.GREEN);

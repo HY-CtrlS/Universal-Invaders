@@ -57,6 +57,14 @@ public class StatusManager {
     }
 
 
+    public int getRange() {
+        return status.getRange();
+    }
+
+    public void setRange(int range) {
+        status.setRange(range);
+    }
+
     public int getMaxHp() {
         return status.getMaxHp();
     }
@@ -65,9 +73,21 @@ public class StatusManager {
         status.setMaxHp(hp);
     }
 
-    public double getRegenHp() {return status.getRegen_hp();}
+    public double getRegenHp() {
+        return status.getRegen_hp();
+    }
 
-    public void setRegenHp(final double regenHp) {status.setRegen_hp(regenHp);}
+    public void setRegenHp(final double regenHp) {
+        status.setRegen_hp(regenHp);
+    }
+
+    public double getRegenUltra() {
+        return status.getRegen_ultra();
+    }
+
+    public void setRegenUltra(final double regenUltra) {
+        status.setRegen_ultra(regenUltra);
+    }
 
     private void saveStatus() {
         try {
@@ -83,8 +103,9 @@ public class StatusManager {
             status = FileManager.getInstance().loadShipStatus();
         } catch (IOException e) {
             logger.warning("Failed to load status. Using default values.");
-            status = new ShipStatus(750, 6, 2, 1, 100, 0);
+            status = new ShipStatus(750, 6, 2, 1, 5, 100, 0, 0);
         }
     }
+
 
 }
