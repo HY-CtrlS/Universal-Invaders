@@ -1089,6 +1089,12 @@ public final class DrawManager {
         }
     }
 
+    // 초기화 메서드
+    public void resetGameTitleAnimation() {
+        titleTypingIndex = 0;
+        lastUpdateTime = System.currentTimeMillis();
+    }
+
     public boolean drawGameTitle(final Screen screen, String titleString) {
         // 현재 시간
         long currentTime = System.currentTimeMillis();

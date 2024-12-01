@@ -33,6 +33,7 @@ public class EndingScreen extends Screen {
         superShip = new Ship(this.width / 2, 0, Direction.DOWN, Color.GREEN,
             1);
         superShip.setPositionY(-superShip.getHeight());
+        drawManager.resetGameTitleAnimation();
     }
 
     /**
@@ -126,7 +127,7 @@ public class EndingScreen extends Screen {
      */
     private void drawTitleAndMessages() {
         if (superShip.getPositionY() > this.height) {
-            readyToStart = drawManager.drawGameTitle(this, "You Saved the Earth!");
+            readyToStart = drawManager.drawGameTitle(this, "You Saved the Earth !!");
         }
 
         if (readyToStart) {
