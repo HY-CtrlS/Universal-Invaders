@@ -462,6 +462,12 @@ public class GameScreen extends Screen {
     private void draw() {
         drawManager.initDrawing(this);
 
+        if (this.portal.isVisible()) {
+            drawManager.drawEntity(this.portal,
+                this.portal.getPositionX(),
+                this.portal.getPositionY());
+        }
+
         drawManager.drawEntity(this.ship, this.ship.getPositionX(),
             this.ship.getPositionY());
         if (this.enemyShipSpecial != null) {
@@ -504,12 +510,6 @@ public class GameScreen extends Screen {
 
         // 현재 levelTime 그리기
         drawManager.drawSurvivalTime(this, survivalTime);
-
-        if (this.portal.isVisible()) {
-            drawManager.drawEntity(this.portal,
-                this.portal.getPositionX(),
-                this.portal.getPositionY());
-        }
 
         drawManager.completeDrawing(this);
     }
