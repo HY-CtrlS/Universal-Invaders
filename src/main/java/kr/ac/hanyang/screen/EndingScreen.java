@@ -2,12 +2,11 @@ package kr.ac.hanyang.screen;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.entity.Entity.Direction;
 import kr.ac.hanyang.entity.Ship;
 
-public class SplashScreen extends Screen {
+public class EndingScreen extends Screen {
 
     private static final int BACKGROUND_SCROLL_SPEED = 2; // 배경화면 이동 속도 (픽셀/프레임)
     private static final int BACKGROUND_MOVE_DISTANCE = 170; // 배경화면 이동 거리 (픽셀)
@@ -17,7 +16,7 @@ public class SplashScreen extends Screen {
     private boolean hasPlayedSound = false; // 사운드 호출 여부
     private boolean readyToStart = false; // 시작 준비 여부
 
-    public SplashScreen(final int width, final int height, final int fps) {
+    public EndingScreen(final int width, final int height, final int fps) {
         super(width, height, fps);
         this.returnCode = 1; // 다음 화면 코드 설정
 
@@ -30,7 +29,10 @@ public class SplashScreen extends Screen {
      */
     private void initializeShip() {
         Core.getStatusManager().setSpeed(10);
-        superShip = new Ship(this.width / 2, this.height, Direction.UP, Color.GREEN, 1);
+        // direction을 down으로 Ship 생성
+        superShip = new Ship(this.width / 2, 0, Direction.DOWN, Color.GREEN,
+            1);
+        superShip.setPositionY(-superShip.getHeight());
     }
 
     /**
@@ -77,7 +79,7 @@ public class SplashScreen extends Screen {
      */
     private void updateShipMovement() {
         if (backgroundOffsetY >= BACKGROUND_MOVE_DISTANCE) {
-            superShip.moveUp();
+            superShip.moveDown();
 
             if (!hasPlayedSound) {
                 Core.getSoundManager().playPlaySound();
@@ -123,8 +125,8 @@ public class SplashScreen extends Screen {
      * 타이틀과 메시지를 그립니다.
      */
     private void drawTitleAndMessages() {
-        if (superShip.getPositionY() < 0) {
-            readyToStart = drawManager.drawGameTitle(this, "Universal Invaders");
+        if (superShip.getPositionY() > this.height) {
+            readyToStart = drawManager.drawGameTitle(this, "You Saved the Earth!");
         }
 
         if (readyToStart) {

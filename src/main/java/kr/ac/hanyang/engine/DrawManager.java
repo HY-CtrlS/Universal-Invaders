@@ -1089,10 +1089,7 @@ public final class DrawManager {
         }
     }
 
-    public boolean drawGameTitle(final Screen screen) {
-        // 타이틀 문자
-        String titleString = "Universal Invaders";
-
+    public boolean drawGameTitle(final Screen screen, String titleString) {
         // 현재 시간
         long currentTime = System.currentTimeMillis();
 
