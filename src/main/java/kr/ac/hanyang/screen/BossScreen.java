@@ -16,7 +16,6 @@ import kr.ac.hanyang.entity.Bullet;
 import kr.ac.hanyang.entity.BulletPool;
 import kr.ac.hanyang.entity.Entity;
 import kr.ac.hanyang.entity.Entity.Direction;
-import kr.ac.hanyang.entity.boss.Asteroid;
 import kr.ac.hanyang.entity.boss.AsteroidPool;
 import kr.ac.hanyang.entity.boss.Crystal;
 import kr.ac.hanyang.entity.boss.Laser;
@@ -365,7 +364,7 @@ public class BossScreen extends Screen {
                 /// 1페이즈 -> 2페이즈 패턴
                 if (this.boss.getPhase() == 2) {
                     // 보스가 다 이동을 안했다면
-                    if (!this.boss.isPhaseOneMoveFinished()) {
+                    if (!this.boss.isPhaseMoveFinished()) {
                             // 보스가 화면 가운데로 이동
                         this.boss.phaseOneMove(this.getWidth() / 2 - this.boss.getWidth() / 2,
                             this.getHeight() / 2 - this.boss.getHeight() / 2);
@@ -377,7 +376,7 @@ public class BossScreen extends Screen {
                             - this.boss.getPositionY();
                         if (checkX < 2 && checkX > -2 && checkY < 2 && checkY > -2) {
                             // 보스가 다 이동했으면 이동한 것으로 설정
-                            this.boss.setPhaseOneMoveFinished(true);
+                            this.boss.setPhaseMoveFinished(true);
                         }
                     }
                     // 보스의 이동이 완료된 경우 실행되는 부분
@@ -441,11 +440,66 @@ public class BossScreen extends Screen {
                                 this.boss.setBasicBulletInterval();
                                 // 보스 무적 상태 해제
                                 this.boss.setInvincible(false);
+                                // PhaseCounter 초기화
+                                this.phaseOneCounter = 0;
+                                // 보스의 패턴위치 설정 메소드는 다시 false로
+                                this.boss.setPhaseMoveFinished(false);
                             }
                         }
                     }
                 } /// 1페이즈 -> 2페이즈 패턴 종료
 
+                /// 2페이즈 -> 3페이즈 패턴 시작
+                else if (this.boss.getPhase() == 3) {
+                    // 보스가 다 이동을 안했다면
+                    if (!this.boss.isPhaseMoveFinished()) {
+                        // 보스가 화면 가운데로 이동
+                        this.boss.phaseOneMove(this.getWidth() / 2 - this.boss.getWidth() / 2,
+                            this.getHeight() / 2 - this.boss.getHeight() / 2);
+
+                        int checkX =
+                            (this.getWidth() / 2 - this.boss.getWidth() / 2)
+                                - this.boss.getPositionX();
+                        int checkY = (this.getHeight() / 2 - this.boss.getHeight() / 2)
+                            - this.boss.getPositionY();
+                        if (checkX < 2 && checkX > -2 && checkY < 2 && checkY > -2) {
+                            // 보스가 다 이동했으면 이동한 것으로 설정
+                            this.boss.setPhaseMoveFinished(true);
+                        }
+                    }
+                    // 보스의 이동이 완료된 경우 실행되는 부분
+                    else {
+                        this.logger.info(""+ phaseOneCounter);
+                        // 보스가 두 번째 패턴중인 상태면 실행되는 부분
+                        if (this.boss.isPhaseOnePattern()) {
+
+                        }
+                        // 보스가 두 번째 패턴을 끝난 직후 실행되는 부분
+                        else {
+                            //보스 원위치로 이동
+                            int checkX =
+                                (this.width / 2 - this.boss.getWidth() / 2) - this.boss.getPositionX();
+                            int checkY = (SEPARATION_LINE_HEIGHT - this.boss.getHeight() / 2)
+                                - this.boss.getPositionY();
+
+                            // 아직 원위치로 다 이동 안했으면
+                            if (!(checkX < 2 && checkX > -2 && checkY < 2 && checkY > -2)) {
+                                // 보스가 원위치로 이동
+                                this.boss.phaseOneMove(this.width / 2 - this.boss.getWidth() / 2,
+                                    SEPARATION_LINE_HEIGHT - this.boss.getHeight() / 2);
+                            } else {
+                                // 원위치로 모두 이동했으면 패턴 상태 종료
+                                this.boss.setPattern(false);
+                                // 보스 무적 상태 해제
+                                this.boss.setInvincible(false);
+                                // PhaseCounter 초기화
+                                this.phaseOneCounter = 0;
+                                // 보스의 패턴위치 설정 메소드는 다시 false로
+                                this.boss.setPhaseMoveFinished(false);
+                            }
+                        }
+                    }
+                }
 
             } else {
                 // 보스 패턴A 발동 메소드

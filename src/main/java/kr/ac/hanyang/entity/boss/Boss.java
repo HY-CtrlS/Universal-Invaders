@@ -54,8 +54,12 @@ public class Boss extends Entity {
     private boolean movingRight; // 이동 방향 (true: 오른쪽, false: 왼쪽)
     private Random random; // 랜덤 속도 생성기
 
+    // 1페이즈 패턴 변수
     private boolean isPhaseOnePattern;
-    private boolean isPhaseOneMoveFinished;
+    private boolean isPhaseMoveFinished;
+
+    // 2페이즈 패턴 변수
+    private boolean isPhaseTwoPattern;
 
     /**
      * Constructor for Boss entity. Initializes the Boss with the first phase and sets the initial
@@ -77,7 +81,7 @@ public class Boss extends Entity {
 
         // 각 패턴 발동중인지에 대한 부분 false로 초기화
         this.isPhaseOnePattern = false;
-        this.isPhaseOneMoveFinished = false;
+        this.isPhaseMoveFinished = false;
 
         //보스의 탄막 기본공격 간격
         this.basicBulletInterval = Core.getVariableCooldown(1400, 500);
@@ -236,11 +240,11 @@ public class Boss extends Entity {
 
     }
     //보스가 1페이즈 큰 패턴에서 다 이동했는지에 대한 메소드
-    public boolean isPhaseOneMoveFinished() {
-        return this.isPhaseOneMoveFinished;
+    public boolean isPhaseMoveFinished() {
+        return this.isPhaseMoveFinished;
     }
 
-    public void setPhaseOneMoveFinished(boolean value) {this.isPhaseOneMoveFinished = value;}
+    public void setPhaseMoveFinished(boolean value) {this.isPhaseMoveFinished = value;}
 
     private void attackPhase2() {
         // Phase 2 attack logic (missile launch)
@@ -318,13 +322,21 @@ public class Boss extends Entity {
     public final boolean isPattern() {
         return this.isPattern;
     }
-
+    // 1페이즈 -> 2페이즈 패턴 중인지 판단
     public final boolean isPhaseOnePattern () {
         return this.isPhaseOnePattern;
     }
-
+    // 1페이즈 -> 2페이즈 패턴중인지를 설정
     public void setPhaseOnePattern(final boolean value) {
         this.isPhaseOnePattern = value;
+    }
+
+    public final boolean isPhaseTwoPattern() {
+        return this.isPhaseTwoPattern;
+    }
+
+    public void setPhaseTwoPattern(final boolean value) {
+        this.isPhaseTwoPattern = value;
     }
 
     public void setPattern(boolean value) {
