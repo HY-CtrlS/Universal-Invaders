@@ -220,8 +220,6 @@ public class BossScreen extends Screen {
             // 보스의 공격 처리 & 궁극기 효과 적용
             if (this.ship.getShipID() == 2 && this.ship.isUltActivated()) {
                 // Ship2 궁극기 활성화 여부에 따라 보스 공격 무력화 결정
-            } else {
-                this.boss.attack();
             }
 
             // WASD - 함선 이동
@@ -616,6 +614,7 @@ public class BossScreen extends Screen {
                     laserPool.createHorizontalLaser(randomValue);
                     this.createLaserCooldown.reset();
                 }
+
                 if (this.boss.getPhase() > 2) {
                     if (!this.boss.isInvincible()) {
                         if (this.createCrystalCooldown.checkFinished()) {
@@ -738,6 +737,10 @@ public class BossScreen extends Screen {
                     if (checkCollision(bullet, crystal) && crystal.getHp() > 0) {
                         recyclable.add(bullet);
                         crystal.getDamaged(status.getBaseDamage());
+                        // 페이즈4 에서는 크리스탈 하나씩 부술때마다 보스 체력 1/4 감소
+                        if (this.isPhase4Ready && crystal.isBroken()) {
+                            this.boss.getDamaged(250);
+                        }
                     }
                 }
             } else {

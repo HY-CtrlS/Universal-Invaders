@@ -16,23 +16,21 @@ import kr.ac.hanyang.entity.Entity;
  */
 public class Boss extends Entity {
 
-    /** 각 페이즈 별 공격 쿨다운 */
-    private static final int ATTACK_COOLDOWN_1 = 1000;
-    private static final int ATTACK_COOLDOWN_2 = 800;
-    private static final int ATTACK_COOLDOWN_3 = 600;
-
     /** 각 페이즈 별 최대 체력 */
     private static final int PHASE_1_HP = 300;
     private static final int PHASE_2_HP = 500;
     private static final int PHASE_3_HP = 700;
+    private static final int PHASE_4_HP = 1000;
 
     private static final Color[] PHASE_1_COLOR = {new Color(255, 255, 0), Color.WHITE};
-    private static final Color[] PHASE_2_COLOR = {new Color(255, 165, 0), Color.WHITE};
-    private static final Color[] PHASE_3_COLOR = {new Color(255, 0, 0), Color.WHITE};
+    private static final Color[] PHASE_2_COLOR = {new Color(255, 170, 0), Color.WHITE};
+    private static final Color[] PHASE_3_COLOR = {new Color(255, 85, 0), Color.WHITE};
+    private static final Color[] PHASE_4_COLOR = {new Color(255, 0, 0), Color.WHITE};
 
-    protected static final Color PHASE_1_HPCOLOR = new Color(0xFF9E9E);
-    protected static final Color PHASE_2_HPCOLOR = new Color(0xFF5757);
-    protected static final Color PHASE_3_HPCOLOR = new Color(0xFF0000);
+    protected static final Color PHASE_1_HPCOLOR = new Color(0xFF9696);
+    protected static final Color PHASE_2_HPCOLOR = new Color(0xFF6464);
+    protected static final Color PHASE_3_HPCOLOR = new Color(0xFF3232);
+    protected static final Color PHASE_4_HPCOLOR = new Color(0xFF0000);
 
     private static final int MIN_SPEED = 2; // 최소 이동 속도
     private static final int MAX_SPEED = 5; // 최대 이동 속도
@@ -43,7 +41,6 @@ public class Boss extends Entity {
     private boolean isInvincible;
     private boolean isPattern;
 
-    private Cooldown attackCooldown;
     private Cooldown basicBulletInterval;
     private Cooldown horizontalBulletCooldown;
     private Cooldown verticalBulletCooldown;
@@ -79,7 +76,6 @@ public class Boss extends Entity {
         this.phase = 1;
         this.spriteType = SpriteType.Boss;
         this.isInvincible = false;
-        this.attackCooldown = Core.getCooldown(ATTACK_COOLDOWN_1);
         this.isPattern = false;
 
         // 각 패턴 발동중인지에 대한 부분 false로 초기화
@@ -111,27 +107,6 @@ public class Boss extends Entity {
         this.random = new Random();
         this.movingRight = true; // 초기 방향은 오른쪽
         setRandomSpeed(); // 초기 속도 설정
-    }
-
-    // 이 부분을 BossScreen에서 구현해야 할 것 같습니다.
-    public void attack() {
-        if (attackCooldown.checkFinished()) {
-            switch (phase) {
-                case 1:
-                    //attackPhaseOne();
-                    break;
-                case 2:
-                    //attackPhaseOne();
-                    attackPhase2();
-                    break;
-                case 3:
-                    //attackPhaseOne();
-                    attackPhase2();
-                    attackPhase3();
-                    break;
-            }
-            attackCooldown.reset();
-        }
     }
 
     /**
@@ -298,14 +273,6 @@ public class Boss extends Entity {
         this.isPhaseMoveFinished = value;
     }
 
-    private void attackPhase2() {
-        // Phase 2 attack logic (missile launch)
-    }
-
-    private void attackPhase3() {
-        // Phase 3 attack logic (laser path and shot)
-    }
-
     public void setPhase(final int phase) {
         this.phase = phase;
         switch (phase) {
@@ -314,14 +281,18 @@ public class Boss extends Entity {
                 this.currentHp = PHASE_2_HP;
                 setColor(PHASE_2_COLOR);
                 getNextHpColor();
-                this.attackCooldown = Core.getCooldown(ATTACK_COOLDOWN_2);
                 break;
             case 3:
                 this.maxHp = PHASE_3_HP;
                 this.currentHp = PHASE_3_HP;
                 setColor(PHASE_3_COLOR);
                 getNextHpColor();
-                this.attackCooldown = Core.getCooldown(ATTACK_COOLDOWN_3);
+                break;
+            case 4:
+                this.maxHp = PHASE_4_HP;
+                this.currentHp = PHASE_4_HP;
+                setColor(PHASE_4_COLOR);
+                getNextHpColor();
                 break;
         }
     }
@@ -358,6 +329,8 @@ public class Boss extends Entity {
         } else if (phase == 2) {
             hpColor = PHASE_3_HPCOLOR;
         } else if (phase == 3) {
+            hpColor = PHASE_4_HPCOLOR;
+        } else if (phase == 4) {
             hpColor = null;
         }
         return hpColor;
