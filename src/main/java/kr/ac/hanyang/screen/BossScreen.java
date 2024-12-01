@@ -543,11 +543,9 @@ public class BossScreen extends Screen {
                     if (checkCollision(bullet, this.crystal) && this.crystal.getHp() > 0) {
                         recyclable.add(bullet);
                         this.crystal.getDamaged(status.getBaseDamage());
-                        Core.getSoundManager().playHitCrystal();
                     }
                     if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
                         recyclable.add(bullet);
-                        Core.getSoundManager().playHitInvicibleBoss();
                     }
                 } else {
                     if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {

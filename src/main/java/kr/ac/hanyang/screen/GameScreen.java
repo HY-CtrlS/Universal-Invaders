@@ -331,8 +331,6 @@ public class GameScreen extends Screen {
                 } else {
                     if (this.ship.shoot(this.bullets)) {
                         this.bulletsShot++;
-                        Core.getSoundManager().playBasicAttack();
-                        this.logger.info("소리출력");
                     }
                 }
             }
