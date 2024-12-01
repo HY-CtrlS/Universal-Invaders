@@ -523,7 +523,7 @@ public class BossScreen extends Screen {
                         // 발악패턴 시작
                         // 레이저 발사, 크리스탈 회전
                     }
-                }
+                } /// 2페이즈 -> 3페이즈 패턴 끝
 
             } else {
                 // 보스 패턴A 발동 메소드
@@ -549,7 +549,7 @@ public class BossScreen extends Screen {
                 }
 
                 if (this.boss.getPhase() > 1 && this.createLaserCooldown.checkFinished()) {
-                    laserPool.createLaser();
+                    laserPool.createHorizontalLaser(this.ship.getPositionY());
                     this.createLaserCooldown.reset();
                 }
                 if (this.boss.getPhase() > 2) {
@@ -584,7 +584,7 @@ public class BossScreen extends Screen {
                         this.boss.setPhaseOnePattern(true);
                     } else if (this.boss.getPhase() == 3) {
                         // 3페이즈면 두번째 큰 패턴 시작
-
+                        this.boss.setPhaseTwoPattern(true);
                     }
                 }
             }

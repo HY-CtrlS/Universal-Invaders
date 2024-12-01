@@ -15,10 +15,10 @@ public class Laser extends Entity {
     private Cooldown ready;
     private Cooldown act;
 
-    public Laser(final int positionX, final int positionY) {
+    public Laser(final int positionX, final int positionY, final Direction direction) {
         super(positionX, positionY, 720 * 2, 15 * 2,
             new Color[]{new Color(255, 255, 255, 128), new Color(189, 102, 255, 128),
-            new Color(94, 255, 250, 128)}, Direction.LEFT);
+            new Color(94, 255, 250, 128)}, direction);
 
         this.positionX = positionX;
         this.positionY = positionY;

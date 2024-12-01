@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.engine.DrawManager;
+import kr.ac.hanyang.entity.Entity.Direction;
 import kr.ac.hanyang.entity.ship.Ship;
 
 public final class LaserPool {
@@ -39,10 +40,11 @@ public final class LaserPool {
         }
     }
 
-    public void createLaser() {
-        Laser laser = new Laser(this.ship.getPositionX(), this.ship.getPositionY());
+    // Y좌표에 가로 레이저 생성
+    public void createHorizontalLaser(int positionY) {
+        Laser laser = new Laser(this.ship.getPositionX(), positionY, Direction.LEFT);
         lasers.add(laser);
-        this.logger.info("Laser Attack!");
+        this.logger.info("Create Laser on Y :" + positionY);
     }
 
     public void cleanUp() {
