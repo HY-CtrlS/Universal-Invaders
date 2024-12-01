@@ -65,7 +65,7 @@ public final class BulletPool {
     }
     //보스 총알인 경우의 getBullet
     public static Bullet getBossBullet(final int positionX,
-        final int positionY, final int speed, int damage, double angle) {
+        final int positionY, final double speed, int damage, double angle) {
         Bullet bullet;
         if (!pool.isEmpty()) {
             bullet = pool.iterator().next();

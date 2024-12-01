@@ -45,11 +45,16 @@ public class Boss extends Entity {
 
     private Cooldown attackCooldown;
     private Cooldown basicBulletInterval;
+    private Cooldown horizontalBulletCooldown;
+    private Cooldown verticalBulletCooldown;
+
     private Logger logger;
 
     private int speed; // 현재 이동 속도
     private boolean movingRight; // 이동 방향 (true: 오른쪽, false: 왼쪽)
     private Random random; // 랜덤 속도 생성기
+
+    private boolean isPhaseOnePattern;
 
     /**
      * Constructor for Boss entity. Initializes the Boss with the first phase and sets the initial
@@ -69,9 +74,20 @@ public class Boss extends Entity {
         this.attackCooldown = Core.getCooldown(ATTACK_COOLDOWN_1);
         this.isPattern = false;
 
+        // 각 패턴 발동중인지에 대한 부분 false로 초기화
+        this.isPhaseOnePattern = false;
+
         //보스의 탄막 기본공격 간격
         this.basicBulletInterval = Core.getVariableCooldown(1400, 500);
         this.basicBulletInterval.reset();
+
+        //보스의 가로 탄막 공격 쿨타임
+        this.horizontalBulletCooldown = Core.getCooldown(2000);
+        this.horizontalBulletCooldown.reset();
+
+        //보스의 세로 탄막 공격 쿨타임
+        this.verticalBulletCooldown = Core.getCooldown(2000);
+        this.verticalBulletCooldown.reset();
 
         this.logger = Core.getLogger();
 
@@ -131,6 +147,42 @@ public class Boss extends Entity {
             return 1;
         } else {
             return 0;
+        }
+    }
+
+    // 화면 위에 가로로 총알을 생성하는 메소드
+    public int createHorizontalBullets(final Set<Bullet> bullets) {
+        if (this.horizontalBulletCooldown.checkFinished()) {
+            this.horizontalBulletCooldown.reset();
+
+            for (int i = 1; i <= 18; i++) { // 1부터 시작하여 일정 간격 배치
+                int bulletX = i * 42; // 각 총알의 X 좌표
+                // 총알 생성
+                bullets.add(BulletPool.getBossBullet(bulletX, 50, 1.5, 10, 90));
+                this.logger.info("Horizontal Bullet Creation!");
+            }
+
+            return 1; // 성공적으로 발사
+        } else {
+            return 0; // 쿨타임 중
+        }
+    }
+
+    // 화면 왼쪽에 세로로 총알을 22개 생성하는 메소드
+    public int createVerticalBullets(final Set<Bullet> bullets) {
+        if (this.verticalBulletCooldown.checkFinished()) {
+            this.verticalBulletCooldown.reset();
+
+            for (int i = 1; i <= 18; i++) { // 1부터 시작하여 일정 간격 배치
+                int bulletY = i * 45; // 각 총알의 X 좌표
+                // 총알 생성
+                bullets.add(BulletPool.getBossBullet(20, bulletY, 1, 10, 0));
+                this.logger.info("Vertical Bullet Creation!");
+            }
+
+            return 1; // 성공적으로 발사
+        } else {
+            return 0; // 쿨타임 중
         }
     }
 
@@ -248,6 +300,14 @@ public class Boss extends Entity {
         return this.isPattern;
     }
 
+    public final boolean isPhaseOnePattern () {
+        return this.isPhaseOnePattern;
+    }
+
+    public void setPhaseOnePattern(final boolean value) {
+        this.isPhaseOnePattern = value;
+    }
+
     public void setPattern(boolean value) {
         this.isPattern = value;
     }
@@ -292,5 +352,17 @@ public class Boss extends Entity {
      */
     public boolean isMovingRight() {
         return this.movingRight;
+    }
+
+    // value로 고정된 쿨타임으로 변경
+    public void setBasicBulletInterval(int value) {
+        this.basicBulletInterval = Core.getCooldown(value);
+        this.basicBulletInterval.reset();
+    }
+
+    // 보스 기본공격 시간을 기존 쿨타임으로 변경
+    public void setBasicBulletInterval() {
+        this.basicBulletInterval = Core.getVariableCooldown(1400, 500);
+        this.basicBulletInterval.reset();
     }
 }

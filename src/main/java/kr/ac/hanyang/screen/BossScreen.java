@@ -94,6 +94,8 @@ public class BossScreen extends Screen {
     private Cooldown bossBasicBullet;
     private int basicAttackCount;
 
+    // 보스 페이즈 1 공격 카운터
+    private int phaseOneCounter;
     Random random = new Random();
 
     /**
@@ -182,6 +184,9 @@ public class BossScreen extends Screen {
 
         this.createCrystalCooldown = Core.getCooldown(25000);
         this.createCrystalCooldown.reset();
+
+        // 페이즈 카운터 초기화
+        this.phaseOneCounter = 0;
     }
 
     /**
@@ -357,8 +362,10 @@ public class BossScreen extends Screen {
             /// 보스 관련 업데이트 시작
             // 보스가 패턴을 쓸건지 짤패턴 중인지 설정
             if (this.boss.isPattern()) {
-                // 1페이즈 -> 2페이즈 패턴인 경우
+                /// 1페이즈 -> 2페이즈 패턴
                 if (this.boss.getPhase() == 2) {
+                    // 보스가 첫 번째 패턴중임을 설정
+                    this.boss.setPhaseOnePattern(true);
                     // 보스가 다 이동했는지 확인을 위한 변수
                     int checkX =
                         (this.getWidth() / 2 - this.boss.getWidth() / 2) - this.boss.getPositionX();
@@ -371,7 +378,37 @@ public class BossScreen extends Screen {
                     }
                     // 보스의 이동이 완료된 경우 실행되는 부분
                     else {
+                        // 보스가 첫 번째 패턴중인 상태면 실행되는 부분
+                        if (this.boss.isPhaseOnePattern()) {
+                            if (this.phaseOneCounter == 0 || this.phaseOneCounter == 2 || this.phaseOneCounter == 4) {
+                                // 페이즈 카운터가 0일때 실행이 되는 부분
+                                int result = this.boss.spreadBullet(this.bullets, 0, 360, 18);
+                                if (result == 1) {
+                                    // 공격을 시행했다면 페이즈 카운터 증가
+                                    phaseOneCounter++;
+                                }
+                                // phaseCounter에 따른 가로 세로 총알 생성
+                                if (phaseOneCounter == 5) {
+                                    // 가로 세로 방향 총알 생성
+                                    this.boss.createHorizontalBullets(this.bullets);
+                                    this.boss.createVerticalBullets(this.bullets);
+                                }
+                            } else if (this.phaseOneCounter == 1 || this.phaseOneCounter == 3 || this.phaseOneCounter == 5) {
+                                // 페이즈 카운터가 1일때 실행이 되는 부분
+                                int result = this.boss.spreadBullet(this.bullets, 10, 360, 18);
+                                if (result == 1) {
+                                    // 공격을 시행했다면 페이즈 카운터 증가
+                                    phaseOneCounter++;
+                                }
+                            } else {
+                                // phaseOneCounter가 6 이상이 된 경우 실행되는 부분
 
+                            }
+                        }
+                        // 보스가 첫 번째 패턴을 끝난 직후 실행되는 부분
+                        else {
+
+                        }
                     }
                 }
             } else {
@@ -506,9 +543,11 @@ public class BossScreen extends Screen {
                     if (checkCollision(bullet, this.crystal) && this.crystal.getHp() > 0) {
                         recyclable.add(bullet);
                         this.crystal.getDamaged(status.getBaseDamage());
+                        Core.getSoundManager().playHitCrystal();
                     }
                     if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
                         recyclable.add(bullet);
+                        Core.getSoundManager().playHitInvicibleBoss();
                     }
                 } else {
                     if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {

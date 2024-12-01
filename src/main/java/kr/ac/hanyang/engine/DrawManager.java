@@ -127,7 +127,7 @@ public final class DrawManager {
             spriteMap.put(SpriteType.BulletDiagonal, new boolean[1][4][4]);
             spriteMap.put(SpriteType.ExperienceA, new boolean[1][7][7]);
             spriteMap.put(SpriteType.ExperienceB, new boolean[1][7][7]);
-            spriteMap.put(SpriteType.EnemyBullet, new boolean[1][3][5]);
+            spriteMap.put(SpriteType.EnemyBullet, new boolean[1][3][3]);
             spriteMap.put(SpriteType.EnemyShipA1, new boolean[1][12][8]);
             spriteMap.put(SpriteType.EnemyShipA2, new boolean[1][12][8]);
             spriteMap.put(SpriteType.EnemyShipB1, new boolean[2][24][16]);

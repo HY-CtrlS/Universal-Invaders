@@ -50,7 +50,7 @@ public class Bullet extends Entity {
      */
     public Bullet(final int positionX, final int positionY, final int speed, int damage,
         Direction direction, int classify) {
-        super(positionX, positionY, 3 * 2, 5 * 2, Color.WHITE);
+        super(positionX, positionY, 2 * 2, 2 * 2, Color.WHITE);
 
         this.classify = classify; // 함선 코드로 어느 함선에서 발사한 총알인지 식별
         this.direction = direction;
@@ -59,9 +59,10 @@ public class Bullet extends Entity {
         setSprite();
     }
 
-    public Bullet(final int positionX, final int positionY, final int speed, int damage,
+    // 보스총알의 생성자
+    public Bullet(final int positionX, final int positionY, final double speed, int damage,
         double angle) {
-        super(positionX, positionY, 3 * 2, 5 * 2, Color.RED);
+        super(positionX, positionY, 3 * 2, 3 * 2, Color.RED);
 
         this.classify = 0;
         this.speedX = speed * Math.cos(Math.toRadians(angle));
