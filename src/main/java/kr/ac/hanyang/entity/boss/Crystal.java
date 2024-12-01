@@ -22,11 +22,11 @@ public class Crystal extends Entity {
         this.isBroken = false;
     }
 
-    public void update() {
-        final int minX = 49;
-        final int maxX = 611;
+    public void move() {
+        final int minX = 48;
+        final int maxX = 620;
         final int minY = 214;
-        final int maxY = 672;
+        final int maxY = 670;
 
         boolean up = this.positionY == minY;
         boolean down = this.positionY == maxY;

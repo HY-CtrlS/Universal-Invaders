@@ -18,6 +18,7 @@ import kr.ac.hanyang.entity.Entity;
 import kr.ac.hanyang.entity.Entity.Direction;
 import kr.ac.hanyang.entity.boss.AsteroidPool;
 import kr.ac.hanyang.entity.boss.Crystal;
+import kr.ac.hanyang.entity.boss.CrystalPool;
 import kr.ac.hanyang.entity.boss.Laser;
 import kr.ac.hanyang.entity.boss.LaserPool;
 import kr.ac.hanyang.entity.boss.Missile;
@@ -86,7 +87,8 @@ public class BossScreen extends Screen {
     private MissilePool missilePool;
     private Set<Missile> missiles;
     private Cooldown createCrystalCooldown;
-    private Crystal crystal;
+    private CrystalPool crystalPool;
+    private Set<Crystal> crystals;
     private AsteroidPool asteroidPool;
     private boolean isPhase4Ready;
 
@@ -132,7 +134,8 @@ public class BossScreen extends Screen {
         this.lasers = laserPool.getLasers();
         this.missilePool = new MissilePool(this.ship);
         this.missiles = missilePool.getMissiles();
-        this.crystal = new Crystal(0, 0);
+        this.crystalPool = new CrystalPool(this.ship);
+        this.crystals = crystalPool.getCrystals();
         this.asteroidPool = new AsteroidPool();
 
         // Special input delay / countdown.
@@ -255,12 +258,12 @@ public class BossScreen extends Screen {
             if (this.boss.getPhase() == 4) {
                 isRightBorder =
                     this.ship.getPositionX() + this.ship.getWidth() + this.ship.getSpeed()
-                        > 542 - 1;
-                isLeftBorder = this.ship.getPositionX() - this.ship.getSpeed() < 158 + 1;
+                        > 552 - 1;
+                isLeftBorder = this.ship.getPositionX() - this.ship.getSpeed() < 156 + 1;
                 isTopBorder = this.ship.getPositionY() - this.ship.getSpeed() < 323 + 1;
                 isBottomBorder =
                     this.ship.getPositionY() + this.ship.getHeight() + this.ship.getSpeed()
-                        > 603 - 1;
+                        > 615 - 1;
             } else {
                 isRightBorder =
                     this.ship.getPositionX() + this.ship.getWidth() + this.ship.getSpeed()
@@ -345,6 +348,7 @@ public class BossScreen extends Screen {
             this.ship.update();
             this.laserPool.update();
             this.missilePool.update();
+            this.crystalPool.update();
 
             // 1초마다 생존 시간 1씩 증가
             if (this.clockCooldown.checkFinished()) {
@@ -491,19 +495,20 @@ public class BossScreen extends Screen {
                                 // 마지막 공격 발사 했으면 페이즈 카운터 증가
                             } else if (phaseOneCounter == 26) {
                                 this.boss.createHorizontalBulletsTwo(this.bullets);
-                                phaseOneCounter +=  this.boss.createVerticalBullets(this.bullets);
+                                phaseOneCounter += this.boss.createVerticalBullets(this.bullets);
                                 // 마지막 공격 발사 했으면 페이즈 카운터 증가
                             } else if (phaseOneCounter == 21) {
                                 this.boss.createVerticalBulletsTwo(this.bullets);
-                                phaseOneCounter +=  this.boss.createHorizontalBullets(this.bullets);
+                                phaseOneCounter += this.boss.createHorizontalBullets(this.bullets);
                                 // 마지막 공격 발사 했으면 페이즈 카운터 증가
                             } else if (phaseOneCounter == 14) {
                                 this.boss.createVerticalBullets(this.bullets);
-                                phaseOneCounter +=  this.boss.createHorizontalBullets(this.bullets);
+                                phaseOneCounter += this.boss.createHorizontalBullets(this.bullets);
                                 // 마지막 공격 발사 했으면 페이즈 카운터 증가
                             } else if (phaseOneCounter < 27 && phaseOneCounter % 3 == 0) {
                                 // 페이즈 카운터가 3의 배수일 때, 원형 공격 발사
-                                phaseOneCounter += this.boss.spreadBullet(this.bullets, phaseOneCounter, 360, random.nextInt(4) + 16);
+                                phaseOneCounter += this.boss.spreadBullet(this.bullets,
+                                    phaseOneCounter, 360, random.nextInt(4) + 16);
                                 // 발사했으면 페이즈 카운터 증가
                             } else {
                                 // 위 경우가 아닌 경우에는 기본 공격함 0.7초에서 2.7초 간격으로 빠른 공격을 발사함
@@ -516,7 +521,8 @@ public class BossScreen extends Screen {
                             }
                             if (phaseOneCounter < 40) {
                                 // 페이즈 카운터가 40이 될때까지 원형공격 시작
-                                phaseOneCounter += this.boss.spreadBullet(this.bullets, phaseOneCounter, 360, random.nextInt(12) + 8);
+                                phaseOneCounter += this.boss.spreadBullet(this.bullets,
+                                    phaseOneCounter, 360, random.nextInt(12) + 8);
                             } else {
                                 // 2번 큰 패턴 종료
                                 this.boss.setPhaseTwoPattern(false);
@@ -558,13 +564,27 @@ public class BossScreen extends Screen {
                     if (!this.isPhase4Ready) {
                         // 함선 중앙으로 이동
                         this.ship.moveCenter();
-                        if (this.ship.isCenter()) {
+                        //보스 원위치로 이동
+                        int checkX =
+                            (this.width / 2 - this.boss.getWidth() / 2)
+                                - this.boss.getPositionX();
+                        int checkY = (SEPARATION_LINE_HEIGHT + 50)
+                            - this.boss.getPositionY();
+
+                        if (!(checkX < 2 && checkX > -2 && checkY < 2 && checkY > -2)) {
+                            // 보스가 원위치로 이동
+                            this.boss.phaseOneMove(this.width / 2 - this.boss.getWidth() / 2,
+                                SEPARATION_LINE_HEIGHT + 50);
+                        } else if (this.ship.isCenter()) {
                             // 이동 끝나면 소행성과 크리스탈 생성
+                            this.crystalPool.createFinalCrystal();
                             this.isPhase4Ready = true;
                         }
                     } else {
                         // 발악패턴 시작
                         // 레이저 발사, 크리스탈 회전
+                        this.boss.setInvincible(true);
+                        this.crystalPool.move();
                     }
                 } /// 2페이즈 -> 3페이즈 패턴 끝
 
@@ -599,12 +619,12 @@ public class BossScreen extends Screen {
                 if (this.boss.getPhase() > 2) {
                     if (!this.boss.isInvincible()) {
                         if (this.createCrystalCooldown.checkFinished()) {
-                            createCrystal();
+                            this.crystalPool.createCrystal();
                             this.boss.setInvincible(true);
                             this.createCrystalCooldown.reset();
                         }
                     } else {
-                        if (this.crystal.isBroken()) {
+                        if (this.crystalPool.isAllBroken()) {
                             this.boss.setInvincible(false);
                             this.createCrystalCooldown.reset();
                         }
@@ -658,9 +678,10 @@ public class BossScreen extends Screen {
                     bullet.getPositionY());
             }
 
-            if (this.boss.isInvincible()) {
-                drawManager.drawEntity(this.crystal, this.crystal.getPositionX(),
-                    this.crystal.getPositionY());
+            if (this.boss.getPhase() >= 3) {
+                if (!(this.boss.getPhase() == 3 && this.boss.isPattern())) {
+                    this.crystalPool.draw();
+                }
             }
 
             laserPool.draw();
@@ -706,18 +727,17 @@ public class BossScreen extends Screen {
         for (Bullet bullet : this.bullets) {
             // 아군 함선의 총알인 경우
             if (bullet.getClassify() != 0) {
-                if (this.boss.isInvincible()) {
-                    if (checkCollision(bullet, this.crystal) && this.crystal.getHp() > 0) {
-                        recyclable.add(bullet);
-                        this.crystal.getDamaged(status.getBaseDamage());
-                    }
-                    if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
-                        recyclable.add(bullet);
-                    }
-                } else {
-                    if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
-                        recyclable.add(bullet);
+                if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
+                    recyclable.add(bullet);
+                    if (!this.boss.isInvincible()) {
                         this.boss.getDamaged(status.getBaseDamage());
+                    }
+                }
+                // 크리스탈과 아군 총알의 충돌
+                for (Crystal crystal : crystals) {
+                    if (checkCollision(bullet, crystal) && crystal.getHp() > 0) {
+                        recyclable.add(bullet);
+                        crystal.getDamaged(status.getBaseDamage());
                     }
                 }
             } else {
@@ -898,28 +918,5 @@ public class BossScreen extends Screen {
         );
         // 계산된 거리가 미사일의 폭발 반경 이내인지 확인
         return distance <= missile.getExplosionRadius();
-    }
-
-    public void createCrystal() {
-        int positionX;
-        int positionY;
-        boolean up = this.ship.getPositionY() <= this.height - (this.height - 110) / 2;
-        boolean right = this.ship.getPositionX() >= this.width / 2;
-
-        if (up && right) {
-            positionX = 30;
-            positionY = this.height - 120;
-        } else if (up && !right) {
-            positionX = this.width - 40 - 30;
-            positionY = this.height - 120;
-        } else if (!up && right) {
-            positionX = 30;
-            positionY = SEPARATION_LINE_HEIGHT + 160;
-        } else {
-            positionX = this.width - 40 - 30;
-            positionY = SEPARATION_LINE_HEIGHT + 160;
-        }
-
-        this.crystal = new Crystal(positionX, positionY);
     }
 }
