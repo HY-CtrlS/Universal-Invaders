@@ -18,8 +18,10 @@ public class Portal extends Entity {
      * @param positionY Initial Y position.
      */
     public Portal(int positionX, int positionY) {
-        super(positionX, positionY, 13 * 2, 11 * 2,
-            new Color[]{Color.CYAN, Color.PINK, Color.WHITE});
+        super(positionX, positionY, 30 * 2, 21 * 2,
+            new Color[]{new Color(127, 62, 152),
+                new Color(46, 26, 62),
+                new Color(26, 26, 46)});
         this.spriteType = SpriteType.Portal; // 포탈 스프라이트 타입 설정
         this.isVisible = false; // 초기에는 비활성화 상태
     }

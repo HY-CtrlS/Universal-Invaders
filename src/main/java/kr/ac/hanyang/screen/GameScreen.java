@@ -218,7 +218,7 @@ public class GameScreen extends Screen {
         }
 
         // 포탈 객체 생성
-        this.portal = new Portal(this.width / 2, this.height / 2);
+        this.portal = new Portal(this.width / 2 - 15, 80);
         // 게임 오버 false로 초기화
         this.isClear = false;
     }
@@ -506,7 +506,8 @@ public class GameScreen extends Screen {
         drawManager.drawSurvivalTime(this, survivalTime);
 
         if (this.portal.isVisible()) {
-            drawManager.drawEntity(this.portal, this.portal.getPositionX(),
+            drawManager.drawEntity(this.portal,
+                this.portal.getPositionX(),
                 this.portal.getPositionY());
         }
 
@@ -663,8 +664,10 @@ public class GameScreen extends Screen {
         // 포탈과 아군 함선의 충돌 처리
         if (this.portal.isVisible()) {
             if (checkCollision(this.ship, this.portal)) {
-                this.returnCode = 2;
-                this.levelFinished = true;
+                if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
+                    this.returnCode = 2;
+                    this.levelFinished = true;
+                }
             }
         }
     }

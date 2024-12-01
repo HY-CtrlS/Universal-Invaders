@@ -141,7 +141,7 @@ public final class DrawManager {
             // 장애물 스프라이트
             spriteMap.put(SpriteType.Obstacle, new boolean[2][10][10]);
             // 포탈 스프라이트
-            spriteMap.put(SpriteType.Portal, new boolean[3][11][13]);
+            spriteMap.put(SpriteType.Portal, new boolean[3][21][30]);
             // 보스 스프라이트
             spriteMap.put(SpriteType.Boss, new boolean[2][40][46]);
             spriteMap.put(SpriteType.Laser, new boolean[3][12][720]);
@@ -334,7 +334,7 @@ public final class DrawManager {
     /**
      * Draws current ultimate skill gauge on screen.
      *
-     * @param ship   Current player ship.
+     * @param ship Current player ship.
      */
     public void drawUltGauge(final Ship ship, final int X, final int Y) {
         backBufferGraphics.setFont(fontRegular);
@@ -368,7 +368,7 @@ public final class DrawManager {
     /**
      * Draws number of remaining lives on screen.
      *
-     * @param lives  Current lives.
+     * @param lives Current lives.
      */
     public void drawLives(final int X, final int Y, final int lives) {
         backBufferGraphics.setFont(fontRegular);
@@ -1108,7 +1108,8 @@ public final class DrawManager {
         if (boss.getNextHpColor() != null) {
             // 다음페이즈의 색으로 체력바 색깔 지정
             backBufferGraphics.setColor(boss.getNextHpColor());
-            backBufferGraphics.fillRect(barX+healthWidth+1, barY + 1, barWidth-healthWidth -1, barHeight - 1);
+            backBufferGraphics.fillRect(barX + healthWidth + 1, barY + 1,
+                barWidth - healthWidth - 1, barHeight - 1);
         }
 
         // 체력 수치 표시
