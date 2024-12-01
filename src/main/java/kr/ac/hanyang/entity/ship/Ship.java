@@ -46,6 +46,8 @@ public class Ship extends Entity {
     protected boolean isUltActv;
     /** 궁극기를 사용할 수 있는 게이지 기준 양 */
     protected int ultThreshold;
+    /** 보스 스테이지 페이즈4에서 함선을 강제로 중앙으로 옮길때 사용 */
+    protected boolean isCenter;
 
     /**
      * Constructor, establishes the ship's properties.
@@ -76,6 +78,7 @@ public class Ship extends Entity {
         this.direction = direction;
         this.shipID = shipID;
         this.isBurstShooting = false;
+        this.isCenter = false;
     }
 
     /**
@@ -140,6 +143,27 @@ public class Ship extends Entity {
         calculateMovement();
         this.positionY += movement;
         this.positionX -= movement;
+    }
+
+    public void moveCenter() {
+        int centerX = 338;
+        int centerY = 451;
+
+        if (this.positionX < centerX) {
+            this.positionX += 1;
+        } else if (this.positionX > centerX) {
+            this.positionX -= 1;
+        }
+
+        if (this.positionY < centerY) {
+            this.positionY += 1;
+        } else if (this.positionY > centerY) {
+            this.positionY -= 1;
+        }
+
+        if (this.positionX == centerX && this.positionY == centerY) {
+            this.isCenter = true;
+        }
     }
 
     /**
@@ -266,6 +290,10 @@ public class Ship extends Entity {
      */
     public boolean isDestroyed() {
         return !this.destructionCooldown.checkFinished();
+    }
+
+    public boolean isCenter() {
+        return this.isCenter;
     }
 
     /**

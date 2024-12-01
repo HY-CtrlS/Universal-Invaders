@@ -209,14 +209,14 @@ public class Boss extends Entity {
         // X축 방향 보스 이동 먼저 맞추기
         if (this.positionX < positionX) {
             this.positionX += 1;
-        } else {
+        } else if (this.positionX > positionX) {
             this.positionX -= 1;
         }
 
         // Y축 방향 보스 이동 맞추기
         if (this.positionY < positionY) {
             this.positionY += 1;
-        } else {
+        } else if (this.positionY > positionY) {
             this.positionY -= 1;
         }
     }

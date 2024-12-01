@@ -88,6 +88,7 @@ public class BossScreen extends Screen {
     private Cooldown createCrystalCooldown;
     private Crystal crystal;
     private AsteroidPool asteroidPool;
+    private boolean isPhase4Ready;
 
     //임시 쿨다운 변수
     private Cooldown bossBasicBullet;
@@ -140,6 +141,7 @@ public class BossScreen extends Screen {
         this.inputDelay.reset();
 
         this.phaseStarted = false;
+        this.isPhase4Ready = false;
         this.survivalTime = 0;
         this.clockCooldown = Core.getCooldown(1000);
         this.clockCooldown.reset();
@@ -225,7 +227,8 @@ public class BossScreen extends Screen {
             boolean aimRight, aimLeft, aimUp, aimDown;
 
             // Ship1 궁극기 활성화 여부에 따라 이동 및 발사 가능 여부 결정
-            if (this.ship.getShipID() == 1 && this.ship.isUltActivated()) {
+            if ((this.ship.getShipID() == 1 && this.ship.isUltActivated())
+                || (this.boss.getPhase() == 4 && !this.isPhase4Ready)) {
                 moveRight = false;
                 moveLeft = false;
                 moveUp = false;
@@ -365,7 +368,7 @@ public class BossScreen extends Screen {
                 if (this.boss.getPhase() == 2) {
                     // 보스가 다 이동을 안했다면
                     if (!this.boss.isPhaseMoveFinished()) {
-                            // 보스가 화면 가운데로 이동
+                        // 보스가 화면 가운데로 이동
                         this.boss.phaseOneMove(this.getWidth() / 2 - this.boss.getWidth() / 2,
                             this.getHeight() / 2 - this.boss.getHeight() / 2);
 
@@ -381,10 +384,11 @@ public class BossScreen extends Screen {
                     }
                     // 보스의 이동이 완료된 경우 실행되는 부분
                     else {
-                        this.logger.info(""+ phaseOneCounter);
+                        this.logger.info("" + phaseOneCounter);
                         // 보스가 첫 번째 패턴중인 상태면 실행되는 부분
                         if (this.boss.isPhaseOnePattern()) {
-                            if (this.phaseOneCounter == 0 || this.phaseOneCounter == 2 || this.phaseOneCounter == 4) {
+                            if (this.phaseOneCounter == 0 || this.phaseOneCounter == 2
+                                || this.phaseOneCounter == 4) {
                                 // 페이즈 카운터가 0일때 실행이 되는 부분
                                 int result = this.boss.spreadBullet(this.bullets, 0, 360, 18);
                                 if (result == 1) {
@@ -397,7 +401,8 @@ public class BossScreen extends Screen {
                                     this.boss.createHorizontalBullets(this.bullets);
                                     this.boss.createVerticalBullets(this.bullets);
                                 }
-                            } else if (this.phaseOneCounter == 1 || this.phaseOneCounter == 3 || this.phaseOneCounter == 5) {
+                            } else if (this.phaseOneCounter == 1 || this.phaseOneCounter == 3
+                                || this.phaseOneCounter == 5) {
                                 // 페이즈 카운터가 1일때 실행이 되는 부분
                                 int result = this.boss.spreadBullet(this.bullets, 10, 360, 18);
                                 if (result == 1) {
@@ -413,7 +418,8 @@ public class BossScreen extends Screen {
                                 }
                                 if (phaseOneCounter < 50) {
                                     // 플레이어를 향해 총알을 난사
-                                    phaseOneCounter += this.boss.shootBullet(this.bullets, getBulletDirection());
+                                    phaseOneCounter += this.boss.shootBullet(this.bullets,
+                                        getBulletDirection());
                                 } else {
                                     // 페이즈1에서 2페이즈 패턴 종료
                                     this.boss.setPhaseOnePattern(false);
@@ -424,7 +430,8 @@ public class BossScreen extends Screen {
                         else {
                             //보스 원위치로 이동
                             int checkX =
-                                (this.width / 2 - this.boss.getWidth() / 2) - this.boss.getPositionX();
+                                (this.width / 2 - this.boss.getWidth() / 2)
+                                    - this.boss.getPositionX();
                             int checkY = (SEPARATION_LINE_HEIGHT - this.boss.getHeight() / 2)
                                 - this.boss.getPositionY();
 
@@ -469,7 +476,7 @@ public class BossScreen extends Screen {
                     }
                     // 보스의 이동이 완료된 경우 실행되는 부분
                     else {
-                        this.logger.info(""+ phaseOneCounter);
+                        this.logger.info("" + phaseOneCounter);
                         // 보스가 두 번째 패턴중인 상태면 실행되는 부분
                         if (this.boss.isPhaseOnePattern()) {
 
@@ -478,7 +485,8 @@ public class BossScreen extends Screen {
                         else {
                             //보스 원위치로 이동
                             int checkX =
-                                (this.width / 2 - this.boss.getWidth() / 2) - this.boss.getPositionX();
+                                (this.width / 2 - this.boss.getWidth() / 2)
+                                    - this.boss.getPositionX();
                             int checkY = (SEPARATION_LINE_HEIGHT - this.boss.getHeight() / 2)
                                 - this.boss.getPositionY();
 
@@ -498,6 +506,22 @@ public class BossScreen extends Screen {
                                 this.boss.setPhaseMoveFinished(false);
                             }
                         }
+                    }
+                } /// 2페이즈 -> 3페이즈 패턴 종료
+
+                /// 3페이즈 -> 4페이즈 패턴 시작
+                else if (this.boss.getPhase() == 4) {
+                    // 페이즈4 전 함선이 화면 중앙으로 강제 이동되지 않은 경우
+                    if (!this.isPhase4Ready) {
+                        // 함선 중앙으로 이동
+                        this.ship.moveCenter();
+                        if (this.ship.isCenter()) {
+                            // 이동 끝나면 소행성과 크리스탈 생성
+                            this.isPhase4Ready = true;
+                        }
+                    } else {
+                        // 발악패턴 시작
+                        // 레이저 발사, 크리스탈 회전
                     }
                 }
 
@@ -596,8 +620,10 @@ public class BossScreen extends Screen {
             }
 
             laserPool.draw();
-
             missilePool.draw();
+            if (this.isPhase4Ready) {
+                asteroidPool.draw();
+            }
 
             // 보스의 체력바 그리기
             drawManager.drawBossHp(this, boss.getCurrentHp(), this.boss);

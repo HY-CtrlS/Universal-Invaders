@@ -53,8 +53,4 @@ public final class AsteroidPool {
             positionY = 303 + 26;
         }
     }
-
-    public Set<Asteroid> getAsteroids() {
-        return this.asteroids;
-    }
 }
