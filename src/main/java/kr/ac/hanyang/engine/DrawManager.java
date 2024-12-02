@@ -1056,20 +1056,22 @@ public final class DrawManager {
     public void drawShipSelectMenu(final Screen screen, final int option, final int shipID) {
         String playString = "Play";
         String highScoresString = "Select ship";
+        String backString = "Back";
         String[] shipColors = {"GREEN", "BLUE", "YELLOW", "RED"};
-
-        if (option == 1) {
-            backBufferGraphics.setColor(Color.GREEN);
-        } else {
-            backBufferGraphics.setColor(Color.WHITE);
-        }
-        drawCenteredRegularString(screen, playString, screen.getHeight() / 3 * 2);
 
         if (option == 0) {
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
+        drawCenteredRegularString(screen, playString, screen.getHeight() / 3 * 2);
+
+        if (option == 1) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+
         drawCenteredRegularString(screen, highScoresString,
             screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 2);
         switch (shipColors[shipID - 1]) {
@@ -1086,7 +1088,16 @@ public final class DrawManager {
                 backBufferGraphics.setColor(Color.RED);
                 break;
         }
+
         drawCenteredRegularString(screen, shipColors[shipID - 1],
+            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+
+        if (option == 2) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, backString,
             screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
     }
 

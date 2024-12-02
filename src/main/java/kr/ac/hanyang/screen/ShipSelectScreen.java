@@ -35,7 +35,7 @@ public class ShipSelectScreen extends Screen {
         super(width, height, fps);
 
         // Defaults to play.
-        this.returnCode = 1;
+        this.returnCode = 0;
         this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
         this.selectionCooldown.reset();
         this.shipID = 1;
@@ -51,7 +51,7 @@ public class ShipSelectScreen extends Screen {
     public final int run() {
         super.run();
 
-        return this.shipID;
+        return this.returnCode;
     }
 
     /**
@@ -76,7 +76,7 @@ public class ShipSelectScreen extends Screen {
                 Core.getSoundManager().playButtonSound();
                 this.selectionCooldown.reset();
             }
-            if (this.returnCode == 0) {
+            if (this.returnCode == 1) {
                 if (this.selectionCooldown.checkFinished()
                     && this.inputDelay.checkFinished()) {
                     if (inputManager.isKeyDown(KeyEvent.VK_LEFT)
@@ -95,13 +95,12 @@ public class ShipSelectScreen extends Screen {
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                 if (this.returnCode == 0) {
+                    Core.getSoundManager().playPlaySound();
+                    this.isRunning = false;
+                } else if (this.returnCode == 2) {
+                    Core.getSoundManager().playButtonSound();
                     this.isRunning = false;
                 }
-                // SoundManager에서 음악 재생 중인지 확인 후 정지
-                if (Core.getSoundManager().isBackgroundMusicPlaying()) {
-                    Core.getSoundManager().stopBackgroundMusic();
-                }
-                Core.getSoundManager().playPlaySound();
             }
         }
     }
@@ -110,7 +109,7 @@ public class ShipSelectScreen extends Screen {
      * Shifts the focus to the next menu item.
      */
     private void nextMenuItem() {
-        if (this.returnCode == 1) {
+        if (this.returnCode == 2) {
             this.returnCode = 0;
         } else {
             this.returnCode++;
@@ -122,7 +121,7 @@ public class ShipSelectScreen extends Screen {
      */
     private void previousMenuItem() {
         if (this.returnCode == 0) {
-            this.returnCode = 1;
+            this.returnCode = 2;
         } else {
             this.returnCode--;
         }
@@ -162,5 +161,9 @@ public class ShipSelectScreen extends Screen {
         drawManager.drawShipSelectTitle(this);
         drawManager.drawShipSelectMenu(this, this.returnCode, this.shipID);
         drawManager.completeDrawing(this);
+    }
+
+    public int getShipID() {
+        return this.shipID;
     }
 }

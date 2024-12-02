@@ -64,8 +64,14 @@ public final class Core {
                 case 2:
                     // 게임 시작 전 함선 선택
                     currentScreen = new ShipSelectScreen(width, height, FPS);
-                    int shipID = handleScreen(currentScreen, "ship select screen");
+                    returnCode = handleScreen(currentScreen, "ship select screen");
 
+                    int shipID = ((ShipSelectScreen) currentScreen).getShipID();
+
+                    if (returnCode == 2) {
+                        returnCode = 1;
+                        break;
+                    }
                     // 게임 화면 시작
                     currentScreen = new GameScreen(gameState, width, height, FPS,
                         shipID);
