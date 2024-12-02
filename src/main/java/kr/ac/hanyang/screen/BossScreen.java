@@ -723,6 +723,11 @@ public class BossScreen extends Screen {
             draw();
         }
 
+        if ((this.hp <= 0) && !this.phaseFinished) {
+            this.phaseFinished = true;
+            this.screenFinishedCooldown.reset();
+        }
+
         if (this.phaseFinished && this.screenFinishedCooldown.checkFinished()) {
             this.isRunning = false;
         }
