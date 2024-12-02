@@ -376,13 +376,17 @@ public class Ship extends Entity {
     public static Ship createShipByID(int shipID, int positionX, int positionY) {
         switch (shipID) {
             case 1:
-                return new Ship1(positionX, positionY, Entity.Direction.UP, Color.GREEN, 1);
+                return new Ship1(positionX, positionY, Entity.Direction.UP, new Color(80, 200, 120),
+                    1);
             case 2:
-                return new Ship2(positionX, positionY, Entity.Direction.UP, Color.BLUE, 2);
+                return new Ship2(positionX, positionY, Entity.Direction.UP, new Color(65, 105, 225),
+                    2);
             case 3:
-                return new Ship3(positionX, positionY, Entity.Direction.UP, Color.YELLOW, 3);
+                return new Ship3(positionX, positionY, Entity.Direction.UP, new Color(218, 165, 32),
+                    3);
             case 4:
-                return new Ship4(positionX, positionY, Entity.Direction.UP, Color.RED, 4);
+                return new Ship4(positionX, positionY, Entity.Direction.UP, new Color(220, 20, 60),
+                    4);
             default:
                 throw new IllegalArgumentException("Invalid shipID: " + shipID);
         }
