@@ -12,21 +12,21 @@ import org.junit.jupiter.api.Test;
 
 
 class BossTest {
-    Boss boss;
+
+    Boss boss = new Boss(1, 1);
 
     @Test
     void spreadBulletTest() {
-        Cooldown tempTimer = Core.getCooldown(1000);
+        Cooldown tempTimer = Core.getCooldown(7500);
         tempTimer.reset();
-
-        boss = new Boss(1,1);
+        
         Set<Bullet> bullets = new HashSet<>();
 
         // 보스가 생성되자 마자 쏘면 기본공격 쿨다운이 안돌아서 발사가 안됨.
         int resultNotShot = boss.spreadBullet(bullets, 90, 45, 4);
         int resultShot = 0; //초기에는 총을 안쏜 것으로 0으로 설정
 
-        // 1초 기다리기
+        // 7.5초 기다리기
         do {
 
         } while (!tempTimer.checkFinished());
@@ -42,10 +42,10 @@ class BossTest {
 
     @Test
     void setPhase() {
-        boss = new Boss(1,1);
+        boss = new Boss(1, 1);
 
         boss.setPhase(1);
-        assertEquals(300,boss.getMaxHp());
+        assertEquals(300, boss.getMaxHp());
 
         boss.setPhase(2);
         assertEquals(500, boss.getMaxHp());
@@ -57,7 +57,7 @@ class BossTest {
 
     @Test
     void getPhase() {
-        boss = new Boss(1,1);
+        boss = new Boss(1, 1);
 
         boss.setPhase(1);
         assertEquals(1, boss.getPhase());
@@ -75,7 +75,7 @@ class BossTest {
         boss.getDamaged(10);
         int newHp = boss.getCurrentHp();
         // 정상적으로 감소했다면 같으면 안됨.
-        assertNotEquals(previousHp,newHp);
+        assertNotEquals(previousHp, newHp);
     }
 
 
@@ -105,7 +105,7 @@ class BossTest {
 
     @Test
     void getNextHpColor() {
-        boss = new Boss(1,1);
+        boss = new Boss(1, 1);
         //페이즈 1인경우 테스트
         assertEquals(Boss.PHASE_2_HPCOLOR, boss.getNextHpColor());
 
