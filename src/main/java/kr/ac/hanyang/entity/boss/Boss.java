@@ -64,7 +64,10 @@ public class Boss extends Entity {
      * @param positionY Initial Y position.
      */
     public Boss(int positionX, int positionY) {
-        super(positionX, positionY, 46 * 2, 40 * 2, new Color[]{Color.WHITE}, Direction.DOWN);
+        super(positionX, positionY, 46 * 2, 40 * 2,
+            new Color[]{Color.YELLOW,
+                Color.GRAY,
+                Color.MAGENTA});
 
         this.maxHp = PHASE_1_HP;
         this.currentHp = maxHp;
@@ -244,7 +247,7 @@ public class Boss extends Entity {
     // 보스의 좌우 이동을 구현하는 메소드
     public void move() {
         // 보스가 화면의 오른쪽 경계에 도달했는지 확인
-        boolean isRightBorder = this.positionX + this.width + this.speed > 680;
+        boolean isRightBorder = this.positionX + this.width + this.speed > 708;
         // 보스가 화면의 왼쪽 경계에 도달했는지 확인
         boolean isLeftBorder = this.positionX - this.speed < 0;
 

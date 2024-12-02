@@ -122,7 +122,6 @@ public class BossScreen extends Screen {
         super.initialize();
 
         this.boss = new Boss(this.width / 2 - 40, SEPARATION_LINE_HEIGHT + 50);
-        this.boss.setDirection(Direction.RIGHT);
 
         this.screenFinishedCooldown = Core.getCooldown(SCREEN_CHANGE_INTERVAL);
         this.bullets = new HashSet<Bullet>();
@@ -749,7 +748,7 @@ public class BossScreen extends Screen {
             drawManager.drawEntity(this.ship, this.ship.getPositionX(),
                 this.ship.getPositionY());
             drawManager.drawEntity(this.boss, this.boss.getPositionX(), this.boss.getPositionY());
-
+            Core.getLogger().info("Boss Direction" + this.boss.getDirection());
             if (this.boss.getPhase() >= 3) {
                 if (!(this.boss.getPhase() == 3 && this.boss.isPattern())) {
                     this.crystalPool.draw();
