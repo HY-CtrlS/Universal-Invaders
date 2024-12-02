@@ -633,6 +633,11 @@ public class GameScreen extends Screen {
                     this.ship.updateStatsFromStatusManager();
                 }
             }
+
+            // 경험치 지속간 만료되면 경험치 제거
+            if (experience.isExpired()) {
+                collectedExperiences.add(experience);
+            }
         }
 
         // 충돌한 경험치 제거 및 반환

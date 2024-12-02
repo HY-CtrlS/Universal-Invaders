@@ -1,6 +1,7 @@
 // src/entity/ExperiencePool.java
 package kr.ac.hanyang.entity;
 
+import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,6 +9,13 @@ import java.util.Set;
  * Implements a pool of recyclable experience points.
  */
 public final class ExperiencePool {
+
+    /** Point value of a type A enemy. */
+    private static final int A_TYPE_POINTS = 10;
+    /** Point value of a type B enemy. */
+    private static final int B_TYPE_POINTS = 50;
+    /** Point value of a type C enemy. */
+    private static final int C_TYPE_POINTS = 30;
 
     /** Set of already created experience points. */
     private static Set<Experience> pool = new HashSet<>();
@@ -35,9 +43,25 @@ public final class ExperiencePool {
             experience.setPositionX(positionX);
             experience.setPositionY(positionY);
             experience.setValue(value);
+            experience.setCreationTime(System.currentTimeMillis());
         } else {
             experience = new Experience(positionX, positionY, value);
         }
+        Color[] color;
+        switch (value) {
+            case A_TYPE_POINTS:
+                color = new Color[]{Color.GREEN};
+                break;
+            case B_TYPE_POINTS:
+                color = new Color[]{Color.MAGENTA};
+                break;
+            case C_TYPE_POINTS:
+                color = new Color[]{Color.RED};
+                break;
+            default:
+                color = new Color[]{Color.GREEN};
+        }
+        experience.setColor(color, true); // 색상 설정 및 원래 색상 업데이트
         return experience;
     }
 
