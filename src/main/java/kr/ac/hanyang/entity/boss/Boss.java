@@ -22,15 +22,10 @@ public class Boss extends Entity {
     private static final int PHASE_3_HP = 700;
     private static final int PHASE_4_HP = 1000;
 
-    private static final Color[] PHASE_1_COLOR = {new Color(255, 255, 0), Color.WHITE};
-    private static final Color[] PHASE_2_COLOR = {new Color(255, 170, 0), Color.WHITE};
-    private static final Color[] PHASE_3_COLOR = {new Color(255, 85, 0), Color.WHITE};
-    private static final Color[] PHASE_4_COLOR = {new Color(255, 0, 0), Color.WHITE};
-
-    protected static final Color PHASE_1_HPCOLOR = new Color(0xFF9696);
-    protected static final Color PHASE_2_HPCOLOR = new Color(0xFF6464);
-    protected static final Color PHASE_3_HPCOLOR = new Color(0xFF3232);
-    protected static final Color PHASE_4_HPCOLOR = new Color(0xFF0000);
+    protected static final Color PHASE_1_HPCOLOR = new Color(255, 150, 150);
+    protected static final Color PHASE_2_HPCOLOR = new Color(255, 170, 0);
+    protected static final Color PHASE_3_HPCOLOR = new Color(255, 85, 0);
+    protected static final Color PHASE_4_HPCOLOR = new Color(255, 0, 0);
 
     private static final int MIN_SPEED = 2; // 최소 이동 속도
     private static final int MAX_SPEED = 5; // 최대 이동 속도
@@ -69,7 +64,7 @@ public class Boss extends Entity {
      * @param positionY Initial Y position.
      */
     public Boss(int positionX, int positionY) {
-        super(positionX, positionY, 46 * 2, 40 * 2, PHASE_1_COLOR, Direction.DOWN);
+        super(positionX, positionY, 46 * 2, 40 * 2, new Color[]{Color.WHITE}, Direction.DOWN);
 
         this.maxHp = PHASE_1_HP;
         this.currentHp = maxHp;
@@ -279,19 +274,16 @@ public class Boss extends Entity {
             case 2:
                 this.maxHp = PHASE_2_HP;
                 this.currentHp = PHASE_2_HP;
-                setColor(PHASE_2_COLOR);
                 getNextHpColor();
                 break;
             case 3:
                 this.maxHp = PHASE_3_HP;
                 this.currentHp = PHASE_3_HP;
-                setColor(PHASE_3_COLOR);
                 getNextHpColor();
                 break;
             case 4:
                 this.maxHp = PHASE_4_HP;
                 this.currentHp = PHASE_4_HP;
-                setColor(PHASE_4_COLOR);
                 getNextHpColor();
                 break;
         }
@@ -334,10 +326,6 @@ public class Boss extends Entity {
             hpColor = PHASE_2_HPCOLOR;
         } else if (phase == 2) {
             hpColor = PHASE_3_HPCOLOR;
-        } else if (phase == 3) {
-            hpColor = PHASE_4_HPCOLOR;
-        } else if (phase == 4) {
-            hpColor = null;
         }
         return hpColor;
     }
