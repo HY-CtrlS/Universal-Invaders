@@ -42,8 +42,8 @@ public class GameScreen extends Screen {
     private static final int SCREEN_CHANGE_INTERVAL = 1500;
     /** Height of the interface separation line. */
     private static final int SEPARATION_LINE_HEIGHT = 40;
-    /** 아이템 선택 화면으로 넘어가는 경험치 기준 양 */
-    private static final int EXPERIENCE_THRESHOLD = 100;
+    /** 레벨업 기준량 증가량 */
+    public static final int EXPERIENCE_THRESHOLD_INTERVAL = 20;
     /** 기본 적 생성 간격 */
     private static final int ENEMY_SPAWN_INTERVAL = 2000;
     // 레벨 클리어 조건 시간
@@ -114,6 +114,8 @@ public class GameScreen extends Screen {
     private Portal portal;
     // 제한시간을 넘겼는지 확인하는 변수
     private boolean isClear;
+    /** 아이템 선택 화면으로 넘어가는 경험치 기준 양 */
+    private int experienceThreshold = 100;
 
     /**
      * Constructor, establishes the properties of the screen.
@@ -498,7 +500,8 @@ public class GameScreen extends Screen {
         drawManager.drawLevel(this, this.playerLevel); // 현재 레벨 그리기
         drawManager.drawHorizontalLine(this, this.height - EXPERIENCE_BAR_HEIGHT - 1);
         drawManager.drawExperienceBar(this, this.currentExperience,
-            EXPERIENCE_THRESHOLD, EXPERIENCE_BAR_HEIGHT); // 경험치 바 그리기
+            experienceThreshold, EXPERIENCE_BAR_HEIGHT); // 경험치 바 그리기
+        drawManager.drawUltGauge(this, this.ship); // 궁극기 게이지 그리기
 
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {
@@ -626,11 +629,12 @@ public class GameScreen extends Screen {
                 Core.getSoundManager().playExpCollectSound();
 
                 // 임계점 도달 시 레벨 증가
-                while (currentExperience >= EXPERIENCE_THRESHOLD) {
+                while (currentExperience >= experienceThreshold) {
                     playerLevel++;
                     this.logger.info("플레이어 레벨 업! 현재 레벨: " + playerLevel);
                     Core.getSoundManager().playLevelUpSound();
-                    currentExperience -= EXPERIENCE_THRESHOLD;
+                    currentExperience -= experienceThreshold;
+                    experienceThreshold += EXPERIENCE_THRESHOLD_INTERVAL; // 레벨업 기준 경험치 증가
                     // 선택한 아이템 없는 것으로 초기화
                     int selectedItem = -1;
                     this.logger.info(
@@ -657,6 +661,11 @@ public class GameScreen extends Screen {
                     }
                     this.ship.updateStatsFromStatusManager();
                 }
+            }
+
+            // 경험치 지속간 만료되면 경험치 제거
+            if (experience.isExpired()) {
+                collectedExperiences.add(experience);
             }
         }
 
