@@ -11,7 +11,7 @@ import kr.ac.hanyang.entity.ship.Ship;
 /**
  * 함선 선택 화면을 구현하는 클래스
  */
-public class shipSelectScreen extends Screen {
+public class ShipSelectScreen extends Screen {
 
     /** 사용자 선택의 변경 사이의 시간(밀리초) */
     private static final int SELECTION_TIME = 200;
@@ -31,7 +31,7 @@ public class shipSelectScreen extends Screen {
      * @param height Screen height.
      * @param fps    Frames per second, frame rate at which the game is run.
      */
-    public shipSelectScreen(final int width, final int height, final int fps) {
+    public ShipSelectScreen(final int width, final int height, final int fps) {
         super(width, height, fps);
 
         // Defaults to play.

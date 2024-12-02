@@ -63,7 +63,7 @@ public final class Core {
                     break;
                 case 2:
                     // 게임 시작 전 함선 선택
-                    currentScreen = new shipSelectScreen(width, height, FPS);
+                    currentScreen = new ShipSelectScreen(width, height, FPS);
                     int shipID = handleScreen(currentScreen, "ship select screen");
 
                     // 게임 화면 시작
