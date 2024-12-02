@@ -1,13 +1,15 @@
 package kr.ac.hanyang.engine;
 
+import java.awt.Color;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import kr.ac.hanyang.entity.Entity.Direction;
+import kr.ac.hanyang.entity.ship.Ship;
 import kr.ac.hanyang.screen.*;
-import kr.ac.hanyang.Item.*;
 
 /**
  * Implements core game logic.
@@ -47,7 +49,7 @@ public final class Core {
         int height = frame.getHeight();
 
         int returnCode = 1;
-        GameState gameState = new GameState(0, getStatusManager().getMaxHp(), 0, 0);
+        GameState gameState = new GameState(0, getStatusManager().getMaxHp(), 0, 0, getStatusManager(), new Ship(0,0, Direction.DOWN, Color.GREEN, 1));
 
         currentScreen = new SplashScreen(width, height, FPS);
         returnCode = handleScreen(currentScreen, "splash screen");
@@ -78,6 +80,19 @@ public final class Core {
                         break;
                     }
 
+                    // 보스 스크린 시작
+                    if (isQuit == 2) {
+                        currentScreen = new BossScreen(gameState, width, height, FPS,
+                            gameState.getShip());
+                        returnCode = handleScreen(currentScreen, "boss screen");
+                        if (returnCode == 0) {
+                            returnCode = 1;
+                            break;
+                        } else if (returnCode == 5) {
+                            break;
+                        }
+                    }
+
                     // 게임 종료 후 gameState의 정보를 이용하여 scoreScreen 생성
                     currentScreen = new ScoreScreen(width, height, FPS, gameState);
                     returnCode = handleScreen(currentScreen, "score screen");
@@ -91,6 +106,11 @@ public final class Core {
                     // 설정 화면
                     currentScreen = new SettingScreen(width, height, FPS);
                     returnCode = handleScreen(currentScreen, "setting screen");
+                    break;
+                case 5:
+                    // 엔딩 화면
+                    currentScreen = new EndingScreen(width, height, FPS);
+                    returnCode = handleScreen(currentScreen, "ending screen");
                     break;
                 default:
                     break;

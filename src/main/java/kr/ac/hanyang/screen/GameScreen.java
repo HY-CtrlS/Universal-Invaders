@@ -9,7 +9,7 @@ import kr.ac.hanyang.engine.DrawManager.SpriteType;
 import kr.ac.hanyang.engine.StatusManager;
 
 import kr.ac.hanyang.entity.Entity.Direction;
-import kr.ac.hanyang.entity.Ship;
+import kr.ac.hanyang.entity.ship.Ship;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.List;
@@ -46,6 +46,8 @@ public class GameScreen extends Screen {
     public static final int EXPERIENCE_THRESHOLD_INTERVAL = 20;
     /** 기본 적 생성 간격 */
     private static final int ENEMY_SPAWN_INTERVAL = 2000;
+    // 레벨 클리어 조건 시간
+    private static final int LEVEL_CLEAR_TIME = 300;
 
     /** Current difficulty level number. */
     private int level;
@@ -108,6 +110,10 @@ public class GameScreen extends Screen {
     private static ItemList items = new ItemList();
     // 아이템 리스트 참조하기 위한 배열
     private static List<Item> itemList;
+    // 보스 스테이지 이동용 포탈
+    private Portal portal;
+    // 제한시간을 넘겼는지 확인하는 변수
+    private boolean isClear;
     /** 아이템 선택 화면으로 넘어가는 경험치 기준 양 */
     private int experienceThreshold = 100;
 
@@ -160,6 +166,8 @@ public class GameScreen extends Screen {
         // 적 생성 쪽에서도 게임 진행 시간에 대한 정보를 받기 위해 게임 시작에 대한 정보 넘겨줌.
         enemyShipSet = new EnemyShipSet(ENEMY_SPAWN_INTERVAL, this.ship);
         enemyShipSet.attach(this);
+        // EnemyShipSet 의 시간설정과 클리어 시간 설정
+        enemyShipSet.initializeTime(survivalTime, LEVEL_CLEAR_TIME);
 
         this.enemies = enemyShipSet.getEnemies();
         // Appears each 10-30 seconds.
@@ -210,6 +218,11 @@ public class GameScreen extends Screen {
                 this.ultActivatedTime.reset();
                 break;
         }
+
+        // 포탈 객체 생성
+        this.portal = new Portal(this.width / 2 - 15, 80);
+        // 게임 오버 false로 초기화
+        this.isClear = false;
     }
 
     /**
@@ -226,7 +239,7 @@ public class GameScreen extends Screen {
     }
 
     /**
-     * Updates the elements on screen and checks for events.
+     * Updates the elem ents on screen and checks for events.
      */
     protected final void update() {
         super.update();
@@ -382,8 +395,8 @@ public class GameScreen extends Screen {
                 ExperiencePool.update(this.experiences);
             }
 
-            // 1초마다 생존 시간 1씩 증가
-            if (this.clockCooldown.checkFinished()) {
+            // 1초마다 생존 시간 1씩 증가, 게임오버 상태면 300초에서 시간 증가 정지
+            if (this.clockCooldown.checkFinished() && !this.isClear) {
                 this.survivalTime += 1;
                 // enemyShipSet의 시간도 같이 증가
                 enemyShipSet.updateTime();
@@ -410,6 +423,19 @@ public class GameScreen extends Screen {
                 }
             }
 
+            // 게임 진행시간이 300초가 되면 화면 상의 적들을 모두 지우고 isClear를 true로 전환
+            if (this.survivalTime == LEVEL_CLEAR_TIME && !this.isClear) {
+                this.isClear = true;
+                for (EnemyShip enemyShip : this.enemies) {
+                    enemyShip.destroy();
+                    this.shipsDestroyed++;
+                    this.experiences.add(
+                        ExperiencePool.getExperience(enemyShip.getPositionX() + 3 * 2,
+                            // enemyShip의 너비는 13, 경험치의 너비는 7이므로 3을 더해줌
+                            enemyShip.getPositionY(), enemyShip.getPointValue()));
+                }
+                this.portal.activate();
+            }
         }
 
         // Quit시에(!isRunning) GameScreen 그려지지 않도록 함
@@ -438,6 +464,17 @@ public class GameScreen extends Screen {
     private void draw() {
         drawManager.initDrawing(this);
 
+        if (this.portal.isVisible()) {
+            drawManager.drawEntity(this.portal,
+                this.portal.getPositionX(),
+                this.portal.getPositionY());
+        }
+
+        for (Bullet bullet : this.bullets) {
+            drawManager.drawEntity(bullet, bullet.getPositionX(),
+                bullet.getPositionY());
+        }
+
         drawManager.drawEntity(this.ship, this.ship.getPositionX(),
             this.ship.getPositionY());
         if (this.enemyShipSpecial != null) {
@@ -446,27 +483,24 @@ public class GameScreen extends Screen {
                 this.enemyShipSpecial.getPositionY());
         }
 
-        for (Bullet bullet : this.bullets) {
-            drawManager.drawEntity(bullet, bullet.getPositionX(),
-                bullet.getPositionY());
-        }
-
         // 경험치 그리기
         for (Experience experience : this.experiences) {
             drawManager.drawEntity(experience, experience.getPositionX(),
                 experience.getPositionY());
         }
 
-        enemyShipSet.draw();
+        if (!this.isClear) {
+            enemyShipSet.draw();
+        }
 
         // Interface.
-        drawManager.drawLives(this, this.hp);
+        drawManager.drawLives(10, 10, this.hp);
+        drawManager.drawUltGauge(this.ship, this.getWidth() - 300, 10);
         drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
         drawManager.drawLevel(this, this.playerLevel); // 현재 레벨 그리기
         drawManager.drawHorizontalLine(this, this.height - EXPERIENCE_BAR_HEIGHT - 1);
         drawManager.drawExperienceBar(this, this.currentExperience,
             experienceThreshold, EXPERIENCE_BAR_HEIGHT); // 경험치 바 그리기
-        drawManager.drawUltGauge(this, this.ship); // 궁극기 게이지 그리기
 
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {
@@ -549,15 +583,6 @@ public class GameScreen extends Screen {
 
                     }
                 }
-                if (this.enemyShipSpecial != null
-                    && !this.enemyShipSpecial.isDestroyed()
-                    && checkCollision(bullet, this.enemyShipSpecial)) {
-                    this.shipsDestroyed++;
-                    this.enemyShipSpecial.destroy();
-                    this.enemyShipSpecialExplosionCooldown.reset();
-                    recyclable.add(bullet);
-                }
-
             }
         }
         this.bullets.removeAll(recyclable);
@@ -646,6 +671,16 @@ public class GameScreen extends Screen {
         // 충돌한 경험치 제거 및 반환
         this.experiences.removeAll(collectedExperiences);
         ExperiencePool.recycle(collectedExperiences);
+
+        // 포탈과 아군 함선의 충돌 처리
+        if (this.portal.isVisible()) {
+            if (checkCollision(this.ship, this.portal)) {
+                if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
+                    this.returnCode = 2;
+                    this.levelFinished = true;
+                }
+            }
+        }
     }
 
 
@@ -704,6 +739,6 @@ public class GameScreen extends Screen {
      */
     public final GameState getGameState() {
         return new GameState(this.hp,
-            this.bulletsShot, this.shipsDestroyed, this.survivalTime);
+            this.bulletsShot, this.shipsDestroyed, this.survivalTime, this.status, this.ship);
     }
 }

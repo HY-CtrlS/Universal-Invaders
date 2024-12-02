@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
+import kr.ac.hanyang.entity.ship.Ship;
 
 /**
  * 함선 선택 화면을 구현하는 클래스
@@ -93,9 +94,7 @@ public class shipSelectScreen extends Screen {
                 }
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-                if (this.returnCode == 1) {
-                    this.returnCode = 0;
-                } else {
+                if (this.returnCode == 0) {
                     this.isRunning = false;
                 }
                 // SoundManager에서 음악 재생 중인지 확인 후 정지

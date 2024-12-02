@@ -4,6 +4,7 @@ package kr.ac.hanyang.entity;
 import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
+import kr.ac.hanyang.entity.ship.Ship;
 
 /**
  * Implements a pool of recyclable experience points.
