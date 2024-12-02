@@ -98,7 +98,7 @@ public class SettingScreen extends Screen {
         }
 
         // 설정 화면 종료
-        if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
+        if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
             soundManager.playButtonSound(); // 필드를 통해 접근
             this.isRunning = false;
         }

@@ -813,7 +813,7 @@ public final class DrawManager {
     public void drawSettingsMenu(final Screen screen, final int selectedOption) {
         // 설정 화면 제목 및 안내 문자열
         String settingsTitle = "Settings";
-        String instructionsString = "Use UP/DOWN to switch, LEFT/RIGHT to adjust, SPACE to exit";
+        String instructionsString = "Use UP/DOWN to switch, LEFT/RIGHT to adjust, ESC to exit";
 
         // 설정 제목과 안내 문자열 표시
         backBufferGraphics.setColor(Color.GREEN);
