@@ -119,7 +119,7 @@ public final class DrawManager {
         try {
             spriteMap = new LinkedHashMap<>();
 
-            spriteMap.put(SpriteType.Ship, new boolean[2][13][13]);
+            spriteMap.put(SpriteType.Ship, new boolean[1][13][13]);
             spriteMap.put(SpriteType.ShipDiagonal, new boolean[1][13][13]);
             spriteMap.put(SpriteType.ShipDestroyed, new boolean[1][16][13]);
             spriteMap.put(SpriteType.ShipDiagonalDestroyed, new boolean[1][15][15]);

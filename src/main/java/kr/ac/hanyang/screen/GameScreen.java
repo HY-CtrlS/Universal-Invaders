@@ -468,17 +468,17 @@ public class GameScreen extends Screen {
                 this.portal.getPositionY());
         }
 
+        for (Bullet bullet : this.bullets) {
+            drawManager.drawEntity(bullet, bullet.getPositionX(),
+                bullet.getPositionY());
+        }
+
         drawManager.drawEntity(this.ship, this.ship.getPositionX(),
             this.ship.getPositionY());
         if (this.enemyShipSpecial != null) {
             drawManager.drawEntity(this.enemyShipSpecial,
                 this.enemyShipSpecial.getPositionX(),
                 this.enemyShipSpecial.getPositionY());
-        }
-
-        for (Bullet bullet : this.bullets) {
-            drawManager.drawEntity(bullet, bullet.getPositionX(),
-                bullet.getPositionY());
         }
 
         // 경험치 그리기

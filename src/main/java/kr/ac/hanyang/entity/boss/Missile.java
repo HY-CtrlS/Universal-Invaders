@@ -11,7 +11,7 @@ public class Missile extends Entity {
 
     private static final int EXPLOSION_RADIUS = 50; // 폭발 반경
     private static final int EXPLOSION_DAMAGE = 10; // 최대 데미지
-    private static final double INITIAL_SPEED = 3.0; // 초기 속도
+    private static final double INITIAL_SPEED = 2.0; // 초기 속도
     private boolean isDestroyed; // 미사일 파괴 여부
     private boolean hasExploded; // 미사일 폭발 여부
     private double speedX; // X축 속도
@@ -36,7 +36,7 @@ public class Missile extends Entity {
         this.hasExploded = false;
 
         this.explosionCooldown = Core.getCooldown(2000);// 폭발 지속 시간: 2초
-        this.trackingCooldown = Core.getCooldown(8000); // 추적 지속 시간: 3초
+        this.trackingCooldown = Core.getCooldown(10000); // 추적 지속 시간: 3초
         this.trackingCooldown.reset();
     }
 

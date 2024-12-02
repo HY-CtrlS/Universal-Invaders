@@ -712,14 +712,15 @@ public class BossScreen extends Screen {
             drawManager.drawCountDown(this, countdown);
         }
         if (this.inputDelay.checkFinished()) {
-            drawManager.drawEntity(this.ship, this.ship.getPositionX(),
-                this.ship.getPositionY());
-            drawManager.drawEntity(this.boss, this.boss.getPositionX(), this.boss.getPositionY());
 
             for (Bullet bullet : this.bullets) {
                 drawManager.drawEntity(bullet, bullet.getPositionX(),
                     bullet.getPositionY());
             }
+
+            drawManager.drawEntity(this.ship, this.ship.getPositionX(),
+                this.ship.getPositionY());
+            drawManager.drawEntity(this.boss, this.boss.getPositionX(), this.boss.getPositionY());
 
             if (this.boss.getPhase() >= 3) {
                 if (!(this.boss.getPhase() == 3 && this.boss.isPattern())) {
@@ -872,11 +873,6 @@ public class BossScreen extends Screen {
                         }
                     }
                 }
-            }
-
-            // 미사일이 완료되었으면 삭제
-            if (missile.isDestroyed()) {
-                this.missiles.remove(missile);
             }
         }
     }

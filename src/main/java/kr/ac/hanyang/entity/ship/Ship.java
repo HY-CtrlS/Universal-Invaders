@@ -60,7 +60,7 @@ public class Ship extends Entity {
      */
     public Ship(final int positionX, final int positionY, final Direction direction, Color color,
         final int shipID) {
-        super(positionX, positionY, 13 * 2, 13 * 2, new Color[]{color, Color.WHITE}, direction);
+        super(positionX, positionY, 13 * 2, 13 * 2, color, direction);
 
         this.spriteType = SpriteType.Ship;
 
@@ -379,13 +379,13 @@ public class Ship extends Entity {
                 return new Ship1(positionX, positionY, Entity.Direction.UP, new Color(80, 200, 120),
                     1);
             case 2:
-                return new Ship2(positionX, positionY, Entity.Direction.UP, new Color(65, 105, 225),
+                return new Ship2(positionX, positionY, Entity.Direction.UP, new Color(15, 82, 186),
                     2);
             case 3:
-                return new Ship3(positionX, positionY, Entity.Direction.UP, new Color(218, 165, 32),
+                return new Ship3(positionX, positionY, Entity.Direction.UP, new Color(255, 215, 0),
                     3);
             case 4:
-                return new Ship4(positionX, positionY, Entity.Direction.UP, new Color(220, 20, 60),
+                return new Ship4(positionX, positionY, Entity.Direction.UP, new Color(224, 17, 95),
                     4);
             default:
                 throw new IllegalArgumentException("Invalid shipID: " + shipID);
