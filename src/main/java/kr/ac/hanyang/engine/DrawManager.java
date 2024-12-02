@@ -3,6 +3,7 @@ package kr.ac.hanyang.engine;
 import java.awt.Graphics2D;
 import javax.imageio.ImageIO;
 import kr.ac.hanyang.Item.Item;
+import kr.ac.hanyang.entity.Entity.Direction;
 import kr.ac.hanyang.entity.boss.Boss;
 import kr.ac.hanyang.entity.boss.Missile;
 import kr.ac.hanyang.entity.ship.Ship;
@@ -45,7 +46,7 @@ public final class DrawManager {
     /** Normal sized font. */
     private static Font fontRegular;
     /** Normal sized font properties. */
-    private static FontMetrics fontRegularMetrics;
+    public static FontMetrics fontRegularMetrics;
     /** Big sized font. */
     private static Font fontBig;
     /** Big sized font properties. */
@@ -1053,18 +1054,17 @@ public final class DrawManager {
      * @param screen 화면 객체를 받는 매개변수
      * @param option 어떤 메뉴를 선택했는지 구분하는 매개변수
      */
-    public void drawShipSelectMenu(final Screen screen, final int option, final int shipID) {
+    public void drawShipSelectMenu(final Screen screen, final int option, final Entity superShip) {
         String playString = "Play";
-        String highScoresString = "Select ship";
+        String selectString = "<-                    ->";
         String backString = "Back";
-        String[] shipColors = {"GREEN", "BLUE", "YELLOW", "RED"};
 
         if (option == 0) {
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
-        drawCenteredRegularString(screen, playString, screen.getHeight() / 3 * 2);
+        drawCenteredRegularString(screen, playString, screen.getHeight() / 5 * 2);
 
         if (option == 1) {
             backBufferGraphics.setColor(Color.GREEN);
@@ -1072,25 +1072,11 @@ public final class DrawManager {
             backBufferGraphics.setColor(Color.WHITE);
         }
 
-        drawCenteredRegularString(screen, highScoresString,
-            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 2);
-        switch (shipColors[shipID - 1]) {
-            case "GREEN":
-                backBufferGraphics.setColor(Color.GREEN);
-                break;
-            case "BLUE":
-                backBufferGraphics.setColor(Color.BLUE);
-                break;
-            case "YELLOW":
-                backBufferGraphics.setColor(Color.YELLOW);
-                break;
-            case "RED":
-                backBufferGraphics.setColor(Color.RED);
-                break;
-        }
+        drawCenteredRegularString(screen, selectString,
+            screen.getHeight() / 5 * 2 + fontRegularMetrics.getHeight() * 3);
 
-        drawCenteredRegularString(screen, shipColors[shipID - 1],
-            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+        drawEntity(superShip, superShip.getPositionX() - superShip.getWidth() / 2,
+            superShip.getPositionY());
 
         if (option == 2) {
             backBufferGraphics.setColor(Color.GREEN);
@@ -1098,7 +1084,7 @@ public final class DrawManager {
             backBufferGraphics.setColor(Color.WHITE);
         }
         drawCenteredRegularString(screen, backString,
-            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+            screen.getHeight() / 5 * 2 + fontRegularMetrics.getHeight() * 6);
     }
 
     public void setSplashImage() {

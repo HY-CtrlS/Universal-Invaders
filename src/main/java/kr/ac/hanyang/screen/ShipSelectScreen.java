@@ -1,5 +1,6 @@
 package kr.ac.hanyang.screen;
 
+import kr.ac.hanyang.engine.DrawManager;
 import kr.ac.hanyang.entity.*;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -22,6 +23,8 @@ public class ShipSelectScreen extends Screen {
     /** 함선 ID */
     private int shipID;
 
+    private Entity superShip;
+
     private Color[] shipColors = {Color.GREEN, Color.BLUE, Color.YELLOW, Color.RED};
 
     /**
@@ -35,10 +38,12 @@ public class ShipSelectScreen extends Screen {
         super(width, height, fps);
 
         // Defaults to play.
-        this.returnCode = 0;
+        this.returnCode = 1;
         this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
         this.selectionCooldown.reset();
         this.shipID = 1;
+        this.superShip = Ship.createShipByID(this.shipID, this.width / 2,
+            this.height / 5 * 2 + DrawManager.fontRegularMetrics.getHeight() * 2);
 
     }
 
@@ -91,6 +96,8 @@ public class ShipSelectScreen extends Screen {
                         Core.getSoundManager().playButtonSound();
                         this.selectionCooldown.reset();
                     }
+                    superShip = Ship.createShipByID(this.shipID, this.width / 2,
+                        this.height / 5 * 2 + DrawManager.fontRegularMetrics.getHeight() * 2);
                 }
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
@@ -153,13 +160,15 @@ public class ShipSelectScreen extends Screen {
      * Draws the elements associated with the screen.
      */
     private void draw() {
-        Entity dummy = Ship.createShipByID(this.shipID, 0, 0);
-
         drawManager.initDrawing(this);
-        drawManager.drawEntity(dummy, this.width / 2 - (dummy.getWidth() / 2),
-            this.height / 3 * 2 + 115);
-        drawManager.drawShipSelectTitle(this);
-        drawManager.drawShipSelectMenu(this, this.returnCode, this.shipID);
+
+        drawManager.setSplashImage();
+        drawManager.drawBackgroundImage(this, 170);
+
+        drawManager.drawTitle(this);
+
+        drawManager.drawShipSelectMenu(this, this.returnCode, this.superShip);
+
         drawManager.completeDrawing(this);
     }
 
