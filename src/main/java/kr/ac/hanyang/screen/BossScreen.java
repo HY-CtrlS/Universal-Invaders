@@ -37,9 +37,6 @@ public class BossScreen extends Screen {
     private static final int SEPARATION_LINE_HEIGHT = 40;
     /** Time from finishing the level to screen change. */
     private static final int SCREEN_CHANGE_INTERVAL = 1500;
-    /** 보스의 최대 페이즈 */
-    private static final int maxPhase = 3;
-
     /** 보스의 페이즈 */
     private int phase;
     /** Player's ship. */
@@ -116,7 +113,6 @@ public class BossScreen extends Screen {
         this.ship.setPositionY(this.getHeight() * 3 / 4 - this.ship.getHeight() / 2);
 
         this.returnCode = 1;
-        this.status = status;
     }
 
     /**
@@ -333,6 +329,29 @@ public class BossScreen extends Screen {
                     this.ship.useUlt();
                     this.logger.info("Ultimate Skill!");
                 }
+            }
+
+            // esc키를 눌렀을 때 일시정지 화면으로 전환
+            if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
+                this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
+                    + " pause screen at " + this.fps + " fps.");
+                Screen pause = new PauseScreen(this.getWidth(), this.getHeight(), this.fps);
+                if (this.ship.isUltActivated()) {
+                    this.ultActivatedTime.pause();
+                }
+                int check = pause.run();
+                if (this.ultActivatedTime.isPaused()) {
+                    this.ultActivatedTime.resume();
+                }
+                this.logger.info("Closing pause screen.");
+                // 일시정지 화면에서 quit를 누른 경우 현재 라운드 종료
+                if (check == 2) {
+                    this.returnCode = 0;
+                    this.isRunning = false;
+                }
+                // 일시정지 화면에서 돌아온 후 스페이스바 키 입력을 초기화하여
+                // 돌아오자마자 스페이스바가 눌린 상태로 인식되지 않도록 함
+                inputManager.resetKeyState(KeyEvent.VK_SPACE);
             }
 
             // Ship4 궁극기 활성화 여부에 따라 체력 회복량 결정
@@ -672,9 +691,12 @@ public class BossScreen extends Screen {
                 }
             }
         }
-        manageCollisions();
-        cleanBullets();
-        draw();
+
+        if (this.isRunning) {
+            manageCollisions();
+            cleanBullets();
+            draw();
+        }
     }
 
     private void draw() {
