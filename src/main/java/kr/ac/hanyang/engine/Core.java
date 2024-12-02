@@ -88,6 +88,8 @@ public final class Core {
                         if (returnCode == 0) {
                             returnCode = 1;
                             break;
+                        } else if (returnCode == 5) {
+                            break;
                         }
                     }
 

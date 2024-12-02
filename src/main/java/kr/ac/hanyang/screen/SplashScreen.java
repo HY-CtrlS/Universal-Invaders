@@ -2,10 +2,9 @@ package kr.ac.hanyang.screen;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.entity.Entity.Direction;
-import kr.ac.hanyang.entity.Ship;
+import kr.ac.hanyang.entity.ship.Ship;
 
 public class SplashScreen extends Screen {
 

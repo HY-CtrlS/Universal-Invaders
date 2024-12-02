@@ -623,6 +623,7 @@ public class BossScreen extends Screen {
                     if (this.boss.getCurrentHp() <= 0) {
                         // 보스 최종 클리어
                         this.phaseFinished = true;
+                        this.returnCode = 5;
                         this.screenFinishedCooldown.reset();
                     }
                 }
