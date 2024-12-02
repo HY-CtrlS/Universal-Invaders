@@ -7,11 +7,17 @@ import kr.ac.hanyang.engine.DrawManager.SpriteType;
 
 public class Experience extends Entity {
 
+    // 지속시간
+    private static final long DURATION = 10000; // 10초
+
     private int value;
     // 플레이어를 지속적으로 추적하는데 필요한 변수
     private double remainingMovementX = 0;
     private double remainingMovementY = 0;
     protected Cooldown animationCooldown;
+
+    // 생성된 시간을 저장
+    private long creationTime;
 
     public Experience(int positionX, int positionY, int value) {
         super(positionX, positionY, 7, 7, Color.GREEN);
@@ -21,6 +27,9 @@ public class Experience extends Entity {
 
         this.animationCooldown = Core.getCooldown(500);
         this.animationCooldown.reset();
+
+        // 생성된 시간 기록
+        this.creationTime = System.currentTimeMillis();
     }
 
     /**
@@ -66,5 +75,13 @@ public class Experience extends Entity {
 
     public void setValue(int value) {
         this.value = value;
+    }
+
+    public void setCreationTime(long creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public boolean isExpired() {
+        return System.currentTimeMillis() - creationTime > DURATION; // 10초
     }
 }

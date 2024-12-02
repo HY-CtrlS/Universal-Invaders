@@ -43,20 +43,22 @@ public final class ExperiencePool {
             experience.setPositionX(positionX);
             experience.setPositionY(positionY);
             experience.setValue(value);
+            experience.setCreationTime(System.currentTimeMillis());
         } else {
             experience = new Experience(positionX, positionY, value);
         }
         switch (value) {
             case A_TYPE_POINTS:
-                experience.setColor(new Color[] {Color.GREEN});
+                experience.setColor(new Color[]{Color.GREEN});
                 break;
             case B_TYPE_POINTS:
-                experience.setColor(new Color[] {Color.MAGENTA});
+                experience.setColor(new Color[]{Color.MAGENTA});
                 break;
             case C_TYPE_POINTS:
-                experience.setColor(new Color[] {Color.RED});
+                experience.setColor(new Color[]{Color.RED});
                 break;
-            default: experience.setColor(new Color[] {Color.GREEN});
+            default:
+                experience.setColor(new Color[]{Color.GREEN});
         }
         return experience;
     }
