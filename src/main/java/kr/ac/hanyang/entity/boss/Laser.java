@@ -8,7 +8,7 @@ import kr.ac.hanyang.entity.Entity;
 
 public class Laser extends Entity {
 
-    private static final int DAMAGE = 20;
+    private static final int DAMAGE = 5;
     private boolean isReady;
     private boolean isAct;
     private boolean isDone;
@@ -16,9 +16,8 @@ public class Laser extends Entity {
     private Cooldown act;
 
     public Laser(final int positionX, final int positionY, final Direction direction) {
-        super(positionX, positionY, 720 * 2, 15 * 2,
-            new Color[]{new Color(255, 255, 255, 128), new Color(189, 102, 255, 128),
-            new Color(94, 255, 250, 128)}, direction);
+        super(positionX, positionY, 720 * 2, 10 * 2,
+            new Color[]{new Color(255, 255, 255, 128), new Color(189, 102, 255, 128)}, direction);
 
         this.positionX = positionX;
         this.positionY = positionY;
