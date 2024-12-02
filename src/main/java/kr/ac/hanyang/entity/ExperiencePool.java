@@ -47,19 +47,21 @@ public final class ExperiencePool {
         } else {
             experience = new Experience(positionX, positionY, value);
         }
+        Color[] color;
         switch (value) {
             case A_TYPE_POINTS:
-                experience.setColor(new Color[]{Color.GREEN});
+                color = new Color[]{Color.GREEN};
                 break;
             case B_TYPE_POINTS:
-                experience.setColor(new Color[]{Color.MAGENTA});
+                color = new Color[]{Color.MAGENTA};
                 break;
             case C_TYPE_POINTS:
-                experience.setColor(new Color[]{Color.RED});
+                color = new Color[]{Color.RED};
                 break;
             default:
-                experience.setColor(new Color[]{Color.GREEN});
+                color = new Color[]{Color.GREEN};
         }
+        experience.setColor(color, true); // 색상 설정 및 원래 색상 업데이트
         return experience;
     }
 
