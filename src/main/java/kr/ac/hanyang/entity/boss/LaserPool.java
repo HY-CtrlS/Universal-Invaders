@@ -6,19 +6,16 @@ import java.util.logging.Logger;
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.engine.DrawManager;
 import kr.ac.hanyang.entity.Entity.Direction;
-import kr.ac.hanyang.entity.ship.Ship;
 
 public final class LaserPool {
 
     private Set<Laser> lasers;
     private DrawManager drawManager;
-    private Ship ship;
     private Logger logger;
 
-    public LaserPool(Ship ship) {
+    public LaserPool() {
         this.lasers = new HashSet<>();
         this.drawManager = Core.getDrawManager();
-        this.ship = ship;
         this.logger = Core.getLogger();
     }
 

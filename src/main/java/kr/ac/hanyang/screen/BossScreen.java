@@ -130,7 +130,7 @@ public class BossScreen extends Screen {
 
         this.screenFinishedCooldown = Core.getCooldown(SCREEN_CHANGE_INTERVAL);
         this.bullets = new HashSet<Bullet>();
-        this.laserPool = new LaserPool(this.ship);
+        this.laserPool = new LaserPool();
         this.lasers = laserPool.getLasers();
         this.missilePool = new MissilePool(this.ship);
         this.missiles = missilePool.getMissiles();
