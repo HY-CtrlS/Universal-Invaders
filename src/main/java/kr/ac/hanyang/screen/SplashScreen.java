@@ -90,8 +90,7 @@ public class SplashScreen extends Screen {
      */
     private void handleInput() {
         if (inputDelay.checkFinished() && readyToStart &&
-            (inputManager.isKeyDown(KeyEvent.VK_SPACE) || inputManager.isKeyDown(
-                KeyEvent.VK_ENTER))) {
+            inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
             this.isRunning = false;
             Core.getSoundManager().playButtonSound();
         }
@@ -127,7 +126,7 @@ public class SplashScreen extends Screen {
         }
 
         if (readyToStart) {
-            drawManager.drawStartMessage(this, "Press SPACE or ENTER to start");
+            drawManager.drawStartMessage(this, "Press SPACE to start");
         }
     }
 
