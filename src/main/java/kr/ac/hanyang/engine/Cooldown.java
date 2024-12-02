@@ -108,4 +108,11 @@ public class Cooldown {
     public final boolean isPaused() {
         return isPaused;
     }
+
+    /**
+     * 쿨다운이 강제로 끝나도록 함.
+     */
+    public final void forceFinish() {
+        this.time = 0;
+    }
 }

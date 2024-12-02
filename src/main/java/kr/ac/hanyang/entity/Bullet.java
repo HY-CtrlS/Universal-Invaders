@@ -17,8 +17,14 @@ public class Bullet extends Entity {
     private int speed;
     // 총알의 데미지
     private int damage;
+    // 총알의 사정거리 계수
+    private int range;
     // 총알의 뱡향
     private Direction direction;
+    // 총알의 현재 거리
+    private int curDistance = 0;
+    // 총알이 날아가는 최대 거리
+    private int maxDistance;
     // 총알을 발사한 함선 식별
     private int classify;
     // 축 방향 속도의 소수 부분을 저장 및 누적
@@ -48,7 +54,7 @@ public class Bullet extends Entity {
      * @param direction 총알의 방향.
      * @param classify  총알의 종류.
      */
-    public Bullet(final int positionX, final int positionY, final int speed, int damage,
+    public Bullet(final int positionX, final int positionY, final int speed, int damage, int range,
         Direction direction, int classify) {
         super(positionX, positionY, 2 * 2, 2 * 2, Color.WHITE);
 
@@ -56,6 +62,8 @@ public class Bullet extends Entity {
         this.direction = direction;
         this.speed = speed;
         this.damage = damage;
+        this.range = range;
+        setMaxDistance(this.range);
         setSprite();
     }
 
@@ -162,6 +170,7 @@ public class Bullet extends Entity {
             this.positionX += movementX;
             this.positionY += movementY;
         }
+        this.curDistance += this.speed;
     }
 
     /**
@@ -198,6 +207,34 @@ public class Bullet extends Entity {
         return this.damage;
     }
 
+    public final void setRange(final int range) {
+        this.range = range;
+        setMaxDistance(this.range);
+    }
+
+    public final int getRange() {
+        return this.range;
+    }
+
+    /**
+     * @return 현재 거리, 최대 거리를 설정 또는 반환함.
+     */
+    public final void setcurDistance(int distance) {
+        this.curDistance = 0;
+    }
+
+    public final double getcurDistance() {
+        return this.curDistance;
+    }
+
+    public final void setMaxDistance(int range) {
+        this.maxDistance = range * 20;
+    }
+
+    public final double getMaxDistance() {
+        return this.maxDistance;
+    }
+
     /**
      * 총알의 방향을 설정하는 Setter.
      *
@@ -215,6 +252,7 @@ public class Bullet extends Entity {
     public Direction getDirection() {
         return this.direction;
     }
+
 
     /**
      * 총알의 진영을 설정하는 Setter.

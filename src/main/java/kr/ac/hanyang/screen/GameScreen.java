@@ -521,12 +521,15 @@ public class GameScreen extends Screen {
         Set<Bullet> recyclable = new HashSet<Bullet>();
         for (Bullet bullet : this.bullets) {
             bullet.update();
+            bullet.setRange(this.ship.getRange());
             if (bullet.getPositionY() < SEPARATION_LINE_HEIGHT
                 || bullet.getPositionY() > this.height - EXPERIENCE_BAR_HEIGHT - 1
                 || bullet.getPositionX() < 0
-                || bullet.getPositionX() > this.width) {
+                || bullet.getPositionX() > this.width
+                || bullet.getcurDistance() > bullet.getMaxDistance()) {
                 recyclable.add(bullet);
             }
+
         }
         this.bullets.removeAll(recyclable);
         BulletPool.recycle(recyclable);

@@ -1,5 +1,7 @@
 package kr.ac.hanyang.engine;
 
+import java.awt.Graphics2D;
+import javax.imageio.ImageIO;
 import kr.ac.hanyang.Item.Item;
 import kr.ac.hanyang.entity.boss.Boss;
 import kr.ac.hanyang.entity.boss.Missile;
@@ -51,6 +53,17 @@ public final class DrawManager {
 
     /** Sprite types mapped to their images. */
     private static Map<SpriteType, boolean[][][]> spriteMap;
+
+    /** 배경 이미지. */
+    private BufferedImage backgroundImage;
+
+    // DrawManager 클래스의 전역 변수 추가
+    private int titleTypingIndex = 0; // 현재 출력된 글자 수
+    private long lastUpdateTime = 0; // 마지막 글자 업데이트 시점
+    private static final long TYPING_DELAY = 80; // 글자 간 출력 지연 (밀리초)
+    private boolean showStartMessage = true; // 메시지 표시 여부
+    private long lastBlinkTime = 0;          // 마지막 깜빡임 시간
+    private static final int BLINK_DELAY = 1000; // 메시지 깜빡임 주기 (1초)
 
     /** Sprite types. */
     public static enum SpriteType {
@@ -418,16 +431,16 @@ public final class DrawManager {
      * @param screen Screen to draw on.
      */
     public void drawTitle(final Screen screen) {
-        String titleString = "Invaders";
+        String titleString = "Universal Invaders";
         String instructionsString =
             "select with w+s / arrows, confirm with space";
 
         backBufferGraphics.setColor(Color.GRAY);
         drawCenteredRegularString(screen, instructionsString,
-            screen.getHeight() / 2);
+            screen.getHeight() / 4);
 
         backBufferGraphics.setColor(Color.GREEN);
-        drawCenteredBigString(screen, titleString, screen.getHeight() / 3);
+        drawCenteredBigString(screen, titleString, screen.getHeight() / 6);
     }
 
     /**
@@ -447,7 +460,7 @@ public final class DrawManager {
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
-        drawCenteredRegularString(screen, playString, screen.getHeight() / 3 * 2);
+        drawCenteredRegularString(screen, playString, screen.getHeight() / 5 * 2);
 
         if (option == 3) {
             backBufferGraphics.setColor(Color.GREEN);
@@ -455,7 +468,7 @@ public final class DrawManager {
             backBufferGraphics.setColor(Color.WHITE);
         }
         drawCenteredRegularString(screen, highScoresString,
-            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 2);
+            screen.getHeight() / 5 * 2 + fontRegularMetrics.getHeight() * 2);
 
         if (option == 4) {
             backBufferGraphics.setColor(Color.GREEN);
@@ -463,7 +476,7 @@ public final class DrawManager {
             backBufferGraphics.setColor(Color.WHITE);
         }
         drawCenteredRegularString(screen, settingsString,
-            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+            screen.getHeight() / 5 * 2 + fontRegularMetrics.getHeight() * 4);
 
         if (option == 0) {
             backBufferGraphics.setColor(Color.GREEN);
@@ -471,7 +484,7 @@ public final class DrawManager {
             backBufferGraphics.setColor(Color.WHITE);
         }
         drawCenteredRegularString(screen, exitString,
-            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 6);
+            screen.getHeight() / 5 * 2 + fontRegularMetrics.getHeight() * 6);
     }
 
     /**
@@ -1078,6 +1091,93 @@ public final class DrawManager {
         }
         drawCenteredRegularString(screen, shipColors[shipID - 1],
             screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+    }
+
+    public void setSplashImage() {
+        try {
+            // 고정된 splash 이미지 로드
+            backgroundImage = ImageIO.read(getClass().getResource("/splash_image.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Failed to load splash image.");
+        }
+    }
+
+    public void drawBackgroundImage(final Screen screen, int offsetY) {
+        if (backgroundImage != null) {
+            // 이미지 크기
+            int imageWidth = backgroundImage.getWidth();
+            int imageHeight = backgroundImage.getHeight();
+
+            // 화면 크기
+            int screenWidth = screen.getWidth();
+            int screenHeight = screen.getHeight();
+
+            // 스케일 설정 (1.0 이하로 설정하면 축소됨)
+            double scale = 0.7; // 이미지 크기를 50%로 축소
+
+            // 스케일링된 이미지 크기
+            int scaledWidth = (int) (imageWidth * scale);
+            int scaledHeight = (int) (imageHeight * scale);
+
+            // 이미지를 중앙에 배치하기 위한 좌표 계산
+            int x = (screenWidth - scaledWidth) / 2; // 화면 중앙의 X 좌표
+            int y = (screenHeight - scaledHeight) / 2 + offsetY; // 화면 중앙의 Y 좌표에 오프셋 추가
+
+            // Graphics2D를 사용하여 스케일링된 이미지 그리기
+            Graphics2D g2d = (Graphics2D) backBufferGraphics;
+            g2d.drawImage(backgroundImage, x, y, scaledWidth, scaledHeight, null);
+        } else {
+            // 배경 이미지가 없을 경우 기본 색상으로 화면 채움
+            backBufferGraphics.setColor(Color.BLACK);
+            backBufferGraphics.fillRect(0, 0, screen.getWidth(), screen.getHeight());
+        }
+    }
+
+    // 초기화 메서드
+    public void resetGameTitleAnimation() {
+        titleTypingIndex = 0;
+        lastUpdateTime = System.currentTimeMillis();
+    }
+
+    public boolean drawGameTitle(final Screen screen, String titleString) {
+        // 현재 시간
+        long currentTime = System.currentTimeMillis();
+
+        // 타이틀 글자 업데이트 조건 확인
+        if (currentTime - lastUpdateTime >= TYPING_DELAY) {
+            if (titleTypingIndex < titleString.length()) {
+                titleTypingIndex++; // 다음 글자로 넘어감
+            }
+            lastUpdateTime = currentTime; // 마지막 업데이트 시간 갱신
+        }
+
+        // 현재까지의 글자만 출력
+        String partialTitle = titleString.substring(0, titleTypingIndex);
+
+        // 타이틀 출력
+        backBufferGraphics.setColor(Color.GREEN);
+        drawCenteredBigString(screen, partialTitle, screen.getHeight() / 6);
+
+        // 타이틀 글자가 모두 출력되었는지 반환
+        return titleTypingIndex == titleString.length();
+    }
+
+    public void drawStartMessage(final Screen screen, String message) {
+        // 현재 시간
+        long currentTime = System.currentTimeMillis();
+
+        // 메시지 깜빡임 로직
+        if (currentTime - lastBlinkTime >= BLINK_DELAY) {
+            showStartMessage = !showStartMessage; // 흰색 ↔ 회색 토글
+            lastBlinkTime = currentTime;         // 마지막 깜빡임 시간 갱신
+        }
+
+        // 메시지 색상 설정
+        backBufferGraphics.setColor(showStartMessage ? Color.WHITE : Color.GRAY);
+
+        // 메시지 그리기
+        drawCenteredRegularString(screen, message, screen.getHeight() / 2);
     }
 
     //보스 HP바 표시
