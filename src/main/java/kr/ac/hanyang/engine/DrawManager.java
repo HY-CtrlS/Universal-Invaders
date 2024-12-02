@@ -75,10 +75,8 @@ public final class DrawManager {
         ShipDestroyed,
         /* 파괴된 플레이어 함선 (좌상향) */
         ShipDiagonalDestroyed,
-        /** 상단을 향한 플레이어 탄막 */
+        /** 플레이어 탄막 */
         Bullet,
-        /** 좌상단을 향한 플레이어 탄막 */
-        BulletDiagonal,
         /** 경험치 A */
         ExperienceA,
         /** 경험치 B */
@@ -136,8 +134,7 @@ public final class DrawManager {
             spriteMap.put(SpriteType.ShipDiagonal, new boolean[1][13][13]);
             spriteMap.put(SpriteType.ShipDestroyed, new boolean[1][16][13]);
             spriteMap.put(SpriteType.ShipDiagonalDestroyed, new boolean[1][15][15]);
-            spriteMap.put(SpriteType.Bullet, new boolean[1][2][4]);
-            spriteMap.put(SpriteType.BulletDiagonal, new boolean[1][4][4]);
+            spriteMap.put(SpriteType.Bullet, new boolean[1][2][2]);
             spriteMap.put(SpriteType.ExperienceA, new boolean[1][7][7]);
             spriteMap.put(SpriteType.ExperienceB, new boolean[1][7][7]);
             spriteMap.put(SpriteType.EnemyBullet, new boolean[1][3][3]);
