@@ -44,6 +44,7 @@ public class Bullet extends Entity {
     // 보스 총알의 각 축 방향 속도의 정수 부분
     private int movementX;
     private int movementY;
+    private boolean canMove;
     /**
      * Constructor, establishes the bullet's properties.
      *
@@ -78,6 +79,7 @@ public class Bullet extends Entity {
         this.damage = damage;
         // 방향은 null 이 안되도록 일단 up으로 설정
         this.direction = Direction.UP;
+        this.canMove = true;
         setSprite();
     }
 
@@ -166,9 +168,11 @@ public class Bullet extends Entity {
             }
         } else {
             // Boss의 총알인 경우
-            calculateBossBulletMovement();
-            this.positionX += movementX;
-            this.positionY += movementY;
+            if (this.canMove) {
+                calculateBossBulletMovement();
+                this.positionX += movementX;
+                this.positionY += movementY;
+            }
         }
         this.curDistance += this.speed;
     }
@@ -286,5 +290,9 @@ public class Bullet extends Entity {
      */
     public boolean getisPiercing() {
         return this.isPiercing;
+    }
+
+    public void setCanMove(boolean move) {
+        this.canMove = move;
     }
 }

@@ -214,10 +214,6 @@ public class BossScreen extends Screen {
         }
 
         if (this.inputDelay.checkFinished() && !this.phaseFinished) {
-            // 보스의 공격 처리 & 궁극기 효과 적용
-            if (this.ship.getShipID() == 2 && this.ship.isUltActivated()) {
-                // Ship2 궁극기 활성화 여부에 따라 보스 공격 무력화 결정
-            }
 
             // WASD - 함선 이동
             boolean moveRight, moveLeft, moveUp, moveDown;
@@ -365,8 +361,19 @@ public class BossScreen extends Screen {
 
             this.ship.update();
             this.laserPool.update();
-            this.missilePool.update();
+            if (this.ship.getShipID() == 2 && this.ship.isUltActivated()) {
+                for (Missile missile : missiles) {
+                    missile.setCanMove(false);
+                }
+            } else {
+                this.missilePool.update();
+            }
             this.crystalPool.update();
+            if (this.ship.getShipID() == 2 && this.ship.isUltActivated()) {
+                for (Bullet bullet : bullets) {
+                    bullet.setCanMove(false);
+                }
+            }
 
             // 1초마다 생존 시간 1씩 증가
             if (this.clockCooldown.checkFinished()) {
@@ -380,9 +387,16 @@ public class BossScreen extends Screen {
                 if (this.ship.getShipID() == 1) {
                     // Ship1 궁극기로 보스의 총알과 미사일 파괴, 크리스탈 파괴, 보스에게 일정 데미지
                     destroyAllAmmo();
-                    if (!this.isPhase4Ready) {
+                    if (!this.boss.isPattern()) {
                         this.boss.getDamaged(30);
                         this.crystals.clear();
+                    }
+                } else if (this.ship.getShipID() == 2) {
+                    for (Bullet bullet : bullets) {
+                        bullet.setCanMove(true);
+                    }
+                    for (Missile missile : missiles) {
+                        missile.setCanMove(true);
                     }
                 }
             }
@@ -629,51 +643,57 @@ public class BossScreen extends Screen {
                 }
 
             } else {
-                // 보스 패턴A 발동 메소드
-                if (bossBasicBullet.checkFinished()) {
-                    int randomKey = random.nextInt(8) + 10;
-                    double range = randomKey * 5.0;
-                    int bulletNum = randomKey - (random.nextInt(4) + 5);
-                    // 공격이 완료되면 false 반환, 아닌 경우 true 반환
-                    basicAttackCount += this.boss.spreadBullet(this.bullets, getBulletDirection(),
-                        range, bulletNum);
-                    // 3발을 발사하면 보스 기본공격 쿨타임 시작
-                    if (basicAttackCount == 3) {
-                        bossBasicBullet.reset();
-                        // 다시 공격 횟수를 0으로 초기화
-                        basicAttackCount = 0;
+                // Ship2 궁극기 활성화 여부에 따라 보스 공격 무력화 결정
+                if (this.ship.getShipID() != 2 || !this.ship.isUltActivated()) {
+                    // 보스 패턴A 발동 메소드
+                    if (bossBasicBullet.checkFinished()) {
+                        int randomKey = random.nextInt(8) + 10;
+                        double range = randomKey * 5.0;
+                        int bulletNum = randomKey - (random.nextInt(4) + 5);
+                        // 공격이 완료되면 false 반환, 아닌 경우 true 반환
+                        basicAttackCount += this.boss.spreadBullet(this.bullets,
+                            getBulletDirection(), range, bulletNum);
+                        // 3발을 발사하면 보스 기본공격 쿨타임 시작
+                        if (basicAttackCount == 3) {
+                            bossBasicBullet.reset();
+                            // 다시 공격 횟수를 0으로 초기화
+                            basicAttackCount = 0;
+                        }
+                    }
+
+                    if (this.createMissileCooldown.checkFinished()) {
+                        missilePool.createMissile(
+                            this.boss.getPositionX() + this.boss.getWidth() / 2,
+                            this.boss.getPositionY() + this.boss.getHeight() / 2);
+                        this.createMissileCooldown.reset();
+                    }
+
+                    if (this.boss.getPhase() > 1 && this.createLaserCooldown.checkFinished()) {
+                        int randomY = (int) (Math.random() * 76) - 40;
+                        laserPool.createHorizontalLaser(this.ship.getPositionY() + randomY);
+                        this.createLaserCooldown.reset();
+                    }
+
+                    if (this.boss.getPhase() > 2) {
+                        if (!this.boss.isInvincible()) {
+                            if (this.createCrystalCooldown.checkFinished()) {
+                                this.crystalPool.createCrystal();
+                                this.boss.setInvincible(true);
+                                this.createCrystalCooldown.reset();
+                            }
+                        } else {
+                            if (this.crystalPool.isAllBroken()) {
+                                this.boss.setInvincible(false);
+                                this.createCrystalCooldown.reset();
+                            }
+                        }
                     }
                 }
 
-                if (this.createMissileCooldown.checkFinished()) {
-                    missilePool.createMissile(this.boss.getPositionX() + this.boss.getWidth() / 2,
-                        this.boss.getPositionY() + this.boss.getHeight() / 2);
-                    this.createMissileCooldown.reset();
-                }
-
-                if (this.boss.getPhase() > 1 && this.createLaserCooldown.checkFinished()) {
-                    int randomY = (int) (Math.random() * 76) - 40;
-                    laserPool.createHorizontalLaser(this.ship.getPositionY() + randomY);
-                    this.createLaserCooldown.reset();
-                }
-
                 if (this.boss.getPhase() > 2) {
-                    if (!this.boss.isInvincible()) {
-                        if (this.createCrystalCooldown.checkFinished()) {
-                            this.crystalPool.createCrystal();
-                            this.boss.setInvincible(true);
-                            this.createCrystalCooldown.reset();
-                        }
-                    } else {
-                        if (this.crystalPool.isAllBroken()) {
-                            this.boss.setInvincible(false);
-                            this.createCrystalCooldown.reset();
-                        }
+                    if (!(this.ship.getShipID() == 2 && this.ship.isUltActivated())) {
+                        this.boss.move();
                     }
-                }
-
-                if (this.boss.getPhase() > 2) {
-                    this.boss.move();
                 }
 
                 // 보스 체력에 따른 페이즈 설정(맨 마지막 부분에 설정하여 페이즈가 변하면서 바로 짤패턴이 적용되는 경우를 제외_)
@@ -782,6 +802,7 @@ public class BossScreen extends Screen {
                 // 보스와의 충돌
                 if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
                     recyclable.add(bullet);
+                    this.ship.increaseUltGauge();
                     if (!this.boss.isInvincible()) {
                         this.boss.getDamaged(status.getBaseDamage());
                     }

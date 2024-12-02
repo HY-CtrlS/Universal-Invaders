@@ -20,6 +20,7 @@ public class Missile extends Entity {
 
     private Cooldown explosionCooldown; // 폭발 지속 시간
     private Cooldown trackingCooldown; // 추적 지속 시간
+    private boolean canMove;
 
     public Missile(final int positionX, final int positionY,
         final Ship targetShip) {
@@ -34,6 +35,7 @@ public class Missile extends Entity {
 
         this.isDestroyed = false;
         this.hasExploded = false;
+        this.canMove = true;
 
         this.explosionCooldown = Core.getCooldown(2000);// 폭발 지속 시간: 2초
         this.trackingCooldown = Core.getCooldown(10000); // 추적 지속 시간: 3초
@@ -48,8 +50,9 @@ public class Missile extends Entity {
             if (this.trackingCooldown.checkFinished()) {
                 explode(); // 추적 시간이 끝나면 폭발
             } else {
-                trackTarget(); // 목표 추적
-                move(); // 이동
+                if (this.canMove) {
+                    trackTarget(); // 목표 추적
+                }
             }
         } else {
             if (this.explosionCooldown.checkFinished()) {
@@ -76,12 +79,6 @@ public class Missile extends Entity {
             this.speedX = INITIAL_SPEED * (deltaX / distance);
             this.speedY = INITIAL_SPEED * (deltaY / distance);
         }
-    }
-
-    /**
-     * 미사일 이동.
-     */
-    private void move() {
         this.positionX += (int) this.speedX;
         this.positionY += (int) this.speedY;
     }
@@ -143,5 +140,9 @@ public class Missile extends Entity {
      */
     public int getExplosionRadius() {
         return EXPLOSION_RADIUS;
+    }
+
+    public void setCanMove(boolean move) {
+        this.canMove = move;
     }
 }

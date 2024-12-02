@@ -83,6 +83,7 @@ public final class BulletPool {
             bullet.setClassify(0);
             bullet.setColor(new Color[]{Color.RED});
             bullet.setSprite();
+            bullet.setCanMove(true);
 
         } else {
             bullet = new Bullet(positionX, positionY, speed, damage, angle);
