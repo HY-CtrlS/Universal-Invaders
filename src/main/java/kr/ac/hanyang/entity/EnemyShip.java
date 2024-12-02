@@ -20,7 +20,7 @@ public class EnemyShip extends Entity {
     /** Point value of a type A enemy. */
     private static final int A_TYPE_POINTS = 10;
     /** Point value of a type B enemy. */
-    private static final int B_TYPE_POINTS = 20;
+    private static final int B_TYPE_POINTS = 50;
     /** Point value of a type C enemy. */
     private static final int C_TYPE_POINTS = 30;
     /** Point value of a bonus enemy. */
