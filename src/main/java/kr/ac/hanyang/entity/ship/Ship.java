@@ -339,6 +339,18 @@ public class Ship extends Entity {
         return this.range;
     }
 
+    public int getShootingInterval() {
+        return this.shootingInterval;
+    }
+
+    public int getBulletSpeed() {
+        return this.bulletSpeed;
+    }
+
+    public Cooldown getDestructionCooldown() {
+        return this.destructionCooldown;
+    }
+
     /**
      * 함선의 에임 방향을 설정하는 Setter.
      *

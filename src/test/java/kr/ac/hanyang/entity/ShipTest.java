@@ -5,8 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.engine.DrawManager.SpriteType;
+import kr.ac.hanyang.entity.ship.Ship;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShipTest {
@@ -139,8 +141,8 @@ class ShipTest {
     void defaultStatusTest() {
         assertEquals(ship.getSpeed(), Core.getStatusManager().getSpeed());
         assertEquals(ship.getBaseDamage(), Core.getStatusManager().getBaseDamage());
-        assertEquals(ship.bulletSpeed, Core.getStatusManager().getBulletSpeed());
-        assertEquals(ship.shootingInterval, Core.getStatusManager().getShootingInterval());
+        assertEquals(ship.getBulletSpeed(), Core.getStatusManager().getBulletSpeed());
+        assertEquals(ship.getShootingInterval(), Core.getStatusManager().getShootingInterval());
     }
 
     @Test
@@ -154,8 +156,8 @@ class ShipTest {
 
         assertEquals(ship.getSpeed(), Core.getStatusManager().getSpeed());
         assertEquals(ship.getBaseDamage(), Core.getStatusManager().getBaseDamage());
-        assertEquals(ship.bulletSpeed, Core.getStatusManager().getBulletSpeed());
-        assertEquals(ship.shootingInterval, Core.getStatusManager().getShootingInterval());
+        assertEquals(ship.getBulletSpeed(), Core.getStatusManager().getBulletSpeed());
+        assertEquals(ship.getShootingInterval(), Core.getStatusManager().getShootingInterval());
     }
 
     @Test
@@ -173,10 +175,11 @@ class ShipTest {
 
         // 추가된 총알이 올바르게 설정되었는지 확인
         Bullet bullet = bullets.iterator().next();  // 집합에서 첫 번째 총알을 가져옴
-        assertEquals((ship.getPositionX() + ship.getWidth() / 2) - bullet.width / 2, bullet.getPositionX()); // 총알 위치 x
+        assertEquals((ship.getPositionX() + ship.getWidth() / 2) - bullet.width / 2,
+            bullet.getPositionX()); // 총알 위치 x
         assertEquals(ship.getPositionY() + ship.getHeight() / 2, bullet.getPositionY()); // 총알 위치 y
-        assertEquals(ship.bulletSpeed, bullet.getSpeed());  // 총알 속도
-        assertEquals(ship.baseDamage, bullet.getDamage());  // 총알 데미지
+        assertEquals(ship.getBulletSpeed(), bullet.getSpeed());  // 총알 속도
+        assertEquals(ship.getBaseDamage(), bullet.getDamage());  // 총알 데미지
         assertEquals(ship.getDirection(), bullet.getDirection());  // 총알 방향
     }
 
@@ -209,7 +212,7 @@ class ShipTest {
         assertEquals(SpriteType.ShipDestroyed, ship.getSpriteType());
 
         // 파괴 상태에서 파괴 시간이 지나면 기본 스프라이트로 변경
-        ship.destructionCooldown.forceFinish();
+        ship.getDestructionCooldown().forceFinish();
         ship.update();
         assertEquals(SpriteType.Ship, ship.getSpriteType());
 
