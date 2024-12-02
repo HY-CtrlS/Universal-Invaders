@@ -140,6 +140,7 @@ public class BossScreen extends Screen {
         this.inputDelay.reset();
 
         this.phaseStarted = false;
+        this.phaseFinished = false;
         this.isPhase4Ready = false;
         this.survivalTime = 0;
         this.clockCooldown = Core.getCooldown(1000);
@@ -620,7 +621,9 @@ public class BossScreen extends Screen {
                     }
 
                     if (this.boss.getCurrentHp() <= 0) {
-                        // 보스를 최종적으로 클리어 했을 시
+                        // 보스 최종 클리어
+                        this.phaseFinished = true;
+                        this.screenFinishedCooldown.reset();
                     }
                 }
 
@@ -698,6 +701,10 @@ public class BossScreen extends Screen {
             manageCollisions();
             cleanBullets();
             draw();
+        }
+
+        if (this.phaseFinished && this.screenFinishedCooldown.checkFinished()) {
+            this.isRunning = false;
         }
     }
 
