@@ -10,7 +10,7 @@ import kr.ac.hanyang.entity.ship.Ship;
 public class Missile extends Entity {
 
     private static final int EXPLOSION_RADIUS = 50; // 폭발 반경
-    private static final int EXPLOSION_DAMAGE = 30; // 최대 데미지
+    private static final int EXPLOSION_DAMAGE = 10; // 최대 데미지
     private static final double INITIAL_SPEED = 3.0; // 초기 속도
     private boolean isDestroyed; // 미사일 파괴 여부
     private boolean hasExploded; // 미사일 폭발 여부
@@ -23,7 +23,11 @@ public class Missile extends Entity {
 
     public Missile(final int positionX, final int positionY,
         final Ship targetShip) {
-        super(positionX, positionY, 9 * 2, 7 * 2, new Color[]{Color.ORANGE}, Direction.DOWN);
+        super(positionX, positionY, 9 * 2, 7 * 2,
+            new Color[]{
+                new Color(0, 255, 255),
+                new Color(255, 165, 0)},
+            Direction.DOWN);
         this.spriteType = SpriteType.Missile;
 
         this.targetShip = targetShip;
@@ -32,7 +36,7 @@ public class Missile extends Entity {
         this.hasExploded = false;
 
         this.explosionCooldown = Core.getCooldown(2000);// 폭발 지속 시간: 2초
-        this.trackingCooldown = Core.getCooldown(3000); // 추적 지속 시간: 3초
+        this.trackingCooldown = Core.getCooldown(8000); // 추적 지속 시간: 3초
         this.trackingCooldown.reset();
     }
 

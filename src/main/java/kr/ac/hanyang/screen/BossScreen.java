@@ -179,7 +179,7 @@ public class BossScreen extends Screen {
         this.createLaserCooldown = Core.getCooldown(4000);
         this.createLaserCooldown.reset();
 
-        this.createMissileCooldown = Core.getCooldown(10000);
+        this.createMissileCooldown = Core.getCooldown(5000);
         this.createMissileCooldown.reset();
 
         this.createCrystalCooldown = Core.getCooldown(25000);
@@ -513,7 +513,8 @@ public class BossScreen extends Screen {
                             //각 조건마다 격자로 총알 생성
                             if (phaseOneCounter == 7) {
                                 this.boss.createHorizontalBullets(this.bullets);
-                                phaseOneCounter += this.boss.createHorizontalBulletsTwo(this.bullets);
+                                phaseOneCounter += this.boss.createHorizontalBulletsTwo(
+                                    this.bullets);
                                 // 마지막 공격 발사 했으면 페이즈 카운터 증가
                             } else if (phaseOneCounter == 26) {
                                 this.boss.createHorizontalBulletsTwo(this.bullets);
@@ -534,7 +535,8 @@ public class BossScreen extends Screen {
                                 // 발사했으면 페이즈 카운터 증가
                             } else {
                                 // 위 경우가 아닌 경우에는 기본 공격함 0.7초에서 2.7초 간격으로 빠른 공격을 발사함
-                                phaseOneCounter += this.boss.shootBullet(this.bullets, getBulletDirection());
+                                phaseOneCounter += this.boss.shootBullet(this.bullets,
+                                    getBulletDirection());
                             }
 
                             if (phaseOneCounter == 27) {
