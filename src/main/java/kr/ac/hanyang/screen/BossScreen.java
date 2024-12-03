@@ -112,6 +112,12 @@ public class BossScreen extends Screen {
         this.ship.setPositionX(this.getWidth() / 2 - this.ship.getWidth() / 2);
         this.ship.setPositionY(this.getHeight() * 3 / 4 - this.ship.getHeight() / 2);
 
+        // 기존 배경음악 종료하고 보스 배경음악 재생
+        if (Core.getSoundManager().isBackgroundMusicPlaying()) {
+            Core.getSoundManager().stopBackgroundMusic();
+        }
+        Core.getSoundManager().playBossBGM();
+
         this.returnCode = 1;
     }
 
@@ -344,6 +350,7 @@ public class BossScreen extends Screen {
                 if (check == 2) {
                     this.returnCode = 0;
                     this.isRunning = false;
+                    Core.getSoundManager().stopBackgroundMusic();
                 }
                 // 일시정지 화면에서 돌아온 후 스페이스바 키 입력을 초기화하여
                 // 돌아오자마자 스페이스바가 눌린 상태로 인식되지 않도록 함
@@ -730,6 +737,7 @@ public class BossScreen extends Screen {
 
         if (this.phaseFinished && this.screenFinishedCooldown.checkFinished()) {
             this.isRunning = false;
+            Core.getSoundManager().stopBackgroundMusic();
         }
     }
 

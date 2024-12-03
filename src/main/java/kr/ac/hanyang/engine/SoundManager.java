@@ -334,4 +334,11 @@ public class SoundManager {
     public void playEndingBGM() {
         playBackgroundMusic("sounds/ending.wav");
     }
+
+    /**
+     * 보스 배경음악을 재생합니다.
+     */
+    public void playBossBGM() {
+        playBackgroundMusic("sounds/boss.wav");
+    }
 }
