@@ -100,6 +100,22 @@ public class Cooldown {
         }
     }
 
+    public final int getMilliseconds() {
+        return this.milliseconds;
+    }
+
+    public final int getRemainingTime() {
+        if (isPaused) {
+            return this.remainingTime;
+        } else if (this.time == 0) {
+            return this.milliseconds;
+        } else {
+            long currentTime = System.currentTimeMillis();
+            int timeLeft = (int) ((this.time + this.duration) - currentTime);
+            return Math.max(timeLeft, 0);
+        }
+    }
+
     /**
      * 쿨다운이 멈춰있는지 체크.
      *

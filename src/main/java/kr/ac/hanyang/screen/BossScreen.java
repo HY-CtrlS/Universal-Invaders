@@ -768,6 +768,10 @@ public class BossScreen extends Screen {
 
             // 보스의 체력바 그리기
             drawManager.drawBossHp(this, boss.getCurrentHp(), this.boss);
+            if (this.ship.isUltActivated()) {
+                // 궁극기 남은 시간 그리기
+                drawManager.drawUltRemainingTime(this.ultActivatedTime, this.ship);
+            }
             // 아군 함선의 체력바 그리기
             drawManager.drawLives(10, this.getHeight() - 30, this.hp);
             // 아군 함선의 궁극기바 그리기
