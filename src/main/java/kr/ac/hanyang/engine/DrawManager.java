@@ -1182,9 +1182,7 @@ public final class DrawManager {
         drawLives(hp, maxHp, MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN, SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
         drawLevel(gameScreen, MARGIN + 5, SCREEN_HEIGHT - 25);          // 텍스트의 경우 미관 상 마진에 5픽셀을 더함
         drawSurvivalTime(gameScreen, MARGIN + 5, SCREEN_HEIGHT - 50);
-        // 함선 스프라이트가 들어갈 박스 그리기
-        backBufferGraphics.setColor(Color.GREEN);
-        backBufferGraphics.drawRect(MARGIN, SCREEN_HEIGHT - UI_HEIGHT + MARGIN, SHIP_SPRITE_BOX_SIZE, SHIP_SPRITE_BOX_SIZE);
+        drawBigShip(ship, MARGIN, SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
         drawStats(gameScreen, MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN + VERTICAL_BAR_WIDTH + BAR_MARGIN + VERTICAL_BAR_WIDTH + MARGIN + 5, SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
     }
 
@@ -1216,6 +1214,31 @@ public final class DrawManager {
                 }
             }
             count++;
+        }
+    }
+
+    public void drawBigShip(Ship ship, final int X, final int Y) {
+        backBufferGraphics.setColor(Color.GREEN);
+        backBufferGraphics.drawRect(X, Y, 100, 100);
+
+        boolean[][][] image = spriteMap.get(SpriteType.Ship);
+        Color[] shipColor = ship.getColor();
+
+        final int SPRITE_WIDTH = image[0][0].length;
+        final int SPRITE_HEIGHT = image[0].length;
+        final int SHIP_X_OFFSET = (100 - SPRITE_WIDTH * 6) / 2;
+        final int SHIP_Y_OFFSET = (100 - SPRITE_HEIGHT * 6) / 2;
+
+        for (int layerNum = 0; layerNum < image.length; layerNum++) {
+            backBufferGraphics.setColor(shipColor[layerNum]);
+            for (int row = 0; row < image[layerNum].length; row++) {
+                for (int column = 0; column < image[layerNum][row].length; column++) {
+                    if (image[layerNum][row][column]) {
+                        backBufferGraphics.fillRect(X + SHIP_X_OFFSET + row * 6, Y + SHIP_Y_OFFSET
+                            + column * 6, 6, 6);
+                    }
+                }
+            }
         }
     }
 }
