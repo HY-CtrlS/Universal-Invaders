@@ -810,8 +810,8 @@ public class BossScreen extends Screen {
                 // 보스와의 충돌
                 if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
                     recyclable.add(bullet);
-                    this.ship.increaseUltGauge();
                     if (!this.boss.isInvincible()) {
+                        this.ship.increaseUltGauge();
                         this.boss.getDamaged(status.getBaseDamage());
                     }
                 }
