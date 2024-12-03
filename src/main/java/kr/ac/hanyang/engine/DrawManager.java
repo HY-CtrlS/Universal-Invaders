@@ -1,26 +1,25 @@
 package kr.ac.hanyang.engine;
 
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.geom.Ellipse2D;
-import javax.imageio.ImageIO;
-import kr.ac.hanyang.Item.Item;
-import kr.ac.hanyang.entity.Ship;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
+import javax.imageio.ImageIO;
+import kr.ac.hanyang.Item.Item;
+import kr.ac.hanyang.entity.Entity;
+import kr.ac.hanyang.entity.Ship;
 import kr.ac.hanyang.screen.GameScreen;
 import kr.ac.hanyang.screen.Screen;
-import kr.ac.hanyang.entity.Entity;
 
 /**
  * Manages screen drawing.
@@ -353,7 +352,8 @@ public final class DrawManager {
         backBufferGraphics.setFont(fontBig);
         backBufferGraphics.setColor(Color.WHITE);
         backBufferGraphics.drawString(ULT_TEXT, X_POS + RECT_SIZE / 2
-            - fontBigMetrics.stringWidth(ULT_TEXT) / 2, Y_POS + RECT_SIZE / 2 + backBufferGraphics.getFontMetrics().getAscent() / 2);
+                - fontBigMetrics.stringWidth(ULT_TEXT) / 2,
+            Y_POS + RECT_SIZE / 2 + backBufferGraphics.getFontMetrics().getAscent() / 2);
     }
 
     /**
@@ -999,7 +999,8 @@ public final class DrawManager {
         drawHorizontalLine(screen, Y_POSITION - 2);
     }
 
-    public void drawExperienceBarVertical(final int currentExperience, final int experienceThreshold, final int X, final int Y) {
+    public void drawExperienceBarVertical(final int currentExperience,
+        final int experienceThreshold, final int X, final int Y) {
         final int WIDTH = 20; // 경험치 바의 너비
         final int HEIGHT = 150; // 경험치 바의 높이
 
@@ -1161,7 +1162,8 @@ public final class DrawManager {
         drawCenteredRegularString(screen, "PRESS ENTER/SPACE TO START", screen.getHeight() / 2);
     }
 
-    public void drawIngameUI(GameScreen gameScreen, Ship ship, int maxHp, int hp, int shipsDestroyed, StatusManager status, int currentExperience, int experienceThreshold,
+    public void drawIngameUI(GameScreen gameScreen, Ship ship, int maxHp, int hp,
+        int shipsDestroyed, StatusManager status, int currentExperience, int experienceThreshold,
         int playerLevel, int survivalTime, int shipID) {
         final int UI_HEIGHT = 200;
         final int SCREEN_WIDTH = gameScreen.getWidth();
@@ -1177,13 +1179,18 @@ public final class DrawManager {
         // UI 경계선 그리기
         drawHorizontalLine(gameScreen, SCREEN_HEIGHT - UI_HEIGHT - 2);
         // 구성 요소들 그리기
-        drawExperienceBarVertical(currentExperience, experienceThreshold, MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN + VERTICAL_BAR_WIDTH + BAR_MARGIN, SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
+        drawExperienceBarVertical(currentExperience, experienceThreshold,
+            MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN + VERTICAL_BAR_WIDTH + BAR_MARGIN,
+            SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
         drawUltGauge(gameScreen, ship);
-        drawLives(hp, maxHp, MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN, SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
+        drawLives(hp, maxHp, MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN,
+            SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
         drawLevel(gameScreen, MARGIN + 5, SCREEN_HEIGHT - 25);          // 텍스트의 경우 미관 상 마진에 5픽셀을 더함
         drawSurvivalTime(gameScreen, MARGIN + 5, SCREEN_HEIGHT - 50);
         drawBigShip(ship, MARGIN, SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
-        drawStats(gameScreen, MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN + VERTICAL_BAR_WIDTH + BAR_MARGIN + VERTICAL_BAR_WIDTH + MARGIN + 5, SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
+        drawStats(gameScreen,
+            MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN + VERTICAL_BAR_WIDTH + BAR_MARGIN
+                + VERTICAL_BAR_WIDTH + MARGIN + 5, SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
     }
 
     public void drawStats(GameScreen gameScreen, final int X, final int Y) {
@@ -1196,21 +1203,25 @@ public final class DrawManager {
         int HpRegenItemLvl = items.get(5).getLevel();
         int UltRegenItemLvl = items.get(6).getLevel();
 
-        int[] itemLevels = { rangeUpItemLvl, AttackSpeedUpItemLvl, BulletSpeedUpItemLvl, MoveSpeedUpItemLvl };
-        String[] itemNameStr = { "BUL RNG", "ATK SPD", "BUL SPD", "MOV SPD" };
+        int[] itemLevels = {rangeUpItemLvl, AttackSpeedUpItemLvl, BulletSpeedUpItemLvl,
+            MoveSpeedUpItemLvl};
+        String[] itemNameStr = {"BUL RNG", "ATK SPD", "BUL SPD", "MOV SPD"};
 
         // 아이템 각각의 레벨을 6칸의 게이지로 표현
         backBufferGraphics.setColor(Color.GREEN);
         int count = 0;
         for (int itemLvl : itemLevels) {
-            backBufferGraphics.drawString(itemNameStr[count], X + 10, Y + (30 + 10) * count + (30 + fontRegularMetrics.getAscent()) / 2);
+            backBufferGraphics.drawString(itemNameStr[count], X + 10,
+                Y + (30 + 10) * count + (30 + fontRegularMetrics.getAscent()) / 2);
             final int STRING_WIDTH = fontRegularMetrics.stringWidth(itemNameStr[count]);
 
             for (int i = 0; i < 6; i++) {
                 if (i <= itemLvl) {
-                    backBufferGraphics.fillRect(X + STRING_WIDTH + 25 + (18 + 10) * i, Y + 40 * count, 18, 30); // 채워진 박스
+                    backBufferGraphics.fillRect(X + STRING_WIDTH + 25 + (18 + 10) * i,
+                        Y + 40 * count, 18, 30); // 채워진 박스
                 } else {
-                    backBufferGraphics.drawRect(X + STRING_WIDTH + 25 + (18 + 10) * i, Y + 40 * count, 18, 30); // 빈 박스
+                    backBufferGraphics.drawRect(X + STRING_WIDTH + 25 + (18 + 10) * i,
+                        Y + 40 * count, 18, 30); // 빈 박스
                 }
             }
             count++;
