@@ -338,6 +338,7 @@ public final class DrawManager {
         int RECT_FILLED = (int) (ULT_RATIO * RECT_SIZE);
         int RECT_UNFILLED = RECT_SIZE - RECT_FILLED;
 
+        backBufferGraphics.setColor(Color.GREEN);
         backBufferGraphics.drawOval(X_POS, Y_POS, RECT_SIZE, RECT_SIZE);
 
         Graphics2D g2d = (Graphics2D) backBufferGraphics;
@@ -359,9 +360,7 @@ public final class DrawManager {
      * Draws number of remaining lives on screen.
      */
     public void drawLives(final int HP, final int MAX_HP, final int X, final int Y) {
-        backBufferGraphics.setFont(fontRegular);
-
-        final int WIDTH = 20; // 체력 바의 최대 너비
+        final int WIDTH = 20; // 체력 바의 너비
         final int HEIGHT = 150; // 체력 바의 높이
 
         // 체력 바의 테두리 그리기
@@ -1000,6 +999,23 @@ public final class DrawManager {
         drawHorizontalLine(screen, Y_POSITION - 2);
     }
 
+    public void drawExperienceBarVertical(final int currentExperience, final int experienceThreshold, final int X, final int Y) {
+        final int WIDTH = 20; // 경험치 바의 너비
+        final int HEIGHT = 150; // 경험치 바의 높이
+
+        // 체력 바의 테두리 그리기
+        backBufferGraphics.setColor(Color.GREEN);
+        backBufferGraphics.drawRect(X, Y, WIDTH, HEIGHT);
+
+        // 현재 체력에 따른 바의 너비 계산
+        final int HP_HEIGHT = (int) ((double) currentExperience / experienceThreshold * HEIGHT);
+        final int HP_BLANK_HEIGHT = HEIGHT - HP_HEIGHT;
+
+        // 체력 바 채우기
+        backBufferGraphics.setColor(Color.BLUE); // 경험치 바의 색상
+        backBufferGraphics.fillRect(X + 1, Y + HP_BLANK_HEIGHT + 1, WIDTH - 1, HP_HEIGHT - 1);
+    }
+
     /**
      * shipSelectScreen의 제목을 화면 상단에 위치시키는 메소드
      *
@@ -1152,7 +1168,8 @@ public final class DrawManager {
         final int SCREEN_HEIGHT = gameScreen.getHeight();
         final int MARGIN = 25;
         final int SHIP_SPRITE_BOX_SIZE = 100;
-        final int HP_BAR_WIDTH = 20;
+        final int VERTICAL_BAR_WIDTH = 20;
+        final int BAR_MARGIN = 10;
 
         // UI 검정 배경 채우기
         backBufferGraphics.setColor(Color.BLACK);
@@ -1160,7 +1177,7 @@ public final class DrawManager {
         // UI 경계선 그리기
         drawHorizontalLine(gameScreen, SCREEN_HEIGHT - UI_HEIGHT - 2);
         // 구성 요소들 그리기
-        drawExperienceBar(gameScreen, currentExperience, experienceThreshold, SCREEN_HEIGHT - UI_HEIGHT - 2);
+        drawExperienceBarVertical(currentExperience, experienceThreshold, MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN + VERTICAL_BAR_WIDTH + BAR_MARGIN, SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
         drawUltGauge(gameScreen, ship);
         drawLives(hp, maxHp, MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN, SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
         drawLevel(gameScreen, MARGIN + 5, SCREEN_HEIGHT - 25);          // 텍스트의 경우 미관 상 마진에 5픽셀을 더함
@@ -1168,7 +1185,7 @@ public final class DrawManager {
         // 함선 스프라이트가 들어갈 박스 그리기
         backBufferGraphics.setColor(Color.GREEN);
         backBufferGraphics.drawRect(MARGIN, SCREEN_HEIGHT - UI_HEIGHT + MARGIN, SHIP_SPRITE_BOX_SIZE, SHIP_SPRITE_BOX_SIZE);
-        drawStats(gameScreen, MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN + HP_BAR_WIDTH + MARGIN, SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
+        drawStats(gameScreen, MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN + VERTICAL_BAR_WIDTH + BAR_MARGIN + VERTICAL_BAR_WIDTH + MARGIN + 5, SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
     }
 
     public void drawStats(GameScreen gameScreen, final int X, final int Y) {
@@ -1182,18 +1199,20 @@ public final class DrawManager {
         int UltRegenItemLvl = items.get(6).getLevel();
 
         int[] itemLevels = { rangeUpItemLvl, AttackSpeedUpItemLvl, BulletSpeedUpItemLvl, MoveSpeedUpItemLvl };
+        String[] itemNameStr = { "BUL RNG", "ATK SPD", "BUL SPD", "MOV SPD" };
 
-        // 아이템 각각의 레벨을 10칸의 게이지로 표현
+        // 아이템 각각의 레벨을 6칸의 게이지로 표현
         backBufferGraphics.setColor(Color.GREEN);
         int count = 0;
         for (int itemLvl : itemLevels) {
-            backBufferGraphics.drawRect(X, Y + (30 + 10) * count, 30, 30);
+            backBufferGraphics.drawString(itemNameStr[count], X + 10, Y + (30 + 10) * count + (30 + fontRegularMetrics.getAscent()) / 2);
+            final int STRING_WIDTH = fontRegularMetrics.stringWidth(itemNameStr[count]);
 
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 6; i++) {
                 if (i <= itemLvl) {
-                    backBufferGraphics.fillRect(X + 40 + (18 + 10) * i, Y + 40 * count, 18, 30); // 채워진 박스
+                    backBufferGraphics.fillRect(X + STRING_WIDTH + 25 + (18 + 10) * i, Y + 40 * count, 18, 30); // 채워진 박스
                 } else {
-                    backBufferGraphics.drawRect(X + 40 + (18 + 10) * i, Y + 40 * count, 18, 30); // 빈 박스
+                    backBufferGraphics.drawRect(X + STRING_WIDTH + 25 + (18 + 10) * i, Y + 40 * count, 18, 30); // 빈 박스
                 }
             }
             count++;
