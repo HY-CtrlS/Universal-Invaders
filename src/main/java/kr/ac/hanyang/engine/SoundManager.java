@@ -15,11 +15,11 @@ public class SoundManager {
     private float backgroundMusicVolume; // 현재 배경음악 볼륨
     private float soundEffectsVolume; // 현재 효과음 볼륨
 
-    // 생성자 - 로그 설정 및 초기 볼륨 값을 1.0으로 설정
+    // 생성자 - 로그 설정 및 초기 볼륨 값을 0.5으로 설정
     private SoundManager() {
         logger = Core.getLogger();
-        backgroundMusicVolume = 1.0f;
-        soundEffectsVolume = 1.0f;
+        backgroundMusicVolume = 0.5f;
+        soundEffectsVolume = 0.5f;
     }
 
     // SoundManager 인스턴스를 싱글톤 패턴으로 가져오기
