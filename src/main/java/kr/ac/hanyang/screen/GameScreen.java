@@ -376,7 +376,9 @@ public class GameScreen extends Screen {
 
             // hp 자동 재생 기능 실행
             hpRegen(status.getRegenHp());
-            increaseUltGauge();
+            if (!this.isClear) {
+                increaseUltGauge();
+            }
 
             this.ship.update();
 
