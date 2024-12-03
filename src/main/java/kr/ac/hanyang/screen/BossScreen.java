@@ -166,7 +166,7 @@ public class BossScreen extends Screen {
                 this.ultActivatedTime.reset();
                 break;
             case 4:
-                this.ultActivatedTime = Core.getCooldown(3000);
+                this.ultActivatedTime = Core.getCooldown(10000);
                 this.ultActivatedTime.reset();
                 break;
         }
@@ -352,7 +352,7 @@ public class BossScreen extends Screen {
 
             // Ship4 궁극기 활성화 여부에 따라 체력 회복량 결정
             if (this.ship.getShipID() == 4 && this.ship.isUltActivated()) {
-                hpRegen(status.getRegenHp() * 10.0);
+                hpRegen(status.getRegenHp() + 3.0);
             } else {
                 hpRegen(status.getRegenHp());
             }
