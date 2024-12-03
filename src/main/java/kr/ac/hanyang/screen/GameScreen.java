@@ -355,6 +355,7 @@ public class GameScreen extends Screen {
             if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
                 this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
                     + " pause screen at " + this.fps + " fps.");
+                Core.getSoundManager().playButtonSound();
                 Screen pause = new PauseScreen(this.getWidth(), this.getHeight(), this.fps);
                 if (this.ship.isUltActivated()) {
                     this.ultActivatedTime.pause();
