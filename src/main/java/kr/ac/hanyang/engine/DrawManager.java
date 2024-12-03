@@ -1215,6 +1215,21 @@ public final class DrawManager {
         backBufferGraphics.drawString(hpText, textX, textY);
     }
 
+    public void drawUltRemainingTime(final Cooldown cooldown, final Ship ship) {
+        int barX = 10; // 궁극기 시간 바의 X 좌표
+        int barY = 53; // 궁극기 시간 바의 Y 좌표
+        int barWidth = 680; // 궁극기 시간 바의 최대 너비
+        int barHeight = 5; // 궁극기 시간 바의 높이
+
+        // 현재 남은 시간에 따른 바의 너비 계산
+        int timeWidth = (int) ((double) cooldown.getRemainingTime() / cooldown.getMilliseconds()
+            * barWidth);
+
+        // 체력 바 채우기
+        backBufferGraphics.setColor(ship.getColor()[0]); // 궁극기 시간 바의 색상
+        backBufferGraphics.fillRect(barX, barY, timeWidth, barHeight);
+    }
+
     // 미사일 폭발 반경 표시
     public void drawExplosionRadius(Missile missile) {
         backBufferGraphics.setColor(new Color(255, 69, 0, 128)); // 반투명 주황색
