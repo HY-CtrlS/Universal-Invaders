@@ -71,10 +71,13 @@ public class Cooldown {
     public final void reset() {
         this.time = System.currentTimeMillis();
         this.isPaused = false;
+        this.remainingTime = 0;
         if (this.variance != 0) {
             this.duration = (this.milliseconds - this.variance)
                 + (int) (Math.random()
                 * (this.variance + this.variance));
+        } else {
+            this.duration = this.milliseconds;
         }
     }
 
