@@ -285,6 +285,13 @@ public class SoundManager {
     }
 
     /**
+     * 궁극기 사용 사운드를 재생합니다.
+     */
+    public void playUltUseSound() {
+        playSoundEffect("sounds/ult_use.wav");
+    }
+
+    /**
      * 기본 공격 소리를 재생합니다.
      */
     public void playBasicAttack() {

@@ -342,6 +342,7 @@ public class GameScreen extends Screen {
                     this.ultActivatedTime.reset();
                     this.ship.useUlt();
                     this.logger.info("Ultimate Skill!");
+                    Core.getSoundManager().playUltUseSound();
                 }
             }
 
