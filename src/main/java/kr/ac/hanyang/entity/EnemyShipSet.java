@@ -136,7 +136,7 @@ public class EnemyShipSet {
         // 플레이어로부터 일정 거리 떨어진 위치에서만 생성되도록 설정
         do {
             spawnX = random.nextInt(screen.getWidth());
-            spawnY = random.nextInt(screen.getHeight());
+            spawnY = random.nextInt(screen.getHeight() - 200);
         } while (Math.hypot(spawnX - ship.getPositionX(), spawnY - ship.getPositionY())
             < minDistance);
         // 적 생성

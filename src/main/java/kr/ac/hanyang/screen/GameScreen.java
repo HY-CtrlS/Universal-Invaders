@@ -30,8 +30,6 @@ public class GameScreen extends Screen {
 
     /** Milliseconds until the screen accepts user input. */
     private static final int INPUT_DELAY = 6000;
-    /** 경험치 바의 높이 */
-    public static final int EXPERIENCE_BAR_HEIGHT = 40;
     /** Minimum time between bonus ship's appearances. */
     private static final int BONUS_SHIP_INTERVAL = 20000;
     /** Maximum variance in the time between bonus ship's appearances. */
@@ -40,8 +38,6 @@ public class GameScreen extends Screen {
     private static final int BONUS_SHIP_EXPLOSION = 500;
     /** Time from finishing the level to screen change. */
     private static final int SCREEN_CHANGE_INTERVAL = 1500;
-    /** Height of the interface separation line. */
-    private static final int SEPARATION_LINE_HEIGHT = 40;
     /** 레벨업 기준량 증가량 */
     public static final int EXPERIENCE_THRESHOLD_INTERVAL = 20;
     /** 기본 적 생성 간격 */
@@ -283,13 +279,11 @@ public class GameScreen extends Screen {
 
             boolean isRightBorder = this.ship.getPositionX()
                 + this.ship.getWidth() + this.ship.getSpeed() > this.width - 1;
-            boolean isLeftBorder = this.ship.getPositionX()
-                - this.ship.getSpeed() < 1;
-            boolean isTopBorder = this.ship.getPositionY()
-                - this.ship.getSpeed() < 1 + SEPARATION_LINE_HEIGHT;
-            boolean isBottomBorder = this.ship.getPositionY()
-                + this.ship.getHeight() + this.ship.getSpeed()
-                > this.height - 1 - EXPERIENCE_BAR_HEIGHT;
+            boolean isLeftBorder = this.ship.getPositionX() - this.ship.getSpeed() < 1;
+            boolean isTopBorder = this.ship.getPositionY() - this.ship.getSpeed() < 1;
+            boolean isBottomBorder =
+                this.ship.getPositionY() + this.ship.getHeight() + this.ship.getSpeed()
+                    > this.height - 200 - 2;
 
             if (moveUp && moveRight && !isTopBorder && !isRightBorder) {
                 this.ship.moveUpRight();
@@ -496,7 +490,9 @@ public class GameScreen extends Screen {
         }
 
         // 인게임 UI 그리기
-        drawManager.drawIngameUI(this, this.ship, this.maxHp, this.hp, this.shipsDestroyed, this.status, this.currentExperience, experienceThreshold, this.playerLevel, this.survivalTime, this.shipID); // UI 그리기
+        drawManager.drawIngameUI(this, this.ship, this.maxHp, this.hp, this.shipsDestroyed,
+            this.status, this.currentExperience, experienceThreshold, this.playerLevel,
+            this.survivalTime, this.shipID); // UI 그리기
 
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {
@@ -517,8 +513,8 @@ public class GameScreen extends Screen {
         for (Bullet bullet : this.bullets) {
             bullet.update();
             bullet.setRange(this.ship.getRange());
-            if (bullet.getPositionY() < SEPARATION_LINE_HEIGHT
-                || bullet.getPositionY() > this.height - EXPERIENCE_BAR_HEIGHT - 1
+            if (bullet.getPositionY() < 0
+                || bullet.getPositionY() > this.height - 200
                 || bullet.getPositionX() < 0
                 || bullet.getPositionX() > this.width
                 || bullet.getcurDistance() > bullet.getMaxDistance()) {
