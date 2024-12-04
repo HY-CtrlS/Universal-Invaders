@@ -494,6 +494,11 @@ public class GameScreen extends Screen {
             this.status, this.currentExperience, experienceThreshold, this.playerLevel,
             this.survivalTime, this.shipID); // UI 그리기
 
+        if (this.ship.isUltActivated()) {
+            // 궁극기 남은 시간 그리기
+            drawManager.drawUltRemainingTime(this.ultActivatedTime, this.ship, 10, 10);
+        }
+
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {
             int countdown = (int) ((INPUT_DELAY

@@ -1286,9 +1286,7 @@ public final class DrawManager {
         backBufferGraphics.drawString(hpText, textX, textY);
     }
 
-    public void drawUltRemainingTime(final Cooldown cooldown, final Ship ship) {
-        int barX = 10; // 궁극기 시간 바의 X 좌표
-        int barY = 53; // 궁극기 시간 바의 Y 좌표
+    public void drawUltRemainingTime(final Cooldown cooldown, final Ship ship, final int barX, final int barY) {
         int barWidth = 680; // 궁극기 시간 바의 최대 너비
         int barHeight = 5; // 궁극기 시간 바의 높이
 
