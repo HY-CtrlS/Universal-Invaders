@@ -278,6 +278,13 @@ public class SoundManager {
     }
 
     /**
+     * 궁극기 충전 사운드를 재생합니다.
+     */
+    public void playUltChargeSound() {
+        playSoundEffect("sounds/ult_charge.wav");
+    }
+
+    /**
      * 기본 공격 소리를 재생합니다.
      */
     public void playBasicAttack() {
