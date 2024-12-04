@@ -417,6 +417,7 @@ public class GameScreen extends Screen {
                             ExperiencePool.getExperience(enemyShip.getPositionX() + 3 * 2,
                                 // enemyShip의 너비는 13, 경험치의 너비는 7이므로 3을 더해줌
                                 enemyShip.getPositionY(), enemyShip.getPointValue()));
+                        Core.getSoundManager().playBulletHitSound();
                     }
                 }
             }
