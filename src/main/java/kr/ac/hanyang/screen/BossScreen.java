@@ -773,10 +773,10 @@ public class BossScreen extends Screen {
                 drawManager.drawUltRemainingTime(this.ultActivatedTime, this.ship);
             }
 
-            // 함선의 체력바 그리기
-            drawManager.drawLives(this.hp, this.maxHp, 25, this.getHeight() - 175);
-            // 함선의 궁극기 게이지 그리기
-            drawManager.drawUltGauge(this, this.ship);
+            // 아군 함선의 체력바 그리기
+            drawManager.drawLivesBoss(10, this.getHeight() - 30, this.hp);
+            // 아군 함선의 궁극기바 그리기
+            drawManager.drawUltGaugeBoss(this.ship, this.getWidth() - 210, this.getHeight() - 30);
         }
 
         drawManager.completeDrawing(this);

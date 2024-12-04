@@ -382,6 +382,35 @@ public final class DrawManager {
             Y_POS + RECT_SIZE / 2 + backBufferGraphics.getFontMetrics().getAscent() / 2);
     }
 
+    public void drawUltGaugeBoss(final Ship ship, final int X, final int Y) {
+        backBufferGraphics.setFont(fontRegular);
+
+        int barX = X; // 궁극기 바의 X 좌표
+        int barY = Y; // 궁극기 바의 Y 좌표
+        int barWidth = 200; // 궁극기 바의 최대 너비
+        int barHeight = 20; // 궁극기 바의 높이
+        int ult = ship.getUltThreshold(); // 궁극기 가능 기준치
+
+        // 궁극기 바의 테두리 그리기
+        backBufferGraphics.setColor(Color.GRAY);
+        backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
+
+        // 현재 궁극기 게이지에 따른 바의 너비 계산
+        int ultWidth = (int) ((double) ship.getUltGauge() / ult * barWidth);
+
+        // 궁극기 바 채우기
+        backBufferGraphics.setColor(Color.BLUE); // 궁극기 바의 색상
+        backBufferGraphics.fillRect(barX + 1, barY + 1, ultWidth - 1, barHeight - 1);
+
+        // 궁극기 게이지 표시
+        backBufferGraphics.setColor(Color.WHITE);
+        String ultText = +ship.getUltGauge() + "/" + ult;
+        int textX = barX + (barWidth - fontRegularMetrics.stringWidth(ultText)) / 2;
+        int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2)
+            + fontRegularMetrics.getAscent();
+        backBufferGraphics.drawString(ultText, textX, textY);
+    }
+
     /**
      * Draws number of remaining lives on screen.
      */
@@ -408,6 +437,35 @@ public final class DrawManager {
 //        int textY = Y + ((HEIGHT - fontRegularMetrics.getHeight()) / 2)
 //            + fontRegularMetrics.getAscent();
 //        backBufferGraphics.drawString(hpText, textX, textY);
+    }
+
+    public void drawLivesBoss(final int X, final int Y, final int lives) {
+        backBufferGraphics.setFont(fontRegular);
+
+        int barX = X; // 체력 바의 X 좌표
+        int barY = Y; // 체력 바의 Y 좌표
+        int barWidth = 200; // 체력 바의 최대 너비
+        int barHeight = 20; // 체력 바의 높이
+        int hp = Core.getStatusManager().getMaxHp(); // 최대 체력
+
+        // 체력 바의 테두리 그리기
+        backBufferGraphics.setColor(Color.GRAY);
+        backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
+
+        // 현재 체력에 따른 바의 너비 계산
+        int healthWidth = (int) ((double) lives / hp * barWidth);
+
+        // 체력 바 채우기
+        backBufferGraphics.setColor(Color.RED); // 체력 바의 색상
+        backBufferGraphics.fillRect(barX + 1, barY + 1, healthWidth - 1, barHeight - 1);
+
+        // 체력 수치 표시
+        backBufferGraphics.setColor(Color.WHITE);
+        String hpText = +lives + "/" + hp;
+        int textX = barX + (barWidth - fontRegularMetrics.stringWidth(hpText)) / 2;
+        int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2)
+            + fontRegularMetrics.getAscent();
+        backBufferGraphics.drawString(hpText, textX, textY);
     }
 
     /**
