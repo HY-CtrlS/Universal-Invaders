@@ -63,4 +63,8 @@ public class ItemList {
         return new ArrayList<>(tempItemList);
     }
 
+    public List<Item> getItems() {
+        return items;
+    }
+
 }

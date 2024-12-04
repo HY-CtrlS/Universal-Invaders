@@ -157,6 +157,7 @@ public class BossScreen extends Screen {
         this.increUltCooldown = Core.getCooldown(1000);
         this.increUltCooldown.reset();
 
+        this.ship.stopUlt();
         // 아군 함선 궁극기 기능 연결
         switch (this.ship.getShipID()) {
             case 1:
@@ -776,11 +777,15 @@ public class BossScreen extends Screen {
 
             // 보스의 체력바 그리기
             drawManager.drawBossHp(this, boss.getCurrentHp(), this.boss);
-            // 아군 함선의 체력바 그리기
-            drawManager.drawLives(10, this.getHeight() - 30, this.hp);
-            // 아군 함선의 궁극기바 그리기
-            drawManager.drawUltGauge(this.ship, this.getWidth() - 210, this.getHeight() - 30);
+            if (this.ship.isUltActivated()) {
+                // 궁극기 남은 시간 그리기
+                drawManager.drawUltRemainingTime(this.ultActivatedTime, this.ship, 10, 53);
+            }
 
+            // 아군 함선의 체력바 그리기
+            drawManager.drawLivesBoss(10, this.getHeight() - 30, this.hp);
+            // 아군 함선의 궁극기바 그리기
+            drawManager.drawUltGaugeBoss(this.ship, this.getWidth() - 210, this.getHeight() - 30);
         }
 
         drawManager.completeDrawing(this);
@@ -814,8 +819,8 @@ public class BossScreen extends Screen {
                 // 보스와의 충돌
                 if (checkCollision(bullet, this.boss) && this.boss.getCurrentHp() > 0) {
                     recyclable.add(bullet);
-                    this.ship.increaseUltGauge();
                     if (!this.boss.isInvincible()) {
+                        this.ship.increaseUltGauge();
                         this.boss.getDamaged(status.getBaseDamage());
                     }
                 }

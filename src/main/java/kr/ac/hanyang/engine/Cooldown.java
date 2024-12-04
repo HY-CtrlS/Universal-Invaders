@@ -71,10 +71,13 @@ public class Cooldown {
     public final void reset() {
         this.time = System.currentTimeMillis();
         this.isPaused = false;
+        this.remainingTime = 0;
         if (this.variance != 0) {
             this.duration = (this.milliseconds - this.variance)
                 + (int) (Math.random()
                 * (this.variance + this.variance));
+        } else {
+            this.duration = this.milliseconds;
         }
     }
 
@@ -97,6 +100,22 @@ public class Cooldown {
             this.time = System.currentTimeMillis();
             this.duration = this.remainingTime;
             this.isPaused = false;
+        }
+    }
+
+    public final int getMilliseconds() {
+        return this.milliseconds;
+    }
+
+    public final int getRemainingTime() {
+        if (isPaused) {
+            return this.remainingTime;
+        } else if (this.time == 0) {
+            return this.milliseconds;
+        } else {
+            long currentTime = System.currentTimeMillis();
+            int timeLeft = (int) ((this.time + this.duration) - currentTime);
+            return Math.max(timeLeft, 0);
         }
     }
 
