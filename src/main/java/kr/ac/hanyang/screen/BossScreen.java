@@ -151,6 +151,7 @@ public class BossScreen extends Screen {
         this.increUltCooldown = Core.getCooldown(1000);
         this.increUltCooldown.reset();
 
+        this.ship.stopUlt();
         // 아군 함선 궁극기 기능 연결
         switch (this.ship.getShipID()) {
             case 1:
