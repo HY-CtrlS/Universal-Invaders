@@ -496,7 +496,7 @@ public class GameScreen extends Screen {
         }
 
         // 인게임 UI 그리기
-        drawManager.drawIngameUI(this, this.ship, this.maxHp, this.hp, this.shipsDestroyed, this.status, this.currentExperience, EXPERIENCE_THRESHOLD, this.playerLevel, this.survivalTime, this.shipID); // UI 그리기
+        drawManager.drawIngameUI(this, this.ship, this.maxHp, this.hp, this.shipsDestroyed, this.status, this.currentExperience, experienceThreshold, this.playerLevel, this.survivalTime, this.shipID); // UI 그리기
 
         // Countdown to game start.
         if (!this.inputDelay.checkFinished()) {

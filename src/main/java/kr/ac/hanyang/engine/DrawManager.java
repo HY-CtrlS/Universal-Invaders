@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import kr.ac.hanyang.Item.Item;
 import kr.ac.hanyang.entity.Entity;
-import kr.ac.hanyang.entity.Ship;
+import kr.ac.hanyang.entity.ship.Ship;
 import kr.ac.hanyang.screen.GameScreen;
 import kr.ac.hanyang.screen.Screen;
 
