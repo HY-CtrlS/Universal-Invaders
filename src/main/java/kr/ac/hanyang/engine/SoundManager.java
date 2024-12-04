@@ -2,7 +2,6 @@ package kr.ac.hanyang.engine;
 
 import java.io.InputStream;
 import javax.sound.sampled.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -232,7 +231,7 @@ public class SoundManager {
      * 총알 발사 사운드를 재생합니다.
      */
     public void playBulletShotSound() {
-        playSoundEffect("sounds/bullet_shot.wav");
+        playSoundEffect("sounds/shoot.wav");
     }
 
     /**
