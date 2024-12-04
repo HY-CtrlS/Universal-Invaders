@@ -278,6 +278,27 @@ public class SoundManager {
     }
 
     /**
+     * 기본 공격 소리를 재생합니다.
+     */
+    public void playBasicAttack() {
+        playBackgroundMusic("sounds/Lasergun.wav");
+    }
+
+    /**
+     * 크리스탈 때리는 소리를 재생합니다.
+     */
+    public void playHitCrystal() {
+        playBackgroundMusic("sounds/CrystalBreak.wav");
+    }
+
+    /**
+     * 무적인 보스를 때리는 소리를 연출합니다.
+     */
+    public void playHitInvicibleBoss() {
+        playBackgroundMusic("sounds/InvicibleHit.wav");
+    }
+
+    /**
      * 배경음악이 재생 중인지 확인합니다.
      *
      * @return 배경음악이 재생 중이면 true, 아니면 false
@@ -305,5 +326,12 @@ public class SoundManager {
      */
     public void playLobbyBGM() {
         playBackgroundMusic("sounds/lobby.wav");
+    }
+
+    /**
+     * 엔딩 배경음악을 재생합니다.
+     */
+    public void playEndingBGM() {
+        playBackgroundMusic("sounds/ending.wav");
     }
 }

@@ -1,5 +1,12 @@
 package kr.ac.hanyang.engine;
 
+import java.awt.Graphics2D;
+import javax.imageio.ImageIO;
+import kr.ac.hanyang.Item.Item;
+import kr.ac.hanyang.entity.Entity.Direction;
+import kr.ac.hanyang.entity.boss.Boss;
+import kr.ac.hanyang.entity.boss.Missile;
+import kr.ac.hanyang.entity.ship.Ship;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -45,7 +52,7 @@ public final class DrawManager {
     /** Normal sized font. */
     private static Font fontRegular;
     /** Normal sized font properties. */
-    private static FontMetrics fontRegularMetrics;
+    public static FontMetrics fontRegularMetrics;
     /** Big sized font. */
     private static Font fontBig;
     /** Big sized font properties. */
@@ -75,10 +82,8 @@ public final class DrawManager {
         ShipDestroyed,
         /* 파괴된 플레이어 함선 (좌상향) */
         ShipDiagonalDestroyed,
-        /** 상단을 향한 플레이어 탄막 */
+        /** 플레이어 탄막 */
         Bullet,
-        /** 좌상단을 향한 플레이어 탄막 */
-        BulletDiagonal,
         /** 경험치 A */
         ExperienceA,
         /** 경험치 B */
@@ -104,7 +109,21 @@ public final class DrawManager {
         // 공속증가 아이템
         AttackSpeedUpItem,
         // 장애물 스프라이트
-        Obstacle
+        Obstacle,
+        // 다중 색 레이어 포탈
+        Portal,
+        // 보스
+        Boss,
+        // 레이저
+        Laser,
+        // 레이저 위치 경고용
+        WarningLaser,
+        // 미사일
+        Missile,
+        // 무적 크리스탈
+        Crystal,
+        // 배리어용 소행성
+        Asteroid;
     }
 
     /**
@@ -122,11 +141,10 @@ public final class DrawManager {
             spriteMap.put(SpriteType.ShipDiagonal, new boolean[1][13][13]);
             spriteMap.put(SpriteType.ShipDestroyed, new boolean[1][16][13]);
             spriteMap.put(SpriteType.ShipDiagonalDestroyed, new boolean[1][15][15]);
-            spriteMap.put(SpriteType.Bullet, new boolean[1][2][4]);
-            spriteMap.put(SpriteType.BulletDiagonal, new boolean[1][4][4]);
+            spriteMap.put(SpriteType.Bullet, new boolean[1][2][2]);
             spriteMap.put(SpriteType.ExperienceA, new boolean[1][7][7]);
             spriteMap.put(SpriteType.ExperienceB, new boolean[1][7][7]);
-            spriteMap.put(SpriteType.EnemyBullet, new boolean[1][3][5]);
+            spriteMap.put(SpriteType.EnemyBullet, new boolean[1][3][3]);
             spriteMap.put(SpriteType.EnemyShipA1, new boolean[1][12][8]);
             spriteMap.put(SpriteType.EnemyShipA2, new boolean[1][12][8]);
             spriteMap.put(SpriteType.EnemyShipB1, new boolean[2][24][16]);
@@ -139,6 +157,15 @@ public final class DrawManager {
             spriteMap.put(SpriteType.AttackSpeedUpItem, new boolean[1][10][10]);
             // 장애물 스프라이트
             spriteMap.put(SpriteType.Obstacle, new boolean[2][10][10]);
+            // 포탈 스프라이트
+            spriteMap.put(SpriteType.Portal, new boolean[3][21][30]);
+            // 보스 스프라이트
+            spriteMap.put(SpriteType.Boss, new boolean[3][40][46]);
+            spriteMap.put(SpriteType.Laser, new boolean[2][10][720]);
+            spriteMap.put(SpriteType.WarningLaser, new boolean[1][10][720]);
+            spriteMap.put(SpriteType.Missile, new boolean[2][7][9]);
+            spriteMap.put(SpriteType.Crystal, new boolean[2][20][20]);
+            spriteMap.put(SpriteType.Asteroid, new boolean[2][10][10]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
@@ -323,8 +350,7 @@ public final class DrawManager {
     /**
      * Draws current ultimate skill gauge on screen.
      *
-     * @param screen Screen to draw on.
-     * @param ship   Current player ship.
+     * @param ship Current player ship.
      */
     public void drawUltGauge(final Screen screen, final Ship ship) {
         int X_POS = screen.getWidth() - 175;
@@ -567,7 +593,7 @@ public final class DrawManager {
      */
     public void drawHighScoreMenu(final Screen screen) {
         String highScoreString = "High Scores";
-        String instructionsString = "Press Space to return";
+        String instructionsString = "Press ESC to return";
 
         backBufferGraphics.setColor(Color.GREEN);
         drawCenteredBigString(screen, highScoreString, screen.getHeight() / 8);
@@ -786,7 +812,7 @@ public final class DrawManager {
     public void drawSettingsMenu(final Screen screen, final int selectedOption) {
         // 설정 화면 제목 및 안내 문자열
         String settingsTitle = "Settings";
-        String instructionsString = "Use UP/DOWN to switch, LEFT/RIGHT to adjust, SPACE to exit";
+        String instructionsString = "Use UP/DOWN to switch, LEFT/RIGHT to adjust, ESC to exit";
 
         // 설정 제목과 안내 문자열 표시
         backBufferGraphics.setColor(Color.GREEN);
@@ -1041,41 +1067,37 @@ public final class DrawManager {
      * @param screen 화면 객체를 받는 매개변수
      * @param option 어떤 메뉴를 선택했는지 구분하는 매개변수
      */
-    public void drawShipSelectMenu(final Screen screen, final int option, final int shipID) {
+    public void drawShipSelectMenu(final Screen screen, final int option, final Entity superShip) {
         String playString = "Play";
-        String highScoresString = "Select ship";
-        String[] shipColors = {"GREEN", "BLUE", "YELLOW", "RED"};
-
-        if (option == 1) {
-            backBufferGraphics.setColor(Color.GREEN);
-        } else {
-            backBufferGraphics.setColor(Color.WHITE);
-        }
-        drawCenteredRegularString(screen, playString, screen.getHeight() / 3 * 2);
+        String selectString = "<-                    ->";
+        String backString = "Back";
 
         if (option == 0) {
             backBufferGraphics.setColor(Color.GREEN);
         } else {
             backBufferGraphics.setColor(Color.WHITE);
         }
-        drawCenteredRegularString(screen, highScoresString,
-            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 2);
-        switch (shipColors[shipID - 1]) {
-            case "GREEN":
-                backBufferGraphics.setColor(Color.GREEN);
-                break;
-            case "BLUE":
-                backBufferGraphics.setColor(Color.BLUE);
-                break;
-            case "YELLOW":
-                backBufferGraphics.setColor(Color.YELLOW);
-                break;
-            case "RED":
-                backBufferGraphics.setColor(Color.RED);
-                break;
+        drawCenteredRegularString(screen, playString, screen.getHeight() / 5 * 2);
+
+        if (option == 1) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
         }
-        drawCenteredRegularString(screen, shipColors[shipID - 1],
-            screen.getHeight() / 3 * 2 + fontRegularMetrics.getHeight() * 4);
+
+        drawCenteredRegularString(screen, selectString,
+            screen.getHeight() / 5 * 2 + fontRegularMetrics.getHeight() * 3);
+
+        drawEntity(superShip, superShip.getPositionX() - superShip.getWidth() / 2,
+            superShip.getPositionY());
+
+        if (option == 2) {
+            backBufferGraphics.setColor(Color.GREEN);
+        } else {
+            backBufferGraphics.setColor(Color.WHITE);
+        }
+        drawCenteredRegularString(screen, backString,
+            screen.getHeight() / 5 * 2 + fontRegularMetrics.getHeight() * 6);
     }
 
     public void setSplashImage() {
@@ -1119,10 +1141,13 @@ public final class DrawManager {
         }
     }
 
-    public boolean drawGameTitle(final Screen screen) {
-        // 타이틀 문자
-        String titleString = "Universal Invaders";
+    // 초기화 메서드
+    public void resetGameTitleAnimation() {
+        titleTypingIndex = 0;
+        lastUpdateTime = System.currentTimeMillis();
+    }
 
+    public boolean drawGameTitle(final Screen screen, String titleString) {
         // 현재 시간
         long currentTime = System.currentTimeMillis();
 
@@ -1145,7 +1170,7 @@ public final class DrawManager {
         return titleTypingIndex == titleString.length();
     }
 
-    public void drawStartMessage(final Screen screen) {
+    public void drawStartMessage(final Screen screen, String message) {
         // 현재 시간
         long currentTime = System.currentTimeMillis();
 
@@ -1159,7 +1184,75 @@ public final class DrawManager {
         backBufferGraphics.setColor(showStartMessage ? Color.WHITE : Color.GRAY);
 
         // 메시지 그리기
-        drawCenteredRegularString(screen, "PRESS ENTER/SPACE TO START", screen.getHeight() / 2);
+        drawCenteredRegularString(screen, message, screen.getHeight() / 2);
+    }
+
+    //보스 HP바 표시
+    public void drawBossHp(Screen screen, final int lives, Boss boss) {
+        backBufferGraphics.setFont(fontRegular);
+
+        int barX = 10; // 체력 바의 X 좌표
+        int barY = 30; // 체력 바의 Y 좌표
+        int barWidth = 680; // 체력 바의 최대 너비
+        int barHeight = 20; // 체력 바의 높이
+        int hp = boss.getMaxHp(); // 최대 체력
+        // 체력 바위 보스 이름과 보스 정보 출력
+        backBufferGraphics.setColor(Color.RED);
+        drawCenteredRegularString(screen, "Boss Name, Phase : " + boss.getPhase(),
+            1 + fontRegularMetrics.getHeight());
+
+        // 체력 바의 테두리 그리기
+        backBufferGraphics.setColor(Color.GRAY);
+        backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
+
+        // 현재 체력에 따른 바의 너비 계산
+        int healthWidth = (int) ((double) lives / hp * barWidth);
+
+        // 체력 바 채우기
+        backBufferGraphics.setColor(boss.getHpColor()); // 체력 바의 색상
+        backBufferGraphics.fillRect(barX + 1, barY + 1, healthWidth - 1, barHeight - 1);
+        // 다음 페이즈가 존재하는 경우
+        if (boss.getNextHpColor() != null) {
+            // 다음페이즈의 색으로 체력바 색깔 지정
+            backBufferGraphics.setColor(boss.getNextHpColor());
+            backBufferGraphics.fillRect(barX + healthWidth + 1, barY + 1,
+                barWidth - healthWidth - 1, barHeight - 1);
+        }
+
+        // 체력 수치 표시
+        backBufferGraphics.setColor(Color.WHITE);
+        String hpText = +lives + "/" + hp;
+        int textX = barX + (barWidth - fontRegularMetrics.stringWidth(hpText)) / 2;
+        int textY = barY + ((barHeight - fontRegularMetrics.getHeight()) / 2)
+            + fontRegularMetrics.getAscent();
+        backBufferGraphics.drawString(hpText, textX, textY);
+    }
+
+    public void drawUltRemainingTime(final Cooldown cooldown, final Ship ship) {
+        int barX = 10; // 궁극기 시간 바의 X 좌표
+        int barY = 53; // 궁극기 시간 바의 Y 좌표
+        int barWidth = 680; // 궁극기 시간 바의 최대 너비
+        int barHeight = 5; // 궁극기 시간 바의 높이
+
+        // 현재 남은 시간에 따른 바의 너비 계산
+        int timeWidth = (int) ((double) cooldown.getRemainingTime() / cooldown.getMilliseconds()
+            * barWidth);
+
+        // 체력 바 채우기
+        backBufferGraphics.setColor(ship.getColor()[0]); // 궁극기 시간 바의 색상
+        backBufferGraphics.fillRect(barX, barY, timeWidth, barHeight);
+    }
+
+    // 미사일 폭발 반경 표시
+    public void drawExplosionRadius(Missile missile) {
+        backBufferGraphics.setColor(new Color(255, 69, 0, 128)); // 반투명 주황색
+        int radius = missile.getExplosionRadius();
+        backBufferGraphics.fillOval(
+            missile.getPositionX() + missile.getWidth() / 2 - radius,
+            missile.getPositionY() + missile.getHeight() / 2 - radius,
+            radius * 2,
+            radius * 2
+        );
     }
 
     public void drawIngameUI(GameScreen gameScreen, Ship ship, int maxHp, int hp,

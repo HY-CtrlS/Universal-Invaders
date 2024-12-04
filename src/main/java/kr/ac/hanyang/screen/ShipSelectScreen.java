@@ -1,16 +1,18 @@
 package kr.ac.hanyang.screen;
 
+import kr.ac.hanyang.engine.DrawManager;
 import kr.ac.hanyang.entity.*;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
+import kr.ac.hanyang.entity.ship.Ship;
 
 /**
  * 함선 선택 화면을 구현하는 클래스
  */
-public class shipSelectScreen extends Screen {
+public class ShipSelectScreen extends Screen {
 
     /** 사용자 선택의 변경 사이의 시간(밀리초) */
     private static final int SELECTION_TIME = 200;
@@ -21,6 +23,8 @@ public class shipSelectScreen extends Screen {
     /** 함선 ID */
     private int shipID;
 
+    private Entity superShip;
+
     private Color[] shipColors = {Color.GREEN, Color.BLUE, Color.YELLOW, Color.RED};
 
     /**
@@ -30,7 +34,7 @@ public class shipSelectScreen extends Screen {
      * @param height Screen height.
      * @param fps    Frames per second, frame rate at which the game is run.
      */
-    public shipSelectScreen(final int width, final int height, final int fps) {
+    public ShipSelectScreen(final int width, final int height, final int fps) {
         super(width, height, fps);
 
         // Defaults to play.
@@ -38,6 +42,8 @@ public class shipSelectScreen extends Screen {
         this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
         this.selectionCooldown.reset();
         this.shipID = 1;
+        this.superShip = Ship.createShipByID(this.shipID, this.width / 2,
+            this.height / 5 * 2 + DrawManager.fontRegularMetrics.getHeight() * 2);
 
     }
 
@@ -50,7 +56,7 @@ public class shipSelectScreen extends Screen {
     public final int run() {
         super.run();
 
-        return this.shipID;
+        return this.returnCode;
     }
 
     /**
@@ -75,7 +81,7 @@ public class shipSelectScreen extends Screen {
                 Core.getSoundManager().playButtonSound();
                 this.selectionCooldown.reset();
             }
-            if (this.returnCode == 0) {
+            if (this.returnCode == 1) {
                 if (this.selectionCooldown.checkFinished()
                     && this.inputDelay.checkFinished()) {
                     if (inputManager.isKeyDown(KeyEvent.VK_LEFT)
@@ -90,19 +96,18 @@ public class shipSelectScreen extends Screen {
                         Core.getSoundManager().playButtonSound();
                         this.selectionCooldown.reset();
                     }
+                    superShip = Ship.createShipByID(this.shipID, this.width / 2,
+                        this.height / 5 * 2 + DrawManager.fontRegularMetrics.getHeight() * 2);
                 }
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-                if (this.returnCode == 1) {
-                    this.returnCode = 0;
-                } else {
+                if (this.returnCode == 0) {
+                    Core.getSoundManager().playPlaySound();
+                    this.isRunning = false;
+                } else if (this.returnCode == 2) {
+                    Core.getSoundManager().playButtonSound();
                     this.isRunning = false;
                 }
-                // SoundManager에서 음악 재생 중인지 확인 후 정지
-                if (Core.getSoundManager().isBackgroundMusicPlaying()) {
-                    Core.getSoundManager().stopBackgroundMusic();
-                }
-                Core.getSoundManager().playPlaySound();
             }
         }
     }
@@ -111,7 +116,7 @@ public class shipSelectScreen extends Screen {
      * Shifts the focus to the next menu item.
      */
     private void nextMenuItem() {
-        if (this.returnCode == 1) {
+        if (this.returnCode == 2) {
             this.returnCode = 0;
         } else {
             this.returnCode++;
@@ -123,7 +128,7 @@ public class shipSelectScreen extends Screen {
      */
     private void previousMenuItem() {
         if (this.returnCode == 0) {
-            this.returnCode = 1;
+            this.returnCode = 2;
         } else {
             this.returnCode--;
         }
@@ -155,13 +160,19 @@ public class shipSelectScreen extends Screen {
      * Draws the elements associated with the screen.
      */
     private void draw() {
-        Entity dummy = Ship.createShipByID(this.shipID, 0, 0);
-
         drawManager.initDrawing(this);
-        drawManager.drawEntity(dummy, this.width / 2 - (dummy.getWidth() / 2),
-            this.height / 3 * 2 + 115);
-        drawManager.drawShipSelectTitle(this);
-        drawManager.drawShipSelectMenu(this, this.returnCode, this.shipID);
+
+        drawManager.setSplashImage();
+        drawManager.drawBackgroundImage(this, 170);
+
+        drawManager.drawTitle(this);
+
+        drawManager.drawShipSelectMenu(this, this.returnCode, this.superShip);
+
         drawManager.completeDrawing(this);
+    }
+
+    public int getShipID() {
+        return this.shipID;
     }
 }

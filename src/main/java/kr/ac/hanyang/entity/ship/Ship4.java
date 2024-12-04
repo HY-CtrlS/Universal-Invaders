@@ -1,7 +1,9 @@
-package kr.ac.hanyang.entity;
+package kr.ac.hanyang.entity.ship;
 
 import java.awt.Color;
 import java.util.Set;
+import kr.ac.hanyang.entity.Bullet;
+import kr.ac.hanyang.entity.BulletPool;
 
 public class Ship4 extends Ship {
 

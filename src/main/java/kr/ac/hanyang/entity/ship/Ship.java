@@ -1,4 +1,4 @@
-package kr.ac.hanyang.entity;
+package kr.ac.hanyang.entity.ship;
 
 import java.awt.Color;
 import java.util.Set;
@@ -7,7 +7,9 @@ import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.engine.DrawManager.SpriteType;
 import kr.ac.hanyang.engine.StatusManager;
-import kr.ac.hanyang.screen.GameScreen;
+import kr.ac.hanyang.entity.Bullet;
+import kr.ac.hanyang.entity.BulletPool;
+import kr.ac.hanyang.entity.Entity;
 
 /**
  * Implements a ship, to be controlled by the player.
@@ -50,6 +52,8 @@ public class Ship extends Entity {
     protected int ultThreshold;
     /** 궁극기 게이지의 소수 부분 누적 */
     private double ultRemainder = 0.0;
+    /** 보스 스테이지 페이즈4에서 함선을 강제로 중앙으로 옮길때 사용 */
+    protected boolean isCenter;
 
     /**
      * Constructor, establishes the ship's properties.
@@ -62,7 +66,7 @@ public class Ship extends Entity {
      */
     public Ship(final int positionX, final int positionY, final Direction direction, Color color,
         final int shipID) {
-        super(positionX, positionY, 13 * 2, 13 * 2, new Color[]{color, Color.WHITE}, direction);
+        super(positionX, positionY, 13 * 2, 13 * 2, color, direction);
 
         this.spriteType = SpriteType.Ship;
 
@@ -82,6 +86,7 @@ public class Ship extends Entity {
         this.direction = direction;
         this.shipID = shipID;
         this.isBurstShooting = false;
+        this.isCenter = false;
     }
 
     /**
@@ -146,6 +151,27 @@ public class Ship extends Entity {
         calculateMovement();
         this.positionY += movement;
         this.positionX -= movement;
+    }
+
+    public void moveCenter() {
+        int centerX = 338;
+        int centerY = 451;
+
+        if (this.positionX < centerX) {
+            this.positionX += 1;
+        } else if (this.positionX > centerX) {
+            this.positionX -= 1;
+        }
+
+        if (this.positionY < centerY) {
+            this.positionY += 1;
+        } else if (this.positionY > centerY) {
+            this.positionY -= 1;
+        }
+
+        if (this.positionX == centerX && this.positionY == centerY) {
+            this.isCenter = true;
+        }
     }
 
     /**
@@ -280,6 +306,10 @@ public class Ship extends Entity {
         return !this.destructionCooldown.checkFinished();
     }
 
+    public boolean isCenter() {
+        return this.isCenter;
+    }
+
     /**
      * 함선의 에임이 대각선 방향인지 체크.
      *
@@ -307,6 +337,18 @@ public class Ship extends Entity {
 
     public int getRange() {
         return this.range;
+    }
+
+    public int getShootingInterval() {
+        return this.shootingInterval;
+    }
+
+    public int getBulletSpeed() {
+        return this.bulletSpeed;
+    }
+
+    public Cooldown getDestructionCooldown() {
+        return this.destructionCooldown;
     }
 
     /**
@@ -346,13 +388,17 @@ public class Ship extends Entity {
     public static Ship createShipByID(int shipID, int positionX, int positionY) {
         switch (shipID) {
             case 1:
-                return new Ship1(positionX, positionY, Entity.Direction.UP, Color.GREEN, 1);
+                return new Ship1(positionX, positionY, Entity.Direction.UP, new Color(80, 200, 120),
+                    1);
             case 2:
-                return new Ship2(positionX, positionY, Entity.Direction.UP, Color.BLUE, 2);
+                return new Ship2(positionX, positionY, Entity.Direction.UP, new Color(15, 82, 186),
+                    2);
             case 3:
-                return new Ship3(positionX, positionY, Entity.Direction.UP, Color.YELLOW, 3);
+                return new Ship3(positionX, positionY, Entity.Direction.UP, new Color(255, 215, 0),
+                    3);
             case 4:
-                return new Ship4(positionX, positionY, Entity.Direction.UP, Color.RED, 4);
+                return new Ship4(positionX, positionY, Entity.Direction.UP, new Color(224, 17, 95),
+                    4);
             default:
                 throw new IllegalArgumentException("Invalid shipID: " + shipID);
         }

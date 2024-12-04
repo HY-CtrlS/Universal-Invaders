@@ -1,8 +1,6 @@
-package kr.ac.hanyang.entity;
+package kr.ac.hanyang.entity.ship;
 
 import java.awt.Color;
-import java.util.Set;
-import kr.ac.hanyang.screen.GameScreen;
 
 public class Ship1 extends Ship {
 

@@ -1,13 +1,15 @@
 package kr.ac.hanyang.engine;
 
+import java.awt.Color;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import kr.ac.hanyang.entity.Entity.Direction;
+import kr.ac.hanyang.entity.ship.Ship;
 import kr.ac.hanyang.screen.*;
-import kr.ac.hanyang.Item.*;
 
 /**
  * Implements core game logic.
@@ -47,7 +49,7 @@ public final class Core {
         int height = frame.getHeight();
 
         int returnCode = 1;
-        GameState gameState = new GameState(0, getStatusManager().getMaxHp(), 0, 0);
+        GameState gameState = new GameState(0, getStatusManager().getMaxHp(), 0, 0, getStatusManager(), new Ship(0,0, Direction.DOWN, Color.GREEN, 1));
 
         currentScreen = new SplashScreen(width, height, FPS);
         returnCode = handleScreen(currentScreen, "splash screen");
@@ -61,9 +63,15 @@ public final class Core {
                     break;
                 case 2:
                     // 게임 시작 전 함선 선택
-                    currentScreen = new shipSelectScreen(width, height, FPS);
-                    int shipID = handleScreen(currentScreen, "ship select screen");
+                    currentScreen = new ShipSelectScreen(width, height, FPS);
+                    returnCode = handleScreen(currentScreen, "ship select screen");
 
+                    int shipID = ((ShipSelectScreen) currentScreen).getShipID();
+
+                    if (returnCode == 2) {
+                        returnCode = 1;
+                        break;
+                    }
                     // 게임 화면 시작
                     currentScreen = new GameScreen(gameState, width, height, FPS,
                         shipID);
@@ -76,6 +84,19 @@ public final class Core {
                     if (isQuit == 0) {
                         returnCode = 1;
                         break;
+                    }
+
+                    // 보스 스크린 시작
+                    if (isQuit == 2) {
+                        currentScreen = new BossScreen(gameState, width, height, FPS,
+                            gameState.getShip());
+                        returnCode = handleScreen(currentScreen, "boss screen");
+                        if (returnCode == 0) {
+                            returnCode = 1;
+                            break;
+                        } else if (returnCode == 5) {
+                            break;
+                        }
                     }
 
                     // 게임 종료 후 gameState의 정보를 이용하여 scoreScreen 생성
@@ -91,6 +112,11 @@ public final class Core {
                     // 설정 화면
                     currentScreen = new SettingScreen(width, height, FPS);
                     returnCode = handleScreen(currentScreen, "setting screen");
+                    break;
+                case 5:
+                    // 엔딩 화면
+                    currentScreen = new EndingScreen(width, height, FPS);
+                    returnCode = handleScreen(currentScreen, "ending screen");
                     break;
                 default:
                     break;
