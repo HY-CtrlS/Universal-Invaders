@@ -738,7 +738,6 @@ public class BossScreen extends Screen {
 
         if (this.phaseFinished && this.screenFinishedCooldown.checkFinished()) {
             this.isRunning = false;
-            Core.getSoundManager().stopBackgroundMusic();
         }
     }
 
