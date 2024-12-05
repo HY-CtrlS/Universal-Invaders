@@ -198,7 +198,7 @@ public class Ship extends Entity {
                 positionY + this.height / 2, this.bulletSpeed, this.baseDamage, this.range,
                 this.direction,
                 getShipID()));
-            Core.getSoundManager().playBulletShotSound();
+            Core.getSoundManager().playBasicAttack();
             return true;
         }
         return false;

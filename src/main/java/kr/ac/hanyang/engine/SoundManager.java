@@ -294,21 +294,21 @@ public class SoundManager {
      * 기본 공격 소리를 재생합니다.
      */
     public void playBasicAttack() {
-        playBackgroundMusic("sounds/Lasergun.wav");
+        playSoundEffect("sounds/Lasergun.wav");
     }
 
     /**
      * 크리스탈 때리는 소리를 재생합니다.
      */
     public void playHitCrystal() {
-        playBackgroundMusic("sounds/CrystalBreak.wav");
+        playSoundEffect("sounds/CrystalBreak.wav");
     }
 
     /**
      * 무적인 보스를 때리는 소리를 연출합니다.
      */
     public void playHitInvicibleBoss() {
-        playBackgroundMusic("sounds/InvicibleHit.wav");
+        playSoundEffect("sounds/InvicibleHit.wav");
     }
 
     /**

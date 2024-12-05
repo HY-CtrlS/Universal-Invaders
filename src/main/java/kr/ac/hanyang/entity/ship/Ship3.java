@@ -38,7 +38,7 @@ public class Ship3 extends Ship {
             this.burstCooldown.reset();    // 점사 내 간격 초기화
             this.burstShotCount++;
             shootBullet(bullets); // 첫 번째 총알 발사
-            Core.getSoundManager().playBulletShotSound();
+            Core.getSoundManager().playBasicAttack();
             return true;
 
         } else if (this.burstShotCount > 0 && this.burstShotCount < maxBurstShots
@@ -53,7 +53,7 @@ public class Ship3 extends Ship {
                 this.isBurstShooting = false; // 점사 상태 종료
                 this.shootingCooldown.reset(); // 점사 시작 간격 초기화
             }
-            Core.getSoundManager().playBulletShotSound();
+            Core.getSoundManager().playBasicAttack();
             return true;
         }
 

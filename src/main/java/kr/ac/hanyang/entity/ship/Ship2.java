@@ -35,7 +35,7 @@ public class Ship2 extends Ship {
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
                 positionY + this.height / 2, this.bulletSpeed, this.baseDamage, this.range,
                 Direction.getOffsetDirection(direction, 1), getShipID()));
-            Core.getSoundManager().playBulletShotSound();
+            Core.getSoundManager().playBasicAttack();
             return true;
         }
         return false;
