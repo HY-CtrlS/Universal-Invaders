@@ -210,6 +210,7 @@ public class Ship extends Entity {
     public void useUlt() {
         isUltActv = true;
         ultGauge = 0;
+        Core.getSoundManager().playUltUseSound();
     }
 
     /**
