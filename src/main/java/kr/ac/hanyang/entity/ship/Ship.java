@@ -45,7 +45,7 @@ public class Ship extends Entity {
     /** 함선의 ID */
     protected int shipID;
     /** 점사 여부 확인 변수 */
-    public boolean isBurstShooting;
+    protected boolean isBurstShooting;
     /** 토글형 궁극기 활성화 여부 */
     protected boolean isUltActv;
     /** 궁극기를 사용할 수 있는 게이지 기준 양 */
@@ -189,9 +189,8 @@ public class Ship extends Entity {
      * Shoots a bullet upwards.
      *
      * @param bullets List of bullets on screen, to add the new bullet.
-     * @return Checks if the bullet was shot correctly.
      */
-    public boolean shoot(final Set<Bullet> bullets) {
+    public void shoot(final Set<Bullet> bullets) {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
             bullets.add(BulletPool.getBullet(positionX + this.width / 2,
@@ -199,9 +198,7 @@ public class Ship extends Entity {
                 this.direction,
                 getShipID()));
             Core.getSoundManager().playBasicAttack();
-            return true;
         }
-        return false;
     }
 
     /**
@@ -298,7 +295,6 @@ public class Ship extends Entity {
             } else {
                 this.spriteType = SpriteType.Ship;
             }
-
         }
     }
 
@@ -395,6 +391,10 @@ public class Ship extends Entity {
      */
     public void startBurstShooting() {
         // 기본 Ship은 점사 기능 없음
+    }
+
+    public boolean isBurstShooting() {
+        return this.isBurstShooting;
     }
 
     public static Ship createShipByID(int shipID, int positionX, int positionY) {

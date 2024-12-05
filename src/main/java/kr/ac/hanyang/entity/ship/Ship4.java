@@ -20,9 +20,8 @@ public class Ship4 extends Ship {
      * 관통 총알을 발사하는 메소드
      *
      * @param bullets List of bullets on screen, to add the new bullet.
-     * @return Checks if the bullet was shot correctly.
      */
-    public final boolean shoot(final Set<Bullet> bullets) {
+    public final void shoot(final Set<Bullet> bullets) {
         if (this.shootingCooldown.checkFinished()) {
             this.shootingCooldown.reset();
 
@@ -32,13 +31,13 @@ public class Ship4 extends Ship {
                 this.bulletSpeed, this.baseDamage, this.range, direction, getShipID());
             bullets.add(bullet);
             Core.getSoundManager().playBasicAttack();
-            return true;
         }
-        return false;
     }
 
     /**
-     * 자석 (화면상 모든 경험치 끌어오기), 토글형.
+     * 일반 스테이지 - 경험치 자석.
+     * <p>
+     * 보스 스테이지 - 체력 회복.
      */
     public final void useUlt() {
         super.useUlt();
