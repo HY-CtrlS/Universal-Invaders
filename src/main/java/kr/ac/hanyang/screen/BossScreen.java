@@ -333,13 +333,9 @@ public class BossScreen extends Screen {
                 this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
                     + " pause screen at " + this.fps + " fps.");
                 Screen pause = new PauseScreen(this.getWidth(), this.getHeight(), this.fps);
-                if (this.ship.isUltActivated()) {
-                    this.ultActivatedTime.pause();
-                }
+                pauseAllCooldown();
                 int check = pause.run();
-                if (this.ultActivatedTime.isPaused()) {
-                    this.ultActivatedTime.resume();
-                }
+                resumeAllCooldown();
                 this.logger.info("Closing pause screen.");
                 // 일시정지 화면에서 quit를 누른 경우 현재 라운드 종료
                 if (check == 2) {
@@ -1009,5 +1005,29 @@ public class BossScreen extends Screen {
     public void destroyAllAmmo() {
         this.bullets.clear();
         this.missiles.clear();
+    }
+
+    private void pauseAllCooldown() {
+        this.screenFinishedCooldown.pause();
+        this.clockCooldown.pause();
+        this.regenHpCooldown.pause();
+        this.increUltCooldown.pause();
+        this.ultActivatedTime.pause();
+        this.bossBasicBullet.pause();
+        this.createLaserCooldown.pause();
+        this.createMissileCooldown.pause();
+        this.createCrystalCooldown.pause();
+    }
+
+    private void resumeAllCooldown() {
+        this.screenFinishedCooldown.resume();
+        this.clockCooldown.resume();
+        this.regenHpCooldown.resume();
+        this.increUltCooldown.resume();
+        this.ultActivatedTime.resume();
+        this.bossBasicBullet.resume();
+        this.createLaserCooldown.resume();
+        this.createMissileCooldown.resume();
+        this.createCrystalCooldown.resume();
     }
 }
