@@ -16,11 +16,11 @@ public class EndingScreen extends Screen {
     private boolean hasPlayedSound = false; // 사운드 호출 여부
     private boolean readyToStart = false; // 시작 준비 여부
 
-    public EndingScreen(final int width, final int height, final int fps) {
+    public EndingScreen(final int width, final int height, final int fps, final int shipID) {
         super(width, height, fps);
         this.returnCode = 1; // 다음 화면 코드 설정
 
-        initializeShip();
+        initializeShip(shipID);
         initializeSounds();
 
         if (Core.getSoundManager().isBackgroundMusicPlaying()) {
@@ -32,11 +32,11 @@ public class EndingScreen extends Screen {
     /**
      * 플레이어의 함선을 초기화합니다.
      */
-    private void initializeShip() {
+    private void initializeShip(final int shipID) {
         Core.getStatusManager().setSpeed(10);
+        superShip = Ship.createShipByID(shipID, this.width / 2, 0);
         // direction을 down으로 Ship 생성
-        superShip = new Ship(this.width / 2, 0, Direction.DOWN, Color.GREEN,
-            1);
+        superShip.setDirection(Direction.DOWN);
         superShip.setPositionY(-superShip.getHeight());
         drawManager.resetGameTitleAnimation();
     }
