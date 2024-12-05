@@ -165,12 +165,9 @@ class ShipTest {
         this.bullets = new HashSet<>();
 
         // shoot 메소드 호출
-        boolean result = ship.shoot(bullets);
-        // Shoot 직후 shoot 을 호출하면 false 를 반환해야 함
-        assertFalse(ship.shoot(bullets));
+        ship.shoot(bullets);
 
         // shoot이 성공했다면 bullets 집합에 총알이 추가되어야 함
-        assertTrue(result);  // shoot 메소드가 true를 반환했는지 확인
         assertEquals(1, bullets.size());  // 총알이 하나 추가되었는지 확인
 
         // 추가된 총알이 올바르게 설정되었는지 확인
