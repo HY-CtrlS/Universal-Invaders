@@ -43,7 +43,7 @@ public class GameScreen extends Screen {
     /** 기본 적 생성 간격 */
     private static final int ENEMY_SPAWN_INTERVAL = 2000;
     // 레벨 클리어 조건 시간
-    private static final int LEVEL_CLEAR_TIME = 300;
+    private static final int LEVEL_CLEAR_TIME = 3;
 
     /** Current difficulty level number. */
     private int level;
@@ -349,6 +349,7 @@ public class GameScreen extends Screen {
             if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
                 this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
                     + " pause screen at " + this.fps + " fps.");
+                Core.getSoundManager().playButtonSound();
                 Screen pause = new PauseScreen(this.getWidth(), this.getHeight(), this.fps);
                 pauseAllCooldown();
                 int check = pause.run();
@@ -411,6 +412,7 @@ public class GameScreen extends Screen {
                             ExperiencePool.getExperience(enemyShip.getPositionX() + 3 * 2,
                                 // enemyShip의 너비는 13, 경험치의 너비는 7이므로 3을 더해줌
                                 enemyShip.getPositionY(), enemyShip.getPointValue()));
+                        Core.getSoundManager().playBulletHitSound();
                     }
                 }
             }

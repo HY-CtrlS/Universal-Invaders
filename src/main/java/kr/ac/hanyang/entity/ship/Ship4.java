@@ -2,6 +2,7 @@ package kr.ac.hanyang.entity.ship;
 
 import java.awt.Color;
 import java.util.Set;
+import kr.ac.hanyang.engine.Core;
 import kr.ac.hanyang.entity.Bullet;
 import kr.ac.hanyang.entity.BulletPool;
 
@@ -30,7 +31,7 @@ public class Ship4 extends Ship {
                 positionX + this.width / 2, positionY + this.height / 2,
                 this.bulletSpeed, this.baseDamage, this.range, direction, getShipID());
             bullets.add(bullet);
-
+            Core.getSoundManager().playBasicAttack();
             return true;
         }
         return false;

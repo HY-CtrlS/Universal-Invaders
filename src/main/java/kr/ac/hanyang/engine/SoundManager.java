@@ -2,7 +2,6 @@ package kr.ac.hanyang.engine;
 
 import java.io.InputStream;
 import javax.sound.sampled.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -15,11 +14,11 @@ public class SoundManager {
     private float backgroundMusicVolume; // 현재 배경음악 볼륨
     private float soundEffectsVolume; // 현재 효과음 볼륨
 
-    // 생성자 - 로그 설정 및 초기 볼륨 값을 1.0으로 설정
+    // 생성자 - 로그 설정 및 초기 볼륨 값을 0.5으로 설정
     private SoundManager() {
         logger = Core.getLogger();
-        backgroundMusicVolume = 1.0f;
-        soundEffectsVolume = 1.0f;
+        backgroundMusicVolume = 0.5f;
+        soundEffectsVolume = 0.5f;
     }
 
     // SoundManager 인스턴스를 싱글톤 패턴으로 가져오기
@@ -106,6 +105,10 @@ public class SoundManager {
      * @param filepath 재생할 효과음 파일 경로
      */
     private void playSoundEffect(String filepath) {
+        if (!isAudioSystemAvailable()) {
+            logger.warning("오디오 시스템을 사용할 수 없습니다. 소리 재생을 건너뜁니다.");
+            return;
+        }
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filepath);
             if (inputStream == null) {
@@ -133,6 +136,10 @@ public class SoundManager {
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             logger.warning("효과음 재생 실패: " + e.getMessage());
         }
+    }
+
+    private boolean isAudioSystemAvailable() {
+        return AudioSystem.isLineSupported(Port.Info.SPEAKER);
     }
 
     /**
@@ -232,7 +239,7 @@ public class SoundManager {
      * 총알 발사 사운드를 재생합니다.
      */
     public void playBulletShotSound() {
-        playSoundEffect("sounds/bullet_shot.wav");
+        playSoundEffect("sounds/shoot.wav");
     }
 
     /**
@@ -278,24 +285,38 @@ public class SoundManager {
     }
 
     /**
+     * 궁극기 충전 사운드를 재생합니다.
+     */
+    public void playUltChargeSound() {
+        playSoundEffect("sounds/ult_charge.wav");
+    }
+
+    /**
+     * 궁극기 사용 사운드를 재생합니다.
+     */
+    public void playUltUseSound() {
+        playSoundEffect("sounds/ult_use.wav");
+    }
+
+    /**
      * 기본 공격 소리를 재생합니다.
      */
     public void playBasicAttack() {
-        playBackgroundMusic("sounds/Lasergun.wav");
+        playSoundEffect("sounds/Lasergun.wav");
     }
 
     /**
      * 크리스탈 때리는 소리를 재생합니다.
      */
     public void playHitCrystal() {
-        playBackgroundMusic("sounds/CrystalBreak.wav");
+        playSoundEffect("sounds/CrystalBreak.wav");
     }
 
     /**
      * 무적인 보스를 때리는 소리를 연출합니다.
      */
     public void playHitInvicibleBoss() {
-        playBackgroundMusic("sounds/InvicibleHit.wav");
+        playSoundEffect("sounds/InvicibleHit.wav");
     }
 
     /**
@@ -333,5 +354,12 @@ public class SoundManager {
      */
     public void playEndingBGM() {
         playBackgroundMusic("sounds/ending.wav");
+    }
+
+    /**
+     * 보스 배경음악을 재생합니다.
+     */
+    public void playBossBGM() {
+        playBackgroundMusic("sounds/boss.wav");
     }
 }

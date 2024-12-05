@@ -54,15 +54,18 @@ public class PauseScreen extends Screen {
                 || inputManager.isKeyDown(KeyEvent.VK_W)) {
                 previousMenuItem();
                 this.selectionCooldown.reset();
+                Core.getSoundManager().playButtonSound();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
                 || inputManager.isKeyDown(KeyEvent.VK_S)) {
                 nextMenuItem();
                 this.selectionCooldown.reset();
+                Core.getSoundManager().playButtonSound();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                 // 일시정지 화면에서 setting 선택 시 setting 화면으로 이동
                 if (this.returnCode == 1) {
+                    Core.getSoundManager().playButtonSound();
                     this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
                         + " settings screen at " + this.fps + " fps.");
                     Screen setting = new SettingScreen(this.getWidth(), this.getHeight(), this.fps);
@@ -70,6 +73,7 @@ public class PauseScreen extends Screen {
                     this.logger.info("Closing settings screen.");
                     this.returnCode = 0;
                 } else if (this.returnCode == 2) {
+                    Core.getSoundManager().playButtonSound();
                     this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
                         + " warning screen at " + this.fps + " fps.");
                     Screen warning = new WarningScreen(this.getWidth(), this.getHeight(), this.fps);
@@ -82,6 +86,7 @@ public class PauseScreen extends Screen {
                         this.returnCode = 2;
                     }
                 } else {
+                    Core.getSoundManager().playButtonSound();
                     this.isRunning = false;
                 }
                 // 일시정지 화면에서 돌아온 후 스페이스바 키 입력을 초기화하여

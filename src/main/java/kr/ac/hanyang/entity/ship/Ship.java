@@ -54,6 +54,8 @@ public class Ship extends Entity {
     private double ultRemainder = 0.0;
     /** 보스 스테이지 페이즈4에서 함선을 강제로 중앙으로 옮길때 사용 */
     protected boolean isCenter;
+    /** 이전 궁극기 게이지가 최대치였는지 추적 */
+    private boolean wasUltFull = false;
 
     /**
      * Constructor, establishes the ship's properties.
@@ -196,6 +198,7 @@ public class Ship extends Entity {
                 positionY + this.height / 2, this.bulletSpeed, this.baseDamage, this.range,
                 this.direction,
                 getShipID()));
+            Core.getSoundManager().playBasicAttack();
             return true;
         }
         return false;
@@ -207,6 +210,7 @@ public class Ship extends Entity {
     public void useUlt() {
         isUltActv = true;
         ultGauge = 0;
+        Core.getSoundManager().playUltUseSound();
     }
 
     /**
@@ -221,7 +225,15 @@ public class Ship extends Entity {
 
             if (ultGauge >= ultThreshold) {
                 ultGauge = ultThreshold; // 최대치를 초과하지 않도록 제한
-                // TODO 궁극기 사용 가능 알림 효과음 추가
+
+                // 궁극기 게이지가 처음으로 100%에 도달했을 때 효과음 재생
+                if (!wasUltFull) {
+                    Core.getSoundManager().playUltChargeSound(); // 효과음 재생
+                    wasUltFull = true; // 100% 상태로 표시
+                }
+            } else {
+                // 게이지가 100% 이하로 떨어지면 상태 리셋
+                wasUltFull = false;
             }
         }
     }
