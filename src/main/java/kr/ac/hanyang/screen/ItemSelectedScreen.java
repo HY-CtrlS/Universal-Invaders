@@ -2,12 +2,9 @@ package kr.ac.hanyang.screen;
 
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
-import kr.ac.hanyang.engine.GameState;
 import kr.ac.hanyang.Item.*;
-
 import java.awt.event.KeyEvent;
 import java.util.List;
-
 
 public class ItemSelectedScreen extends Screen {
 
@@ -44,6 +41,7 @@ public class ItemSelectedScreen extends Screen {
 
         return item_num;
     }
+
     // 화면 업데이트 메소드
     @Override
     protected final void update() {
@@ -119,7 +117,6 @@ public class ItemSelectedScreen extends Screen {
         }
     }
 
-
     // 화면 draw 메소드
     private void draw() {
         drawManager.initDrawing(this);
@@ -130,5 +127,4 @@ public class ItemSelectedScreen extends Screen {
 
         drawManager.completeDrawing(this);
     }
-
 }

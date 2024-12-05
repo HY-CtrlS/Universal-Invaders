@@ -20,8 +20,7 @@ public class Portal extends Entity {
     public Portal(int positionX, int positionY) {
         super(positionX, positionY, 30 * 2, 21 * 2,
             new Color[]{new Color(127, 62, 152),
-                new Color(46, 26, 62),
-                new Color(26, 26, 46)});
+                new Color(46, 26, 62), new Color(26, 26, 46)});
         this.spriteType = SpriteType.Portal; // 포탈 스프라이트 타입 설정
         this.isVisible = false; // 초기에는 비활성화 상태
     }
@@ -29,15 +28,8 @@ public class Portal extends Entity {
     /**
      * 포탈 활성화 메소드
      */
-    public void activate() {
-        this.isVisible = true;
-    }
-
-    /**
-     * 포탈 비활성화 메소드
-     */
-    public void deactivate() {
-        this.isVisible = false;
+    public void setActivate(boolean activate) {
+        this.isVisible = activate;
     }
 
     /**

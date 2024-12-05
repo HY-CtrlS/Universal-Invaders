@@ -11,7 +11,6 @@ public class ShipStatus {
     private double regen_hp;
     private double regen_ultra;
 
-
     public ShipStatus(int shootingInterval, int bulletSpeed, int speed, int baseDamage, int range,
         int hp, double regen_hp, double regen_ultra) {
         this.shootingInterval = shootingInterval;
@@ -71,7 +70,6 @@ public class ShipStatus {
     public void setRange(int range) {
         this.range = range;
     }
-
 
     public double getRegen_hp() {
         return regen_hp;

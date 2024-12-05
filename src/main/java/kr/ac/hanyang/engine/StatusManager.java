@@ -1,6 +1,5 @@
 package kr.ac.hanyang.engine;
 
-import java.awt.Color;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -56,7 +55,6 @@ public class StatusManager {
         status.setBaseDamage(baseDamage);
     }
 
-
     public int getRange() {
         return status.getRange();
     }
@@ -97,7 +95,6 @@ public class StatusManager {
         }
     }
 
-
     public void resetDefaultStatus() {
         try {
             status = FileManager.getInstance().loadShipStatus();
@@ -106,6 +103,4 @@ public class StatusManager {
             status = new ShipStatus(750, 6, 2, 1, 5, 100, 0, 0);
         }
     }
-
-
 }

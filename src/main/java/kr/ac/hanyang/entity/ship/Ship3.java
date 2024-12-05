@@ -30,17 +30,14 @@ public class Ship3 extends Ship {
      * Shoots a bullet upwards.
      *
      * @param bullets List of bullets on screen, to add the new bullet.
-     * @return Checks if the bullet was shot correctly.
      */
-    public final boolean shoot(final Set<Bullet> bullets) {
+    public final void shoot(final Set<Bullet> bullets) {
         if (this.burstShotCount == 0 && this.shootingCooldown.checkFinished()) {
             // 첫 번째 발사
             this.burstCooldown.reset();    // 점사 내 간격 초기화
             this.burstShotCount++;
             shootBullet(bullets); // 첫 번째 총알 발사
             Core.getSoundManager().playBasicAttack();
-            return true;
-
         } else if (this.burstShotCount > 0 && this.burstShotCount < maxBurstShots
             && this.burstCooldown.checkFinished()) {
             // 점사 진행
@@ -54,17 +51,13 @@ public class Ship3 extends Ship {
                 this.shootingCooldown.reset(); // 점사 시작 간격 초기화
             }
             Core.getSoundManager().playBasicAttack();
-            return true;
         }
-
-        return false;
     }
 
     private void shootBullet(Set<Bullet> bullets) {
         Bullet bullet = BulletPool.getBullet(
-            this.positionX + this.width / 2, // 함선의 중앙
-            this.positionY + this.height / 2,                   // 함선의 상단
-            this.bulletSpeed, this.baseDamage, this.range, this.direction, getShipID());
+            this.positionX + this.width / 2, this.positionY + this.height / 2, this.bulletSpeed,
+            this.baseDamage, this.range, this.direction, getShipID());
         bullets.add(bullet);
     }
 
@@ -76,7 +69,7 @@ public class Ship3 extends Ship {
     }
 
     /**
-     * 짧은 시간 동안 무적, 토글형.
+     * 일반, 보스 스테이지 - 짧은 시간 동안 무적.
      */
     public final void useUlt() {
         super.useUlt();

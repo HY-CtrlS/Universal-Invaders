@@ -42,7 +42,7 @@ public class ItemList {
     public List<Item> getSelectedItemList() {
         // 상점에 나갈 물품 선정 전에 선행 조건 체크 : 최종 레벨까지 업그레이드를 마친 아이템 제외
         for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getLevel() == items.get(i).getMaxLevel()) {
+            if (items.get(i).isMaxLevel()) {
                 items.remove(i);
             }
         }
@@ -66,5 +66,4 @@ public class ItemList {
     public List<Item> getItems() {
         return items;
     }
-
 }

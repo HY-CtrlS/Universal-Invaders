@@ -29,20 +29,15 @@ public class EnemyShipSet {
     private Logger logger;
     // 적 수 카운터
     private int enemyCounter;
-
     // 게임 진행 시간에 대한 정보를 위한 변수
-    private boolean isLevelStarted;
     private int survivalTime;
-    private Cooldown clockCooldown;
-
     // 게임 패턴 카운터
     private int waveOneCount = 0;
     // 게임 패턴 지속시간에 대한 변수
     private Cooldown waveOneCooldown;
-
     private int enemySpawnInterval;
-
     private int levelClearTime;
+
     /**
      * 생성자 - 기본 set 초기화 및 스폰 준비
      */
@@ -230,12 +225,6 @@ public class EnemyShipSet {
             }
         }
         enemies.removeAll(toRemove);
-    }
-
-
-    // 게임이 시작했음을 알립니다.
-    public void setLevelStarted(boolean isLevelStarted) {
-        this.isLevelStarted = isLevelStarted;
     }
 
     // 스폰 주기 삭제

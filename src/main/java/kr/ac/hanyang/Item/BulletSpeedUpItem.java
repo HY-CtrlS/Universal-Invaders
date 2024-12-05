@@ -8,11 +8,11 @@ import java.util.logging.Logger;
 
 public class BulletSpeedUpItem implements Item {
 
-    // 이속증가 아이템의 최대 레벨
+    // 총알 속도 증가 아이템의 최대 레벨
     private static final int MAX_LEVEL = 5;
-    // 이속증가 아이템의 현재 레벨
+    // 총알 속도 증가 아이템의 현재 레벨
     private int level = 0;
-    // 이속증가 아이템의 스프라이트 타입
+    // 총알 속도 증가 아이템의 스프라이트 타입
     private SpriteType spriteType = SpriteType.AttackSpeedUpItem;
     // 현재 아이템을 보유중인지에 대한 변수
     private boolean isowned = false;
@@ -23,7 +23,7 @@ public class BulletSpeedUpItem implements Item {
     // 아이템의 색깔
     private Color color;
 
-    // 공속증가 아이템 객체 생성자
+    // 총알 속도 증가 아이템 객체 생성자
     public BulletSpeedUpItem(final int level) {
         logger = Core.getLogger();
         this.level = level;

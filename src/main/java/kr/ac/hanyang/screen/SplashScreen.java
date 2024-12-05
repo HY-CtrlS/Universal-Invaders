@@ -29,7 +29,8 @@ public class SplashScreen extends Screen {
      */
     private void initializeShip() {
         Core.getStatusManager().setSpeed(10);
-        superShip = new Ship(this.width / 2, this.height, Direction.UP, Color.GREEN, 1);
+        superShip = new Ship(this.width / 2, this.height, Direction.UP,
+            new Color(80, 200, 120), 1);
     }
 
     /**

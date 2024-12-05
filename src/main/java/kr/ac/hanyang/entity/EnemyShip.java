@@ -23,13 +23,8 @@ public class EnemyShip extends Entity {
     private static final int B_TYPE_POINTS = 50;
     /** Point value of a type C enemy. */
     private static final int C_TYPE_POINTS = 30;
-    /** Point value of a bonus enemy. */
-    private static final int BONUS_TYPE_POINTS = 100;
-    // 이 적 개체가 생성되는 레벨
-    private int level;
 
     private Logger logger;
-
 
     /** Cooldown between sprite changes. */
     private Cooldown animationCooldown;

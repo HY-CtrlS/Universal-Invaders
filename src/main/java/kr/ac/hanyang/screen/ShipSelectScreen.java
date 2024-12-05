@@ -2,7 +2,6 @@ package kr.ac.hanyang.screen;
 
 import kr.ac.hanyang.engine.DrawManager;
 import kr.ac.hanyang.entity.*;
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import kr.ac.hanyang.engine.Cooldown;
@@ -16,16 +15,11 @@ public class ShipSelectScreen extends Screen {
 
     /** 사용자 선택의 변경 사이의 시간(밀리초) */
     private static final int SELECTION_TIME = 200;
-
     /** 사용자 선택이 변경될 때까지의 시간 */
     private Cooldown selectionCooldown;
-
     /** 함선 ID */
     private int shipID;
-
     private Entity superShip;
-
-    private Color[] shipColors = {Color.GREEN, Color.BLUE, Color.YELLOW, Color.RED};
 
     /**
      * 생성자, 함선 선택 화면의 속성을 설정
@@ -44,7 +38,6 @@ public class ShipSelectScreen extends Screen {
         this.shipID = 1;
         this.superShip = Ship.createShipByID(this.shipID, this.width / 2,
             this.height / 5 * 2 + DrawManager.fontRegularMetrics.getHeight() * 2);
-
     }
 
     /**
