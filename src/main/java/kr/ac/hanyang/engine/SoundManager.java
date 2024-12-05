@@ -105,6 +105,10 @@ public class SoundManager {
      * @param filepath 재생할 효과음 파일 경로
      */
     private void playSoundEffect(String filepath) {
+        if (!isAudioSystemAvailable()) {
+            logger.warning("오디오 시스템을 사용할 수 없습니다. 소리 재생을 건너뜁니다.");
+            return;
+        }
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filepath);
             if (inputStream == null) {
@@ -132,6 +136,10 @@ public class SoundManager {
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             logger.warning("효과음 재생 실패: " + e.getMessage());
         }
+    }
+
+    private boolean isAudioSystemAvailable() {
+        return AudioSystem.isLineSupported(Port.Info.SPEAKER);
     }
 
     /**
