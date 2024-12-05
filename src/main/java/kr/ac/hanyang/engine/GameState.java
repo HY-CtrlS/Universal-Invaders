@@ -11,8 +11,6 @@ public class GameState {
 
     /** Lives currently remaining. */
     private int hp;
-    /** Bullets shot until now. */
-    private int bulletsShot;
     /** Ships destroyed until now. */
     private int shipsDestroyed;
     /** Total seconds of survival. */
@@ -21,19 +19,20 @@ public class GameState {
     private StatusManager status;
     // 아군함선
     private Ship ship;
+
     /**
      * Constructor.
      *
      * @param hp             Lives currently remaining.
-     * @param bulletsShot    Bullets shot until now.
      * @param shipsDestroyed Ships destroyed until now.
      * @param survivalTime   Total seconds of survival.
+     * @param status         Current status.
+     * @param ship           Player Ship.
      */
     public GameState(
-        final int hp, final int bulletsShot,
-        final int shipsDestroyed, final int survivalTime, final StatusManager status, final Ship ship) {
+        final int hp, final int shipsDestroyed, final int survivalTime, final StatusManager status,
+        final Ship ship) {
         this.hp = hp;
-        this.bulletsShot = bulletsShot;
         this.shipsDestroyed = shipsDestroyed;
         this.survivalTime = survivalTime;
         this.status = status;
@@ -45,22 +44,6 @@ public class GameState {
      */
     public final int getHp() {
         return hp;
-    }
-
-    /**
-     * 체력 설정
-     *
-     * @param hp 설정할 체력
-     */
-    public void setHP(final int hp) {
-        this.hp = hp;
-    }
-
-    /**
-     * @return the bulletsShot
-     */
-    public final int getBulletsShot() {
-        return bulletsShot;
     }
 
     /**
@@ -77,10 +60,16 @@ public class GameState {
         return survivalTime;
     }
 
+    /**
+     * @return the status
+     */
     public final StatusManager getStatus() {
         return status;
     }
 
+    /**
+     * @return the ship
+     */
     public final Ship getShip() {
         return ship;
     }

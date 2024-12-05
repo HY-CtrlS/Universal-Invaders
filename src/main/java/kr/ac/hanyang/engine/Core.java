@@ -47,9 +47,11 @@ public final class Core {
 
         int width = frame.getWidth();
         int height = frame.getHeight();
+        int shipID = 1;
 
         int returnCode = 1;
-        GameState gameState = new GameState(0, getStatusManager().getMaxHp(), 0, 0, getStatusManager(), new Ship(0,0, Direction.DOWN, Color.GREEN, 1));
+        GameState gameState = new GameState(getStatusManager().getMaxHp(), 0, 0, getStatusManager(),
+            new Ship(0, 0, Direction.DOWN, Color.GREEN, 1));
 
         currentScreen = new SplashScreen(width, height, FPS);
         returnCode = handleScreen(currentScreen, "splash screen");
@@ -66,7 +68,7 @@ public final class Core {
                     currentScreen = new ShipSelectScreen(width, height, FPS);
                     returnCode = handleScreen(currentScreen, "ship select screen");
 
-                    int shipID = ((ShipSelectScreen) currentScreen).getShipID();
+                    shipID = ((ShipSelectScreen) currentScreen).getShipID();
 
                     if (returnCode == 2) {
                         returnCode = 1;
@@ -115,7 +117,7 @@ public final class Core {
                     break;
                 case 5:
                     // 엔딩 화면
-                    currentScreen = new EndingScreen(width, height, FPS);
+                    currentScreen = new EndingScreen(width, height, FPS, shipID);
                     returnCode = handleScreen(currentScreen, "ending screen");
                     break;
                 default:
