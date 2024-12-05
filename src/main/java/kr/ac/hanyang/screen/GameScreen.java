@@ -350,13 +350,9 @@ public class GameScreen extends Screen {
                 this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
                     + " pause screen at " + this.fps + " fps.");
                 Screen pause = new PauseScreen(this.getWidth(), this.getHeight(), this.fps);
-                if (this.ship.isUltActivated()) {
-                    this.ultActivatedTime.pause();
-                }
+                pauseAllCooldown();
                 int check = pause.run();
-                if (this.ultActivatedTime.isPaused()) {
-                    this.ultActivatedTime.resume();
-                }
+                resumeAllCooldown();
                 this.logger.info("Closing pause screen.");
                 // 일시정지 화면에서 quit를 누른 경우 현재 라운드 종료
                 if (check == 2) {
@@ -635,13 +631,9 @@ public class GameScreen extends Screen {
                             + this.fps + " fps.");
                     ItemSelectedScreen currentScreen = new ItemSelectedScreen(
                         items.getSelectedItemList(), width, height, this.fps, playerLevel);
-                    if (this.ship.isUltActivated()) {
-                        this.ultActivatedTime.pause();
-                    }
+                    pauseAllCooldown();
                     selectedItem = currentScreen.run();
-                    if (this.ultActivatedTime.isPaused()) {
-                        this.ultActivatedTime.resume();
-                    }
+                    resumeAllCooldown();
                     this.logger.info("Closing Item Selecting Screen.");
                     // 최대 체력 증가 아이템을 선택한 경우, 현재 체력 또한 증가된 체력만큼 올려줌.
                     if (selectedItem == 1) {
@@ -724,6 +716,22 @@ public class GameScreen extends Screen {
             this.ship.increaseUltGauge();
             this.increUltCooldown.reset();
         }
+    }
+
+    private void pauseAllCooldown() {
+        this.screenFinishedCooldown.pause();
+        this.clockCooldown.pause();
+        this.regenHpCooldown.pause();
+        this.increUltCooldown.pause();
+        this.ultActivatedTime.pause();
+    }
+
+    private void resumeAllCooldown() {
+        this.screenFinishedCooldown.resume();
+        this.clockCooldown.resume();
+        this.regenHpCooldown.resume();
+        this.increUltCooldown.resume();
+        this.ultActivatedTime.resume();
     }
 
     /**
