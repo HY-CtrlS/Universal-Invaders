@@ -63,8 +63,6 @@ public class BossScreen extends Screen {
     private boolean phaseFinished;
     /** 페이즈가 시작 되었는지 여부 */
     private boolean phaseStarted;
-    /** 1초를 새는 Cooldown */
-    private Cooldown clockCooldown;
     /** 함선이 완전히 파괴되었는지 여부 */
     private boolean isDestroyed = false;
     /** 현재 함선의 status **/
@@ -138,8 +136,6 @@ public class BossScreen extends Screen {
         this.phaseStarted = false;
         this.phaseFinished = false;
         this.isPhase4Ready = false;
-        this.clockCooldown = Core.getCooldown(1000);
-        this.clockCooldown.reset();
 
         this.regenHpCooldown = Core.getCooldown(1000);
         this.regenHpCooldown.reset();
@@ -205,7 +201,6 @@ public class BossScreen extends Screen {
         /// 화면 기본 업데이트 시작
         // phase가 처음 시작될 때 clockCooldown, hpRegenCooldown reset
         if (this.inputDelay.checkFinished() && !this.phaseStarted) {
-            this.clockCooldown.reset();
             this.phaseStarted = true;
         }
 
@@ -978,7 +973,6 @@ public class BossScreen extends Screen {
 
     private void pauseAllCooldown() {
         this.screenFinishedCooldown.pause();
-        this.clockCooldown.pause();
         this.regenHpCooldown.pause();
         this.increUltCooldown.pause();
         this.ultActivatedTime.pause();
@@ -990,7 +984,6 @@ public class BossScreen extends Screen {
 
     private void resumeAllCooldown() {
         this.screenFinishedCooldown.resume();
-        this.clockCooldown.resume();
         this.regenHpCooldown.resume();
         this.increUltCooldown.resume();
         this.ultActivatedTime.resume();
