@@ -46,16 +46,10 @@ public class Laser extends Entity {
             this.act.reset();
             this.spriteType = SpriteType.Laser;
         }
-
-
     }
 
     public final boolean isDone() {
         return isDone;
-    }
-
-    public final boolean isReady() {
-        return isReady;
     }
 
     public final int getDamage() {

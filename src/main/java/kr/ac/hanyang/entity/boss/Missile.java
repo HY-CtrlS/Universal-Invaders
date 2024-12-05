@@ -51,7 +51,7 @@ public class Missile extends Entity {
                 explode(); // 추적 시간이 끝나면 폭발
             } else {
                 if (this.canMove) {
-                    trackTarget(); // 목표 추적
+                    move(); // 목표 추적
                 }
             }
         } else {
@@ -64,7 +64,7 @@ public class Missile extends Entity {
     /**
      * 아군 함선을 추적하여 속도를 설정.
      */
-    private void trackTarget() {
+    private void move() {
         // 아군 함선의 현재 위치 계산
         int targetX = targetShip.getPositionX() + targetShip.getWidth() / 2;
         int targetY = targetShip.getPositionY() + targetShip.getHeight() / 2;

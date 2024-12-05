@@ -11,9 +11,7 @@ import kr.ac.hanyang.engine.DrawManager.SpriteType;
  */
 public class Bullet extends Entity {
 
-    /**
-     * Speed of the bullet
-     */
+    // Speed of the bullet
     private int speed;
     // 총알의 데미지
     private int damage;
@@ -45,6 +43,7 @@ public class Bullet extends Entity {
     private int movementX;
     private int movementY;
     private boolean canMove;
+
     /**
      * Constructor, establishes the bullet's properties.
      *
@@ -114,6 +113,7 @@ public class Bullet extends Entity {
         remainingMovementX -= movementX;
         remainingMovementY -= movementY;
     }
+
     /**
      * Updates the bullet's position.
      */
@@ -171,8 +171,14 @@ public class Bullet extends Entity {
     }
 
     // 보스 총알인 경우에는 X축 Y축 속도 설정
-    public final void setSpeedX(final double speed) {this.speedX = speed;}
-    public final void setSpeedY(final double speed) {this.speedY = speed;}
+    public final void setSpeedX(final double speed) {
+        this.speedX = speed;
+    }
+
+    public final void setSpeedY(final double speed) {
+        this.speedY = speed;
+    }
+
     /**
      * Getter for the speed of the bullet.
      *
@@ -240,7 +246,6 @@ public class Bullet extends Entity {
     public Direction getDirection() {
         return this.direction;
     }
-
 
     /**
      * 총알의 진영을 설정하는 Setter.
