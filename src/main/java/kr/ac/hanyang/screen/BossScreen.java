@@ -855,10 +855,10 @@ public class BossScreen extends Screen {
             }
         }
 
-        // 미사일의 경우
-        for (Missile missile : this.missiles) {
-            // 아군 3번 함선이 궁극기 킨 경우 충돌 무시
-            if (this.ship.getShipID() != 3 || !this.ship.isUltActivated()) {
+        // 아군 3번 함선이 궁극기 킨 경우 충돌 무시
+        if (this.ship.getShipID() != 3 || !this.ship.isUltActivated()) {
+            // 미사일의 경우
+            for (Missile missile : this.missiles) {
                 // 폭발 중이고 아직 완료되지 않은 미사일 처리
                 if (missile.hasExploded() && !missile.isDestroyed()) {
                     // 아군 함선이 폭발 반경 내에 있는지 확인
