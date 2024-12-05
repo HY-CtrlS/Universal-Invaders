@@ -43,7 +43,7 @@ public class GameScreen extends Screen {
     /** 기본 적 생성 간격 */
     private static final int ENEMY_SPAWN_INTERVAL = 2000;
     // 레벨 클리어 조건 시간
-    private static final int LEVEL_CLEAR_TIME = 300;
+    private static final int LEVEL_CLEAR_TIME = 3;
 
     /** Current difficulty level number. */
     private int level;

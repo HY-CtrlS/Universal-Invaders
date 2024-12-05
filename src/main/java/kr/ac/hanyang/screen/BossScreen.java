@@ -822,6 +822,11 @@ public class BossScreen extends Screen {
                     if (!this.boss.isInvincible()) {
                         this.ship.increaseUltGauge();
                         this.boss.getDamaged(status.getBaseDamage());
+                        // 무적 상태가 아닌 경우 적중 사운드 재생
+                        Core.getSoundManager().playBulletHitSound();
+                    } else {
+                        // 무적 상태인 경우의 사운드 재생
+                        Core.getSoundManager().playHitInvicibleBoss();
                     }
                 }
                 // 크리스탈과의 충돌
@@ -833,6 +838,7 @@ public class BossScreen extends Screen {
                         if (this.isPhase4Ready && crystal.isBroken()) {
                             this.boss.getDamaged(250);
                         }
+                        Core.getSoundManager().playHitCrystal();
                     }
                 }
             } else {
