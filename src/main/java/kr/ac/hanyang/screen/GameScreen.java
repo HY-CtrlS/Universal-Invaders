@@ -318,6 +318,10 @@ public class GameScreen extends Screen {
                 }
             }
 
+            // Shift 키 - 저속 모드
+            boolean slowMode = inputManager.isKeyDown(KeyEvent.VK_SHIFT);
+            this.ship.setSlowMode(slowMode);
+
             // esc키를 눌렀을 때 일시정지 화면으로 전환
             if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
                 this.logger.info("Starting " + this.getWidth() + "x" + this.getHeight()
