@@ -90,6 +90,8 @@ public class GameScreen extends Screen {
     private static List<Item> itemList;
     // 보스 스테이지 이동용 포탈
     private Portal portal;
+    // 포탈과 함께 사용되는 스페이스바 표시
+    private Spacebar spacebar;
     // 제한시간을 넘겼는지 확인하는 변수
     private boolean isClear;
     /** 아이템 선택 화면으로 넘어가는 경험치 기준 양 */
@@ -191,7 +193,9 @@ public class GameScreen extends Screen {
         }
 
         // 포탈 객체 생성
-        this.portal = new Portal(this.width / 2 - 15, 80);
+        this.portal = new Portal(this.width / 2 - 15, (this.height - 200) / 2 - 10);
+        // 스페이스바 객체 생성
+        this.spacebar = new Spacebar();
         // 게임 오버 false로 초기화
         this.isClear = false;
     }
@@ -429,6 +433,10 @@ public class GameScreen extends Screen {
             drawManager.drawEntity(this.portal,
                 this.portal.getPositionX(),
                 this.portal.getPositionY());
+            if (checkCollision(this.ship, this.portal)) {
+                drawManager.drawEntity(this.spacebar, this.width / 2 - 25, this.portal.getPositionY() - 50);
+                this.spacebar.update();
+            }
         }
 
         for (Bullet bullet : this.bullets) {

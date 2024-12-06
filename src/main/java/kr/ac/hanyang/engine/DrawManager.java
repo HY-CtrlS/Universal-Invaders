@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import javax.imageio.ImageIO;
 import kr.ac.hanyang.Item.Item;
 import kr.ac.hanyang.entity.Entity.Direction;
+import kr.ac.hanyang.entity.Spacebar;
 import kr.ac.hanyang.entity.boss.Boss;
 import kr.ac.hanyang.entity.boss.Missile;
 import kr.ac.hanyang.entity.ship.Ship;
@@ -123,7 +124,11 @@ public final class DrawManager {
         // 무적 크리스탈
         Crystal,
         // 배리어용 소행성
-        Asteroid;
+        Asteroid,
+        // 스페이스바 일반
+        Spacebar,
+        // 스페이스바 눌림
+        SpacebarPressed
     }
 
     /**
@@ -166,6 +171,8 @@ public final class DrawManager {
             spriteMap.put(SpriteType.Missile, new boolean[2][7][9]);
             spriteMap.put(SpriteType.Crystal, new boolean[2][20][20]);
             spriteMap.put(SpriteType.Asteroid, new boolean[2][10][10]);
+            spriteMap.put(SpriteType.Spacebar, new boolean[1][30][11]);
+            spriteMap.put(SpriteType.SpacebarPressed, new boolean[1][30][11]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
