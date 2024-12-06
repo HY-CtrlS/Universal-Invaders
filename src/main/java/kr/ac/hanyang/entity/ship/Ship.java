@@ -18,17 +18,19 @@ import kr.ac.hanyang.entity.Entity;
  */
 public class Ship extends Entity {
 
-    protected boolean isSlowMode = false;
     /** Time between shots. */
     protected int shootingInterval;
     /** Speed of the bullets shot by the ship. */
     protected int bulletSpeed;
     /** Movement of the ship for each unit of time. */
     protected int speed;
-    int slowSpeed = 2;
+    /** 저속모드에서의 함선 속도 */
+    protected int slowSpeed = 2;
+    /** 저속모드 여부 */
+    protected boolean slowMode = false;
     /** 함선의 기본 데미지 */
     protected int baseDamage;
-
+    /** 총알 사거리 */
     protected int range;
     /** 함선의 에임 뱡향 */
     protected Direction direction;
@@ -97,48 +99,28 @@ public class Ship extends Entity {
      * Moves the ship right until the right screen border is reached.
      */
     public void moveRight() {
-        if (isSlowMode){
-            this.positionX += slowSpeed;
-        }
-        else{
-            this.positionX += speed;
-        }
+        this.positionX += slowMode ? slowSpeed : speed;
     }
 
     /**
      * Moves the ship left until the left screen border is reached.
      */
     public void moveLeft() {
-        if (isSlowMode){
-            this.positionX -= slowSpeed;
-        }
-        else{
-            this.positionX -= speed;
-        }
+        this.positionX -= slowMode ? slowSpeed : speed;
     }
 
     /**
      * Moves the ship up until the top screen border is reached.
      */
     public void moveUp() {
-        if (isSlowMode){
-            this.positionY -= slowSpeed;
-        }
-        else{
-            this.positionY -= speed;
-        }
+        this.positionY -= slowMode ? slowSpeed : speed;
     }
 
     /**
      * Moves the ship down until the bottom screen border is reached.
      */
     public void moveDown() {
-        if (isSlowMode){
-            this.positionY += slowSpeed;
-        }
-        else{
-            this.positionY += speed;
-        }
+        this.positionY += slowMode ? slowSpeed : speed;
     }
 
     /**
@@ -202,17 +184,9 @@ public class Ship extends Entity {
      * 축 방향 이동속도에서 소수점 아래 부분 누적 및 정수 부분 구분.
      */
     public void calculateMovement() {
-
-        if (isSlowMode){
-            remainingMovement += slowSpeed / Math.sqrt(2);
-            movement = (int) remainingMovement; // 정수 부분
-            remainingMovement -= movement; // 소수 부분
-        }else{
-            remainingMovement += speed / Math.sqrt(2);
-            movement = (int) remainingMovement; // 정수 부분
-            remainingMovement -= movement; // 소수 부분
-        }
-
+        remainingMovement += (slowMode ? slowSpeed : speed) / Math.sqrt(2);
+        movement = (int) remainingMovement; // 정수 부분
+        remainingMovement -= movement; // 소수 부분
     }
 
     /**
@@ -427,8 +401,14 @@ public class Ship extends Entity {
         return this.isBurstShooting;
     }
 
-    public void setSlowMode(boolean keyInput){this.isSlowMode = keyInput;}
-    public boolean isSlowMode(){return this.isSlowMode;}
+    public void setSlowMode(boolean isSlowMode) {
+        this.slowMode = isSlowMode;
+    }
+
+    public boolean isSlowMode() {
+        return this.slowMode;
+    }
+
     public static Ship createShipByID(int shipID, int positionX, int positionY) {
         switch (shipID) {
             case 1:
@@ -458,7 +438,6 @@ public class Ship extends Entity {
         this.baseDamage = statusManager.getBaseDamage();
         this.range = statusManager.getRange();
         this.speed = statusManager.getSpeed();
-
         this.regenUltra = statusManager.getRegenUltra();
     }
 }

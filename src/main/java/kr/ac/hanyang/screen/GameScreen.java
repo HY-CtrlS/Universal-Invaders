@@ -232,14 +232,6 @@ public class GameScreen extends Screen {
             // 방향키 - 에임
             boolean aimRight, aimLeft, aimUp, aimDown;
 
-            //Shift 키 - 저속 모드
-            boolean slowmode = inputManager.isKeyDown(KeyEvent.VK_SHIFT);
-            if (slowmode){
-                this.ship.setSlowMode(true);
-            }else{
-                this.ship.setSlowMode(false);
-            }
-
             // Ship1 궁극기 활성화 여부에 따라 이동 및 발사 가능 여부 결정
             if (this.shipID == 1 && this.ship.isUltActivated()) {
                 moveRight = false;
@@ -325,6 +317,10 @@ public class GameScreen extends Screen {
                     this.ship.useUlt();
                 }
             }
+
+            // Shift 키 - 저속 모드
+            boolean slowMode = inputManager.isKeyDown(KeyEvent.VK_SHIFT);
+            this.ship.setSlowMode(slowMode);
 
             // esc키를 눌렀을 때 일시정지 화면으로 전환
             if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
