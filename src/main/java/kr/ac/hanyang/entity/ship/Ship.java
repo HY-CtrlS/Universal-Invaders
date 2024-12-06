@@ -190,13 +190,11 @@ public class Ship extends Entity {
     public void calculateMovement() {
         if (isDiagonal()) {
             remainingMovement += (slowMode ? slowSpeed : speed) / Math.sqrt(2);
-            movement = (int) remainingMovement; // 정수 부분
-            remainingMovement -= movement; // 소수 부분
         } else {
             remainingMovement += (slowMode ? slowSpeed : speed);
-            movement = (int) remainingMovement;
-            remainingMovement -= movement;
         }
+        movement = (int) remainingMovement;
+        remainingMovement -= movement;
     }
 
     /**
