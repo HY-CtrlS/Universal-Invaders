@@ -40,25 +40,35 @@ public class ItemList {
 
     // 선택화면에 표시하기 위해 무작위로 선택된 아이템 리스트를 얻어오는 메소드
     public List<Item> getSelectedItemList() {
-        // 상점에 나갈 물품 선정 전에 선행 조건 체크 : 최종 레벨까지 업그레이드를 마친 아이템 제외
+        // 상점에 나갈 물품 선정 전에 상점에 나갈 수 있는 최대 레벨이 아닌 물품의 개수 세기
+        int numSelectingItems = 0;
         for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).isMaxLevel()) {
-                items.remove(i);
+            if (!items.get(i).isMaxLevel()) {
+                numSelectingItems++;
             }
         }
         Set<Item> tempItemList = new HashSet<>();
 
         // 나올 수 있는 아이템의 개수가 3개를 초과하는 경우에만 무작위 선정
-        if (items.size() > 3) {
+        if (numSelectingItems > 3) {
             // 아이템을 중복을 허용하지 않고 3개를 선택할 때까지 반복(Set이므로 중복은 허용되지 않음)
             while (tempItemList.size() < 3) {
                 // items 아이템 개수에 맞는 범위에서 인덱스 랜덤 선정
                 int randomIndex = random.nextInt(items.size());
-                tempItemList.add(items.get(randomIndex));
+                // 뽑힌 아이템이 최대 레벨이 아닌 경우에 추가
+                if (!items.get(randomIndex).isMaxLevel()) {
+                    tempItemList.add(items.get(randomIndex));
+                }
             }
         } else {
-            // 아이템이 3개 미만인 경우에는 무작위 선정하지 않고 그대로 반환
-            return items;
+            // 뽑힐 수 있는 아이템이 3개 미만인 경우에는
+            for (int i = 0; i < items.size(); i++) {
+                if (!items.get(i).isMaxLevel()) {
+                    // 최대 레벨이 아닌 아이템만 넣는다.
+                    tempItemList.add(items.get(i));
+                }
+            }
+            return new ArrayList<>(tempItemList);
         }
         return new ArrayList<>(tempItemList);
     }
