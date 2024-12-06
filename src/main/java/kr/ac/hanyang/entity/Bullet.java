@@ -2,6 +2,7 @@ package kr.ac.hanyang.entity;
 
 import java.awt.Color;
 
+import java.util.ArrayList;
 import kr.ac.hanyang.engine.DrawManager.SpriteType;
 
 /**
@@ -31,6 +32,8 @@ public class Bullet extends Entity {
     private int movement = 0;
     // 총알의 적 관통 여부를 표시
     private boolean isPiercing = false;
+    // 총알이 무시할 적들 (관통 총알용)
+    private ArrayList<EnemyShip> ignoredEnemies = new ArrayList<>();
 
     // 보스 총알인 경우의 속도
     private double speedX;
@@ -283,5 +286,9 @@ public class Bullet extends Entity {
 
     public void setCanMove(boolean move) {
         this.canMove = move;
+    }
+
+    public ArrayList<EnemyShip> getIgnoredEnemies() {
+        return ignoredEnemies;
     }
 }

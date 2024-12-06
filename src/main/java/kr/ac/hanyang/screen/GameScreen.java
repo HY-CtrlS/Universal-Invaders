@@ -517,13 +517,15 @@ public class GameScreen extends Screen {
             } else { //아군 총알인 경우 실행되는 부분
                 for (EnemyShip enemyShip : enemies) {
                     if (!enemyShip.isDestroyed()
-                        && checkCollision(bullet, enemyShip)) {
+                        && checkCollision(bullet, enemyShip)
+                        && !bullet.getIgnoredEnemies().contains(enemyShip)) {
                         this.shipsDestroyed++;
                         this.enemyShipSet.damage_Enemy(enemyShip, bullet.getDamage());
                         // 관통 여부 확인
                         if (!bullet.getisPiercing()) {
                             recyclable.add(bullet); // 관통 아닌 경우 제거
                         }
+                        bullet.getIgnoredEnemies().add(enemyShip);
                         Core.getSoundManager().playBulletHitSound();
                         // 적 함선이 파괴되었을 때 경험치 생성, 궁극기 게이지 증가
                         if (enemyShip.isDestroyed()) {
