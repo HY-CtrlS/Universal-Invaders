@@ -274,24 +274,20 @@ public final class FileManager {
         BufferedReader bufferedReader = null;
 
         try {
-            inputStream = FileManager.class.getClassLoader()
-                .getResourceAsStream("status");
+            inputStream = FileManager.class.getClassLoader().getResourceAsStream("status");
             bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
             int shootingInterval = Integer.parseInt(bufferedReader.readLine());
             int bulletSpeed = Integer.parseInt(bufferedReader.readLine());
-            int speed = Integer.parseInt(bufferedReader.readLine());
+            double speed = Double.parseDouble(bufferedReader.readLine());
             int baseDamage = Integer.parseInt(bufferedReader.readLine());
-
             int range = Integer.parseInt(bufferedReader.readLine());
-
             int maxHp = Integer.parseInt(bufferedReader.readLine());
             double regenHp = Double.parseDouble(bufferedReader.readLine());
             double regenUltra = Double.parseDouble(bufferedReader.readLine());
 
             shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, range,
-                maxHp,
-                regenHp, regenUltra);
+                maxHp, regenHp, regenUltra);
 
         } finally {
             if (inputStream != null) {
@@ -326,7 +322,7 @@ public final class FileManager {
 
             int shootingInterval = Integer.parseInt(bufferedReader.readLine());
             int bulletSpeed = Integer.parseInt(bufferedReader.readLine());
-            int speed = Integer.parseInt(bufferedReader.readLine());
+            double speed = Double.parseDouble(bufferedReader.readLine());
             int baseDamage = Integer.parseInt(bufferedReader.readLine());
             int range = Integer.parseInt(bufferedReader.readLine());
             int maxHp = Integer.parseInt(bufferedReader.readLine());
@@ -334,8 +330,7 @@ public final class FileManager {
             double regenUltra = Double.parseDouble((bufferedReader.readLine()));
 
             shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, range,
-                maxHp,
-                regenHP, regenUltra);
+                maxHp, regenHP, regenUltra);
 
         } catch (FileNotFoundException e) {
             // loads default if there's no user scores.

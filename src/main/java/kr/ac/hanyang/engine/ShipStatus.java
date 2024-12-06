@@ -4,15 +4,15 @@ public class ShipStatus {
 
     private int shootingInterval;
     private int bulletSpeed;
-    private int speed;
+    private double speed;
     private int baseDamage;
     private int range;
     private int hp;
     private double regen_hp;
     private double regen_ultra;
 
-    public ShipStatus(int shootingInterval, int bulletSpeed, int speed, int baseDamage, int range,
-        int hp, double regen_hp, double regen_ultra) {
+    public ShipStatus(int shootingInterval, int bulletSpeed, double speed, int baseDamage,
+        int range, int hp, double regen_hp, double regen_ultra) {
         this.shootingInterval = shootingInterval;
         this.bulletSpeed = bulletSpeed;
         this.speed = speed;
@@ -39,11 +39,11 @@ public class ShipStatus {
         this.bulletSpeed = bulletSpeed;
     }
 
-    public int getSpeed() {
+    public double getSpeed() {
         return speed;
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(double speed) {
         this.speed = speed;
     }
 

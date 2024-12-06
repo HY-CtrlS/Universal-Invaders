@@ -33,7 +33,7 @@ public class EndingScreen extends Screen {
      * 플레이어의 함선을 초기화합니다.
      */
     private void initializeShip(final int shipID) {
-        Core.getStatusManager().setSpeed(10);
+        Core.getStatusManager().setSpeed(10.0);
         superShip = Ship.createShipByID(shipID, this.width / 2, 0);
         // direction을 down으로 Ship 생성
         superShip.setDirection(Direction.DOWN);

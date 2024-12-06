@@ -147,7 +147,7 @@ class ShipTest {
 
     @Test
     void updateStatusTest() {
-        Core.getStatusManager().setSpeed(99);
+        Core.getStatusManager().setSpeed(99.0);
         Core.getStatusManager().setBaseDamage(99);
         Core.getStatusManager().setBulletSpeed(99);
         Core.getStatusManager().setShootingInterval(99);

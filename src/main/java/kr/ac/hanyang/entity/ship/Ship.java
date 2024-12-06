@@ -23,7 +23,7 @@ public class Ship extends Entity {
     /** Speed of the bullets shot by the ship. */
     protected int bulletSpeed;
     /** Movement of the ship for each unit of time. */
-    protected int speed;
+    protected double speed;
     /** 저속모드에서의 함선 속도 */
     protected double slowSpeed = 1.3;
     /** 저속모드 여부 */
@@ -347,7 +347,7 @@ public class Ship extends Entity {
      *
      * @return Speed of the ship.
      */
-    public int getSpeed() {
+    public double getSpeed() {
         return this.speed;
     }
 

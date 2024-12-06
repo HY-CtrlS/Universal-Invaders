@@ -38,7 +38,7 @@ public class MoveSpeedUpItem implements Item {
 
     @Override
     public String getItemEffectDescription() {
-        return "Move Speed : + 1";
+        return "Move Speed : + 0.5";
     }
 
     @Override
@@ -74,8 +74,8 @@ public class MoveSpeedUpItem implements Item {
     @Override
     public int activateItem() {
         if (level < MAX_LEVEL) {
-            status.setSpeed(status.getSpeed() + 1);
-            this.logger.info("MoveSpeed Up!! + 1");
+            status.setSpeed(status.getSpeed() + 0.5);
+            this.logger.info("MoveSpeed Up!! + 0.5");
             increaseLevel();
             this.logger.info("MoveSpeed Level : " + getLevel());
         }

@@ -39,11 +39,11 @@ public class StatusManager {
         status.setBulletSpeed(bulletSpeed);
     }
 
-    public int getSpeed() {
+    public double getSpeed() {
         return status.getSpeed();
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(double speed) {
         status.setSpeed(speed);
     }
 
@@ -100,7 +100,7 @@ public class StatusManager {
             status = FileManager.getInstance().loadShipStatus();
         } catch (IOException e) {
             logger.warning("Failed to load status. Using default values.");
-            status = new ShipStatus(700, 6, 2, 10,
+            status = new ShipStatus(700, 6, 2.0, 10,
                 6, 100, 0.2, 0.0);
         }
     }
