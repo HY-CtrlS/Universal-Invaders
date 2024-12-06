@@ -4,7 +4,7 @@ Invaders
 
 ### About the Team
 
-이 프로젝트는 Hanyang University ERICA의 소프트웨어 개발 실습 과목의 일환으로 Team Ctrl-S가 개발했습니다. 6명의 열정적인 개발자로 구성된 팀은 매주
+이 프로젝트는 Hanyang University ERICA의 소프트웨어 개발 실무 과목의 일환으로 Team Ctrl-S가 개발했습니다. 6명의 열정적인 개발자로 구성된 팀은 매주
 스프린트를 통해 프로젝트를 점진적으로 완성하고 있습니다.
 
 ### Introduction
