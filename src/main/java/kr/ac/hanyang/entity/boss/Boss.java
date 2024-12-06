@@ -145,8 +145,8 @@ public class Boss extends Entity {
         if (this.horizontalBulletCooldown.checkFinished()) {
             this.horizontalBulletCooldown.reset();
 
-            for (int i = 1; i <= 18; i++) { // 1부터 시작하여 일정 간격 배치
-                int bulletX = i * 42; // 각 총알의 X 좌표
+            for (int i = 1; i <= 15; i++) { // 1부터 시작하여 일정 간격 배치
+                int bulletX = i * 50; // 각 총알의 X 좌표
                 // 총알 생성
                 bullets.add(BulletPool.getBossBullet(bulletX, 50, 2.5, 10, 90));
                 this.logger.info("Horizontal Bullet Creation!");
@@ -163,8 +163,8 @@ public class Boss extends Entity {
         if (this.horizontalBulletTwoCooldown.checkFinished()) {
             this.horizontalBulletTwoCooldown.reset();
 
-            for (int i = 0; i < 18; i++) { // 1부터 시작하여 일정 간격 배치
-                int bulletX = i * 42 + 21; // 각 총알의 X 좌표
+            for (int i = 0; i < 15; i++) { // 1부터 시작하여 일정 간격 배치
+                int bulletX = i * 50 + 25; // 각 총알의 X 좌표
                 // 총알 생성
                 bullets.add(BulletPool.getBossBullet(bulletX, 750, 2.5, 10, 270));
                 this.logger.info("Horizontal Bullet two Creation!");
@@ -181,8 +181,8 @@ public class Boss extends Entity {
         if (this.verticalBulletCooldown.checkFinished()) {
             this.verticalBulletCooldown.reset();
 
-            for (int i = 1; i <= 18; i++) { // 1부터 시작하여 일정 간격 배치
-                int bulletY = i * 46; // 각 총알의 Y 좌표
+            for (int i = 1; i <= 16; i++) { // 1부터 시작하여 일정 간격 배치
+                int bulletY = i * 50; // 각 총알의 Y 좌표
                 // 총알 생성
                 bullets.add(BulletPool.getBossBullet(20, bulletY, 2, 10, 0));
                 this.logger.info("Vertical Bullet Creation!");
@@ -199,8 +199,8 @@ public class Boss extends Entity {
         if (this.verticalBulletTwoCooldown.checkFinished()) {
             this.verticalBulletTwoCooldown.reset();
 
-            for (int i = 0; i < 18; i++) { // 1부터 시작하여 일정 간격 배치
-                int bulletY = i * 45 + 22; // 각 총알의 Y 좌표
+            for (int i = 0; i < 16; i++) { // 1부터 시작하여 일정 간격 배치
+                int bulletY = i * 50 + 25; // 각 총알의 Y 좌표
                 // 총알 생성
                 bullets.add(BulletPool.getBossBullet(700, bulletY, 2, 10, 180));
                 this.logger.info("Vertical Bullet Creation!");
