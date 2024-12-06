@@ -82,7 +82,6 @@ public final class Core {
                     // 플레이한 게임의 정보를 gameState에 저장
                     gameState = ((GameScreen) currentScreen).getGameState();
 
-                    getSoundManager().stopBackgroundMusic();
                     if (isQuit == 0) {
                         returnCode = 1;
                         break;
