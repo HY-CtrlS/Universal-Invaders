@@ -36,7 +36,7 @@ public class BossScreen extends Screen {
     /** Height of the interface separation line. */
     private static final int SEPARATION_LINE_HEIGHT = 40;
     /** Time from finishing the level to screen change. */
-    private static final int SCREEN_CHANGE_INTERVAL = 1500;
+    private static final int SCREEN_CHANGE_INTERVAL = 1000;
     /** Player's ship. */
     private Ship ship;
     /** 보스 객체 */
