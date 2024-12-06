@@ -1339,7 +1339,7 @@ public final class DrawManager {
             MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN + VERTICAL_BAR_WIDTH + BAR_MARGIN,
             SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
         drawUltGauge(gameScreen, ship);
-        drawLives(hp, maxHp, MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN,
+        drawLives(hp, status.getMaxHp(), MARGIN + SHIP_SPRITE_BOX_SIZE + MARGIN,
             SCREEN_HEIGHT - UI_HEIGHT + MARGIN);
         drawLevel(gameScreen, MARGIN + 5, SCREEN_HEIGHT - 25);          // 텍스트의 경우 미관 상 마진에 5픽셀을 더함
         drawSurvivalTime(gameScreen, MARGIN + 5, SCREEN_HEIGHT - 50);
