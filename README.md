@@ -29,9 +29,12 @@ Universal Invaders는 고전적인 Space Invaders 게임을 기반으로 한 멀
 
 ### Controls
 
-- 화살표 키(WASD): 플레이어 우주선 이동
-- 스페이스바: 공격 및 선택
-- ESC: 게임 일시 정지 및 뒤로 가기
+- W,A,S,D : 플레이어 우주선 이동
+- 화살표 키 : 공격
+- 스페이스바 : 선택
+- F : 궁극기
+- SHIFT : 저속 모드
+- ESC : 게임 일시 정지 및 뒤로 가기
 
 ### Screenshots
 Title Screen               |  Game Screen              | Boss Screen
