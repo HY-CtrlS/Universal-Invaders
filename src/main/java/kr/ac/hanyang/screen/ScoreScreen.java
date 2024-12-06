@@ -88,7 +88,7 @@ public class ScoreScreen extends Screen {
      */
     public final int run() {
         super.run();
-
+        Core.getSoundManager().stopBackgroundMusic();
         return this.returnCode;
     }
 
