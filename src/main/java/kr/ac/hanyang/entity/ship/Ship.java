@@ -24,9 +24,13 @@ public class Ship extends Entity {
     protected int bulletSpeed;
     /** Movement of the ship for each unit of time. */
     protected int speed;
+    /** 저속모드에서의 함선 속도 */
+    protected double slowSpeed = 1.3;
+    /** 저속모드 여부 */
+    protected boolean slowMode = false;
     /** 함선의 기본 데미지 */
     protected int baseDamage;
-
+    /** 총알 사거리 */
     protected int range;
     /** 함선의 에임 뱡향 */
     protected Direction direction;
@@ -95,28 +99,32 @@ public class Ship extends Entity {
      * Moves the ship right until the right screen border is reached.
      */
     public void moveRight() {
-        this.positionX += speed;
+        calculateMovement();
+        this.positionX += movement;
     }
 
     /**
      * Moves the ship left until the left screen border is reached.
      */
     public void moveLeft() {
-        this.positionX -= speed;
+        calculateMovement();
+        this.positionX -= movement;
     }
 
     /**
      * Moves the ship up until the top screen border is reached.
      */
     public void moveUp() {
-        this.positionY -= speed;
+        calculateMovement();
+        this.positionY -= movement;
     }
 
     /**
      * Moves the ship down until the bottom screen border is reached.
      */
     public void moveDown() {
-        this.positionY += speed;
+        calculateMovement();
+        this.positionY += movement;
     }
 
     /**
@@ -180,9 +188,13 @@ public class Ship extends Entity {
      * 축 방향 이동속도에서 소수점 아래 부분 누적 및 정수 부분 구분.
      */
     public void calculateMovement() {
-        remainingMovement += speed / Math.sqrt(2);
-        movement = (int) remainingMovement; // 정수 부분
-        remainingMovement -= movement; // 소수 부분
+        if (isDiagonal()) {
+            remainingMovement += (slowMode ? slowSpeed : speed) / Math.sqrt(2);
+        } else {
+            remainingMovement += (slowMode ? slowSpeed : speed);
+        }
+        movement = (int) remainingMovement;
+        remainingMovement -= movement;
     }
 
     /**
@@ -395,6 +407,14 @@ public class Ship extends Entity {
 
     public boolean isBurstShooting() {
         return this.isBurstShooting;
+    }
+
+    public void setSlowMode(boolean isSlowMode) {
+        this.slowMode = isSlowMode;
+    }
+
+    public boolean isSlowMode() {
+        return this.slowMode;
     }
 
     public static Ship createShipByID(int shipID, int positionX, int positionY) {
