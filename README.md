@@ -5,9 +5,10 @@ Invaders
 ### Screenshots
  
 
-Title Screen               |  Game Screen              | Score Screen
+Title Screen               |  Game Screen              | Boss Screen
 :-------------------------:|:-------------------------:|:---------
-![image](https://user-images.githubusercontent.com/69495129/136980139-7ad6adab-3f11-4711-b0a6-341080aa3361.png)   |  ![image](https://user-images.githubusercontent.com/69495129/136980236-c5d9ef85-f09a-47a7-b9d9-948f7b624002.png)|![image](https://user-images.githubusercontent.com/69495129/136980681-93dcadaf-08cb-48d8-90c9-68c651a115c9.png)
+<img width="832" alt="TitleScreen" src="https://github.com/user-attachments/assets/8444ee2b-1ed2-4322-a79b-d7d93a664eef">  |  <img width="832" alt="GameScreen" src="https://github.com/user-attachments/assets/67d90d13-6cac-4d8a-88a7-afc9e7f8ed61"> | <img width="832" alt="BossScreen" src="https://github.com/user-attachments/assets/107d5034-17b0-410a-9a38-bbf86facb3df">
+
 
 
 ### Download
