@@ -169,13 +169,13 @@ public class BossScreen extends Screen {
 
         this.basicAttackCount = 0;
 
-        this.createLaserCooldown = Core.getCooldown(4000);
+        this.createLaserCooldown = Core.getCooldown(2600);
         this.createLaserCooldown.reset();
 
         this.createMissileCooldown = Core.getCooldown(5000);
         this.createMissileCooldown.reset();
 
-        this.createCrystalCooldown = Core.getCooldown(25000);
+        this.createCrystalCooldown = Core.getCooldown(20000);
         this.createCrystalCooldown.reset();
 
         // 페이즈 카운터 초기화
@@ -588,8 +588,8 @@ public class BossScreen extends Screen {
                         } else if (this.ship.isCenter()) {
                             // 이동 끝나면 소행성과 크리스탈 생성
                             this.crystalPool.createFinalCrystal();
-                            // 레이저 생성 쿨타임 1초로 변경
-                            this.createLaserCooldown = changeCooldown(1000);
+                            // 레이저 생성 쿨타임 0.7초로 변경
+                            this.createLaserCooldown = changeCooldown(700);
                             this.createLaserCooldown.reset();
                             this.isPhase4Ready = true;
                         }

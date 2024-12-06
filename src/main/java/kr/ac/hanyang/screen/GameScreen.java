@@ -32,7 +32,7 @@ public class GameScreen extends Screen {
     /** 레벨업 기준량 증가량 */
     public static final int EXPERIENCE_THRESHOLD_INTERVAL = 20;
     /** 기본 적 생성 간격 */
-    private static final int ENEMY_SPAWN_INTERVAL = 2000;
+    private static final int ENEMY_SPAWN_INTERVAL = 1000;
     // 레벨 클리어 조건 시간
     private static final int LEVEL_CLEAR_TIME = 300;
 
