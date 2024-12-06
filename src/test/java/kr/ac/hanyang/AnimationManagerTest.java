@@ -4,9 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
-import kr.ac.hanyang.engine.Animation;
-import kr.ac.hanyang.engine.AnimationFrame;
-import kr.ac.hanyang.engine.AnimationManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
