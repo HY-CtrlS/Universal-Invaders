@@ -25,7 +25,7 @@ public class Ship extends Entity {
     /** Movement of the ship for each unit of time. */
     protected int speed;
     /** 저속모드에서의 함선 속도 */
-    protected int slowSpeed = 2;
+    protected double slowSpeed = 1.3;
     /** 저속모드 여부 */
     protected boolean slowMode = false;
     /** 함선의 기본 데미지 */
