@@ -99,28 +99,32 @@ public class Ship extends Entity {
      * Moves the ship right until the right screen border is reached.
      */
     public void moveRight() {
-        this.positionX += slowMode ? slowSpeed : speed;
+        calculateMovement();
+        this.positionX += movement;
     }
 
     /**
      * Moves the ship left until the left screen border is reached.
      */
     public void moveLeft() {
-        this.positionX -= slowMode ? slowSpeed : speed;
+        calculateMovement();
+        this.positionX -= movement;
     }
 
     /**
      * Moves the ship up until the top screen border is reached.
      */
     public void moveUp() {
-        this.positionY -= slowMode ? slowSpeed : speed;
+        calculateMovement();
+        this.positionY -= movement;
     }
 
     /**
      * Moves the ship down until the bottom screen border is reached.
      */
     public void moveDown() {
-        this.positionY += slowMode ? slowSpeed : speed;
+        calculateMovement();
+        this.positionY += movement;
     }
 
     /**
@@ -184,9 +188,15 @@ public class Ship extends Entity {
      * 축 방향 이동속도에서 소수점 아래 부분 누적 및 정수 부분 구분.
      */
     public void calculateMovement() {
-        remainingMovement += (slowMode ? slowSpeed : speed) / Math.sqrt(2);
-        movement = (int) remainingMovement; // 정수 부분
-        remainingMovement -= movement; // 소수 부분
+        if (isDiagonal()) {
+            remainingMovement += (slowMode ? slowSpeed : speed) / Math.sqrt(2);
+            movement = (int) remainingMovement; // 정수 부분
+            remainingMovement -= movement; // 소수 부분
+        } else {
+            remainingMovement += (slowMode ? slowSpeed : speed);
+            movement = (int) remainingMovement;
+            remainingMovement -= movement;
+        }
     }
 
     /**
