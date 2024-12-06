@@ -23,7 +23,7 @@ public class Ship3 extends Ship {
         this.burstCooldown = Core.getCooldown(100);
         this.burstShotCount = 0;
 
-        ultThreshold = 150;
+        ultThreshold = 140;
     }
 
     /**

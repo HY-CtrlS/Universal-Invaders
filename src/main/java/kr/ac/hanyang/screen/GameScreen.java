@@ -170,19 +170,19 @@ public class GameScreen extends Screen {
         // 궁극기 효과 지속시간 쿨타임 생성 및 시작
         switch (this.shipID) {
             case 1:
-                this.ultActivatedTime = Core.getCooldown(1500);
+                this.ultActivatedTime = Core.getCooldown(2000);
                 this.ultActivatedTime.reset();
                 break;
             case 2:
-                this.ultActivatedTime = Core.getCooldown(4000);
+                this.ultActivatedTime = Core.getCooldown(5000);
                 this.ultActivatedTime.reset();
                 break;
             case 3:
-                this.ultActivatedTime = Core.getCooldown(3000);
+                this.ultActivatedTime = Core.getCooldown(5000);
                 this.ultActivatedTime.reset();
                 break;
             case 4:
-                this.ultActivatedTime = Core.getCooldown(5000);
+                this.ultActivatedTime = Core.getCooldown(10000);
                 this.ultActivatedTime.reset();
                 break;
         }

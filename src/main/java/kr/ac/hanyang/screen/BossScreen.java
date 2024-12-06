@@ -147,7 +147,7 @@ public class BossScreen extends Screen {
         // 아군 함선 궁극기 기능 연결
         switch (this.ship.getShipID()) {
             case 1:
-                this.ultActivatedTime = Core.getCooldown(1000);
+                this.ultActivatedTime = Core.getCooldown(1500);
                 this.ultActivatedTime.reset();
                 break;
             case 2:
@@ -155,7 +155,7 @@ public class BossScreen extends Screen {
                 this.ultActivatedTime.reset();
                 break;
             case 3:
-                this.ultActivatedTime = Core.getCooldown(4000);
+                this.ultActivatedTime = Core.getCooldown(5000);
                 this.ultActivatedTime.reset();
                 break;
             case 4:

@@ -9,7 +9,7 @@ public class Ship1 extends Ship {
         final int shipID) {
         super(positionX, positionY, direction, color, shipID);
 
-        ultThreshold = 200;
+        ultThreshold = 150;
     }
 
     /**
