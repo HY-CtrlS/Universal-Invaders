@@ -23,7 +23,7 @@ public class MoveSpeedUpItem implements Item {
     // 아이템의 색깔
     private Color color;
 
-    // 공속증가 아이템 객체 생성자
+    // 이속증가 아이템 객체 생성자
     public MoveSpeedUpItem(final int level) {
         logger = Core.getLogger();
         this.level = level;

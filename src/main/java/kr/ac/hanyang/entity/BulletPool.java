@@ -1,7 +1,9 @@
 package kr.ac.hanyang.entity;
 
+import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
+import kr.ac.hanyang.entity.Entity.Direction;
 
 /**
  * Implements a pool of recyclable bullets.
@@ -32,7 +34,7 @@ public final class BulletPool {
      * @return Requested bullet.
      */
     public static Bullet getBullet(final int positionX,
-        final int positionY, final int speed, int damage, Entity.Direction direction,
+        final int positionY, final int speed, int damage, int range, Entity.Direction direction,
         int classify) {
         Bullet bullet;
         if (!pool.isEmpty()) {
@@ -42,12 +44,17 @@ public final class BulletPool {
             bullet.setPositionY(positionY);
             bullet.setSpeed(speed);
             bullet.setDamage(damage);
-            bullet.setSprite();
+
+            bullet.setRange(range);
+            bullet.setcurDistance(0);
+
             bullet.setDirection(direction);
             bullet.setClassify(classify);
+            bullet.setColor(new Color[]{Color.WHITE});
+            bullet.setSprite();
 
         } else {
-            bullet = new Bullet(positionX, positionY, speed, damage, direction, classify);
+            bullet = new Bullet(positionX, positionY, speed, damage, range, direction, classify);
             bullet.setPositionX(positionX - bullet.getWidth() / 2);
         }
 
@@ -56,6 +63,31 @@ public final class BulletPool {
             bullet.setPiercing(true);
         } else {
             bullet.setPiercing(false);
+        }
+
+        return bullet;
+    }
+    //보스 총알인 경우의 getBullet
+    public static Bullet getBossBullet(final int positionX,
+        final int positionY, final double speed, int damage, double angle) {
+        Bullet bullet;
+        if (!pool.isEmpty()) {
+            bullet = pool.iterator().next();
+            pool.remove(bullet);
+            bullet.setPositionX(positionX - bullet.getWidth() / 2);
+            bullet.setPositionY(positionY);
+            bullet.setSpeedX(speed * Math.cos(Math.toRadians(angle)));
+            bullet.setSpeedY(speed * Math.sin(Math.toRadians(angle)));
+            bullet.setDamage(damage);
+            bullet.setDirection(Direction.UP);
+            bullet.setClassify(0);
+            bullet.setColor(new Color[]{Color.RED});
+            bullet.setSprite();
+            bullet.setCanMove(true);
+
+        } else {
+            bullet = new Bullet(positionX, positionY, speed, damage, angle);
+            bullet.setPositionX(positionX - bullet.getWidth() / 2);
         }
 
         return bullet;

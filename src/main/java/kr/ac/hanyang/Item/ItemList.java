@@ -21,7 +21,7 @@ public class ItemList {
         items = new ArrayList<>();
         // 아이템 새로 추가시에 items에 초기 레벨로 추가하는 코드를 추가해주세요.
         // 0번 아이템
-        items.add(new AttackPowerUpItem(0));
+        items.add(new RangeUpItem(0));
         // 1번 아이템
         items.add(new HealthUpItem(0));
         // 2번 아이템
@@ -32,6 +32,8 @@ public class ItemList {
         items.add(new MoveSpeedUpItem(0));
         // 5번 아이템
         items.add(new HpRegenItem(0));
+        // 6번 아이템
+        items.add(new UltRegenItem(0));
 
         return items;
     }
@@ -40,7 +42,7 @@ public class ItemList {
     public List<Item> getSelectedItemList() {
         // 상점에 나갈 물품 선정 전에 선행 조건 체크 : 최종 레벨까지 업그레이드를 마친 아이템 제외
         for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getLevel() == items.get(i).getMaxLevel()) {
+            if (items.get(i).isMaxLevel()) {
                 items.remove(i);
             }
         }
@@ -61,4 +63,7 @@ public class ItemList {
         return new ArrayList<>(tempItemList);
     }
 
+    public List<Item> getItems() {
+        return items;
+    }
 }

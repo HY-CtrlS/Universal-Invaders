@@ -26,10 +26,6 @@ public class ScoreScreen extends Screen {
     /** Code of last mayus character. */
     private static final int LAST_CHAR = 90;
 
-    /** Player lives left. */
-    private int hp;
-    /** Total bullets shot by the player. */
-    private int bulletsShot;
     /** Total ships destroyed by the player. */
     private int shipsDestroyed;
     /** List of past high scores. */
@@ -59,8 +55,6 @@ public class ScoreScreen extends Screen {
         final GameState gameState) {
         super(width, height, fps);
 
-        this.hp = gameState.getHp();
-        this.bulletsShot = gameState.getBulletsShot();
         this.shipsDestroyed = gameState.getShipsDestroyed();
         this.survivalTime = gameState.getSurvivalTime();
         this.isNewRecord = false;
@@ -85,8 +79,6 @@ public class ScoreScreen extends Screen {
         if (gameState.getHp() > 0) {
             isGameClear = true;
         }
-
-
     }
 
     /**
@@ -151,7 +143,6 @@ public class ScoreScreen extends Screen {
                 }
             }
         }
-
     }
 
     /**

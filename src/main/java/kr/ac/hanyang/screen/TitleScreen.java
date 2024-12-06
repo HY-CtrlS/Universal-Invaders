@@ -35,7 +35,7 @@ public class TitleScreen extends Screen {
 
         // 메인 메뉴 배경음악 재생
         if (!Core.getSoundManager().isBackgroundMusicPlaying()) {
-            Core.getSoundManager().playTitleScreenBGM();
+            Core.getSoundManager().playLobbyBGM();
         }
     }
 
@@ -75,11 +75,7 @@ public class TitleScreen extends Screen {
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                 this.isRunning = false;
-                if (returnCode == 2) {
-                    Core.getSoundManager().playButtonSound();
-                } else {
-                    Core.getSoundManager().playButtonSound();
-                }
+                Core.getSoundManager().playButtonSound();
             }
         }
     }
@@ -115,6 +111,9 @@ public class TitleScreen extends Screen {
      */
     private void draw() {
         drawManager.initDrawing(this);
+
+        drawManager.setSplashImage();
+        drawManager.drawBackgroundImage(this, 170);
 
         drawManager.drawTitle(this);
         drawManager.drawMenu(this, this.returnCode);

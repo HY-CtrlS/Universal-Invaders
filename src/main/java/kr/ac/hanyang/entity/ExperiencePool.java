@@ -1,13 +1,22 @@
 // src/entity/ExperiencePool.java
 package kr.ac.hanyang.entity;
 
+import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
+import kr.ac.hanyang.entity.ship.Ship;
 
 /**
  * Implements a pool of recyclable experience points.
  */
 public final class ExperiencePool {
+
+    /** Point value of a type A enemy. */
+    private static final int A_TYPE_POINTS = 10;
+    /** Point value of a type B enemy. */
+    private static final int B_TYPE_POINTS = 50;
+    /** Point value of a type C enemy. */
+    private static final int C_TYPE_POINTS = 30;
 
     /** Set of already created experience points. */
     private static Set<Experience> pool = new HashSet<>();
@@ -35,9 +44,25 @@ public final class ExperiencePool {
             experience.setPositionX(positionX);
             experience.setPositionY(positionY);
             experience.setValue(value);
+            experience.setCreationTime(System.currentTimeMillis());
         } else {
             experience = new Experience(positionX, positionY, value);
         }
+        Color[] color;
+        switch (value) {
+            case A_TYPE_POINTS:
+                color = new Color[]{Color.GREEN};
+                break;
+            case B_TYPE_POINTS:
+                color = new Color[]{Color.MAGENTA};
+                break;
+            case C_TYPE_POINTS:
+                color = new Color[]{Color.RED};
+                break;
+            default:
+                color = new Color[]{Color.GREEN};
+        }
+        experience.setColor(color, true); // 색상 설정 및 원래 색상 업데이트
         return experience;
     }
 
@@ -56,6 +81,30 @@ public final class ExperiencePool {
     public static void update(final Set<Experience> experiences) {
         for (Experience experience : experiences) {
             experience.update(); // 경험치의 애니메이션 상태 업데이트
+        }
+    }
+
+    public static void move(final Set<Experience> experiences, final Ship ship) {
+        double movement_X;
+        double movement_Y;
+        int deltaX;
+        int deltaY;
+        double distance;
+
+        for (Experience exp : experiences) {
+            exp.update();
+            // X거리와 Y거리 측정
+            deltaX = ship.getPositionX() - exp.getPositionX();
+            deltaY = ship.getPositionY() - exp.getPositionY();
+            // 플레이어와의 거리 계산
+            distance = Math.hypot(deltaX, deltaY);
+            // 거리가 0이 아닐때만 플레이어를 향해 이동
+            if (distance != 0.0) {
+                // X축과 Y축의 거리에 따른 비율을 이용하여 이동량 설정
+                movement_X = 10.0 * (deltaX / distance);
+                movement_Y = 10.0 * (deltaY / distance);
+                exp.move(movement_X, movement_Y);
+            }
         }
     }
 }

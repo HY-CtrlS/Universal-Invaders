@@ -2,12 +2,9 @@ package kr.ac.hanyang.screen;
 
 import kr.ac.hanyang.engine.Cooldown;
 import kr.ac.hanyang.engine.Core;
-import kr.ac.hanyang.engine.GameState;
 import kr.ac.hanyang.Item.*;
-
 import java.awt.event.KeyEvent;
 import java.util.List;
-
 
 public class ItemSelectedScreen extends Screen {
 
@@ -44,6 +41,7 @@ public class ItemSelectedScreen extends Screen {
 
         return item_num;
     }
+
     // 화면 업데이트 메소드
     @Override
     protected final void update() {
@@ -63,10 +61,16 @@ public class ItemSelectedScreen extends Screen {
                 this.selectionCooldown.reset();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
-                // 해당 아이템 효과 적용
-                item_num = items.get(selectedItem).activateItem();
-                // 화면 종료
-                this.isRunning = false;
+                // items가 존재하는 경우에만 적용
+                if (items.size() != 0) {
+                    // 해당 아이템 효과 적용
+                    item_num = items.get(selectedItem).activateItem();
+                    // 화면 종료
+                    this.isRunning = false;
+                } //items에 아이템이 없으면 스페이스바 누르면 그냥 넘어가도록 지정
+                else {
+                    this.isRunning = false;
+                }
             }
         }
     }
@@ -113,7 +117,6 @@ public class ItemSelectedScreen extends Screen {
         }
     }
 
-
     // 화면 draw 메소드
     private void draw() {
         drawManager.initDrawing(this);
@@ -124,5 +127,4 @@ public class ItemSelectedScreen extends Screen {
 
         drawManager.completeDrawing(this);
     }
-
 }

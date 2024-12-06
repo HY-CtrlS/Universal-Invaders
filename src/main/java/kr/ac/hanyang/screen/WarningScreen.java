@@ -54,14 +54,17 @@ public class WarningScreen extends Screen {
                 || inputManager.isKeyDown(KeyEvent.VK_W)) {
                 previousMenuItem();
                 this.selectionCooldown.reset();
+                Core.getSoundManager().playButtonSound();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
                 || inputManager.isKeyDown(KeyEvent.VK_S)) {
                 nextMenuItem();
                 this.selectionCooldown.reset();
+                Core.getSoundManager().playButtonSound();
             }
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                 this.isRunning = false;
+                Core.getSoundManager().playButtonSound();
             }
         }
     }

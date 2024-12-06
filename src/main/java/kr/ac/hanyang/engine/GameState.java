@@ -1,5 +1,7 @@
 package kr.ac.hanyang.engine;
 
+import kr.ac.hanyang.entity.ship.Ship;
+
 /**
  * Implements an object that stores the state of the game between levels.
  *
@@ -7,41 +9,34 @@ package kr.ac.hanyang.engine;
  */
 public class GameState {
 
-    /** Current game level. */
-    private int level;
     /** Lives currently remaining. */
     private int hp;
-    /** Bullets shot until now. */
-    private int bulletsShot;
     /** Ships destroyed until now. */
     private int shipsDestroyed;
     /** Total seconds of survival. */
     private int survivalTime;
+    // 함선의 Status
+    private StatusManager status;
+    // 아군함선
+    private Ship ship;
 
     /**
      * Constructor.
      *
-     * @param level          Current game level.
      * @param hp             Lives currently remaining.
-     * @param bulletsShot    Bullets shot until now.
      * @param shipsDestroyed Ships destroyed until now.
      * @param survivalTime   Total seconds of survival.
+     * @param status         Current status.
+     * @param ship           Player Ship.
      */
-    public GameState(final int level,
-        final int hp, final int bulletsShot,
-        final int shipsDestroyed, final int survivalTime) {
-        this.level = level;
+    public GameState(
+        final int hp, final int shipsDestroyed, final int survivalTime, final StatusManager status,
+        final Ship ship) {
         this.hp = hp;
-        this.bulletsShot = bulletsShot;
         this.shipsDestroyed = shipsDestroyed;
         this.survivalTime = survivalTime;
-    }
-
-    /**
-     * @return the level
-     */
-    public final int getLevel() {
-        return level;
+        this.status = status;
+        this.ship = ship;
     }
 
     /**
@@ -49,17 +44,6 @@ public class GameState {
      */
     public final int getHp() {
         return hp;
-    }
-
-    public void setHP(final int hp) {
-        this.hp = hp;
-    }
-
-    /**
-     * @return the bulletsShot
-     */
-    public final int getBulletsShot() {
-        return bulletsShot;
     }
 
     /**
@@ -74,5 +58,19 @@ public class GameState {
      */
     public final int getSurvivalTime() {
         return survivalTime;
+    }
+
+    /**
+     * @return the status
+     */
+    public final StatusManager getStatus() {
+        return status;
+    }
+
+    /**
+     * @return the ship
+     */
+    public final Ship getShip() {
+        return ship;
     }
 }
