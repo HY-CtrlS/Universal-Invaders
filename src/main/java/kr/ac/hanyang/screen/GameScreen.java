@@ -615,6 +615,7 @@ public class GameScreen extends Screen {
                 if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                     this.returnCode = 2;
                     this.levelFinished = true;
+                    this.screenFinishedCooldown.reset();
                 }
             }
         }
