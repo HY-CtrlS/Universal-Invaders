@@ -99,6 +99,9 @@ public final class BulletPool {
      * @param bullet Bullets to recycle.
      */
     public static void recycle(final Set<Bullet> bullet) {
+        for (Bullet b : bullet) {
+            b.getIgnoredEnemies().clear();
+        }
         pool.addAll(bullet);
     }
 }
