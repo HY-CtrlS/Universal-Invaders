@@ -332,6 +332,7 @@ public class GameScreen extends Screen {
                 if (check == 2) {
                     this.returnCode = 0;
                     this.isRunning = false;
+                    Core.getSoundManager().stopBackgroundMusic();
                 }
                 // 일시정지 화면에서 돌아온 후 스페이스바 키 입력을 초기화하여
                 // 돌아오자마자 스페이스바가 눌린 상태로 인식되지 않도록 함
