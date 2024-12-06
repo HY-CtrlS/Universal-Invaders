@@ -29,6 +29,8 @@ public class GameScreen extends Screen {
 
     /** Milliseconds until the screen accepts user input. */
     private static final int INPUT_DELAY = 6000;
+    /** Time from finishing the level to screen change. */
+    private static final int SCREEN_CHANGE_INTERVAL = 1000;
     /** 레벨업 기준량 증가량 */
     public static final int EXPERIENCE_THRESHOLD_INTERVAL = 20;
     /** 기본 적 생성 간격 */
@@ -42,6 +44,8 @@ public class GameScreen extends Screen {
     private Set<EnemyShip> enemies;
     /** Player's ship. */
     private Ship ship;
+    /** Time from finishing the level to screen change. */
+    private Cooldown screenFinishedCooldown;
     /** Set of all bullets fired by on screen ships. */
     private Set<Bullet> bullets;
     /** 화면에 존재하는 경험치들의 집합 */
@@ -158,6 +162,8 @@ public class GameScreen extends Screen {
         this.gameStartTime = System.currentTimeMillis();
         this.inputDelay = Core.getCooldown(INPUT_DELAY);
         this.inputDelay.reset();
+        this.screenFinishedCooldown = Core.getCooldown(SCREEN_CHANGE_INTERVAL);
+        this.screenFinishedCooldown.reset();
 
         // HP 리젠 쿨타임 생성 및 시작
         this.regenHpCooldown = Core.getCooldown(1000);
@@ -410,9 +416,10 @@ public class GameScreen extends Screen {
         // 체력이 0 이하로 내려가면 게임 종료
         if ((this.hp <= 0) && !this.levelFinished) {
             this.levelFinished = true;
+            this.screenFinishedCooldown.reset();
         }
 
-        if (this.levelFinished) {
+        if (this.levelFinished && this.screenFinishedCooldown.checkFinished()) {
             this.isRunning = false;
         }
     }
@@ -428,7 +435,8 @@ public class GameScreen extends Screen {
                 this.portal.getPositionX(),
                 this.portal.getPositionY());
             if (checkCollision(this.ship, this.portal)) {
-                drawManager.drawEntity(this.spacebar, this.width / 2 - 25, this.portal.getPositionY() - 50);
+                drawManager.drawEntity(this.spacebar, this.width / 2 - 25,
+                    this.portal.getPositionY() - 50);
                 this.spacebar.update();
             }
         }
