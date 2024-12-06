@@ -134,28 +134,47 @@ public class EnemyShipSet {
             spawnY = random.nextInt(screen.getHeight() - 200);
         } while (Math.hypot(spawnX - ship.getPositionX(), spawnY - ship.getPositionY())
             < minDistance);
-        // 적 생성
-        if (survivalTime < 100) {
-            EnemyShip newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1);
-            enemies.add(newEnemy);
-        } else if (survivalTime < 200) {
-            int randomKey = random.nextInt(1000);
-            // 10분의 1의 확률로 탱커 생성 이외의 경우는 기본 적 생성
-            EnemyShip newEnemy =
-                (randomKey > 900) ? new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipB1)
-                    : new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1);
-            enemies.add(newEnemy);
+
+        int randomKey = random.nextInt(1000);
+        EnemyShip newEnemy;
+
+        if (survivalTime <= 50) { // A적 100%
+            newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1);
+        } else if (survivalTime <= 100) { // A적 90%, B적 10%
+            newEnemy = (randomKey < 900)
+                ? new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1)
+                : new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipB1);
+        } else if (survivalTime <= 150) { // A적 80%, B적 20%
+            newEnemy = (randomKey < 800)
+                ? new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1)
+                : new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipB1);
+        } else if (survivalTime <= 200) { // A적 70%, B적 20%, C적 10%
+            if (randomKey < 700) {
+                newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1);
+            } else if (randomKey < 900) {
+                newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipB1);
+            } else {
+                newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipC1);
+            }
+        } else if (survivalTime <= 250) { // A적 60%, B적 20%, C적 20%
+            if (randomKey < 600) {
+                newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1);
+            } else if (randomKey < 800) {
+                newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipB1);
+            } else {
+                newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipC1);
+            }
+        } else { // A적 50%, B적 30%, C적 20%
+            if (randomKey < 500) {
+                newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1);
+            } else if (randomKey < 800) {
+                newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipB1);
+            } else {
+                newEnemy = new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipC1);
+            }
         }
-        // 생존 시간이 150을 넘은 경우
-        else {
-            int randomKey = random.nextInt(2000);
-            // 0.7의 확률로 기본 적 생성, 0.2의 확률로 탱커 생성, 0.1의 확률로 속도 빠른 적 생성.
-            EnemyShip newEnemy =
-                (randomKey <= 1400) ? new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipA1)
-                    : ((randomKey <= 1800) ? new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipB1)
-                        : new EnemyShip(spawnX, spawnY, SpriteType.EnemyShipC1));
-            enemies.add(newEnemy);
-        }
+
+        enemies.add(newEnemy);
     }
 
     private void spawnWaveOne(final int radius, final int time) {
@@ -174,8 +193,8 @@ public class EnemyShipSet {
         // 원의 방정식을 사용해 함선의 위치가 x와 y일때, 반지름이 r인 원으로 그리기 위해서 x+rcos(theta), y+rsin(theta) 임을 이용
         for (theta = 0; theta <= 2 * Math.PI; theta += Math.PI / 18.0) {
             // 원에 맞는 스프라이트 생성 위치 계산
-            spriteX = shipX + (int)(radius*Math.cos(theta));
-            spriteY = shipY + (int)(radius*Math.sin(theta));
+            spriteX = shipX + (int) (radius * Math.cos(theta));
+            spriteY = shipY + (int) (radius * Math.sin(theta));
 
             // 위치에 장애물 생성 후 추가
             EnemyShip newObstacle = new EnemyShip(spriteX, spriteY, SpriteType.Obstacle);
@@ -184,6 +203,7 @@ public class EnemyShipSet {
         // 패턴 시작
         waveOneCooldown.reset();
     }
+
     /**
      * 생성된 적들을 draw하는 메소드
      */
