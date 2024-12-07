@@ -297,6 +297,22 @@ public class GameScreen extends Screen {
                 this.ship.setDirection(Direction.RIGHT);
             } else if (aimLeft) {
                 this.ship.setDirection(Direction.LEFT);
+            } else if (moveUp && moveLeft) {
+                this.ship.setDirection(Direction.UP_LEFT);
+            } else if (moveDown && moveRight) {
+                this.ship.setDirection(Direction.DOWN_RIGHT);
+            } else if (moveUp && moveRight) {
+                this.ship.setDirection(Direction.UP_RIGHT);
+            } else if (moveDown && moveLeft) {
+                this.ship.setDirection(Direction.DOWN_LEFT);
+            } else if (moveUp) {
+                this.ship.setDirection(Direction.UP);
+            } else if (moveDown) {
+                this.ship.setDirection(Direction.DOWN);
+            } else if (moveRight) {
+                this.ship.setDirection(Direction.RIGHT);
+            } else if (moveLeft) {
+                this.ship.setDirection(Direction.LEFT);
             }
 
             if (aimUp || aimDown || aimRight || aimLeft) {
