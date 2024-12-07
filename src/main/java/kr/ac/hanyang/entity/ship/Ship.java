@@ -131,7 +131,7 @@ public class Ship extends Entity {
      * Moves the ship up the right until the top and right screen border is reached.
      */
     public void moveUpRight() {
-        calculateMovement();
+        calculateDiagonalMovement();
         this.positionY -= movement;
         this.positionX += movement;
     }
@@ -140,7 +140,7 @@ public class Ship extends Entity {
      * Moves the ship up the left until the top and left screen border is reached.
      */
     public void moveUpLeft() {
-        calculateMovement();
+        calculateDiagonalMovement();
         this.positionY -= movement;
         this.positionX -= movement;
     }
@@ -149,7 +149,7 @@ public class Ship extends Entity {
      * Moves the ship down the right until the bottom and right screen border is reached.
      */
     public void moveDownRight() {
-        calculateMovement();
+        calculateDiagonalMovement();
         this.positionY += movement;
         this.positionX += movement;
     }
@@ -158,7 +158,7 @@ public class Ship extends Entity {
      * Moves the ship down the left until the bottom and left screen border is reached.
      */
     public void moveDownLeft() {
-        calculateMovement();
+        calculateDiagonalMovement();
         this.positionY += movement;
         this.positionX -= movement;
     }
@@ -188,11 +188,16 @@ public class Ship extends Entity {
      * 축 방향 이동속도에서 소수점 아래 부분 누적 및 정수 부분 구분.
      */
     public void calculateMovement() {
-        if (isDiagonal()) {
-            remainingMovement += (slowMode ? slowSpeed : speed) / Math.sqrt(2);
-        } else {
-            remainingMovement += (slowMode ? slowSpeed : speed);
-        }
+        remainingMovement += (slowMode ? slowSpeed : speed);
+        movement = (int) remainingMovement;
+        remainingMovement -= movement;
+    }
+
+    /**
+     * 대각선 이동속도에서 소수점 아래 부분 누적 및 정수 부분 구분.
+     */
+    public void calculateDiagonalMovement() {
+        remainingMovement += (slowMode ? slowSpeed : speed) / Math.sqrt(2);
         movement = (int) remainingMovement;
         remainingMovement -= movement;
     }
