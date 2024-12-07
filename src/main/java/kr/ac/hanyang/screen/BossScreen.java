@@ -258,6 +258,7 @@ public class BossScreen extends Screen {
                         > this.height - 1;
             }
 
+            // 함선 이동 방향 결정
             if (moveUp && moveRight && !isTopBorder && !isRightBorder) {
                 this.ship.moveUpRight();
             } else if (moveUp && moveLeft && !isTopBorder && !isLeftBorder) {
@@ -276,21 +277,31 @@ public class BossScreen extends Screen {
                 this.ship.moveDown();
             }
 
-            if (aimUp && aimRight) {
+            int horizontal = aimRight ? 1 : aimLeft ? -1 : 0;
+            int vertical = aimUp ? -1 : aimDown ? 1 : 0;
+
+            // aim 방향 우선
+            if (horizontal == 0 && vertical == 0) {
+                horizontal = moveRight ? 1 : moveLeft ? -1 : 0;
+                vertical = moveUp ? -1 : moveDown ? 1 : 0;
+            }
+
+            // 함선 스프라이트 방향 결정
+            if (horizontal == 1 && vertical == -1) {
                 this.ship.setDirection(Direction.UP_RIGHT);
-            } else if (aimUp && aimLeft) {
+            } else if (horizontal == -1 && vertical == -1) {
                 this.ship.setDirection(Direction.UP_LEFT);
-            } else if (aimDown && aimRight) {
+            } else if (horizontal == 1 && vertical == 1) {
                 this.ship.setDirection(Direction.DOWN_RIGHT);
-            } else if (aimDown && aimLeft) {
+            } else if (horizontal == -1 && vertical == 1) {
                 this.ship.setDirection(Direction.DOWN_LEFT);
-            } else if (aimUp) {
+            } else if (horizontal == 0 && vertical == -1) {
                 this.ship.setDirection(Direction.UP);
-            } else if (aimDown) {
+            } else if (horizontal == 0 && vertical == 1) {
                 this.ship.setDirection(Direction.DOWN);
-            } else if (aimRight) {
+            } else if (horizontal == 1 && vertical == 0) {
                 this.ship.setDirection(Direction.RIGHT);
-            } else if (aimLeft) {
+            } else if (horizontal == -1 && vertical == 0) {
                 this.ship.setDirection(Direction.LEFT);
             }
 
