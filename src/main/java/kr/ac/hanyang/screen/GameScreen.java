@@ -366,7 +366,6 @@ public class GameScreen extends Screen {
             // Ship2 궁극기 활성화 여부에 따라 적 함선 이동 및 생성 여부 결정
             if (this.shipID == 2 && this.ship.isUltActivated()) {
                 this.enemyShipSet.noUpdate();
-                // TODO: 얼려진 적 스프라이트로 변경
             } else {
                 this.enemyShipSet.update();
             }
