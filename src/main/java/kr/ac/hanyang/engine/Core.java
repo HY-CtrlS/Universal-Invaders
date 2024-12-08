@@ -69,14 +69,14 @@ public final class Core {
                     returnCode = handleScreen(currentScreen, "ship select screen");
 
                     shipID = ((ShipSelectScreen) currentScreen).getShipID();
+                    getStatusManager().setShipID(shipID);
 
                     if (returnCode == 2) {
                         returnCode = 1;
                         break;
                     }
                     // 게임 화면 시작
-                    currentScreen = new GameScreen(gameState, width, height, FPS,
-                        shipID);
+                    currentScreen = new GameScreen(gameState, width, height, FPS, shipID);
                     int isQuit = handleScreen(currentScreen, "game screen");
 
                     // 플레이한 게임의 정보를 gameState에 저장

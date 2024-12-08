@@ -133,7 +133,7 @@ public class GameScreen extends Screen {
         super.initialize();
 
         // 게임 시작 시 StatusManager의 status 객체를 res/status 의 값으로 초기화
-        getStatusManager().resetDefaultStatus();
+        getStatusManager().resetDefaultStatus(this.shipID);
 
         // GameScreen 이 시작될 땐 카운트 다운이 시작되므로
         this.levelStarted = false;
