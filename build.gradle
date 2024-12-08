@@ -29,3 +29,11 @@ tasks.named('test') {
     // JUnit 5 플랫폼을 사용하여 테스트 실행
     useJUnitPlatform()
 }
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'kr.ac.hanyang.engine.Core' // 실행 가능한 main class 설정
+        )
+    }
+}
