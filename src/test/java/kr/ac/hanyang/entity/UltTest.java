@@ -30,7 +30,7 @@ class UltTest {
 
     @Test
     void ship1Test() {
-        assertEquals(200, ship1.getUltThreshold());
+        assertEquals(150, ship1.getUltThreshold());
         ship1.useUlt();
         assertTrue(ship1.isUltActivated());
         assertEquals(0, ship1.getUltGauge());
@@ -38,7 +38,7 @@ class UltTest {
 
     @Test
     void ship2Test() {
-        assertEquals(150, ship2.getUltThreshold());
+        assertEquals(120, ship2.getUltThreshold());
         ship2.useUlt();
         assertTrue(ship2.isUltActivated());
         assertEquals(0, ship2.getUltGauge());
@@ -46,7 +46,7 @@ class UltTest {
 
     @Test
     void ship3Test() {
-        assertEquals(150, ship3.getUltThreshold());
+        assertEquals(140, ship3.getUltThreshold());
         ship3.useUlt();
         assertTrue(ship3.isUltActivated());
         assertEquals(0, ship3.getUltGauge());
@@ -54,7 +54,7 @@ class UltTest {
 
     @Test
     void ship4Test() {
-        assertEquals(100, ship4.getUltThreshold());
+        assertEquals(130, ship4.getUltThreshold());
         ship4.useUlt();
         assertTrue(ship4.isUltActivated());
         assertEquals(0, ship4.getUltGauge());
