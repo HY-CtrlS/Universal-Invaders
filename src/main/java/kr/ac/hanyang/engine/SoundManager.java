@@ -1,5 +1,6 @@
 package kr.ac.hanyang.engine;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import javax.sound.sampled.*;
 import java.io.IOException;
@@ -49,7 +50,8 @@ public class SoundManager {
                 logger.warning("Resource not found: " + filepath);
                 return;
             }
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(inputStream);
+            BufferedInputStream bufferedStream = new BufferedInputStream(inputStream);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(bufferedStream);
             bgmClip = AudioSystem.getClip();
             bgmClip.open(audioInputStream);
 
@@ -115,7 +117,8 @@ public class SoundManager {
                 logger.warning("Resource not found: " + filepath);
                 return;
             }
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(inputStream);
+            BufferedInputStream bufferedStream = new BufferedInputStream(inputStream);
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(bufferedStream);
             Clip sfxClip = AudioSystem.getClip();
             sfxClip.open(audioInputStream);
 
