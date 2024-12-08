@@ -9,7 +9,7 @@ Invaders
 
 ### Introduction
 
-Universal Invaders는 고전적인 Space Invaders 게임을 기반으로 한 멀티방향 슈팅 게임입니다. 플레이어는 적의 파도를 막아내며 점수를 쌓고, 다양한 난이도와
+Universal Invaders는 고전적인 Space Invaders 게임을 기반으로 한 멀티방향 슈팅 게임입니다. 플레이어는 적의 파도를 막아내며 버티고, 다양한 난이도와
 흥미로운 게임플레이를 즐길 수 있습니다.
 
 ### Gameplay
