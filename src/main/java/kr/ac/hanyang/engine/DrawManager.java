@@ -1263,7 +1263,7 @@ public final class DrawManager {
         int hp = boss.getMaxHp(); // 최대 체력
         // 체력 바위 보스 이름과 보스 정보 출력
         backBufferGraphics.setColor(Color.RED);
-        drawCenteredRegularString(screen, "Boss Name, Phase : " + boss.getPhase(),
+        drawCenteredRegularString(screen, "Boss : D.O.M.I.N.A.T.O.R.  Phase : " + boss.getPhase(),
             1 + fontRegularMetrics.getHeight());
 
         // 체력 바의 테두리 그리기
