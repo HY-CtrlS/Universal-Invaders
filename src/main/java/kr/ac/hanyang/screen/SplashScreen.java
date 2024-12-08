@@ -28,7 +28,7 @@ public class SplashScreen extends Screen {
      * 플레이어의 함선을 초기화합니다.
      */
     private void initializeShip() {
-        Core.getStatusManager().setSpeed(10);
+        Core.getStatusManager().setSpeed(10.0);
         superShip = new Ship(this.width / 2, this.height, Direction.UP,
             new Color(80, 200, 120), 1);
     }

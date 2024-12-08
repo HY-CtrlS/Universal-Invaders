@@ -267,42 +267,50 @@ public final class FileManager {
         }
     }
 
-    private ShipStatus loadDefaultShipStatus() throws IOException {
+    private ShipStatus loadDefaultShipStatus(int shipID) throws IOException {
 
         ShipStatus shipStatus;
         InputStream inputStream = null;
         BufferedReader bufferedReader = null;
 
         try {
-            inputStream = FileManager.class.getClassLoader()
-                .getResourceAsStream("status");
+            inputStream = FileManager.class.getClassLoader().getResourceAsStream("status");
             bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-            int shootingInterval = Integer.parseInt(bufferedReader.readLine());
-            int bulletSpeed = Integer.parseInt(bufferedReader.readLine());
-            int speed = Integer.parseInt(bufferedReader.readLine());
-            int baseDamage = Integer.parseInt(bufferedReader.readLine());
+            String line;
+            int currentID = 0;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.startsWith("# Ship ID")) {
+                    currentID = Integer.parseInt(line.split(" ")[3]);
+                }
 
-            int range = Integer.parseInt(bufferedReader.readLine());
+                if (currentID == shipID) {
+                    int shootingInterval = Integer.parseInt(bufferedReader.readLine());
+                    int bulletSpeed = Integer.parseInt(bufferedReader.readLine());
+                    double speed = Double.parseDouble(bufferedReader.readLine());
+                    int baseDamage = Integer.parseInt(bufferedReader.readLine());
+                    int range = Integer.parseInt(bufferedReader.readLine());
+                    int maxHp = Integer.parseInt(bufferedReader.readLine());
+                    double regenHp = Double.parseDouble(bufferedReader.readLine());
+                    double regenUltra = Double.parseDouble(bufferedReader.readLine());
 
-            int maxHp = Integer.parseInt(bufferedReader.readLine());
-            double regenHp = Double.parseDouble(bufferedReader.readLine());
-            double regenUltra = Double.parseDouble(bufferedReader.readLine());
+                    shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage,
+                        range, maxHp, regenHp, regenUltra);
 
-            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, range,
-                maxHp,
-                regenHp, regenUltra);
+                    return shipStatus;
+                }
+            }
+
+            throw new IllegalArgumentException("Default status not found for Ship ID: " + shipID);
 
         } finally {
             if (inputStream != null) {
                 inputStream.close();
             }
         }
-
-        return shipStatus;
     }
 
-    public ShipStatus loadShipStatus() throws IOException {
+    public ShipStatus loadShipStatus(int shipID) throws IOException {
 
         ShipStatus shipStatus;
         InputStream inputStream = null;
@@ -322,25 +330,38 @@ public final class FileManager {
             bufferedReader = new BufferedReader(new InputStreamReader(
                 inputStream, Charset.forName("UTF-8")));
 
-            logger.info("Loading user ship status.");
+            logger.info("Loading user ship status for Ship ID: " + shipID);
 
-            int shootingInterval = Integer.parseInt(bufferedReader.readLine());
-            int bulletSpeed = Integer.parseInt(bufferedReader.readLine());
-            int speed = Integer.parseInt(bufferedReader.readLine());
-            int baseDamage = Integer.parseInt(bufferedReader.readLine());
-            int range = Integer.parseInt(bufferedReader.readLine());
-            int maxHp = Integer.parseInt(bufferedReader.readLine());
-            double regenHP = Double.parseDouble((bufferedReader.readLine()));
-            double regenUltra = Double.parseDouble((bufferedReader.readLine()));
+            String line;
+            int currentID = 0;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.startsWith("# Ship ID")) {
+                    currentID = Integer.parseInt(line.split(" ")[3]);
+                }
+                if (currentID == shipID) {
+                    int shootingInterval = Integer.parseInt(bufferedReader.readLine());
+                    int bulletSpeed = Integer.parseInt(bufferedReader.readLine());
+                    double speed = Double.parseDouble(bufferedReader.readLine());
+                    int baseDamage = Integer.parseInt(bufferedReader.readLine());
+                    int range = Integer.parseInt(bufferedReader.readLine());
+                    int maxHp = Integer.parseInt(bufferedReader.readLine());
+                    double regenHP = Double.parseDouble((bufferedReader.readLine()));
+                    double regenUltra = Double.parseDouble((bufferedReader.readLine()));
 
-            shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage, range,
-                maxHp,
-                regenHP, regenUltra);
+                    shipStatus = new ShipStatus(shootingInterval, bulletSpeed, speed, baseDamage,
+                        range, maxHp, regenHP, regenUltra);
+
+                    return shipStatus;
+                }
+            }
+
+            logger.info("Ship ID not found. Loading default ship status.");
+            shipStatus = loadDefaultShipStatus(shipID);
 
         } catch (FileNotFoundException e) {
             // loads default if there's no user scores.
             logger.info("Loading default ship status.");
-            shipStatus = loadDefaultShipStatus();
+            shipStatus = loadDefaultShipStatus(shipID);
         } finally {
             if (bufferedReader != null) {
                 bufferedReader.close();

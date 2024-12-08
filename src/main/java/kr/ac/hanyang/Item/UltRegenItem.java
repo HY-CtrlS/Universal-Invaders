@@ -38,7 +38,7 @@ public class UltRegenItem implements Item {
 
     @Override
     public String getItemEffectDescription() {
-        return "ULT regen = +0.2 /s";
+        return "ULT regen = +0.3 /s";
     }
 
     @Override
@@ -74,8 +74,8 @@ public class UltRegenItem implements Item {
     @Override
     public int activateItem() {
         if (level < MAX_LEVEL) {
-            status.setRegenUltra(status.getRegenUltra() + 0.2);
-            this.logger.info("Ult_regen!! + 0.2");
+            status.setRegenUltra(status.getRegenUltra() + 0.3);
+            this.logger.info("Ult_regen!! + 0.3");
             increaseLevel();
             this.logger.info("Ult_regen" + getLevel());
         }

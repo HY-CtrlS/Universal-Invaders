@@ -36,7 +36,7 @@ public class BossScreen extends Screen {
     /** Height of the interface separation line. */
     private static final int SEPARATION_LINE_HEIGHT = 40;
     /** Time from finishing the level to screen change. */
-    private static final int SCREEN_CHANGE_INTERVAL = 1500;
+    private static final int SCREEN_CHANGE_INTERVAL = 1000;
     /** Player's ship. */
     private Ship ship;
     /** 보스 객체 */
@@ -147,7 +147,7 @@ public class BossScreen extends Screen {
         // 아군 함선 궁극기 기능 연결
         switch (this.ship.getShipID()) {
             case 1:
-                this.ultActivatedTime = Core.getCooldown(1000);
+                this.ultActivatedTime = Core.getCooldown(1500);
                 this.ultActivatedTime.reset();
                 break;
             case 2:
@@ -155,7 +155,7 @@ public class BossScreen extends Screen {
                 this.ultActivatedTime.reset();
                 break;
             case 3:
-                this.ultActivatedTime = Core.getCooldown(4000);
+                this.ultActivatedTime = Core.getCooldown(5000);
                 this.ultActivatedTime.reset();
                 break;
             case 4:
@@ -169,13 +169,13 @@ public class BossScreen extends Screen {
 
         this.basicAttackCount = 0;
 
-        this.createLaserCooldown = Core.getCooldown(4000);
+        this.createLaserCooldown = Core.getCooldown(2600);
         this.createLaserCooldown.reset();
 
         this.createMissileCooldown = Core.getCooldown(5000);
         this.createMissileCooldown.reset();
 
-        this.createCrystalCooldown = Core.getCooldown(25000);
+        this.createCrystalCooldown = Core.getCooldown(20000);
         this.createCrystalCooldown.reset();
 
         // 페이즈 카운터 초기화
@@ -258,6 +258,7 @@ public class BossScreen extends Screen {
                         > this.height - 1;
             }
 
+            // 함선 이동 방향 결정
             if (moveUp && moveRight && !isTopBorder && !isRightBorder) {
                 this.ship.moveUpRight();
             } else if (moveUp && moveLeft && !isTopBorder && !isLeftBorder) {
@@ -276,21 +277,31 @@ public class BossScreen extends Screen {
                 this.ship.moveDown();
             }
 
-            if (aimUp && aimRight) {
+            int horizontal = aimRight ? 1 : aimLeft ? -1 : 0;
+            int vertical = aimUp ? -1 : aimDown ? 1 : 0;
+
+            // aim 방향 우선
+            if (horizontal == 0 && vertical == 0) {
+                horizontal = moveRight ? 1 : moveLeft ? -1 : 0;
+                vertical = moveUp ? -1 : moveDown ? 1 : 0;
+            }
+
+            // 함선 스프라이트 방향 결정
+            if (horizontal == 1 && vertical == -1) {
                 this.ship.setDirection(Direction.UP_RIGHT);
-            } else if (aimUp && aimLeft) {
+            } else if (horizontal == -1 && vertical == -1) {
                 this.ship.setDirection(Direction.UP_LEFT);
-            } else if (aimDown && aimRight) {
+            } else if (horizontal == 1 && vertical == 1) {
                 this.ship.setDirection(Direction.DOWN_RIGHT);
-            } else if (aimDown && aimLeft) {
+            } else if (horizontal == -1 && vertical == 1) {
                 this.ship.setDirection(Direction.DOWN_LEFT);
-            } else if (aimUp) {
+            } else if (horizontal == 0 && vertical == -1) {
                 this.ship.setDirection(Direction.UP);
-            } else if (aimDown) {
+            } else if (horizontal == 0 && vertical == 1) {
                 this.ship.setDirection(Direction.DOWN);
-            } else if (aimRight) {
+            } else if (horizontal == 1 && vertical == 0) {
                 this.ship.setDirection(Direction.RIGHT);
-            } else if (aimLeft) {
+            } else if (horizontal == -1 && vertical == 0) {
                 this.ship.setDirection(Direction.LEFT);
             }
 
@@ -592,8 +603,8 @@ public class BossScreen extends Screen {
                         } else if (this.ship.isCenter()) {
                             // 이동 끝나면 소행성과 크리스탈 생성
                             this.crystalPool.createFinalCrystal();
-                            // 레이저 생성 쿨타임 1초로 변경
-                            this.createLaserCooldown = changeCooldown(1000);
+                            // 레이저 생성 쿨타임 0.7초로 변경
+                            this.createLaserCooldown = changeCooldown(700);
                             this.createLaserCooldown.reset();
                             this.isPhase4Ready = true;
                         }

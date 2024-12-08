@@ -406,7 +406,7 @@ public final class DrawManager {
         int ultWidth = (int) ((double) ship.getUltGauge() / ult * barWidth);
 
         // 궁극기 바 채우기
-        backBufferGraphics.setColor(Color.BLUE); // 궁극기 바의 색상
+        backBufferGraphics.setColor(Color.GREEN); // 궁극기 바의 색상
         backBufferGraphics.fillRect(barX + 1, barY + 1, ultWidth - 1, barHeight - 1);
 
         // 궁극기 게이지 표시

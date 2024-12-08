@@ -8,12 +8,12 @@ public class StatusManager {
     private static StatusManager instance;
     private static Logger logger;
     private ShipStatus status;
+    private int shipID = 1;
 
     private StatusManager() {
         logger = Core.getLogger();
 
-        resetDefaultStatus();
-
+        resetDefaultStatus(shipID);
     }
 
     protected static StatusManager getInstance() {
@@ -39,11 +39,11 @@ public class StatusManager {
         status.setBulletSpeed(bulletSpeed);
     }
 
-    public int getSpeed() {
+    public double getSpeed() {
         return status.getSpeed();
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(double speed) {
         status.setSpeed(speed);
     }
 
@@ -87,6 +87,10 @@ public class StatusManager {
         status.setRegen_ultra(regenUltra);
     }
 
+    public void setShipID(final int shipID) {
+        this.shipID = shipID;
+    }
+
     private void saveStatus() {
         try {
             FileManager.getInstance().saveShipStatus(status);
@@ -95,12 +99,31 @@ public class StatusManager {
         }
     }
 
-    public void resetDefaultStatus() {
+    public void resetDefaultStatus(final int shipID) {
         try {
-            status = FileManager.getInstance().loadShipStatus();
+            status = FileManager.getInstance().loadShipStatus(shipID);
         } catch (IOException e) {
             logger.warning("Failed to load status. Using default values.");
-            status = new ShipStatus(750, 6, 2, 1, 5, 100, 0, 0);
+            switch (shipID) {
+                case 1:
+                    status = new ShipStatus(600, 7, 2.4, 15,
+                        6, 120, 0.3, 0.2);
+                    break;
+                case 2:
+                    status = new ShipStatus(750, 6, 2.2, 10,
+                        6, 110, 0.2, 0.0);
+                    break;
+                case 3:
+                    status = new ShipStatus(800, 5, 2.0, 10,
+                        6, 100, 0.2, 0.0);
+                    break;
+                case 4:
+                    status = new ShipStatus(700, 5, 2.0, 10,
+                        6, 100, 0.2, 0.0);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid shipID: " + shipID);
+            }
         }
     }
 }

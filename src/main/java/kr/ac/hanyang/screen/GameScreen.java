@@ -30,11 +30,11 @@ public class GameScreen extends Screen {
     /** Milliseconds until the screen accepts user input. */
     private static final int INPUT_DELAY = 6000;
     /** Time from finishing the level to screen change. */
-    private static final int SCREEN_CHANGE_INTERVAL = 1500;
+    private static final int SCREEN_CHANGE_INTERVAL = 1000;
     /** 레벨업 기준량 증가량 */
     public static final int EXPERIENCE_THRESHOLD_INTERVAL = 20;
     /** 기본 적 생성 간격 */
-    private static final int ENEMY_SPAWN_INTERVAL = 2000;
+    private static final int ENEMY_SPAWN_INTERVAL = 1500;
     // 레벨 클리어 조건 시간
     private static final int LEVEL_CLEAR_TIME = 300;
 
@@ -133,7 +133,7 @@ public class GameScreen extends Screen {
         super.initialize();
 
         // 게임 시작 시 StatusManager의 status 객체를 res/status 의 값으로 초기화
-        getStatusManager().resetDefaultStatus();
+        getStatusManager().resetDefaultStatus(this.shipID);
 
         // GameScreen 이 시작될 땐 카운트 다운이 시작되므로
         this.levelStarted = false;
@@ -149,7 +149,6 @@ public class GameScreen extends Screen {
         enemyShipSet.initializeTime(survivalTime, LEVEL_CLEAR_TIME);
 
         this.enemies = enemyShipSet.getEnemies();
-        this.screenFinishedCooldown = Core.getCooldown(SCREEN_CHANGE_INTERVAL);
         this.bullets = new HashSet<Bullet>();
         this.experiences = new HashSet<Experience>(); // 경험치 집합 초기화
 
@@ -163,6 +162,8 @@ public class GameScreen extends Screen {
         this.gameStartTime = System.currentTimeMillis();
         this.inputDelay = Core.getCooldown(INPUT_DELAY);
         this.inputDelay.reset();
+        this.screenFinishedCooldown = Core.getCooldown(SCREEN_CHANGE_INTERVAL);
+        this.screenFinishedCooldown.reset();
 
         // HP 리젠 쿨타임 생성 및 시작
         this.regenHpCooldown = Core.getCooldown(1000);
@@ -175,19 +176,19 @@ public class GameScreen extends Screen {
         // 궁극기 효과 지속시간 쿨타임 생성 및 시작
         switch (this.shipID) {
             case 1:
-                this.ultActivatedTime = Core.getCooldown(1500);
+                this.ultActivatedTime = Core.getCooldown(2000);
                 this.ultActivatedTime.reset();
                 break;
             case 2:
-                this.ultActivatedTime = Core.getCooldown(4000);
+                this.ultActivatedTime = Core.getCooldown(5000);
                 this.ultActivatedTime.reset();
                 break;
             case 3:
-                this.ultActivatedTime = Core.getCooldown(3000);
+                this.ultActivatedTime = Core.getCooldown(5000);
                 this.ultActivatedTime.reset();
                 break;
             case 4:
-                this.ultActivatedTime = Core.getCooldown(5000);
+                this.ultActivatedTime = Core.getCooldown(10000);
                 this.ultActivatedTime.reset();
                 break;
         }
@@ -263,6 +264,7 @@ public class GameScreen extends Screen {
                 this.ship.getPositionY() + this.ship.getHeight() + this.ship.getSpeed()
                     > this.height - 200 - 2;
 
+            // 함선 이동 방향 결정
             if (moveUp && moveRight && !isTopBorder && !isRightBorder) {
                 this.ship.moveUpRight();
             } else if (moveUp && moveLeft && !isTopBorder && !isLeftBorder) {
@@ -281,37 +283,31 @@ public class GameScreen extends Screen {
                 this.ship.moveDown();
             }
 
-            if (aimUp && aimRight) {
+            int horizontal = aimRight ? 1 : aimLeft ? -1 : 0;
+            int vertical = aimUp ? -1 : aimDown ? 1 : 0;
+
+            // aim 방향 우선
+            if (horizontal == 0 && vertical == 0) {
+                horizontal = moveRight ? 1 : moveLeft ? -1 : 0;
+                vertical = moveUp ? -1 : moveDown ? 1 : 0;
+            }
+
+            // 함선 스프라이트 방향 결정
+            if (horizontal == 1 && vertical == -1) {
                 this.ship.setDirection(Direction.UP_RIGHT);
-            } else if (aimUp && aimLeft) {
+            } else if (horizontal == -1 && vertical == -1) {
                 this.ship.setDirection(Direction.UP_LEFT);
-            } else if (aimDown && aimRight) {
+            } else if (horizontal == 1 && vertical == 1) {
                 this.ship.setDirection(Direction.DOWN_RIGHT);
-            } else if (aimDown && aimLeft) {
+            } else if (horizontal == -1 && vertical == 1) {
                 this.ship.setDirection(Direction.DOWN_LEFT);
-            } else if (aimUp) {
+            } else if (horizontal == 0 && vertical == -1) {
                 this.ship.setDirection(Direction.UP);
-            } else if (aimDown) {
+            } else if (horizontal == 0 && vertical == 1) {
                 this.ship.setDirection(Direction.DOWN);
-            } else if (aimRight) {
+            } else if (horizontal == 1 && vertical == 0) {
                 this.ship.setDirection(Direction.RIGHT);
-            } else if (aimLeft) {
-                this.ship.setDirection(Direction.LEFT);
-            } else if (moveUp && moveLeft) {
-                this.ship.setDirection(Direction.UP_LEFT);
-            } else if (moveDown && moveRight) {
-                this.ship.setDirection(Direction.DOWN_RIGHT);
-            } else if (moveUp && moveRight) {
-                this.ship.setDirection(Direction.UP_RIGHT);
-            } else if (moveDown && moveLeft) {
-                this.ship.setDirection(Direction.DOWN_LEFT);
-            } else if (moveUp) {
-                this.ship.setDirection(Direction.UP);
-            } else if (moveDown) {
-                this.ship.setDirection(Direction.DOWN);
-            } else if (moveRight) {
-                this.ship.setDirection(Direction.RIGHT);
-            } else if (moveLeft) {
+            } else if (horizontal == -1 && vertical == 0) {
                 this.ship.setDirection(Direction.LEFT);
             }
 
@@ -370,7 +366,6 @@ public class GameScreen extends Screen {
             // Ship2 궁극기 활성화 여부에 따라 적 함선 이동 및 생성 여부 결정
             if (this.shipID == 2 && this.ship.isUltActivated()) {
                 this.enemyShipSet.noUpdate();
-                // TODO: 얼려진 적 스프라이트로 변경
             } else {
                 this.enemyShipSet.update();
             }
@@ -455,7 +450,8 @@ public class GameScreen extends Screen {
                 this.portal.getPositionX(),
                 this.portal.getPositionY());
             if (checkCollision(this.ship, this.portal)) {
-                drawManager.drawEntity(this.spacebar, this.width / 2 - 25, this.portal.getPositionY() - 50);
+                drawManager.drawEntity(this.spacebar, this.width / 2 - 25,
+                    this.portal.getPositionY() - 50);
                 this.spacebar.update();
             }
         }
@@ -646,7 +642,6 @@ public class GameScreen extends Screen {
                 if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                     this.returnCode = 2;
                     this.levelFinished = true;
-                    this.screenFinishedCooldown.reset();
                 }
             }
         }
@@ -701,7 +696,6 @@ public class GameScreen extends Screen {
     }
 
     private void pauseAllCooldown() {
-        this.screenFinishedCooldown.pause();
         this.clockCooldown.pause();
         this.regenHpCooldown.pause();
         this.increUltCooldown.pause();
@@ -709,7 +703,6 @@ public class GameScreen extends Screen {
     }
 
     private void resumeAllCooldown() {
-        this.screenFinishedCooldown.resume();
         this.clockCooldown.resume();
         this.regenHpCooldown.resume();
         this.increUltCooldown.resume();

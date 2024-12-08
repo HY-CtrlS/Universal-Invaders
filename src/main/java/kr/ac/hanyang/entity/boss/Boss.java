@@ -27,9 +27,6 @@ public class Boss extends Entity {
     protected static final Color PHASE_3_HPCOLOR = new Color(255, 85, 0);
     protected static final Color PHASE_4_HPCOLOR = new Color(255, 0, 0);
 
-    private static final int MIN_SPEED = 2; // 최소 이동 속도
-    private static final int MAX_SPEED = 5; // 최대 이동 속도
-
     private int maxHp;
     private int currentHp;
     private int phase;
@@ -44,10 +41,10 @@ public class Boss extends Entity {
     private Cooldown shootInterval;
 
     private Logger logger;
-
-    private int speed; // 현재 이동 속도
-    private boolean movingRight; // 이동 방향 (true: 오른쪽, false: 왼쪽)
-    private Random random; // 랜덤 속도 생성기
+    // 현재 이동 속도
+    private int speed;
+    // 이동 방향 (오른쪽 : 1, 왼쪽 : -1)
+    private int direction;
 
     // 1페이즈 패턴 변수
     private boolean isPhaseOnePattern;
@@ -71,10 +68,12 @@ public class Boss extends Entity {
 
         this.maxHp = PHASE_1_HP;
         this.currentHp = maxHp;
+        this.speed = 3;
         this.phase = 1;
         this.spriteType = SpriteType.Boss;
         this.isInvincible = false;
         this.isPattern = false;
+        this.direction = 1;
 
         // 각 패턴 발동중인지에 대한 부분 false로 초기화
         this.isPhaseOnePattern = false;
@@ -101,10 +100,6 @@ public class Boss extends Entity {
         this.verticalBulletTwoCooldown.reset();
 
         this.logger = Core.getLogger();
-
-        this.random = new Random();
-        this.movingRight = true; // 초기 방향은 오른쪽
-        setRandomSpeed(); // 초기 속도 설정
     }
 
     /**
@@ -145,8 +140,8 @@ public class Boss extends Entity {
         if (this.horizontalBulletCooldown.checkFinished()) {
             this.horizontalBulletCooldown.reset();
 
-            for (int i = 1; i <= 18; i++) { // 1부터 시작하여 일정 간격 배치
-                int bulletX = i * 42; // 각 총알의 X 좌표
+            for (int i = 1; i <= 15; i++) { // 1부터 시작하여 일정 간격 배치
+                int bulletX = i * 50; // 각 총알의 X 좌표
                 // 총알 생성
                 bullets.add(BulletPool.getBossBullet(bulletX, 50, 2.5, 10, 90));
                 this.logger.info("Horizontal Bullet Creation!");
@@ -163,8 +158,8 @@ public class Boss extends Entity {
         if (this.horizontalBulletTwoCooldown.checkFinished()) {
             this.horizontalBulletTwoCooldown.reset();
 
-            for (int i = 0; i < 18; i++) { // 1부터 시작하여 일정 간격 배치
-                int bulletX = i * 42 + 21; // 각 총알의 X 좌표
+            for (int i = 0; i < 15; i++) { // 1부터 시작하여 일정 간격 배치
+                int bulletX = i * 50 + 25; // 각 총알의 X 좌표
                 // 총알 생성
                 bullets.add(BulletPool.getBossBullet(bulletX, 750, 2.5, 10, 270));
                 this.logger.info("Horizontal Bullet two Creation!");
@@ -181,8 +176,8 @@ public class Boss extends Entity {
         if (this.verticalBulletCooldown.checkFinished()) {
             this.verticalBulletCooldown.reset();
 
-            for (int i = 1; i <= 18; i++) { // 1부터 시작하여 일정 간격 배치
-                int bulletY = i * 46; // 각 총알의 Y 좌표
+            for (int i = 1; i <= 16; i++) { // 1부터 시작하여 일정 간격 배치
+                int bulletY = i * 50; // 각 총알의 Y 좌표
                 // 총알 생성
                 bullets.add(BulletPool.getBossBullet(20, bulletY, 2, 10, 0));
                 this.logger.info("Vertical Bullet Creation!");
@@ -199,8 +194,8 @@ public class Boss extends Entity {
         if (this.verticalBulletTwoCooldown.checkFinished()) {
             this.verticalBulletTwoCooldown.reset();
 
-            for (int i = 0; i < 18; i++) { // 1부터 시작하여 일정 간격 배치
-                int bulletY = i * 45 + 22; // 각 총알의 Y 좌표
+            for (int i = 0; i < 16; i++) { // 1부터 시작하여 일정 간격 배치
+                int bulletY = i * 50 + 25; // 각 총알의 Y 좌표
                 // 총알 생성
                 bullets.add(BulletPool.getBossBullet(700, bulletY, 2, 10, 180));
                 this.logger.info("Vertical Bullet Creation!");
@@ -243,7 +238,6 @@ public class Boss extends Entity {
         }
     }
 
-
     // 보스의 좌우 이동을 구현하는 메소드
     public void move() {
         // 보스가 화면의 오른쪽 경계에 도달했는지 확인
@@ -251,15 +245,16 @@ public class Boss extends Entity {
         // 보스가 화면의 왼쪽 경계에 도달했는지 확인
         boolean isLeftBorder = this.positionX - this.speed < 0;
 
-        if (movingRight && !isRightBorder) {
-            this.positionX += speed; // 오른쪽으로 이동
-        } else if (!movingRight && !isLeftBorder) {
-            this.positionX -= speed; // 왼쪽으로 이동
+        if (isRightBorder || isLeftBorder) {
+            direction *= -1;
         } else {
-            movingRight = !movingRight; // 경계에 도달하면 방향 전환
-            setRandomSpeed(); // 새로운 속도로 이동
+            // 10%의 확률로 랜덤하게 방향 전환
+            if (Math.random() < 0.1) {
+                direction *= -1;
+            }
         }
 
+        this.positionX += direction * speed;
     }
 
     //보스가 1페이즈 큰 패턴에서 다 이동했는지에 대한 메소드
@@ -383,31 +378,6 @@ public class Boss extends Entity {
             // 발악 패턴으로 변경
             setPhase(4);
         }
-    }
-
-    /**
-     * 이동 속도를 랜덤으로 설정.
-     */
-    private void setRandomSpeed() {
-        this.speed = random.nextInt(MAX_SPEED - MIN_SPEED + 1) + MIN_SPEED;
-    }
-
-    /**
-     * 현재 이동 속도를 반환.
-     *
-     * @return 현재 이동 속도.
-     */
-    public int getSpeed() {
-        return this.speed;
-    }
-
-    /**
-     * 현재 이동 방향을 반환.
-     *
-     * @return true: 오른쪽, false: 왼쪽.
-     */
-    public boolean isMovingRight() {
-        return this.movingRight;
     }
 
     // value로 고정된 단일 탄막 쿨타임으로 변경
