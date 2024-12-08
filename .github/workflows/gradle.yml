@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,29 +19,26 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Cache Gradle dependencies
+      - name: Cache Gradle dependencies and build
         uses: actions/cache@v3
         with:
-          path: ~/.gradle/caches
+          path: |
+            ~/.gradle/caches
+            build/
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Build with Gradle
-        run: ./gradlew build --no-daemon
-
-      - name: Run Tests
-        run: ./gradlew test --no-daemon
+      - name: Build and Test with Gradle
+        run: ./gradlew clean build test --no-daemon --refresh-dependencies
 
       - name: Upload Test Report
-        if: failure() # 빌드가 실패할 경우에만 실행
+        if: failure()
         uses: actions/upload-artifact@v3
         with:
           name: test-report
-          path: build/reports/tests/test/index.html
+          path: build/reports/tests/test/
 
-      - name: Run Tests with Debug Info
+      - name: Debug Test on Failure
+        if: failure()
         run: ./gradlew test --info --stacktrace
-
-      - name: Build with Gradle
-        run: ./gradlew clean build --refresh-dependencies
